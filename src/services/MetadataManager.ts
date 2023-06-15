@@ -1,4 +1,6 @@
-import { Abi, ApiPromise, FileState, MetadataState, Validation } from 'types';
+import { MetadataState, Validation } from '@/domain';
+import { FileState } from '@/domain/FileState';
+import { Abi, ApiPromise } from '@/services/substrateTypes';
 
 interface Options {
   isWasmRequired?: boolean;
@@ -8,7 +10,7 @@ interface DeriveOptions extends Options {
   name?: string;
 }
 
-class MetadataManager {
+export class MetadataManager {
   private EMPTY: MetadataState = {
     isError: false,
     isSupplied: false,
@@ -31,7 +33,8 @@ class MetadataManager {
     let value: Abi | undefined = undefined;
 
     try {
-      value = new Abi(source, api?.registry.getChainProperties());
+      const apiResult = api?.registry.getChainProperties()
+      value = new Abi(source, apiResult);
 
       const name = options.name || value.info.contract.name.toString();
 
