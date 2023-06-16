@@ -71,6 +71,7 @@ describe('MetadataManager', () => {
  
      const result = metadataManager.parseFile(metadataFile, false, realApi);
  
+     expect(realApi?.query).toHaveProperty('contracts')
      expect(result.value).toBeInstanceOf(Abi);
    });
  
