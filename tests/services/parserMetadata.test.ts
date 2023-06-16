@@ -70,7 +70,6 @@ describe('MetadataManager', () => {
      if(!runRealApiTests) return
  
      const result = metadataManager.parseFile(metadataFile, false, realApi);
-     debugger
  
      expect(result.value).toBeInstanceOf(Abi);
    });
