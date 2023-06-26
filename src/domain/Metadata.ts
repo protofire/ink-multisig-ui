@@ -1,4 +1,4 @@
-import {Abi} from '@/services/substrateTypes'
+import {Abi} from '@/services/substrate/types'
 
 export interface Validation {
   isError?: boolean;

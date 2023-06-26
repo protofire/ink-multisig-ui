@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { MetadataManager } from '@/services/MetadataManager';
+import { MetadataManager } from '@/services/substrate/MetadataManager';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { FileState } from '@/domain/FileState';
 import { ROCOCO_RPC } from '../setupTests';

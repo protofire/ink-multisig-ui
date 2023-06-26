@@ -1,6 +1,6 @@
 import { MetadataState, Validation } from '@/domain';
 import { FileState } from '@/domain/FileState';
-import { Abi, ApiPromise } from '@/services/substrateTypes';
+import { Abi, ApiPromise } from '@/services/substrate/types';
 
 interface Options {
   isWasmRequired?: boolean;
@@ -11,7 +11,7 @@ interface DeriveOptions extends Options {
 }
 
 export class MetadataManager {
-  private EMPTY: MetadataState = {
+  public EMPTY: MetadataState = {
     isError: false,
     isSupplied: false,
     isValid: false,
