@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "ts:check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "jest --watch",
     "prepare": "husky install"
   },
