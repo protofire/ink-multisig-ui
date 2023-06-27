@@ -25,10 +25,8 @@ function truncate(param: string): string {
 export function ArgSignature({
   arg: { name, type },
   children,
-  className,
   registry,
   value,
-  ...props
 }: Props) {
   return (
     <span>

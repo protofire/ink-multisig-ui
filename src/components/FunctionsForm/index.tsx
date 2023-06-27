@@ -30,10 +30,7 @@ export function FunctionsForm() {
     [contract?.abi.messages]
   );
   const [message, setMessage] = useState<AbiMessage | undefined>();
-  const { argValues, setArgValues, inputData } = useArgValues(
-    message,
-    contract?.abi.registry
-  );
+  const { argValues } = useArgValues(message, contract?.abi.registry);
 
   console.log("__argValues", argValues);
 
@@ -45,13 +42,6 @@ export function FunctionsForm() {
     );
     newMessage && setMessage(newMessage);
   }, [contract?.abi.messages, selectValue, setMessage]);
-
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files && e.target.files[0];
-  //   if (file && file.type === 'application/json') {
-  //     setFile(file);
-  //   }
-  // };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

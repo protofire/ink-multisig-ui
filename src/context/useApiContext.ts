@@ -1,9 +1,9 @@
 import { useApi, useWallet } from "useink";
 
-import { RococoContractsTestnet } from "@/config/chain";
+import { CHAINS_ALLOWED } from "@/config/chain";
 
 export const useApiContext = () => {
-  const apiProvider = useApi(RococoContractsTestnet.id);
+  const apiProvider = useApi(CHAINS_ALLOWED[0].id);
   const apiPromise = apiProvider?.api;
   const { accounts } = useWallet();
 

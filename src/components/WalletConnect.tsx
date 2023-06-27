@@ -3,7 +3,7 @@ import { useAllWallets, useWallet } from "useink";
 
 export const WalletConnect = () => {
   const wallets = useAllWallets();
-  const { isConnected, connect, disconnect, setAccount } = useWallet();
+  const { isConnected, connect, disconnect } = useWallet();
 
   if (isConnected)
     return (

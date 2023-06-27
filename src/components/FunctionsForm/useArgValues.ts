@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { Account } from "@/config/chain";
 import { useApiContext } from "@/context/useApiContext";
-import { getInitValue } from "@/services/substrate/getInitValue";
+import { Account, getInitValue } from "@/services/substrate/getInitValue";
 import { AbiMessage, AbiParam, Registry } from "@/services/substrate/types";
 
 type Argument = Record<string, unknown>;

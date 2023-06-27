@@ -40,7 +40,7 @@ export function useParseMetadataField(
   const [metadataFile, setMetadataFile] = useState<File | undefined>();
   const apiProvider = useApi();
   const apiPromise = useMemo(() => apiProvider?.api, [apiProvider?.api]);
-  const { isWasmRequired = false, ...callbacks } = options;
+  const { isWasmRequired = false } = options;
   const [metadata, setMetadata] = useState<MetadataState>(
     metadataManager.EMPTY
   );
@@ -64,19 +64,6 @@ export function useParseMetadataField(
     setMetadataFile(undefined);
     setMetadata(metadataManager.EMPTY);
   }, [setMetadataFile]);
-
-  // const onChange = useCallback( async (file: File): Promise<void> => {
-  //   const fileState = await convertFileToFileState(file)
-  //   const newState = metadataManager.parseFile(fileState, isWasmRequired, apiPromise);
-  //   setState(newState);
-  //   callbacks.onChange && callbacks.onChange(fileState, newState.source);
-  // }, [isWasmRequired, apiPromise, callbacks]);
-
-  // const onRemove = useCallback((): void => {
-  //   setState(metadataManager.EMPTY);
-  //   callbacks.onChange && callbacks.onChange(undefined);
-  //   callbacks.onRemove && callbacks.onRemove();
-  // }, [callbacks]);
 
   useEffect(() => {
     metadataFile && onChange(metadataFile);

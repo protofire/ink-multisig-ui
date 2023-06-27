@@ -1,1 +1,1 @@
-export type { WalletAccount } from "useink/core";
+export type { WalletAccount } from "useink/dist/core";
