@@ -2,8 +2,10 @@ import { getTypeDef } from "@polkadot/types";
 import type { Registry, TypeDef } from "@polkadot/types/types";
 import { TypeDefInfo } from "@polkadot/types/types";
 
-import { Account } from "@/config/chain";
+import { WalletAccount } from "@/domain/WalletAccount";
 import { BN_ZERO, isBn } from "@/utils/bn";
+
+export type Account = WalletAccount;
 
 const warnList: string[] = [];
 
