@@ -1,4 +1,4 @@
-export type Account = '*25519' | 'secp256k1' | 'Sr25519';
+export type Account = "*25519" | "secp256k1" | "Sr25519";
 
 export type JsonString = string;
 
@@ -43,11 +43,11 @@ export interface IChain<T> {
   };
 }
 
-export const RococoContractsTestnet: IChain<'rococo-contracts-testnet'> = {
-    id: 'rococo-contracts-testnet',
-    name: 'Contracts',
-    account: '*25519',
-    rpcs: ['wss://rococo-contracts-rpc.polkadot.io'],
-    paraId: 1002,
-    relay: { id: 'rococo-testnet' },
-  } as const;
+export const RococoContractsTestnet: IChain<"rococo-contracts-testnet"> = {
+  id: "rococo-contracts-testnet",
+  name: "Contracts",
+  account: "*25519",
+  rpcs: ["wss://rococo-contracts-rpc.polkadot.io"],
+  paraId: 1002,
+  relay: { id: "rococo-testnet" },
+} as const;

@@ -1,4 +1,4 @@
-import {Abi} from '@/services/substrate/types'
+import { Abi } from "@/services/substrate/types";
 
 export interface Validation {
   isError?: boolean;
@@ -10,11 +10,10 @@ export interface Validation {
 }
 
 export interface Metadata {
-    source?: Record<string, unknown>;
-    name: string;
-    value?: Abi;
-    isSupplied: boolean;
-  }
-  
+  source?: Record<string, unknown>;
+  name: string;
+  value?: Abi;
+  isSupplied: boolean;
+}
 
-export type MetadataState = Metadata & Validation
+export type MetadataState = Metadata & Validation;

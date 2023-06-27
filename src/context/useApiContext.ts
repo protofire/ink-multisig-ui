@@ -1,10 +1,11 @@
-import { RococoContractsTestnet } from '@/config/chain';
-import { useApi, useWallet } from 'useink';
+import { useApi, useWallet } from "useink";
+
+import { RococoContractsTestnet } from "@/config/chain";
 
 export const useApiContext = () => {
-    const apiProvider = useApi(RococoContractsTestnet.id);
-    const apiPromise = apiProvider?.api
-    const { accounts } = useWallet()  
+  const apiProvider = useApi(RococoContractsTestnet.id);
+  const apiPromise = apiProvider?.api;
+  const { accounts } = useWallet();
 
-    return {apiPromise, apiProvider, accounts}
-}
+  return { apiPromise, apiProvider, accounts };
+};

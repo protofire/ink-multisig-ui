@@ -1,5 +1,6 @@
-import { AppBar, Toolbar, Button, Typography } from '@mui/material';
-import { WalletConnect } from '../WalletConnect';
+import { AppBar, Toolbar, Typography } from "@mui/material";
+
+import { WalletConnect } from "../WalletConnect";
 
 export default function TopBar() {
   return (

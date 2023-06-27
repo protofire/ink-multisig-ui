@@ -1,11 +1,18 @@
-import { useEffect, useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react';
-import { MetadataManager } from '@/services/substrate/MetadataManager';
-import { useApi } from 'useink';
-import { FileState } from '@/domain/FileState';
-import { MetadataState } from '@/domain';
-import { readerAsFileState } from '@/utils/fileReader';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useApi } from "useink";
 
-type OnChange = Dispatch<SetStateAction<File | null>>
+import { MetadataState } from "@/domain";
+import { MetadataManager } from "@/services/substrate/MetadataManager";
+import { readerAsFileState } from "@/utils/fileReader";
+
+type OnChange = Dispatch<SetStateAction<File | null>>;
 type OnRemove = () => void;
 
 interface Options {
@@ -18,9 +25,9 @@ interface Callbacks {
 }
 
 export interface UseMetadata {
-  metadata: MetadataState
+  metadata: MetadataState;
   onRemove: () => void;
-  metadataFile: File | undefined; 
+  metadataFile: File | undefined;
   onChange: (_file: File) => void;
 }
 
@@ -32,23 +39,31 @@ export function useParseMetadataField(
 ): UseMetadata {
   const [metadataFile, setMetadataFile] = useState<File | undefined>();
   const apiProvider = useApi();
-  const apiPromise = useMemo(() => apiProvider?.api, [apiProvider?.api])
+  const apiPromise = useMemo(() => apiProvider?.api, [apiProvider?.api]);
   const { isWasmRequired = false, ...callbacks } = options;
-  const [metadata, setMetadata] = useState<MetadataState>(metadataManager.EMPTY);
+  const [metadata, setMetadata] = useState<MetadataState>(
+    metadataManager.EMPTY
+  );
 
-  const onChange = useCallback(async (file: File) => {
-    setMetadataFile(file)
-    const fileState = await readerAsFileState(file)
-    const newState = metadataManager.parseFile(fileState, isWasmRequired, apiPromise);
+  const onChange = useCallback(
+    async (file: File) => {
+      setMetadataFile(file);
+      const fileState = await readerAsFileState(file);
+      const newState = metadataManager.parseFile(
+        fileState,
+        isWasmRequired,
+        apiPromise
+      );
 
-    setMetadata(newState)
-  }, [apiPromise, isWasmRequired])
-  
+      setMetadata(newState);
+    },
+    [apiPromise, isWasmRequired]
+  );
+
   const onRemove = useCallback(() => {
-    setMetadataFile(undefined)
-    setMetadata(metadataManager.EMPTY)
-  }, [setMetadataFile])
-
+    setMetadataFile(undefined);
+    setMetadata(metadataManager.EMPTY);
+  }, [setMetadataFile]);
 
   // const onChange = useCallback( async (file: File): Promise<void> => {
   //   const fileState = await convertFileToFileState(file)
@@ -64,13 +79,13 @@ export function useParseMetadataField(
   // }, [callbacks]);
 
   useEffect(() => {
-    metadataFile && onChange(metadataFile)
+    metadataFile && onChange(metadataFile);
   }, [metadataFile, onChange]);
 
   return {
     metadata,
     metadataFile,
     onChange: setMetadataFile,
-    onRemove, 
+    onRemove,
   };
 }

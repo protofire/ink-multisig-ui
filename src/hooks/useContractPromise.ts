@@ -1,29 +1,27 @@
-import { useApiContext } from "@/context/useApiContext";
-import { MetadataState } from "@/domain";
 import { ContractPromise } from "@polkadot/api-contract";
 import { useEffect, useState } from "react";
 
-export function useContractPromise(address: string, metadata: MetadataState) {
-    const {apiPromise} = useApiContext()
-    const [contract, setContract] = useState<ContractPromise | undefined>();
-    
-    useEffect(() => {
-        setContract(undefined)
-        if (!metadata.value || !address || !apiPromise) return
+import { useApiContext } from "@/context/useApiContext";
+import { MetadataState } from "@/domain";
 
-        const c = new ContractPromise(apiPromise, metadata.value, address);
-        setContract(c)
-    },[address, apiPromise, metadata.value])
-  
-  
-    if (!contract) return undefined;
-  
-    return {
-      abi: contract.abi,
-      name: contract.abi.info.contract.name.toString(),
-      tx: contract.tx,
-      address: contract.address.toString(),
-    };
-  }
-  
-  
+export function useContractPromise(address: string, metadata: MetadataState) {
+  const { apiPromise } = useApiContext();
+  const [contract, setContract] = useState<ContractPromise | undefined>();
+
+  useEffect(() => {
+    setContract(undefined);
+    if (!metadata.value || !address || !apiPromise) return;
+
+    const c = new ContractPromise(apiPromise, metadata.value, address);
+    setContract(c);
+  }, [address, apiPromise, metadata.value]);
+
+  if (!contract) return undefined;
+
+  return {
+    abi: contract.abi,
+    name: contract.abi.info.contract.name.toString(),
+    tx: contract.tx,
+    address: contract.address.toString(),
+  };
+}

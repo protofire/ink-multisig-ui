@@ -1,9 +1,10 @@
-import { Grid, Typography } from "@mui/material"
-import { AbiMessage } from "@polkadot/api-contract/types"
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import { Grid, Typography } from "@mui/material";
+import { AbiMessage } from "@polkadot/api-contract/types";
+import { encodeTypeDef } from "@polkadot/types/create";
+
 import { Registry, TypeDef } from "@/services/substrate/types";
-import { encodeTypeDef } from '@polkadot/types/create';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   arg: { name?: string; type: TypeDef };
@@ -21,7 +22,6 @@ function truncate(param: string): string {
     : param;
 }
 
-
 export function ArgSignature({
   arg: { name, type },
   children,
@@ -31,29 +31,40 @@ export function ArgSignature({
   ...props
 }: Props) {
   return (
-    <span >
-      {name ? `${name}: ` : ''}
+    <span>
+      {name ? `${name}: ` : ""}
       <span>
-        {value ? <b>{truncate(value)}</b> : type.typeName || encodeTypeDef(registry, type)}
+        {value ? (
+          <b>{truncate(value)}</b>
+        ) : (
+          type.typeName || encodeTypeDef(registry, type)
+        )}
       </span>
       {children}
     </span>
   );
 }
 
+export const FunctionSignature = ({
+  item,
+  registry,
+  params = [],
+}: {
+  item: AbiMessage;
+  registry: Registry;
+  params?: unknown[];
+}): JSX.Element => {
+  const { args } = item;
 
-export const FunctionSignature = ({item, registry, params = []}: 
-  {item: AbiMessage, registry: Registry, params?: unknown[]}): JSX.Element => {
-    const {args} = item
+  return (
+    <Grid container alignItems="center" gap={1}>
+      {item.isMutating ? <HistoryEduIcon /> : <AutoStoriesIcon />}
 
-    return (<Grid container alignItems="center" gap={1}>
-      {item.isMutating ? <HistoryEduIcon />  : <AutoStoriesIcon />}
-  
       <Grid item xs>
         <Typography variant="body2">{item.method}</Typography>
-  
+
         <Typography variant="caption" component="p">
-        (
+          (
           {args?.map((arg, index): React.ReactNode => {
             return (
               <ArgSignature
@@ -62,13 +73,13 @@ export const FunctionSignature = ({item, registry, params = []}:
                 registry={registry}
                 value={params[index] ? (params[index] as string) : undefined}
               >
-                {index < args.length - 1 && ', '}
+                {index < args.length - 1 && ", "}
               </ArgSignature>
             );
           })}
           )
         </Typography>
       </Grid>
-    </Grid>)
-  }
-  
+    </Grid>
+  );
+};

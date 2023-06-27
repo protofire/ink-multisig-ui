@@ -1,6 +1,6 @@
-import { MetadataState, Validation } from '@/domain';
-import { FileState } from '@/domain/FileState';
-import { Abi, ApiPromise } from '@/services/substrate/types';
+import { MetadataState, Validation } from "@/domain";
+import { FileState } from "@/domain/FileState";
+import { Abi, ApiPromise } from "@/services/substrate/types";
 
 interface Options {
   isWasmRequired?: boolean;
@@ -15,7 +15,7 @@ export class MetadataManager {
     isError: false,
     isSupplied: false,
     isValid: false,
-    name: '',
+    name: "",
     message: null,
   };
 
@@ -33,7 +33,7 @@ export class MetadataManager {
     let value: Abi | undefined = undefined;
 
     try {
-      const apiResult = api?.registry.getChainProperties()
+      const apiResult = api?.registry.getChainProperties();
       value = new Abi(source, apiResult);
 
       const name = options.name || value.info.contract.name.toString();
@@ -50,7 +50,7 @@ export class MetadataManager {
 
       return {
         source,
-        name: '',
+        name: "",
         value,
         isSupplied: true,
         ...this.validate(value, options),
@@ -64,7 +64,7 @@ export class MetadataManager {
         isValid: false,
         isError: true,
         message:
-          'Invalid contract file format. Please upload the generated .contract bundle for your smart contract.',
+          "Invalid contract file format. Please upload the generated .contract bundle for your smart contract.",
       };
     }
 
@@ -76,7 +76,7 @@ export class MetadataManager {
       return {
         isValid: false,
         isError: true,
-        message: 'This contract bundle has an empty or invalid WASM field.',
+        message: "This contract bundle has an empty or invalid WASM field.",
       };
     }
 
@@ -84,14 +84,26 @@ export class MetadataManager {
       isValid: true,
       isError: false,
       isSuccess: true,
-      message: isWasmRequired ? 'Valid contract bundle!' : 'Valid metadata file!',
+      message: isWasmRequired
+        ? "Valid contract bundle!"
+        : "Valid metadata file!",
     };
   }
 
-  parseFile(file: FileState, isWasmRequired: boolean, api?: ApiPromise | null): MetadataState {
+  parseFile(
+    file: FileState,
+    isWasmRequired: boolean,
+    api?: ApiPromise | null
+  ): MetadataState {
     try {
-      const json = JSON.parse(this.utf8decoder.decode(file.data)) as Record<string, unknown>;
-      const name = file.name.replace('.contract', '').replace('.json', '').replace('_', ' ');
+      const json = JSON.parse(this.utf8decoder.decode(file.data)) as Record<
+        string,
+        unknown
+      >;
+      const name = file.name
+        .replace(".contract", "")
+        .replace(".json", "")
+        .replace("_", " ");
 
       return this.deriveFromJson({ isWasmRequired, name }, json, api);
     } catch (error) {
@@ -99,7 +111,7 @@ export class MetadataManager {
 
       return {
         ...this.EMPTY,
-        message: 'This contract file is not in a valid format.',
+        message: "This contract file is not in a valid format.",
         isError: true,
         isSupplied: true,
         isValid: false,
