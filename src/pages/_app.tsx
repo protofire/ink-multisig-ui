@@ -6,7 +6,7 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { InkConfig } from "useink";
 
-import { RococoContractsTestnet } from "@/config/chain";
+import { CHAINS_ALLOWED } from "@/config/chain";
 
 const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
   dynamic(() => import("useink").then(({ UseInkProvider }) => UseInkProvider), {
@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <UseInkProvider
             config={{
               dappName: "ink multisignature",
-              chains: [RococoContractsTestnet],
+              chains: CHAINS_ALLOWED,
             }}
           >
             <Component {...pageProps} />
