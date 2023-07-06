@@ -65,7 +65,6 @@ export function FunctionsForm() {
     setArgValues({});
   };
 
-  console.log("__argValues", argValues);
   return (
     <Card sx={{ padding: "4rem" }}>
       <form onSubmit={handleSubmit}>

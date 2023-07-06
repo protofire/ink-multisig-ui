@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { SetState } from "@/domain/SetState";
 import { AbiParam, Registry } from "@/services/substrate/types";
 
-import { findComponent } from "./findComponent";
+import { FactoryInputArgument } from "./inputs/FactoryInputArgument";
 
 interface Props extends React.HTMLAttributes<HTMLFormElement> {
   args: AbiParam[];
@@ -24,7 +24,7 @@ export function ArgumentsForm({
     () =>
       args.map((arg) => ({
         arg,
-        Component: findComponent(registry, arg.type),
+        Component: FactoryInputArgument.createComponent(registry, arg.type),
       })),
     [args, registry]
   );
