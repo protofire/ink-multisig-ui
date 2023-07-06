@@ -12,9 +12,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useContractPromise } from "@/hooks/useContractPromise";
 import { useParseMetadataField } from "@/hooks/useParseMetadataField";
+import useSetDefaultItem from "@/hooks/useSetDefaultFirstItem";
 
 import { InputFileDropzone } from "../InputFileDropzone";
 import { DropzoneWrapper } from "../shared/DropzoneWrapper";
+import { ArgumentsForm } from "./ArgumentForm";
 import { FunctionSignature } from "./FunctionSignature";
 import { sortAbiMessages } from "./sortedAbiMessages";
 import { useArgValues } from "./useArgValues";
@@ -30,9 +32,17 @@ export function FunctionsForm() {
     [contract?.abi.messages]
   );
   const [message, setMessage] = useState<AbiMessage | undefined>();
-  const { argValues } = useArgValues(message, contract?.abi.registry);
+  const { argValues, setArgValues } = useArgValues(
+    message,
+    contract?.abi.registry
+  );
 
-  console.log("__argValues", argValues);
+  useSetDefaultItem({
+    value: selectValue,
+    setValue: setSelectValue,
+    options: sortedAbiMessages,
+    getValue: (message) => message.identifier,
+  });
 
   useEffect(() => {
     if (!selectValue) return;
@@ -48,6 +58,14 @@ export function FunctionsForm() {
     // Handle form submission
   };
 
+  const _onRemove = () => {
+    onRemove();
+    setMessage(undefined);
+    setSelectValue(undefined);
+    setArgValues({});
+  };
+
+  console.log("__argValues", argValues);
   return (
     <Card sx={{ padding: "4rem" }}>
       <form onSubmit={handleSubmit}>
@@ -65,18 +83,18 @@ export function FunctionsForm() {
               accept={{ "application/json": [".json", ".contract"] }}
               file={metadataFile}
               onChange={onChange}
-              onRemove={onRemove}
+              onRemove={_onRemove}
             />
           </DropzoneWrapper>
         </FormControl>
         {contract && sortedAbiMessages && (
           <FormControl fullWidth>
-            <InputLabel id="select-label">Select</InputLabel>
+            <InputLabel id="select-label">Select Message</InputLabel>
             <Select
               labelId="select-label"
               id="select"
-              value={selectValue ?? sortedAbiMessages[0].identifier}
-              label="Select"
+              value={selectValue || ""}
+              label="Select Message"
               onChange={(e) => {
                 setSelectValue(e.target.value);
               }}
@@ -94,6 +112,15 @@ export function FunctionsForm() {
             </Select>
           </FormControl>
         )}
+        {argValues && contract?.abi.registry && (
+          <ArgumentsForm
+            argValues={argValues}
+            args={message?.args ?? []}
+            registry={contract?.abi.registry}
+            setArgValues={setArgValues}
+          />
+        )}
+
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>

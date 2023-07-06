@@ -43,6 +43,7 @@ export function useArgValues(
   const { accounts } = useApiContext();
   const [argValues, setArgValues] = useState<Argument>({});
   const argsRef = useRef(message?.args ?? []);
+
   const inputData = useMemo(() => {
     let data: Uint8Array | undefined;
 

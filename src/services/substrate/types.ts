@@ -18,3 +18,4 @@ export type {
 // classes
 export { ApiPromise, SubmittableResult } from "@polkadot/api";
 export { Abi, BlueprintPromise, ContractPromise } from "@polkadot/api-contract";
+export { Bytes, Raw, TypeDefInfo } from "@polkadot/types";

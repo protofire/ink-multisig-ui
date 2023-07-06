@@ -61,22 +61,24 @@ export const FunctionSignature = ({
       <Grid item xs>
         <Typography variant="body2">{item.method}</Typography>
 
-        <Typography variant="caption" component="p">
-          (
-          {args?.map((arg, index): React.ReactNode => {
-            return (
-              <ArgSignature
-                arg={arg}
-                key={`args-${index}`}
-                registry={registry}
-                value={params[index] ? (params[index] as string) : undefined}
-              >
-                {index < args.length - 1 && ", "}
-              </ArgSignature>
-            );
-          })}
-          )
-        </Typography>
+        {args.length > 0 && (
+          <Typography variant="caption" component="p">
+            (
+            {args?.map((arg, index): React.ReactNode => {
+              return (
+                <ArgSignature
+                  arg={arg}
+                  key={`args-${index}`}
+                  registry={registry}
+                  value={params[index] ? (params[index] as string) : undefined}
+                >
+                  {index < args.length - 1 && ", "}
+                </ArgSignature>
+              );
+            })}
+            )
+          </Typography>
+        )}
       </Grid>
     </Grid>
   );
