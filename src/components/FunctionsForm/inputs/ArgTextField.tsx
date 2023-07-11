@@ -9,6 +9,7 @@ type Props = SimpleSpread<
     isError?: boolean;
     onChange: (_: string) => void;
     value?: string | null;
+    label?: string;
   }
 >;
 
@@ -22,6 +23,7 @@ export function ArgTextField({
   value,
   onFocus,
   type = "text",
+  label,
 }: Props) {
   function onChange(e: React.ChangeEvent<HTMLInputElement>): void {
     _onChange(e.target.value);
@@ -41,6 +43,7 @@ export function ArgTextField({
         disabled={isDisabled}
         variant="outlined"
         error={isError}
+        label={label}
         fullWidth
       />
       {children}
