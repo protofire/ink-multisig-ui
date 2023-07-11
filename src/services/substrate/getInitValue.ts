@@ -1,8 +1,7 @@
 import { getTypeDef } from "@polkadot/types";
-import type { Registry, TypeDef } from "@polkadot/types/types";
-import { TypeDefInfo } from "@polkadot/types/types";
 
 import { WalletAccount } from "@/domain/WalletAccount";
+import { Registry, TypeDef, TypeDefInfo } from "@/services/substrate/types";
 import { BN_ZERO, isBn } from "@/utils/bn";
 
 export type Account = WalletAccount;

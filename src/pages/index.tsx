@@ -14,7 +14,7 @@ export default function Home() {
         <title>ink Wallet</title>
         <meta name="description" content="ink Multisignature wallet" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/Simplr.ico" />
       </Head>
       <TopBar />
       <main className={`${styles.main} ${inter.className}`}>

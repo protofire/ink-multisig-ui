@@ -13,4 +13,5 @@ export type ArgumentComponentProps<T, C = HTMLDivElement> = SimpleSpread<
   nestingNumber: number;
   registry: Registry;
   typeDef: TypeDef;
+  label: string;
 };

@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { SetState } from "@/domain/SetState";
 import { AbiParam, Registry } from "@/services/substrate/types";
 
+import { getAbiParamLabel } from "./FunctionSignatureName";
 import { FactoryInputArgument } from "./inputs/FactoryInputArgument";
 
 interface Props extends React.HTMLAttributes<HTMLFormElement> {
@@ -47,6 +48,7 @@ export function ArgumentsForm({
               value={argValues[arg.name]} 
               typeDef={arg.type} 
               registry={registry}
+              label={getAbiParamLabel({abiParam: arg, registry})}
             />
         </FormControl>)
       })}

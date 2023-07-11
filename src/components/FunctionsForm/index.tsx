@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { AbiMessage } from "@polkadot/api-contract/types";
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 
 import { useContractPromise } from "@/hooks/useContractPromise";
 import { useParseMetadataField } from "@/hooks/useParseMetadataField";
@@ -17,7 +17,7 @@ import useSetDefaultItem from "@/hooks/useSetDefaultFirstItem";
 import { InputFileDropzone } from "../InputFileDropzone";
 import { DropzoneWrapper } from "../shared/DropzoneWrapper";
 import { ArgumentsForm } from "./ArgumentForm";
-import { FunctionSignature } from "./FunctionSignature";
+import { FunctionSignatureName } from "./FunctionSignatureName";
 import { sortAbiMessages } from "./sortedAbiMessages";
 import { useArgValues } from "./useArgValues";
 
@@ -45,13 +45,13 @@ export function FunctionsForm() {
   });
 
   useEffect(() => {
-    if (!selectValue) return;
+    if (!selectValue || !sortedAbiMessages) return;
 
-    const newMessage = contract?.abi.messages.find(
+    const newMessage = sortedAbiMessages.find(
       (_message) => _message.identifier === selectValue
     );
     newMessage && setMessage(newMessage);
-  }, [contract?.abi.messages, selectValue, setMessage]);
+  }, [sortedAbiMessages, selectValue, setMessage]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,10 +59,17 @@ export function FunctionsForm() {
   };
 
   const _onRemove = () => {
-    onRemove();
-    setMessage(undefined);
-    setSelectValue(undefined);
     setArgValues({});
+    setMessage(undefined);
+    onRemove();
+    setSelectValue(undefined);
+  };
+
+  const changeContractAddress = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (address) _onRemove();
+    setAddress(e.target.value);
   };
 
   return (
@@ -72,7 +79,7 @@ export function FunctionsForm() {
           id="address"
           label="Address"
           value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          onChange={changeContractAddress}
           fullWidth
         />
         <FormControl fullWidth={true} sx={{ marginBottom: 3, marginTop: 3 }}>
@@ -101,8 +108,8 @@ export function FunctionsForm() {
               {sortedAbiMessages.map((message) => {
                 return (
                   <MenuItem key={message.identifier} value={message.identifier}>
-                    <FunctionSignature
-                      item={message}
+                    <FunctionSignatureName
+                      abiMessage={message}
                       registry={contract.abi.registry}
                     />
                   </MenuItem>

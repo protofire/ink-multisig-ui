@@ -7,7 +7,11 @@ import { getMinMax } from "@/services/substrate/utils";
 
 type Props = ArgumentComponentProps<BN>;
 
-export function InputBn({ onChange, typeDef: { type } }: Props): JSX.Element {
+export function InputBn({
+  onChange,
+  typeDef: { type },
+  label,
+}: Props): JSX.Element {
   const [displayValue, setDisplayValue] = useState("0");
   const [min, max] = getMinMax(type);
 
@@ -32,6 +36,7 @@ export function InputBn({ onChange, typeDef: { type } }: Props): JSX.Element {
       value={displayValue}
       type="number"
       variant="outlined"
+      label={label}
     />
   );
 }
