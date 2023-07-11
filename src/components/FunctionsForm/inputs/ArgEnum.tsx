@@ -17,7 +17,7 @@ interface Props extends ArgumentComponentProps<Record<string, unknown>> {
   components: React.ComponentType<ArgumentComponentProps<unknown>>[];
 }
 
-export function Enum({
+export function ArgEnum({
   components,
   typeDef,
   registry,

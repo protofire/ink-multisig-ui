@@ -2,23 +2,10 @@ import { ArgumentComponentProps } from "@/domain/substrateInputTypes";
 import { Registry, TypeDef, TypeDefInfo } from "@/services/substrate/types";
 
 import { ArgAccountSelect } from "./ArgAccountSelect";
-import { Enum } from "./ArgEnum";
+import { ArgEnum } from "./ArgEnum";
 import { ArgTextField } from "./ArgTextField";
 import { InputBn } from "./InputBn";
 import { OptionArgument } from "./OptionArgument";
-
-type ArgComponentPropsTypes =
-  | ArgumentComponentProps<Record<string, unknown>>
-  | ArgumentComponentProps<unknown>
-  | ArgumentComponentProps<unknown[]>;
-
-const typeToComponentMap = {
-  [TypeDefInfo.Option]: OptionArgument,
-  [TypeDefInfo.Enum]: Enum,
-  // [TypeDefInfo.Tuple]: Tuple,
-  // [TypeDefInfo.Vec]: Vector,
-  // [TypeDefInfo.VecFixed]: VectorFixed,
-};
 
 const basicTypeToComponentMap = {
   AccountId: ArgAccountSelect,
@@ -66,16 +53,29 @@ export class FactoryInputArgument {
       return this.createComponent(registry, type.sub as TypeDef);
     }
 
-    if (type.info in typeToComponentMap) {
+    if (type.info === TypeDefInfo.Enum) {
       const components = this.subComponents(registry, type, nestingNumber);
-      const ArgComponent =
-        typeToComponentMap[type.info as keyof typeof typeToComponentMap];
 
       const Component = (
-        props: React.PropsWithChildren<ArgComponentPropsTypes>
-      ) => <ArgComponent components={components} {...props} typeDef={type} />;
+        props: React.PropsWithChildren<
+          ArgumentComponentProps<Record<string, unknown>>
+        >
+      ) => <ArgEnum components={components} {...props} typeDef={type} />;
 
-      Component.displayName = ArgComponent.name;
+      Component.displayNmae = "ArgEnum";
+
+      return Component;
+    }
+
+    if (type.info === TypeDefInfo.Option) {
+      const components = this.subComponents(registry, type, nestingNumber);
+
+      const Component = (
+        props: React.PropsWithChildren<ArgumentComponentProps<unknown>>
+      ) => <OptionArgument components={components} {...props} typeDef={type} />;
+
+      Component.displayNmae = "OptionArgument";
+
       return Component;
     }
 
