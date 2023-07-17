@@ -1,6 +1,6 @@
 import { InputLabel, MenuItem, Select } from "@mui/material";
 
-import { useApiContext } from "@/context/useApiContext";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
 import useSetDefaultItem from "@/hooks/useSetDefaultFirstItem";
 
 import { AccountAvatar } from "./AccountAvatar";
@@ -16,7 +16,7 @@ export function AddressAccountSelect({
   value,
   onChange,
 }: Props) {
-  const { accounts } = useApiContext();
+  const { accounts } = usePolkadotContext();
 
   // Set first item as default
   useSetDefaultItem({

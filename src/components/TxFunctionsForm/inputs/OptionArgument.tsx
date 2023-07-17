@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { OptionalFieldWrapper } from "@/components/OptionalFieldWrapper";
-import { useApiContext } from "@/context/useApiContext";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { ArgumentComponentProps } from "@/domain/substrateInputTypes";
 import { OrFalsy } from "@/domain/utilityTypes";
 import { useToggle } from "@/hooks/useToggle";
@@ -24,7 +24,7 @@ export function OptionArgument({
   id,
   label,
 }: Props) {
-  const { accounts } = useApiContext();
+  const { accounts } = usePolkadotContext();
   const [isToggled, toggle] = useToggle(value !== null);
   const isSuppliedRef = useRef(isToggled);
   const [Component] = components;

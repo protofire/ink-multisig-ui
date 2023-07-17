@@ -1,11 +1,12 @@
-import { Box, Typography } from "@mui/material";
+import { Box, FormLabel, Typography } from "@mui/material";
 import React from "react";
 
 interface CodeBlockProps {
   code: string;
+  label: string;
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ code }) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({ code, label }) => {
   return (
     <Box
       component="pre"
@@ -16,6 +17,18 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code }) => {
         overflowX: "auto",
       }}
     >
+      <FormLabel
+        sx={{
+          marginTop: "-2em",
+          zIndex: 2,
+          // backgroundColor: (theme) => theme.palette.background.default,
+          position: "absolute",
+          fontSize: "0.75em",
+          width: "auto",
+        }}
+      >
+        {label}
+      </FormLabel>
       <Typography component="code" variant="body2">
         {code}
       </Typography>

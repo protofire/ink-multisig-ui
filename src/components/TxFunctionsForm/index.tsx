@@ -27,7 +27,7 @@ import { useArgValues } from "./useArgValues";
 
 export function TxFunctionsForm() {
   const [address, setAddress] = useState("");
-  const [selectValue, setSelectValue] = useState<string | undefined>();
+  const [selectedMsgName, setSelectedMsgName] = useState<string | undefined>();
   const { metadata, metadataFile, onChange, onRemove } =
     useParseMetadataField();
   const contract = useContractPromise(address, metadata);
@@ -40,22 +40,21 @@ export function TxFunctionsForm() {
     message,
     contract?.abi.registry
   );
-
   useSetDefaultItem({
-    value: selectValue,
-    setValue: setSelectValue,
+    value: selectedMsgName,
+    setValue: setSelectedMsgName,
     options: sortedAbiMessages,
     getValue: (message) => message.identifier,
   });
 
   useEffect(() => {
-    if (!selectValue || !sortedAbiMessages) return;
+    if (!selectedMsgName || !sortedAbiMessages) return;
 
     const newMessage = sortedAbiMessages.find(
-      (_message) => _message.identifier === selectValue
+      (_message) => _message.identifier === selectedMsgName
     );
     newMessage && setMessage(newMessage);
-  }, [sortedAbiMessages, selectValue, setMessage]);
+  }, [sortedAbiMessages, selectedMsgName, setMessage]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +65,7 @@ export function TxFunctionsForm() {
     setArgValues({});
     setMessage(undefined);
     onRemove();
-    setSelectValue(undefined);
+    setSelectedMsgName(undefined);
   };
 
   const changeContractAddress = (
@@ -78,7 +77,7 @@ export function TxFunctionsForm() {
 
   return (
     <Box display="flex" justifyContent="space-evenly" gap={2}>
-      <Card sx={{ padding: "0.5rem", maxWidth: "30rem" }}>
+      <Card sx={{ padding: "0.5rem", minWidth: "35rem" }}>
         <CardHeader title="New Transaction" />
         <Divider />
         <CardContent>
@@ -110,10 +109,10 @@ export function TxFunctionsForm() {
                 <Select
                   labelId="select-label"
                   id="select"
-                  value={selectValue || ""}
+                  value={selectedMsgName || ""}
                   label="Select Message"
                   onChange={(e) => {
-                    setSelectValue(e.target.value);
+                    setSelectedMsgName(e.target.value);
                   }}
                 >
                   {sortedAbiMessages.map((message) => {
@@ -143,7 +142,13 @@ export function TxFunctionsForm() {
           </form>
         </CardContent>
       </Card>
-      <TxCall showTxCard={address ? true : false} />
+      {message && contract && (
+        <TxCall
+          contractPromise={contract.contractPromise}
+          message={message}
+          showTxCard={address ? true : false}
+        />
+      )}
     </Box>
   );
 }
