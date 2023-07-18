@@ -45,14 +45,14 @@ export function useArgValues(
   const argsRef = useRef(message?.args ?? []);
 
   const inputData = useMemo(() => {
-    let data: Uint8Array | undefined;
+    let data: unknown[] = [];
 
     if (!registry) return;
 
     try {
-      data = message?.toU8a(
-        transformUserInput(registry, message.args, argValues)
-      );
+      if (message) {
+        data = transformUserInput(registry, message.args, argValues);
+      }
     } catch (e) {
       console.error(e);
     }

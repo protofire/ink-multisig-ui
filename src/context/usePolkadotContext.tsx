@@ -27,15 +27,19 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [networkId, setNetworkId] = useState<ChainId | undefined>();
+  const wallet = useWallet();
   const apiProvider = useApi(networkId);
+
+  const { accounts } = wallet;
   const apiPromise = apiProvider?.api;
-  const { accounts } = useWallet();
 
   //TODO replace with at network selector
   useEffect(() => {
+    if (networkId) return;
+
     // set Rococo by default
     setNetworkId(CHAINS_ALLOWED[0].id);
-  }, []);
+  }, [networkId]);
 
   return (
     <PolkadotContext.Provider

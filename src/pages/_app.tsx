@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import { Theme, ThemeProvider } from "@mui/material/styles";
 import { SafeThemeProvider } from "@safe-global/safe-react-components";

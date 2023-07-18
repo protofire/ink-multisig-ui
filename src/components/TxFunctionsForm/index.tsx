@@ -22,7 +22,7 @@ import { DropzoneWrapper } from "../shared/DropzoneWrapper";
 import { ArgumentsForm } from "./ArgumentForm";
 import { FunctionSignatureName } from "./FunctionSignatureName";
 import { sortAbiMessages } from "./sortedAbiMessages";
-import { TxCall } from "./TxCall";
+import { TxExecution } from "./TxExecution";
 import { useArgValues } from "./useArgValues";
 
 export function TxFunctionsForm() {
@@ -36,7 +36,7 @@ export function TxFunctionsForm() {
     [contract?.abi.messages]
   );
   const [message, setMessage] = useState<AbiMessage | undefined>();
-  const { argValues, setArgValues } = useArgValues(
+  const { argValues, setArgValues, inputData } = useArgValues(
     message,
     contract?.abi.registry
   );
@@ -75,9 +75,10 @@ export function TxFunctionsForm() {
     setAddress(e.target.value);
   };
 
+  console.log("__inputData", inputData, "message", selectedMsgName);
   return (
     <Box display="flex" justifyContent="space-evenly" gap={2}>
-      <Card sx={{ padding: "0.5rem", minWidth: "35rem" }}>
+      <Card sx={{ padding: "0.5rem", width: "42rem" }}>
         <CardHeader title="New Transaction" />
         <Divider />
         <CardContent>
@@ -142,13 +143,12 @@ export function TxFunctionsForm() {
           </form>
         </CardContent>
       </Card>
-      {message && contract && (
-        <TxCall
-          contractPromise={contract.contractPromise}
-          message={message}
-          showTxCard={address ? true : false}
-        />
-      )}
+      <TxExecution
+        contractPromise={contract?.contractPromise}
+        message={message}
+        showTxCard={address && message && contract ? true : false}
+        params={inputData}
+      />
     </Box>
   );
 }
