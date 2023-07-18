@@ -2,6 +2,7 @@ import { ArgumentComponentProps } from "@/domain/substrateInputTypes";
 import { Registry, TypeDef, TypeDefInfo } from "@/services/substrate/types";
 
 import { ArgAccountSelect } from "./ArgAccountSelect";
+import { ArgBooleanSelect } from "./ArgBooleanSelect";
 import { ArgEnum } from "./ArgEnum";
 import { ArgTextField } from "./ArgTextField";
 import { InputBn } from "./InputBn";
@@ -10,6 +11,7 @@ import { OptionArgument } from "./OptionArgument";
 const basicTypeToComponentMap = {
   AccountId: ArgAccountSelect,
   Address: ArgAccountSelect,
+  bool: ArgBooleanSelect,
   BN: InputBn,
   u8: InputBn,
   i8: InputBn,

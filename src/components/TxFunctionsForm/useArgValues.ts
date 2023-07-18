@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { useApiContext } from "@/context/useApiContext";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Account, getInitValue } from "@/services/substrate/getInitValue";
 import { AbiMessage, AbiParam, Registry } from "@/services/substrate/types";
 
@@ -40,19 +40,19 @@ export function useArgValues(
   message: AbiMessage | undefined,
   registry: Registry | undefined
 ) {
-  const { accounts } = useApiContext();
+  const { accounts } = usePolkadotContext();
   const [argValues, setArgValues] = useState<Argument>({});
   const argsRef = useRef(message?.args ?? []);
 
   const inputData = useMemo(() => {
-    let data: Uint8Array | undefined;
+    let data: unknown[] = [];
 
     if (!registry) return;
 
     try {
-      data = message?.toU8a(
-        transformUserInput(registry, message.args, argValues)
-      );
+      if (message) {
+        data = transformUserInput(registry, message.args, argValues);
+      }
     } catch (e) {
       console.error(e);
     }

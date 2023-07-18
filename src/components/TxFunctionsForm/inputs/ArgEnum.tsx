@@ -1,7 +1,7 @@
 import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useCallback, useState } from "react";
 
-import { useApiContext } from "@/context/useApiContext";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { ArgumentComponentProps } from "@/domain/substrateInputTypes";
 import { OrFalsy } from "@/domain/utilityTypes";
 import { getInitValue } from "@/services/substrate/getInitValue";
@@ -27,7 +27,7 @@ export function ArgEnum({
   label,
 }: Props) {
   const variants = typeDef.sub as TypeDef[];
-  const { accounts } = useApiContext();
+  const { accounts } = usePolkadotContext();
   const [variantIndex, _setVariantIndex] = useState<number>(0);
 
   const Component = components[variantIndex];
