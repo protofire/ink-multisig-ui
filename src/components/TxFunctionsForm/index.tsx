@@ -75,7 +75,6 @@ export function TxFunctionsForm() {
     setAddress(e.target.value);
   };
 
-  console.log("__inputData", inputData, "message", selectedMsgName);
   return (
     <Box display="flex" justifyContent="space-evenly" gap={2}>
       <Card sx={{ padding: "0.5rem", width: "42rem" }}>

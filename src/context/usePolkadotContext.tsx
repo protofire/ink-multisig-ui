@@ -1,4 +1,4 @@
-import { ApiPromise } from "@polkadot/api";
+import dynamic from "next/dynamic";
 import React, {
   createContext,
   PropsWithChildren,
@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useApi, useWallet } from "useink";
+import { InkConfig, useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { CHAINS_ALLOWED } from "@/config/chain";
@@ -15,7 +15,6 @@ import { WalletAccount } from "@/domain/WalletAccount";
 interface PolkadotContextProps {
   network: ChainId | undefined;
   setNetwork: React.Dispatch<React.SetStateAction<ChainId | undefined>>;
-  apiPromise: ApiPromise | undefined;
   accounts: WalletAccount[] | undefined;
 }
 
@@ -23,15 +22,16 @@ const PolkadotContext = createContext<PolkadotContextProps | undefined>(
   undefined
 );
 
+const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
+  dynamic(() => import("useink").then(({ UseInkProvider }) => UseInkProvider), {
+    ssr: false,
+  });
+
 export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [networkId, setNetworkId] = useState<ChainId | undefined>();
-  const wallet = useWallet();
-  const apiProvider = useApi(networkId);
-
-  const { accounts } = wallet;
-  const apiPromise = apiProvider?.api;
+  const { accounts } = useWallet();
 
   //TODO replace with at network selector
   useEffect(() => {
@@ -42,16 +42,22 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   }, [networkId]);
 
   return (
-    <PolkadotContext.Provider
-      value={{
-        network: networkId,
-        setNetwork: setNetworkId,
-        apiPromise,
-        accounts,
+    <UseInkProvider
+      config={{
+        dappName: "ink multisignature",
+        chains: CHAINS_ALLOWED,
       }}
     >
-      {children}
-    </PolkadotContext.Provider>
+      <PolkadotContext.Provider
+        value={{
+          network: networkId,
+          setNetwork: setNetworkId,
+          accounts,
+        }}
+      >
+        {children}
+      </PolkadotContext.Provider>
+    </UseInkProvider>
   );
 };
 
