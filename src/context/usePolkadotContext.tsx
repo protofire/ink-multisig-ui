@@ -1,4 +1,3 @@
-import { ApiPromise } from "@polkadot/api";
 import React, {
   createContext,
   PropsWithChildren,
@@ -6,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useApi, useWallet } from "useink";
+import { useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { CHAINS_ALLOWED } from "@/config/chain";
@@ -15,8 +14,8 @@ import { WalletAccount } from "@/domain/WalletAccount";
 interface PolkadotContextProps {
   network: ChainId | undefined;
   setNetwork: React.Dispatch<React.SetStateAction<ChainId | undefined>>;
-  apiPromise: ApiPromise | undefined;
   accounts: WalletAccount[] | undefined;
+  accountConnected: WalletAccount;
 }
 
 const PolkadotContext = createContext<PolkadotContextProps | undefined>(
@@ -27,11 +26,7 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [networkId, setNetworkId] = useState<ChainId | undefined>();
-  const wallet = useWallet();
-  const apiProvider = useApi(networkId);
-
-  const { accounts } = wallet;
-  const apiPromise = apiProvider?.api;
+  const { accounts, account } = useWallet();
 
   //TODO replace with at network selector
   useEffect(() => {
@@ -46,8 +41,8 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
       value={{
         network: networkId,
         setNetwork: setNetworkId,
-        apiPromise,
         accounts,
+        accountConnected: account,
       }}
     >
       {children}

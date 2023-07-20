@@ -1,11 +1,14 @@
 import { ContractPromise } from "@polkadot/api-contract";
 import { useEffect, useState } from "react";
+import { useApi } from "useink";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { MetadataState } from "@/domain";
 
 export function useContractPromise(address: string, metadata: MetadataState) {
-  const { apiPromise } = usePolkadotContext();
+  const { network } = usePolkadotContext();
+  const api = useApi(network);
+  const { api: apiPromise } = api || {};
   const [contract, setContract] = useState<ContractPromise | undefined>();
 
   useEffect(() => {

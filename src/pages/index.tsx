@@ -1,25 +1,17 @@
-import { Inter } from "next/font/google";
-import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-import TopBar from "@/components/layout/TopBar";
-import { TxFunctionsForm } from "@/components/TxFunctionsForm";
-import styles from "@/styles/Home.module.css";
+import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 
-const inter = Inter({ subsets: ["latin"] });
+function IndexPage() {
+  const router = useRouter();
 
-export default function Home() {
-  return (
-    <>
-      <Head>
-        <title>ink Wallet</title>
-        <meta name="description" content="ink Multisignature wallet" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/Simplr.ico" />
-      </Head>
-      <TopBar />
-      <main className={`${styles.main} ${inter.className}`}>
-        <TxFunctionsForm />
-      </main>
-    </>
-  );
+  useEffect(() => {
+    router.replace("/welcome");
+  }, [router]);
+
+  return <FallbackSpinner />;
 }
+IndexPage.walletRequired = false;
+
+export default IndexPage;
