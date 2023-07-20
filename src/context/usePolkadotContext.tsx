@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import React, {
   createContext,
   PropsWithChildren,
@@ -6,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { InkConfig, useWallet } from "useink";
+import { useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { CHAINS_ALLOWED } from "@/config/chain";
@@ -16,22 +15,18 @@ interface PolkadotContextProps {
   network: ChainId | undefined;
   setNetwork: React.Dispatch<React.SetStateAction<ChainId | undefined>>;
   accounts: WalletAccount[] | undefined;
+  accountConnected: WalletAccount;
 }
 
 const PolkadotContext = createContext<PolkadotContextProps | undefined>(
   undefined
 );
 
-const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
-  dynamic(() => import("useink").then(({ UseInkProvider }) => UseInkProvider), {
-    ssr: false,
-  });
-
 export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [networkId, setNetworkId] = useState<ChainId | undefined>();
-  const { accounts } = useWallet();
+  const { accounts, account } = useWallet();
 
   //TODO replace with at network selector
   useEffect(() => {
@@ -42,22 +37,16 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   }, [networkId]);
 
   return (
-    <UseInkProvider
-      config={{
-        dappName: "ink multisignature",
-        chains: CHAINS_ALLOWED,
+    <PolkadotContext.Provider
+      value={{
+        network: networkId,
+        setNetwork: setNetworkId,
+        accounts,
+        accountConnected: account,
       }}
     >
-      <PolkadotContext.Provider
-        value={{
-          network: networkId,
-          setNetwork: setNetworkId,
-          accounts,
-        }}
-      >
-        {children}
-      </PolkadotContext.Provider>
-    </UseInkProvider>
+      {children}
+    </PolkadotContext.Provider>
   );
 };
 

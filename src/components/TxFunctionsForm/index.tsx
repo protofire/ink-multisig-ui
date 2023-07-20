@@ -17,8 +17,8 @@ import { useContractPromise } from "@/hooks/useContractPromise";
 import { useParseMetadataField } from "@/hooks/useParseMetadataField";
 import useSetDefaultItem from "@/hooks/useSetDefaultFirstItem";
 
+import { DropzoneWrapper } from "../common/muiExtended/DropzoneWrapper";
 import { InputFileDropzone } from "../InputFileDropzone";
-import { DropzoneWrapper } from "../shared/DropzoneWrapper";
 import { ArgumentsForm } from "./ArgumentForm";
 import { FunctionSignatureName } from "./FunctionSignatureName";
 import { sortAbiMessages } from "./sortedAbiMessages";

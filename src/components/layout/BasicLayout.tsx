@@ -11,7 +11,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export const WelcomeLayout: React.FC<LayoutProps> = ({ children }) => {
+export const BasicLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <VerticalLayoutWrapper>
       <MainContentWrapper>

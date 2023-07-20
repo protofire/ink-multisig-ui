@@ -1,5 +1,17 @@
-import { WelcomeLayout } from "@/components/layout/WelcomeLayout";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-export default function Home() {
-  return <WelcomeLayout>App Dashboard</WelcomeLayout>;
+import { FallbackSpinner } from "@/components/common/FallbackSpinner";
+
+function IndexPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/welcome");
+  }, [router]);
+
+  return <FallbackSpinner />;
 }
+IndexPage.walletRequired = false;
+
+export default IndexPage;
