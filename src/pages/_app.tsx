@@ -13,7 +13,9 @@ import { InkConfig } from "useink";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { WalletConnectionGuard } from "@/components/WalletConnectionGuard";
 import { CHAINS_ALLOWED } from "@/config/chain";
+import { SettingsConsumer } from "@/context/settingsTheme";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
+import ThemeCustomization from "@/themes";
 
 interface ExtendedProps extends AppProps {
   emotionCache: EmotionCache;
@@ -34,27 +36,32 @@ export default function App(props: ExtendedProps) {
   const walletRequired = Component.walletRequired ?? true;
   const getLayout =
     Component.getLayout ?? ((page) => <AppLayout>{page}</AppLayout>);
-
-  return (
-    <CacheProvider value={emotionCache}>
-      <SafeThemeProvider mode="light">
-        {(safeTheme: Theme) => (
-          <ThemeProvider theme={safeTheme}>
-            <UseInkProvider
-              config={{
-                dappName: "ink multisignature",
-                chains: CHAINS_ALLOWED,
-              }}
-            >
-              <PolkadotContextProvider>
-                <WalletConnectionGuard walletRequired={walletRequired}>
-                  {getLayout(<Component {...pageProps} />)}
-                </WalletConnectionGuard>
-              </PolkadotContextProvider>
-            </UseInkProvider>
-          </ThemeProvider>
-        )}
-      </SafeThemeProvider>
-    </CacheProvider>
-  );
+  <SettingsConsumer>
+    {({ settings }) => {
+      return (
+        <CacheProvider value={emotionCache}>
+          <SafeThemeProvider mode="light">
+            {(safeTheme: Theme) => (
+              <ThemeProvider theme={safeTheme}>
+                <UseInkProvider
+                  config={{
+                    dappName: "ink multisignature",
+                    chains: CHAINS_ALLOWED,
+                  }}
+                >
+                  <PolkadotContextProvider>
+                    <WalletConnectionGuard walletRequired={walletRequired}>
+                      <ThemeCustomization settings={settings}>
+                        {getLayout(<Component {...pageProps} />)}
+                      </ThemeCustomization>
+                    </WalletConnectionGuard>
+                  </PolkadotContextProvider>
+                </UseInkProvider>
+              </ThemeProvider>
+            )}
+          </SafeThemeProvider>
+        </CacheProvider>
+      );
+    }}
+  </SettingsConsumer>;
 }
