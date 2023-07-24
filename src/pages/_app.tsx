@@ -3,8 +3,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import createCache from "@emotion/cache";
 import { CacheProvider, EmotionCache } from "@emotion/react";
-import { Theme, ThemeProvider } from "@mui/material/styles";
-import { SafeThemeProvider } from "@safe-global/safe-react-components";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
@@ -36,32 +34,29 @@ export default function App(props: ExtendedProps) {
   const walletRequired = Component.walletRequired ?? true;
   const getLayout =
     Component.getLayout ?? ((page) => <AppLayout>{page}</AppLayout>);
-  <SettingsConsumer>
-    {({ settings }) => {
-      return (
-        <CacheProvider value={emotionCache}>
-          <SafeThemeProvider mode="light">
-            {(safeTheme: Theme) => (
-              <ThemeProvider theme={safeTheme}>
-                <UseInkProvider
-                  config={{
-                    dappName: "ink multisignature",
-                    chains: CHAINS_ALLOWED,
-                  }}
-                >
-                  <PolkadotContextProvider>
-                    <WalletConnectionGuard walletRequired={walletRequired}>
-                      <ThemeCustomization settings={settings}>
-                        {getLayout(<Component {...pageProps} />)}
-                      </ThemeCustomization>
-                    </WalletConnectionGuard>
-                  </PolkadotContextProvider>
-                </UseInkProvider>
-              </ThemeProvider>
-            )}
-          </SafeThemeProvider>
-        </CacheProvider>
-      );
-    }}
-  </SettingsConsumer>;
+
+  return (
+    <CacheProvider value={emotionCache}>
+      <UseInkProvider
+        config={{
+          dappName: "ink multisignature",
+          chains: CHAINS_ALLOWED,
+        }}
+      >
+        <PolkadotContextProvider>
+          <WalletConnectionGuard walletRequired={walletRequired}>
+            <SettingsConsumer>
+              {({ settings }) => {
+                return (
+                  <ThemeCustomization settings={settings}>
+                    {getLayout(<Component {...pageProps} />)}
+                  </ThemeCustomization>
+                );
+              }}
+            </SettingsConsumer>
+          </WalletConnectionGuard>
+        </PolkadotContextProvider>
+      </UseInkProvider>
+    </CacheProvider>
+  );
 }
