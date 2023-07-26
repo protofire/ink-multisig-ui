@@ -4,8 +4,8 @@ import Badge from "./Badge";
 import Button from "./Button";
 import CardContent from "./CardContent";
 import IconButton from "./IconButton";
-// import Typography from './Typography'
 import ListItemIcon from "./ListItemIcon";
+import Typography from "./Typography";
 
 // ==============================|| OVERRIDES ||============================== //
 
@@ -14,7 +14,7 @@ function ComponentsOverrides(theme: Theme) {
   const button = Button(theme);
   const cardContent = CardContent();
   const iconButton = IconButton(theme);
-  // const typography = Typography(theme)
+  const typography = Typography();
 
   return Object.assign(badge, button, cardContent, iconButton, ListItemIcon);
 }

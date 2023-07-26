@@ -28,7 +28,7 @@ export const MainContentCard: React.FC<MyCardProps> = ({
     >
       <CardContent>
         {title && (
-          <Typography gutterBottom variant="h1" component="div">
+          <Typography gutterBottom variant="h1" color="primary" component="div">
             {title}
           </Typography>
         )}

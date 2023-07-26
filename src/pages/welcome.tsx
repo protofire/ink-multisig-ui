@@ -11,8 +11,12 @@ import { ROUTES } from "@/config/routes";
 export default function WelcomePage() {
   return (
     <MainContentCard>
-      <Typography variant="h1">Welcome to</Typography>
-      <Typography variant="h1">Ink multisig! 🚀</Typography>
+      <Typography variant="h1" color="white">
+        Welcome to CypherDOT
+      </Typography>
+      <Typography variant="h5" color="text.secondary">
+        The most trusted decentralized multisig platform on Polkadot ecosystem.
+      </Typography>
       <Box
         sx={{
           display: "flex",

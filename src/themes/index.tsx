@@ -1,5 +1,6 @@
 import { CssBaseline, StyledEngineProvider } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Public_Sans } from "next/font/google";
 import { ReactNode, useMemo } from "react";
 
 import { Settings } from "@/themes/types";
@@ -10,6 +11,11 @@ import CustomShadows from "./shadows";
 import typographyOptions from "./typography";
 
 // ==============================|| DEFAULT THEME - MAIN  ||============================== //
+
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+});
+
 export default function ThemeCustomization({
   children,
   settings,
@@ -20,7 +26,8 @@ export default function ThemeCustomization({
   const { mode, skin } = settings;
   const theme = Palette({ mode, skin });
 
-  const themeTypography = typographyOptions(["Inter", "sans-serif"].join(","));
+  const themeTypography = typographyOptions(["inherit"].join(","));
+
   const themeCustomShadows = useMemo(() => CustomShadows(theme), [theme]);
 
   const themeOptions = useMemo(
@@ -53,11 +60,13 @@ export default function ThemeCustomization({
   themes = createTheme(themes, { ...componentsOverride(themes) });
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={themes}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <div className={publicSans.className}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={themes}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </div>
   );
 }
