@@ -10,8 +10,8 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { InkConfig } from "useink";
 
+import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { WalletConnectionGuard } from "@/components/WalletConnectionGuard";
 import { CHAINS_ALLOWED } from "@/config/chain";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 
