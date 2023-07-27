@@ -23,14 +23,14 @@ function _getRedirectQuery(initialRoute: string) {
 }
 
 export function ConnectedGuard({ children, fallback }: ConnectedGuardProps) {
-  const { accountConnected, isConnecting } = usePolkadotContext();
+  const { accountConnected } = usePolkadotContext();
   const router = useRouter();
   const initialRoute = useRef(router.asPath);
 
   useEffect(() => {
     if (!router.isReady) return;
 
-    if (!accountConnected && !isConnecting) {
+    if (!accountConnected) {
       router.push({
         pathname: `${ROUTES.Connect}`,
         ..._getRedirectQuery(initialRoute.current),
@@ -40,7 +40,7 @@ export function ConnectedGuard({ children, fallback }: ConnectedGuardProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountConnected, initialRoute.current]);
 
-  if (!accountConnected || isConnecting) {
+  if (!accountConnected) {
     return fallback;
   }
 

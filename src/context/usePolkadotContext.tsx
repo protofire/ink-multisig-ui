@@ -9,15 +9,15 @@ import { useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { CHAINS_ALLOWED } from "@/config/chain";
-import { WalletAccount } from "@/domain/WalletAccount";
+import { SetState } from "@/domain/utilityReactTypes";
+import { WalletAccount } from "@/services/useink/types";
 import { createNotImplementedWarning } from "@/utils/error";
 
 interface PolkadotContextProps {
   network: ChainId | undefined;
-  setNetwork: React.Dispatch<React.SetStateAction<ChainId | undefined>>;
+  setNetwork: SetState<ChainId | undefined>;
   accounts: WalletAccount[] | undefined;
   accountConnected: WalletAccount | undefined;
-  isConnecting: boolean;
 }
 
 const PolkadotContext = createContext<PolkadotContextProps>({
@@ -25,14 +25,13 @@ const PolkadotContext = createContext<PolkadotContextProps>({
   setNetwork: () => createNotImplementedWarning("setNetwork"),
   accounts: undefined,
   accountConnected: undefined,
-  isConnecting: false,
 });
 
 export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [networkId, setNetworkId] = useState<ChainId | undefined>();
-  const { accounts, account, isConnecting } = useWallet();
+  const { accounts, account } = useWallet();
 
   //TODO replace with at network selector
   useEffect(() => {
@@ -49,7 +48,6 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
         setNetwork: setNetworkId,
         accounts,
         accountConnected: account,
-        isConnecting,
       }}
     >
       {children}

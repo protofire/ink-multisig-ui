@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 
-import { SimpleSpread } from "@/domain/utilityTypes";
+import { SimpleSpread } from "@/domain/utilityTsTypes";
 
 type Props = SimpleSpread<
   React.InputHTMLAttributes<HTMLInputElement>,

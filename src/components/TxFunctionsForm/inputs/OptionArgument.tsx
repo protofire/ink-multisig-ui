@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { OptionalFieldWrapper } from "@/components/OptionalFieldWrapper";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { ArgumentComponentProps } from "@/domain/substrateInputTypes";
-import { OrFalsy } from "@/domain/utilityTypes";
+import { OrFalsy } from "@/domain/utilityTsTypes";
 import { useToggle } from "@/hooks/useToggle";
 import { getInitValue } from "@/services/substrate/getInitValue";
 import { Registry, TypeDef } from "@/services/substrate/types";

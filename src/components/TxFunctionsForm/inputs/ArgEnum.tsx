@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { ArgumentComponentProps } from "@/domain/substrateInputTypes";
-import { OrFalsy } from "@/domain/utilityTypes";
+import { OrFalsy } from "@/domain/utilityTsTypes";
 import { getInitValue } from "@/services/substrate/getInitValue";
 import { TypeDef } from "@/services/substrate/types";
 import { isNumber } from "@/utils/dataTypeGuard";
