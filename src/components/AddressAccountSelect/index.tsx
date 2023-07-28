@@ -39,7 +39,7 @@ export function AddressAccountSelect({
           const account = accounts.find(
             (account) => account.address === selected
           );
-          return <AccountAvatar address={account.address} />;
+          return account && <AccountAvatar address={account.address} />;
         }}
       >
         {accounts?.map((account) => (
