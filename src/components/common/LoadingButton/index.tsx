@@ -7,7 +7,7 @@ interface LoadingButtonProps extends ButtonProps {
   isLoading?: boolean;
 }
 
-const LoadingButton: React.FC<LoadingButtonProps> = ({
+export const LoadingButton: React.FC<LoadingButtonProps> = ({
   isLoading,
   children,
   ...props
@@ -36,5 +36,3 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
     </Button>
   );
 };
-
-export default LoadingButton;
