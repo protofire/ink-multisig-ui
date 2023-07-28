@@ -14,8 +14,24 @@
       "jsx": true
     }
   },
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "next/core-web-vitals", "plugin:react/recommended", "plugin:react-hooks/recommended", "plugin:prettier/recommended"],
-  "plugins": ["@typescript-eslint", "simple-import-sort", "import", "unused-imports", "react", "react-hooks", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
+    "plugin:storybook/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "simple-import-sort",
+    "import",
+    "unused-imports",
+    "react",
+    "react-hooks",
+    "prettier"
+  ],
   "rules": {
     "@typescript-eslint/no-non-null-assertion": "off",
     "import/first": "error",
@@ -27,13 +43,15 @@
     "unused-imports/no-unused-vars": [
       "warn",
       {
-       "vars": "all",
+        "vars": "all",
         "varsIgnorePattern": "^_",
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
     ],
-    "prettier/prettier": ["warn"]
+    "prettier/prettier": [
+      "warn"
+    ]
   },
   "ignorePatterns": [
     ".next/*",
@@ -41,7 +59,9 @@
   ],
   "overrides": [
     {
-      "files": ["next.config.js"],
+      "files": [
+        "next.config.js"
+      ],
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
       }

@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
-import { NewSignatoriesAccount } from "@/components/NewSignatoriesAccount/indext";
+import { NewSignatoriesAccount } from "@/components/NewSignatoriesAccount";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 
 export default function NewAccountPage() {
