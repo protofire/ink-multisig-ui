@@ -54,7 +54,7 @@ const Palette = ({ mode }: LookSettings): Theme => {
       },
       divider: paletteColor.grey[200],
       background: {
-        paper: "#20222D",
+        paper: "#201A1B",
         default: "#0D0E13",
       },
     },
