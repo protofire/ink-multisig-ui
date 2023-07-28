@@ -10,6 +10,14 @@
  */
 export type ArrayOneOrMore<T> = [T, ...T[]];
 
+export function createArrayOneOrMore<T>(elements: T | T[]): ArrayOneOrMore<T> {
+  if (Array.isArray(elements) && elements.length === 0) {
+    throw new Error("Array must have at least one element");
+  }
+
+  return Array.isArray(elements) ? (elements as ArrayOneOrMore<T>) : [elements];
+}
+
 /**
  * Utility type that performs a "spread" operation between two types.
  * It creates a new type that has all properties of `R` and all properties of `L` that are not in `R`.
