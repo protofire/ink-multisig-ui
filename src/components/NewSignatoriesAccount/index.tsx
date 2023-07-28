@@ -26,8 +26,8 @@ export function NewSignatoriesAccount({ networkId, accountConnected }: Props) {
     ]);
     const threshold = owners.length;
 
-    save({ address, owners, threshold, networkId }).then(
-      () => false && router.replace(ROUTES.App)
+    save({ address, owners, threshold, networkId }).then(() =>
+      router.replace(ROUTES.App)
     );
   };
 
