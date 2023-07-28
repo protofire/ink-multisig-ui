@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { customReportError } from "@/utils/error";
 
 export function useAddSignatoriesAccount() {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,9 +14,18 @@ export function useAddSignatoriesAccount() {
   ): Promise<SignatoriesAccount | void> {
     setIsLoading(true);
 
-    await signatoriesAccountRepository
-      ?.addSignatoryAccount(account)
-      .finally(() => setIsLoading(false));
+    try {
+      await signatoriesAccountRepository
+        ?.addSignatoryAccount(account)
+        .finally(() => setIsLoading(false));
+
+      return account;
+    } catch (err) {
+      const errorFormated = customReportError(err);
+      setError(errorFormated);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return { save, isLoading, error };

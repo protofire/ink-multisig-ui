@@ -11,7 +11,6 @@ export interface ISignatoriesAccountRepository {
     account: SignatoriesAccount,
     changes: Partial<SignatoriesAccount>
   ): Promise<number>;
-  deleteSignatoryAccount(address: string): Promise<void>;
   findSignatoriesByThreshold(
     walletAddress: string,
     networkId?: Chain["id"]

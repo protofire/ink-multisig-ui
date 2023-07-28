@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { PropsWithChildren, useEffect } from "react";
 
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
+import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useListSignatoriesAccount } from "@/hooks/signatoriesAccount/useListSignatoriesAccount";
 import { useDelay } from "@/hooks/useDelay";
@@ -17,18 +18,18 @@ export function RouterRedirectGuard({ children }: Props) {
     walletAddress: accountConnected?.address,
     networkId: network,
   });
+  const defaultPath =
+    router.query.redirect !== undefined
+      ? (router.query.redirect as string)
+      : ROUTES.Welcome;
 
   useEffect(() => {
-    if (
-      !router.query.redirect ||
-      !accountConnected ||
-      signatoriesAccount === undefined
-    )
-      return;
+    if (!accountConnected || signatoriesAccount === undefined) return;
 
-    const redirectPath = router.query.redirect as string; // Already decoded URI
+    const redirectPath = signatoriesAccount.length ? ROUTES.App : defaultPath;
+
     router.replace(decodeURIComponent(redirectPath));
-  }, [router.query.redirect, accountConnected, router, signatoriesAccount]);
+  }, [accountConnected, router, signatoriesAccount, defaultPath]);
 
   if (!isDelayFinished) return <FallbackSpinner />;
 

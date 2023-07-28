@@ -5,5 +5,6 @@ import { Chain } from "@/services/useink/types";
 export interface SignatoriesAccount {
   address: string;
   networkId: Chain["id"];
-  threshold: ArrayOneOrMore<string>;
+  owners: ArrayOneOrMore<string>;
+  threshold: number;
 }
