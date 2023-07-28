@@ -1,9 +1,7 @@
 import type { StorybookConfig } from "@storybook/nextjs";
 
-const path = require("path");
-
 const config: StorybookConfig = {
-  stories: ["./**/*.mdx", "./**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
@@ -21,17 +19,5 @@ const config: StorybookConfig = {
     disableTelemetry: true
   },
   staticDirs: ['../public'],
-  webpackFinal: async (config) => {
-    if (config.resolve) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        "@": path.resolve(__dirname, "../src/"),
-      };
-    }
-
-      console.log('__config', config.resolve?.alias, __dirname)
-
-    return config
-  } 
 };
 export default config;
