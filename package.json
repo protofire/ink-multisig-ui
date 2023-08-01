@@ -79,5 +79,6 @@
   },
   "resolutions": {
     "jackspeak": "2.1.1"
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }
