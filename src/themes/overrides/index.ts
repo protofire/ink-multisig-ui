@@ -16,7 +16,14 @@ function ComponentsOverrides(theme: Theme) {
   const iconButton = IconButton(theme);
   const typography = Typography();
 
-  return Object.assign(badge, button, cardContent, iconButton, ListItemIcon);
+  return Object.assign(
+    badge,
+    button,
+    cardContent,
+    iconButton,
+    ListItemIcon,
+    typography
+  );
 }
 
 export default ComponentsOverrides;

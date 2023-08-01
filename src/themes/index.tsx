@@ -57,7 +57,9 @@ export default function ThemeCustomization({
   );
 
   let themes = createTheme(themeOptions);
-  themes = createTheme(themes, { ...componentsOverride(themes) });
+  themes = createTheme(themes, {
+    components: { ...componentsOverride(themes) },
+  });
 
   return (
     <div className={publicSans.className}>

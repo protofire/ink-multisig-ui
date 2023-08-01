@@ -1,7 +1,7 @@
 import { Card, CardContent, Divider, Typography } from "@mui/material";
 import React, { PropsWithChildren } from "react";
 
-import { BoxContenCentered } from "../../common/muiExtended";
+import { BoxContenCentered } from "@/components/common/muiExtended";
 
 interface MyCardProps extends PropsWithChildren {
   title?: string;
