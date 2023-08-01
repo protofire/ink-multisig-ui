@@ -1,10 +1,10 @@
 {
-    "builds": [
-      { "src": "package.json", "use": "@vercel/next" },
-      { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "storybook-static" } }
-    ],
-    "routes": [
-      { "src": "/storybook(/.*)?", "dest": "/storybook-static$1" }
-    ]
-  }
-  
+  "builds": [
+    { "src": "next.config.js", "use": "@vercel/next" },
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "storybook-static" } }
+  ],
+  "routes": [
+    { "src": "/storybook(/.*)?", "dest": "/storybook-static$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
