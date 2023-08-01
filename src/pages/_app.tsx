@@ -44,17 +44,17 @@ export default function App(props: ExtendedProps) {
         }}
       >
         <PolkadotContextProvider>
-          <WalletConnectionGuard walletRequired={walletRequired}>
-            <SettingsConsumer>
-              {({ settings }) => {
-                return (
-                  <ThemeCustomization settings={settings}>
+          <SettingsConsumer>
+            {({ settings }) => {
+              return (
+                <ThemeCustomization settings={settings}>
+                  <WalletConnectionGuard walletRequired={walletRequired}>
                     {getLayout(<Component {...pageProps} />)}
-                  </ThemeCustomization>
-                );
-              }}
-            </SettingsConsumer>
-          </WalletConnectionGuard>
+                  </WalletConnectionGuard>
+                </ThemeCustomization>
+              );
+            }}
+          </SettingsConsumer>
         </PolkadotContextProvider>
       </UseInkProvider>
     </CacheProvider>
