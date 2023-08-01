@@ -15,12 +15,15 @@ export default function Button(theme: Theme) {
       styleOverrides: {
         root: {
           fontWeight: 400,
+          color: "red",
         },
         contained: {
           ...disabledStyle,
+          color: "red",
         },
         outlined: {
-          ...disabledStyle,
+          color: "red",
+          height: "10rem",
         },
       },
     },

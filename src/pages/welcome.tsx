@@ -1,6 +1,6 @@
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -61,10 +61,10 @@ export default function WelcomePage() {
             Already have a CypherDOT Account? Add it via its address.
           </Typography>
           <Link href={ROUTES.Load} passHref>
-            <ButtonBase variant="outlined">
+            <Button variant="outlined">
               <AccountBalanceWalletIcon />
-              <Typography variant="h4">Add existing Account</Typography>
-            </ButtonBase>
+              Add existing Account
+            </Button>
           </Link>
         </Box>
       </Box>
