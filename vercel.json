@@ -4,7 +4,7 @@
       { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "storybook-static" } }
     ],
     "routes": [
-      { "src": "/storybook", "dest": "/storybook-static" }
+      { "src": "/storybook(/.*)?", "dest": "/storybook-static$1" }
     ]
   }
   
