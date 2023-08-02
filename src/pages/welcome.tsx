@@ -13,7 +13,7 @@ export default function WelcomePage() {
   return (
     <MainContentCard>
       <Typography variant="h1" color="white">
-        Welcome to CypherDOT
+        Welcome to xSigners
       </Typography>
       <Typography variant="h4" color="white">
         The most trusted decentralized multisig platform on Polkadot ecosystem.
@@ -58,7 +58,7 @@ export default function WelcomePage() {
             Add existing Account
           </Typography>
           <Typography variant="body1" color="white">
-            Already have a CypherDOT Account? Add it via its address.
+            Already have a xSigners Account? Add it via its address.
           </Typography>
           <Link href={ROUTES.Load} passHref>
             <Button variant="outlined">

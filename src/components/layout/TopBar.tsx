@@ -13,10 +13,10 @@ export default function TopBar() {
         <Stack direction="row" gap={1} sx={{ flexGrow: 1 }}>
           <Link href={ROUTES.Home} passHref>
             <Image
-              src="/cypherdot-logo.svg"
-              alt="SypherDotMultisig"
-              width={145}
-              height={45}
+              src="/xSigners-logo.svg"
+              alt="xSigners Wallet"
+              width={160}
+              height={50}
             />
           </Link>
         </Stack>
