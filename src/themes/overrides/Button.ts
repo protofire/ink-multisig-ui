@@ -14,16 +14,23 @@ export default function Button(theme: Theme) {
       },
       styleOverrides: {
         root: {
-          fontWeight: 400,
-          color: "red",
+          fontSize: "1rem",
+          fontWeight: 600,
+          padding: "0.5rem 0.8rem",
+          borderRadius: "0.4rem",
+          gap: "0.4rem",
+          textTransform: "none",
+          border: "2px solid transparent",
         },
         contained: {
           ...disabledStyle,
-          color: "red",
         },
         outlined: {
-          color: "red",
-          height: "10rem",
+          boxSizing: "border-box",
+          border: "2px solid",
+          "&:hover": {
+            border: "2px solid",
+          },
         },
       },
     },

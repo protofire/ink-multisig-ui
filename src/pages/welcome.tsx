@@ -4,7 +4,6 @@ import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 import { ReactNode } from "react";
 
-import { ButtonBase } from "@/components/common/muiExtended/Button";
 import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import { ROUTES } from "@/config/routes";
@@ -13,7 +12,7 @@ export default function WelcomePage() {
   return (
     <MainContentCard>
       <Typography variant="h1" color="white">
-        Welcome to xSigners
+        Welcome to XSigners
       </Typography>
       <Typography variant="h4" color="white">
         The most trusted decentralized multisig platform on Polkadot ecosystem.
@@ -41,10 +40,10 @@ export default function WelcomePage() {
             A new Account that is controlled by one or multiple owners.
           </Typography>
           <Link href={ROUTES.New} passHref>
-            <ButtonBase variant="contained">
+            <Button variant="contained">
               <AddCircleIcon />
-              <Typography variant="h4">Create new Account</Typography>
-            </ButtonBase>
+              Create new Account
+            </Button>
           </Link>
         </Box>
         <Box
