@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "storybook:build": "yarn build-storybook -c .storybook -o storybook-static",
     "lint": "next lint",
     "ts:check": "tsc --noEmit",
     "format": "prettier --write .",
@@ -76,5 +76,9 @@
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix"
     ]
-  }
+  },
+  "resolutions": {
+    "jackspeak": "2.1.1"
+  },
+  "packageManager": "yarn@1.22.19"
 }
