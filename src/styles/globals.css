@@ -98,6 +98,7 @@ body {
 
 a {
   color: inherit;
+  display: inherit;
   text-decoration: none;
 }
 
