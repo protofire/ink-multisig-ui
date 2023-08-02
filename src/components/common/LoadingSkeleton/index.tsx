@@ -1,11 +1,11 @@
 import { useTheme } from "@mui/material";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-import { LoadingSkeletonProps } from "./LoadingSkeletonBase";
+export interface LoadingSkeletonProps {
+  count?: number;
+}
 
-type Props = Partial<LoadingSkeletonProps>;
-
-export const LoadingSkeleton = ({ count = 1 }: Props) => {
+export const LoadingSkeleton = ({ count = 1 }: LoadingSkeletonProps) => {
   const theme = useTheme();
 
   return (

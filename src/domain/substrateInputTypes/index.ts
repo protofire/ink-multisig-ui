@@ -1,4 +1,4 @@
-import { SimpleSpread } from "@/domain/utilityTypes";
+import { SimpleSpread } from "@/domain/utilityTsTypes";
 import { Registry, TypeDef } from "@/services/substrate/types";
 
 export interface ValidFormField<T> {

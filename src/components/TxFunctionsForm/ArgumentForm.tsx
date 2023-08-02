@@ -2,7 +2,7 @@
 import { FormControl, Stack } from "@mui/material";
 import { useMemo } from "react";
 
-import { SetState } from "@/domain/SetState";
+import { SetState } from "@/domain/utilityReactTypes";
 import { AbiParam, Registry } from "@/services/substrate/types";
 
 import { getAbiParamLabel } from "./FunctionSignatureName";

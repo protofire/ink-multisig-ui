@@ -8,10 +8,11 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { InkConfig } from "useink";
 
+import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { WalletConnectionGuard } from "@/components/WalletConnectionGuard";
 import { CHAINS_ALLOWED } from "@/config/chain";
 import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
+import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
 
@@ -39,22 +40,24 @@ export default function App(props: ExtendedProps) {
     <CacheProvider value={emotionCache}>
       <UseInkProvider
         config={{
-          dappName: "ink multisignature",
+          dappName: "XSigners Wallet",
           chains: CHAINS_ALLOWED,
         }}
       >
         <PolkadotContextProvider>
-          <SettingsThemeConsumer>
-            {({ settings }) => {
-              return (
-                <ThemeCustomization settings={settings}>
-                  <WalletConnectionGuard walletRequired={walletRequired}>
-                    {getLayout(<Component {...pageProps} />)}
-                  </WalletConnectionGuard>
-                </ThemeCustomization>
-              );
-            }}
-          </SettingsThemeConsumer>
+          <LocalDbProvider>
+            <SettingsThemeConsumer>
+              {({ settings }) => {
+                return (
+                  <ThemeCustomization settings={settings}>
+                    <WalletConnectionGuard walletRequired={walletRequired}>
+                      {getLayout(<Component {...pageProps} />)}
+                    </WalletConnectionGuard>
+                  </ThemeCustomization>
+                );
+              }}
+            </SettingsThemeConsumer>
+          </LocalDbProvider>
         </PolkadotContextProvider>
       </UseInkProvider>
     </CacheProvider>
