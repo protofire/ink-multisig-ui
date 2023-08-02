@@ -56,4 +56,4 @@ export const SettingsThemeProvider = ({
   );
 };
 
-export const SettingsConsumer = SettingsThemeContext.Consumer;
+export const SettingsThemeConsumer = SettingsThemeContext.Consumer;

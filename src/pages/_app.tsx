@@ -11,7 +11,7 @@ import { InkConfig } from "useink";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { WalletConnectionGuard } from "@/components/WalletConnectionGuard";
 import { CHAINS_ALLOWED } from "@/config/chain";
-import { SettingsConsumer } from "@/context/settingsTheme";
+import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
 
@@ -44,7 +44,7 @@ export default function App(props: ExtendedProps) {
         }}
       >
         <PolkadotContextProvider>
-          <SettingsConsumer>
+          <SettingsThemeConsumer>
             {({ settings }) => {
               return (
                 <ThemeCustomization settings={settings}>
@@ -54,7 +54,7 @@ export default function App(props: ExtendedProps) {
                 </ThemeCustomization>
               );
             }}
-          </SettingsConsumer>
+          </SettingsThemeConsumer>
         </PolkadotContextProvider>
       </UseInkProvider>
     </CacheProvider>
