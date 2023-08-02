@@ -1,0 +1,6 @@
+{
+    "builds": [
+      { "src": "package.json", "use": "@vercel/next" },
+      { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "storybook-static" } }
+    ]
+  }
