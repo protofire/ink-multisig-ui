@@ -11,32 +11,61 @@ import { ROUTES } from "@/config/routes";
 export default function WelcomePage() {
   return (
     <MainContentCard>
-      <Typography variant="h1">Welcome to</Typography>
-      <Typography variant="h1">Ink multisig! 🚀</Typography>
+      <Typography variant="h1" color="white">
+        Welcome to XSigners
+      </Typography>
+      <Typography variant="h4" color="white">
+        The most trusted decentralized multisig platform on Polkadot ecosystem.
+      </Typography>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-around",
-          width: "100%",
+          width: "80%",
           mt: "5rem",
+          gap: "3rem",
         }}
       >
-        <Link href={ROUTES.New} passHref>
-          <Button variant="outlined">
-            <Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+        >
+          <Typography variant="h3" color="white">
+            Create a new Multisig
+          </Typography>
+          <Typography variant="body1" color="white">
+            A new Account that is controlled by one or multiple owners.
+          </Typography>
+          <Link href={ROUTES.New} passHref>
+            <Button variant="contained">
               <AddCircleIcon />
-              <Typography variant="h3">New Account</Typography>
-            </Box>
-          </Button>
-        </Link>
-        <Link href={ROUTES.Load} passHref>
-          <Button variant="outlined">
-            <Box>
+              Create new Account
+            </Button>
+          </Link>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+        >
+          <Typography variant="h3" color="white">
+            Add existing Account
+          </Typography>
+          <Typography variant="body1" color="white">
+            Already have a xSigners Account? Add it via its address.
+          </Typography>
+          <Link href={ROUTES.Load} passHref>
+            <Button variant="outlined">
               <AccountBalanceWalletIcon />
-              <Typography variant="h3">Load Account</Typography>
-            </Box>
-          </Button>
-        </Link>
+              Add existing Account
+            </Button>
+          </Link>
+        </Box>
       </Box>
     </MainContentCard>
   );
