@@ -1,10 +1,14 @@
 import { Divider, Drawer } from "@mui/material";
+import { useRouter } from "next/router";
 import { useState } from "react";
+
+import Navigation from "./Navigation";
 
 const drawerWidth = 240;
 
 export function VerticalMenuBar() {
   const [open, setOpen] = useState(true);
+  const { pathname } = useRouter();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -29,7 +33,7 @@ export function VerticalMenuBar() {
       open={open}
     >
       <Divider />
-      Menu
+      <Navigation currentPath={pathname} />
     </Drawer>
   );
 }
