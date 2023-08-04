@@ -22,6 +22,6 @@ To run this project, you will need:
 
 ## 🧹 Linting
 
-This app uses ESLint, Prettier, and lint-staged for code formatting and consistency. 
+This app uses ESLint, Prettier, and lint-staged for code formatting and consistency.
 
 To check for lint errors, run `yarn lint`.

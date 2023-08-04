@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 
 import { WalletConnect } from "../WalletConnect";
-import { VerticalMenuBar } from "./VerticalMenuBar";
 
 interface Props {
   navHidden?: boolean;
@@ -27,7 +26,6 @@ export function ApplicationBars({ navHidden = true }: Props) {
         </Stack>
         <WalletConnect />
       </Toolbar>
-      {!navHidden && <VerticalMenuBar />}
     </AppBar>
   );
 }

@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { Settings } from "@/themes/types";
 import {
@@ -17,7 +23,7 @@ const defaultSettings: Settings = {
   navOpen: true,
   mode: "dark",
   skin: "default",
-  drawerWidth: 260,
+  drawerWidth: 240,
 };
 
 export const SettingsThemeContext = createContext<SettingsContextValue>({
@@ -57,3 +63,13 @@ export const SettingsThemeProvider = ({
 };
 
 export const SettingsThemeConsumer = SettingsThemeContext.Consumer;
+
+export const useSettingsTheme = () => {
+  const context = useContext(SettingsThemeContext);
+  if (context === undefined) {
+    throw new Error(
+      "useSettingsTheme must be used within a SettingsThemeProvider"
+    );
+  }
+  return context;
+};

@@ -41,6 +41,7 @@ export default function ThemeCustomization({
           xl: 1536,
         },
       },
+      spacing: 8,
       Direction: "ltr",
       mixins: {
         toolbar: {
