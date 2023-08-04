@@ -20,6 +20,9 @@ To run this project, you will need:
 
 - Run the app with `yarn dev`
 
+### 🎨 Run Storybook
+- Run storybook system design with `yarn storybook`
+
 ## 🧹 Linting
 
 This app uses ESLint, Prettier, and lint-staged for code formatting and consistency.
