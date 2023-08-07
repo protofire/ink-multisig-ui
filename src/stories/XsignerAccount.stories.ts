@@ -18,11 +18,13 @@ type Story = StoryObj<typeof meta>;
 
 const address = "5CQnnhbG8hSwXkzFXm6C5y8okSX6xMa1kjs2UaCHXc5jUE42";
 const name = "Amazin-Journey0-wallet";
+const networkName = "Rococo testnet";
 
 export const Rococo: Story = {
   args: {
     address,
     name,
     networkColor: CHAINS_COLORS["rococo-contracts-testnet"],
+    networkName,
   },
 };

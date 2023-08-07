@@ -1,6 +1,11 @@
 import { Box, BoxProps, styled } from "@mui/material";
 
-import { ChainColors, CHAINS_COLORS, getChain } from "@/config/chain";
+import {
+  ChainColors,
+  CHAINS_ALLOWED,
+  CHAINS_COLORS,
+  getChain,
+} from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
@@ -25,17 +30,22 @@ export const AccountInfoWrapper = styled(Box)<
 
 export function XsignerAccountUI({
   networkColor,
+  networkName,
   address,
   name,
 }: {
   networkColor: ChainColors[keyof ChainColors] | undefined;
-  networkName: string;
+  networkName: (typeof CHAINS_ALLOWED)[number]["name"];
   address: string;
   name: string;
 }) {
   return (
     <AccountInfoWrapper networkcolor={networkColor}>
-      <XsignerAccountAvatar name={name} address={address} />
+      <XsignerAccountAvatar
+        name={name}
+        address={address}
+        networkName={networkName}
+      />
     </AccountInfoWrapper>
   );
 }
@@ -46,14 +56,14 @@ export function XsignerAccountInfoWidget() {
   const networkColor = (network && CHAINS_COLORS[network]) || undefined;
   const address = xSignerSelected?.address || "-";
   const name = xSignerSelected?.name || "-";
-  const networkName = (network && getChain(network)) || "-";
+  const networkName = (network && getChain(network)?.name) || "-";
 
   return (
     <XsignerAccountUI
       name={name}
       networkColor={networkColor}
       address={address}
-      networkName={networkName as string}
+      networkName={networkName}
     />
   );
 }

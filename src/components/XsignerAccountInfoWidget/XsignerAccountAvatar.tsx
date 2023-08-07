@@ -1,12 +1,15 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import Identicon from "@polkadot/react-identicon";
 
+import { CHAINS_ALLOWED } from "@/config/chain";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { truncateAddress } from "@/utils/formatString";
 
-type Props = Partial<SignatoriesAccount>;
+type Props = Partial<SignatoriesAccount> & {
+  networkName: (typeof CHAINS_ALLOWED)[number]["name"];
+};
 
-export function XsignerAccountAvatar({ address, name }: Props) {
+export function XsignerAccountAvatar({ address, name, networkName }: Props) {
   return (
     <Box
       display="flex"
@@ -28,7 +31,7 @@ export function XsignerAccountAvatar({ address, name }: Props) {
       </Box>
       <Box>
         <Typography variant="caption" color="white">
-          Rococo testnet
+          {networkName}
         </Typography>
       </Box>
     </Box>
