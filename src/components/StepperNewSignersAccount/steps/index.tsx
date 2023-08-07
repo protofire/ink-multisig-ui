@@ -10,18 +10,22 @@ import OwnersStep from "./OwnersStep";
 import ReviewStep from "./ReviewStep";
 import WalletCreationStep from "./WalletCreationStep";
 
-const withCard = (
-  WrappedComponent: React.ComponentType<any>,
+interface ICardFooter {
+  footer?: React.ReactNode;
+}
+
+const withCard = <P extends object>(
+  WrappedComponent: React.ComponentType<P>,
   title: string
 ) => {
-  const WithCardComponent = (props: any) => (
+  const WithCardComponent: React.FC<P & ICardFooter> = (props: ICardFooter) => (
     <Card>
       <CardContent>
         <Typography variant="h6" component="div">
           {title}
         </Typography>
         <Divider />
-        <WrappedComponent {...props} />
+        <WrappedComponent {...(props as P)} />
       </CardContent>
       {props.footer && <CardActions>{props.footer}</CardActions>}
     </Card>
@@ -33,10 +37,8 @@ const withCard = (
   return WithCardComponent;
 };
 
-function getDisplayName(WrappedComponent: React.ComponentType<any>) {
+function getDisplayName<T>(WrappedComponent: React.ComponentType<T>): string {
   return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-export default withCard;
-
-export { OwnersStep, ReviewStep, WalletCreationStep };
+export { OwnersStep, ReviewStep, WalletCreationStep, withCard };

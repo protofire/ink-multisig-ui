@@ -1,22 +1,50 @@
 import { useState } from "react";
-
-type Owner = {
-  name: string;
-  address: string;
-};
+import { ArrayOneOrMore } from "useink/dist/core";
 
 export type ValidationError = {
   error: boolean;
   message: string;
 };
 
-const generateRandomWalletName = (): string => {
-  return `ink-wallet-${Math.floor(Math.random() * 1000)}`;
+const adjectives = [
+  "Amazing",
+  "Humble",
+  "Graceful",
+  "Daring",
+  "Unique",
+  "Mysterious",
+  "Elegant",
+  "Charming",
+  "Vivid",
+  "Bold",
+];
+
+const nouns = [
+  "Journey",
+  "Sunset",
+  "Galaxy",
+  "Ocean",
+  "Mountain",
+  "Forest",
+  "Desert",
+  "River",
+  "Sky",
+  "Island.",
+];
+
+let counter = 0;
+
+const generateRandomWalletName = () => {
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const uniqueNumber = counter++;
+
+  return `${adjective}-${noun}-${uniqueNumber}-wallet`;
 };
 
 export const useFormSignersAccountState = () => {
   const [walletName, setWalletName] = useState(generateRandomWalletName());
-  const [owners, setOwners] = useState<Owner[]>([]);
+  const [owners, setOwners] = useState<ArrayOneOrMore<string>>([""]);
   const [threshold, setThreshold] = useState(0);
   const [errors, setErrors] = useState([{ error: false, message: "" }]);
 
@@ -69,12 +97,12 @@ export const useFormSignersAccountState = () => {
     setWalletName(name);
   };
 
-  const handleOwners = (newOwners: Owner[], step: number) => {
+  const handleOwners = (newOwners: ArrayOneOrMore<string>, step: number) => {
     setOwners(newOwners);
   };
 
   const handleThreshold = (newThreshold: number, step: number) => {
-    if (validateThreshold(newThreshold, owners.length)) {
+    if (validateThreshold(newThreshold, owners?.length ?? 0)) {
       setThreshold(newThreshold);
     }
   };

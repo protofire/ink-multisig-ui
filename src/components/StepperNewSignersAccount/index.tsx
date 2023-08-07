@@ -8,31 +8,38 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { ChainId } from "useink/dist/chains";
 
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useFormSignersAccountState } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
 import { STEPS } from "./constants";
 
 type StepperNewSignersAccountProps = {
-  save: (props: SignatoriesAccount) => void;
+  save: (
+    props: Omit<SignatoriesAccount, "address"> & { walletName: string }
+  ) => void;
   isExecuting: boolean;
-};
-
-type SignatoriesAccount = {
-  // define structure here
+  networkId: ChainId;
 };
 
 function StepperNewSignersAccount({
   save,
   isExecuting,
+  networkId,
 }: StepperNewSignersAccountProps) {
   const [activeStep, setActiveStep] = useState(0);
   const data = useFormSignersAccountState();
   const handleNext = () => {
     const isLastStep = activeStep === STEPS.length - 1;
     if (isLastStep) {
-      //TODO: Add logic to call save fn and show creating account screen.
-      save(data);
+      const parsedData = {
+        owners: data.owners,
+        threshold: data.threshold,
+        walletName: data.walletName,
+        networkId,
+      };
+      save(parsedData);
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }

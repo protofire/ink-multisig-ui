@@ -1,4 +1,4 @@
-import withCard, { OwnersStep, ReviewStep, WalletCreationStep } from "./steps";
+import { OwnersStep, ReviewStep, WalletCreationStep, withCard } from "./steps";
 
 export const STEPS = [
   {
