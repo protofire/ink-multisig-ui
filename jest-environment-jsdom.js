@@ -1,23 +1,23 @@
-'use strict'
+"use strict";
 
-import { TextEncoder, TextDecoder } from 'util'
+import { TextEncoder, TextDecoder } from "util";
 import {
   default as $JSDOMEnvironment,
-  TestEnvironment
-} from 'jest-environment-jsdom'
+  TestEnvironment,
+} from "jest-environment-jsdom";
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-})
+Object.defineProperty(exports, "__esModule", {
+  value: true,
+});
 
 class JSDOMEnvironment extends $JSDOMEnvironment {
   constructor(...args) {
-    const { global } = super(...args)
-    if (!global.TextEncoder) global.TextEncoder = TextEncoder
-    if (!global.TextDecoder) global.TextDecoder = TextDecoder
+    const { global } = super(...args);
+    if (!global.TextEncoder) global.TextEncoder = TextEncoder;
+    if (!global.TextDecoder) global.TextDecoder = TextDecoder;
   }
 }
 
-exports.default = JSDOMEnvironment
+exports.default = JSDOMEnvironment;
 exports.TestEnvironment =
-  TestEnvironment === $JSDOMEnvironment ? JSDOMEnvironment : TestEnvironment
+  TestEnvironment === $JSDOMEnvironment ? JSDOMEnvironment : TestEnvironment;

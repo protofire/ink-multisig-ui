@@ -31,26 +31,28 @@ export function ArgumentsForm({
   );
 
   return (
-    <Stack >
+    <Stack>
       {components.map(({ arg, Component }) => {
         const onChange = (value: unknown) => {
-          setArgValues(prev => ({
+          setArgValues((prev) => ({
             ...prev,
             [arg.name]: value,
           }));
         };
-        
-        return (<FormControl sx={{m:1}} key={arg.name}>
-            <Component 
+
+        return (
+          <FormControl sx={{ m: 1 }} key={arg.name}>
+            <Component
               id={arg.name}
-              nestingNumber={0} 
-              onChange={onChange} 
-              value={argValues[arg.name]} 
-              typeDef={arg.type} 
+              nestingNumber={0}
+              onChange={onChange}
+              value={argValues[arg.name]}
+              typeDef={arg.type}
               registry={registry}
-              label={getAbiParamLabel({abiParam: arg, registry})}
+              label={getAbiParamLabel({ abiParam: arg, registry })}
             />
-        </FormControl>)
+          </FormControl>
+        );
       })}
     </Stack>
   );

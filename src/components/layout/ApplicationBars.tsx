@@ -5,9 +5,12 @@ import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 
 import { WalletConnect } from "../WalletConnect";
-import { ConnectButton } from "../WalletSelectModal/ConnectButton";
 
-export function TopBar() {
+interface Props {
+  navHidden?: boolean;
+}
+
+export function ApplicationBars({ navHidden = true }: Props) {
   return (
     <AppBar elevation={0} position="static">
       <Toolbar>
@@ -22,7 +25,6 @@ export function TopBar() {
           </Link>
         </Stack>
         <WalletConnect />
-        <ConnectButton></ConnectButton>
       </Toolbar>
     </AppBar>
   );
