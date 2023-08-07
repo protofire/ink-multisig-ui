@@ -23,7 +23,7 @@ export default function Button(theme: Theme) {
           border: "2px solid transparent",
         },
         contained: {
-          ...disabledStyle,
+          color: theme.palette.text.primary,
         },
         outlined: {
           boxSizing: "border-box",

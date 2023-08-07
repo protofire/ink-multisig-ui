@@ -12,13 +12,12 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: #120d0e;
-  /* background: linear-gradient(
+  background-color: #121212;
+  background: linear-gradient(
       to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
+      #121212,
+      #000000
     )
-    rgb(var(--background-start-rgb)); */
 }
 
 a {

@@ -10,7 +10,7 @@ import { Settings } from "./types";
 // ==============================|| DEFAULT THEME - PALETTE  ||============================== //
 
 type LookSettings = Pick<Settings, "mode" | "skin">;
-const MAIN_COLOR = "#E6007A"; // Mexican pink
+const MAIN_COLOR = "#ffe873";
 
 const Palette = ({ mode }: LookSettings): Theme => {
   const colors = presetPalettes;
@@ -54,8 +54,8 @@ const Palette = ({ mode }: LookSettings): Theme => {
       },
       divider: paletteColor.grey[200],
       background: {
-        paper: "#201A1B",
-        default: "#0D0E13",
+        paper: "#1a1a1a",
+        default: "#121212",
       },
     },
   });

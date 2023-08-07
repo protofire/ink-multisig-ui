@@ -16,7 +16,7 @@ export const MenuItemStyled = styled(MuiMenuItem)<ButtonProps>(({ theme }) => ({
   "& p": {
     color: theme.palette.common.white,
     padding: "1rem 0.3rem",
-    fontSize: "1.37rem",
+    fontSize: "1rem",
   },
   "&.Mui-selected": {
     backgroundColor: "transparent",
