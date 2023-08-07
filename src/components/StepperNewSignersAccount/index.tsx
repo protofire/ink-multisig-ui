@@ -15,10 +15,10 @@ import { useFormSignersAccountState } from "@/hooks/signatoriesAccount/useFormSi
 
 import { STEPS } from "./constants";
 
+type SaveProps = Omit<SignatoriesAccount, "address"> & { walletName: string };
+
 type StepperNewSignersAccountProps = {
-  save: (
-    props: Omit<SignatoriesAccount, "address"> & { walletName: string }
-  ) => void;
+  save: (props: SaveProps) => void;
   isExecuting: boolean;
   networkId: ChainId;
 };
@@ -33,7 +33,7 @@ function StepperNewSignersAccount({
   const handleNext = () => {
     const isLastStep = activeStep === STEPS.length - 1;
     if (isLastStep) {
-      const parsedData = {
+      const parsedData: SaveProps = {
         owners: data.owners,
         threshold: data.threshold,
         walletName: data.walletName,
