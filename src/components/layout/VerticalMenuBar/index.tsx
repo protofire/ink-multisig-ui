@@ -1,20 +1,21 @@
-import { Box, BoxProps, Drawer, styled } from "@mui/material";
+import { Drawer, DrawerProps, styled } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
+import { XsignerAccountInfoWidget } from "@/components/XsignerAccountInfoWidget";
 import { useSettingsTheme } from "@/context/SettingsThemeConsumer";
 
-import Navigation from "./Navigation";
+import Navigation from "../Navigation";
 
 const DEFAULT_WIDTH = 240;
 
-interface DrawerStyledProps {
-  drawerWidth: number;
+interface DrawerStyledProps extends DrawerProps {
+  drawerwidth: number;
 }
 
 const DrawerStyled = styled(Drawer)<DrawerStyledProps>(
-  ({ drawerWidth, theme }) => ({
-    width: drawerWidth,
+  ({ drawerwidth, theme }) => ({
+    width: drawerwidth,
     flexShrink: 0,
     boxSizing: "border-box",
     "& .MuiBackdrop-root": {
@@ -22,18 +23,13 @@ const DrawerStyled = styled(Drawer)<DrawerStyledProps>(
     },
     "& .MuiDrawer-paper": {
       marginTop: 66,
-      width: drawerWidth,
+      width: drawerwidth,
       borderRight: "none",
       backgroundColor: theme.palette.background.paper,
       elevation: 9,
     },
   })
 );
-
-const XsignerInfo = styled(Box)<BoxProps>(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-  minHeight: theme.spacing(11),
-}));
 
 export function VerticalMenuBar() {
   const [open, setOpen] = useState(true);
@@ -50,13 +46,13 @@ export function VerticalMenuBar() {
 
   return (
     <DrawerStyled
-      drawerWidth={settings.drawerWidth || DEFAULT_WIDTH}
+      drawerwidth={settings.drawerWidth || DEFAULT_WIDTH}
       variant="persistent"
       anchor="left"
       open={open}
     >
+      <XsignerAccountInfoWidget />
       <Navigation currentPath={pathname} />
-      <XsignerInfo />
     </DrawerStyled>
   );
 }

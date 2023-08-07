@@ -6,11 +6,7 @@ import { ROUTES } from "@/config/routes";
 
 import { WalletConnect } from "../WalletConnect";
 
-interface Props {
-  navHidden?: boolean;
-}
-
-export function ApplicationBars({ navHidden = true }: Props) {
+export function TopBar() {
   return (
     <AppBar elevation={0} position="static">
       <Toolbar>

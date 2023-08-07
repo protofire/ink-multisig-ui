@@ -1,32 +1,30 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, PropsWithChildren, useContext } from "react";
 
+import { IXsignerSelectedRepository } from "@/domain/repositores/IXsignerSelectedRepository";
 import { MyDatabase } from "@/services/localDB";
 import { SignatoriesAccountDatabase } from "@/services/localDB/SignatoriesAccountRepository";
+import { XsignerSelectedRepository } from "@/services/localDB/XsignerSelectedRepository";
 
 interface DbContext {
-  signatoriesAccountRepository?: SignatoriesAccountDatabase;
+  signatoriesAccountRepository: SignatoriesAccountDatabase;
+  xsignerSelectedRepository: IXsignerSelectedRepository;
 }
 
-const DbContext = createContext<DbContext>({});
+const signatoriesAccountRepository = new SignatoriesAccountDatabase(
+  new MyDatabase()
+);
+const xsignerSelectedRepository = new XsignerSelectedRepository();
+
+const DbContext = createContext<DbContext>({
+  signatoriesAccountRepository,
+  xsignerSelectedRepository,
+});
 
 export const LocalDbProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [signatoriesAccountRepository, setSignatoriesAccountRepository] =
-    useState<SignatoriesAccountDatabase>();
-
-  useEffect(() => {
-    const db = new MyDatabase();
-
-    setSignatoriesAccountRepository(new SignatoriesAccountDatabase(db));
-  }, []);
-
   return (
-    <DbContext.Provider value={{ signatoriesAccountRepository }}>
+    <DbContext.Provider
+      value={{ signatoriesAccountRepository, xsignerSelectedRepository }}
+    >
       {children}
     </DbContext.Provider>
   );
