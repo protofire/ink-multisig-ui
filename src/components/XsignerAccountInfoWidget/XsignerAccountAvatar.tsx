@@ -8,15 +8,28 @@ type Props = Partial<SignatoriesAccount>;
 
 export function XsignerAccountAvatar({ address, name }: Props) {
   return (
-    <Box display="flex" alignItems="center">
-      <Avatar>
-        <Identicon value={address} size={32} theme="jdenticon" />
-      </Avatar>
-      <Box marginLeft={1}>
+    <Box
+      display="flex"
+      alignItems="center"
+      flexDirection={"column"}
+      height="100%"
+      justifyContent="space-between"
+    >
+      <Box display="flex" alignItems={"center"}>
+        <Avatar>
+          <Identicon value={address} size={32} theme="jdenticon" />
+        </Avatar>
+        <Box marginLeft={1}>
+          <Typography variant="caption" color="white">
+            {name}
+          </Typography>
+          <Typography color="white">{truncateAddress(address, 4)}</Typography>
+        </Box>
+      </Box>
+      <Box>
         <Typography variant="caption" color="white">
-          {name}
+          Rococo testnet
         </Typography>
-        <Typography color="white">{truncateAddress(address, 4)}</Typography>
       </Box>
     </Box>
   );
