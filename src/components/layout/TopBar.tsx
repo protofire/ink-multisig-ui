@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 
 import { WalletConnect } from "../WalletConnect";
+import { ConnectButton } from "../WalletSelectModal/ConnectButton";
 
 export default function TopBar() {
   return (
@@ -21,6 +22,7 @@ export default function TopBar() {
           </Link>
         </Stack>
         <WalletConnect />
+        <ConnectButton></ConnectButton>
       </Toolbar>
     </AppBar>
   );
