@@ -42,12 +42,3 @@ export interface IChain<T> {
     };
   };
 }
-
-export const RococoContractsTestnet: IChain<"rococo-contracts-testnet"> = {
-  id: "rococo-contracts-testnet",
-  name: "Contracts",
-  account: "*25519",
-  rpcs: ["wss://rococo-contracts-rpc.polkadot.io"],
-  paraId: 1002,
-  relay: { id: "rococo-testnet" },
-} as const;

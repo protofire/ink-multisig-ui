@@ -1,10 +1,10 @@
-import fs from 'fs-extra'
-import path from 'path'
-import { MetadataManager } from '@/services/substrate/MetadataManager';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { FileState } from '@/domain/FileState';
-import { ROCOCO_RPC } from '../setupTests';
-import { Abi } from '@polkadot/api-contract';
+import fs from "fs-extra";
+import path from "path";
+import { MetadataManager } from "@/services/substrate/MetadataManager";
+import { ApiPromise, WsProvider } from "@polkadot/api";
+import { FileState } from "@/domain/FileState";
+import { ROCOCO_RPC } from "../setupTests";
+import { Abi } from "@polkadot/api-contract";
 
 async function getFileState(filePath: string): Promise<FileState> {
   const fileBuffer = await fs.readFile(filePath);
@@ -18,17 +18,18 @@ async function getFileState(filePath: string): Promise<FileState> {
   };
 }
 
-const filePath = 'tests/data/metadata_5D3HHxVrJ5P9Zosmf7dQmzM5soBF3Vw2LGCdczL9ivc5dLYy.json'
+const filePath =
+  "tests/data/metadata_5D3HHxVrJ5P9Zosmf7dQmzM5soBF3Vw2LGCdczL9ivc5dLYy.json";
 
-describe('MetadataManager', () => {
+describe("MetadataManager", () => {
   let metadataManager: MetadataManager;
   let mockApi: jest.Mocked<ApiPromise>;
-  let realApi : ApiPromise | null = null
-  let metadataFile: FileState
-  const runRealApiTests = process.env.RUN_REAL_API_TESTS === 'true'
+  let realApi: ApiPromise | null = null;
+  let metadataFile: FileState;
+  const runRealApiTests = process.env.RUN_REAL_API_TESTS === "true";
 
   beforeAll(async () => {
-    metadataFile = await getFileState(filePath)      
+    metadataFile = await getFileState(filePath);
     if (!runRealApiTests) {
       return;
     }
@@ -43,7 +44,6 @@ describe('MetadataManager', () => {
     }
   });
 
-
   beforeEach(() => {
     metadataManager = new MetadataManager();
 
@@ -55,24 +55,23 @@ describe('MetadataManager', () => {
     } as unknown as jest.Mocked<ApiPromise>;
   });
 
-
-  it('should parseFile and get ABI', async () => {
+  it("should parseFile and get ABI", async () => {
     const result = metadataManager.parseFile(metadataFile, false, mockApi);
 
     expect(result.value).toBeInstanceOf(Abi);
   });
 
   it(
-    runRealApiTests 
-       ? 'should parseFile with real ApiPromise'
-       : 'will skip deriveFromJson with real ApiPromise',
-     async () => {
-     if(!runRealApiTests) return
- 
-     const result = metadataManager.parseFile(metadataFile, false, realApi);
- 
-     expect(realApi?.query).toHaveProperty('contracts')
-     expect(result.value).toBeInstanceOf(Abi);
-   });
- 
+    runRealApiTests
+      ? "should parseFile with real ApiPromise"
+      : "will skip deriveFromJson with real ApiPromise",
+    async () => {
+      if (!runRealApiTests) return;
+
+      const result = metadataManager.parseFile(metadataFile, false, realApi);
+
+      expect(realApi?.query).toHaveProperty("contracts");
+      expect(result.value).toBeInstanceOf(Abi);
+    }
+  );
 });

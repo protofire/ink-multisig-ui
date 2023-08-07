@@ -18,9 +18,9 @@ const config: StorybookConfig = {
     autodocs: "tag",
   },
   core: {
-    disableTelemetry: true
+    disableTelemetry: true,
   },
-  staticDirs: ['../public'],
+  staticDirs: ["../public"],
   webpackFinal: async (config) => {
     if (config.resolve) {
       config.resolve.alias = {
@@ -29,7 +29,7 @@ const config: StorybookConfig = {
       };
     }
 
-    return config
-  } 
+    return config;
+  },
 };
 export default config;

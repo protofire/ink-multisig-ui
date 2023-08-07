@@ -4,36 +4,27 @@ import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { customReportError } from "@/utils/error";
 
-interface SaveOptions {
-  onSuccess?: (account: SignatoriesAccount) => void;
-  onFallback?: (error: string) => void;
-}
-
-export function useAddSignatoriesAccount() {
+export function useSetXsignerSelected() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { signatoriesAccountRepository } = useLocalDbContext();
+  const { xsignerSelectedRepository } = useLocalDbContext();
 
-  async function save(
-    account: SignatoriesAccount,
-    options?: SaveOptions
+  async function setXsigner(
+    account: SignatoriesAccount
   ): Promise<SignatoriesAccount | void> {
     setIsLoading(true);
 
     try {
-      await signatoriesAccountRepository
-        ?.addSignatoryAccount(account)
-        .finally(() => options?.onSuccess?.(account));
+      xsignerSelectedRepository.saveAccount(account);
 
       return account;
     } catch (err) {
       const errorFormated = customReportError(err);
       setError(errorFormated);
-      options?.onFallback?.(errorFormated);
     } finally {
       setIsLoading(false);
     }
   }
 
-  return { save, isLoading, error };
+  return { setXsigner, isLoading, error };
 }

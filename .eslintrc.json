@@ -49,19 +49,12 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "prettier/prettier": [
-      "warn"
-    ]
+    "prettier/prettier": ["warn"]
   },
-  "ignorePatterns": [
-    ".next/*",
-    "node_modules/*"
-  ],
+  "ignorePatterns": [".next/*", "node_modules/*"],
   "overrides": [
     {
-      "files": [
-        "next.config.js"
-      ],
+      "files": ["next.config.js"],
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
       }

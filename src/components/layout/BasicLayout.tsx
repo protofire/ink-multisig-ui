@@ -5,7 +5,7 @@ import {
   MainContentWrapper,
   VerticalLayoutWrapper,
 } from "@/components/layout/shared";
-import TopBar from "@/components/layout/TopBar";
+import { TopBar } from "@/components/layout/TopBar";
 
 interface LayoutProps {
   children: React.ReactNode;
