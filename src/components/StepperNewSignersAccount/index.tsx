@@ -15,7 +15,7 @@ import { useFormSignersAccountState } from "@/hooks/signatoriesAccount/useFormSi
 
 import { STEPS } from "./constants";
 
-type SaveProps = Omit<SignatoriesAccount, "address"> & { walletName: string };
+type SaveProps = Omit<SignatoriesAccount, "address">;
 
 type StepperNewSignersAccountProps = {
   save: (props: SaveProps) => void;
@@ -36,7 +36,7 @@ function StepperNewSignersAccount({
       const parsedData: SaveProps = {
         owners: data.owners,
         threshold: data.threshold,
-        walletName: data.walletName,
+        name: data.walletName,
         networkId,
       };
       save(parsedData);
