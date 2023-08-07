@@ -1,6 +1,11 @@
 import { Box, BoxProps, styled } from "@mui/material";
 
-import { ChainColors, CHAINS_COLORS } from "@/config/chain";
+import {
+  ChainColors,
+  CHAINS_ALLOWED,
+  CHAINS_COLORS,
+  getChain,
+} from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
@@ -15,23 +20,32 @@ export const AccountInfoWrapper = styled(Box)<
   return {
     backgroundColor: theme.palette.background.default,
     minHeight: theme.spacing(20),
-    padding: theme.spacing(3, 2),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
     background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${_networkColor} 150%, ${_networkColor} )`,
   };
 });
 
 export function XsignerAccountUI({
   networkColor,
+  networkName,
   address,
   name,
 }: {
   networkColor: ChainColors[keyof ChainColors] | undefined;
+  networkName: (typeof CHAINS_ALLOWED)[number]["name"];
   address: string;
   name: string;
 }) {
   return (
     <AccountInfoWrapper networkcolor={networkColor}>
-      <XsignerAccountAvatar name={name} address={address} />
+      <XsignerAccountAvatar
+        name={name}
+        address={address}
+        networkName={networkName}
+      />
     </AccountInfoWrapper>
   );
 }
@@ -42,12 +56,14 @@ export function XsignerAccountInfoWidget() {
   const networkColor = (network && CHAINS_COLORS[network]) || undefined;
   const address = xSignerSelected?.address || "-";
   const name = xSignerSelected?.name || "-";
+  const networkName = (network && getChain(network)?.name) || "-";
 
   return (
     <XsignerAccountUI
       name={name}
       networkColor={networkColor}
       address={address}
+      networkName={networkName}
     />
   );
 }

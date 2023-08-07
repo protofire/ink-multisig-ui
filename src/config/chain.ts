@@ -18,3 +18,7 @@ export const CHAINS_COLORS: ChainColors = {
   [RococoContractsTestnet.id]: "#8453c2",
   [ShibuyaTestnet.id]: "#FF9F1C",
 };
+
+export function getChain(chainId: (typeof CHAINS_ALLOWED)[number]["id"]) {
+  return CHAINS_ALLOWED.find((_chain) => _chain.id === chainId);
+}
