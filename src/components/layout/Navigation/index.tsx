@@ -15,11 +15,13 @@ import { MENU_ITEMS, NavLink } from "./NavLink";
 export const MenuItemStyled = styled(MuiMenuItem)<ButtonProps>(({ theme }) => ({
   "& p": {
     color: theme.palette.common.white,
-    padding: "1rem 0.3rem",
-    fontSize: "1rem",
+    padding: "0.6rem",
+    fontSize: "0.875rem",
+    fontWeight: "700",
   },
   "&.Mui-selected": {
-    backgroundColor: "transparent",
+    backgroundColor: theme.palette.background,
+    borderRadius: "0.4rem",
     p: {
       color: theme.palette.primary.main,
     },
@@ -28,7 +30,6 @@ export const MenuItemStyled = styled(MuiMenuItem)<ButtonProps>(({ theme }) => ({
     },
   },
   "&.Mui-selected:hover": {
-    backgroundColor: "transparent",
     color: theme.palette.common.white,
   },
 }));
