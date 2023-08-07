@@ -34,6 +34,11 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
           {networkName}
         </Typography>
       </Box>
+      <Box>
+        <Typography variant="caption" color="white">
+          Rococo testnet
+        </Typography>
+      </Box>
     </Box>
   );
 }
