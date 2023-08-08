@@ -19,7 +19,6 @@ export const ConnectButton: React.FC = () => {
         wallets={wallets}
         open={open}
         handleClose={() => setOpen(false)}
-        setCurrentWallet={() => undefined}
       ></ModalWallet>
     </>
   );
