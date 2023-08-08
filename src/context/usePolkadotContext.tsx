@@ -10,8 +10,7 @@ import { ChainId } from "useink/dist/chains";
 
 import { CHAINS_ALLOWED } from "@/config/chain";
 import { SetState } from "@/domain/utilityReactTypes";
-import { Wallet } from "@/infrastructure/useink/walletTypes";
-import { WalletAccount } from "@/services/useink/types";
+import { Wallet, WalletAccount } from "@/services/useink/types";
 import { createNotImplementedWarning } from "@/utils/error";
 
 interface PolkadotContextProps {

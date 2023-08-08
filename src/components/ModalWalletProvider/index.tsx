@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-import { Wallet } from "@/infrastructure/useink/walletTypes";
+import { Wallet } from "@/services/useink/types";
 
 import {
   ModalStyled,
