@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { LoadingButton } from "@/components/common/LoadingButton";
+import {
+  LoadingButton,
+  LoadingButtonProps,
+} from "@/components/common/LoadingButton";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -9,34 +12,33 @@ const meta = {
   parameters: {
     layout: "centered",
   },
+  args: {
+    children: "Loading Button",
+  },
   tags: ["autodocs"],
-} satisfies Meta<typeof LoadingButton>;
+} satisfies Meta<LoadingButtonProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Primary: Story = {
+export const Text: Story = {
   args: {
-    children: "Loading Button",
-  },
-};
-
-export const Secondary: Story = {
-  args: {
-    children: "Button",
-  },
-};
-
-export const Large: Story = {
-  args: {
-    size: "large",
-    children: "Button",
-  },
-};
-
-export const Small: Story = {
-  args: {
+    variant: "text",
     size: "small",
+  },
+};
+
+export const Outlined: Story = {
+  args: {
+    variant: "outlined",
+    size: "medium",
+  },
+};
+
+export const Contained: Story = {
+  args: {
+    variant: "contained",
+    size: "large",
   },
 };
