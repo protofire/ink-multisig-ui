@@ -22,8 +22,14 @@ type Props = {
   open: boolean;
   handleClose: () => void;
   wallets: Wallet[];
+  setCurrentWallet: (wallet: Wallet) => void;
 };
-export function ModalWallet({ open, handleClose, wallets }: Props) {
+export function ModalWallet({
+  open,
+  handleClose,
+  wallets,
+  setCurrentWallet,
+}: Props) {
   const walletInstalled = wallets.filter((wallet) => wallet.installed);
   const walletNotInstalled = wallets.filter((wallet) => !wallet.installed);
   return (
@@ -40,6 +46,7 @@ export function ModalWallet({ open, handleClose, wallets }: Props) {
                 <>
                   <ModalStyledListItem
                     onClick={() => {
+                      setCurrentWallet(w);
                       handleClose();
                     }}
                   >
@@ -61,6 +68,7 @@ export function ModalWallet({ open, handleClose, wallets }: Props) {
                 <>
                   <ModalStyledListItem
                     onClick={() => {
+                      setCurrentWallet(w);
                       handleClose();
                     }}
                   >
