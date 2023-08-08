@@ -11,7 +11,10 @@ import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { useFormSignersAccountState } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
+import {
+  useFormSignersAccountState,
+  ValidationError,
+} from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
 import { STEPS } from "./constants";
 
@@ -73,7 +76,11 @@ function StepperNewSignersAccount({
         <Button
           variant="contained"
           onClick={handleNext}
-          disabled={data.errors[activeStep]?.error}
+          disabled={
+            !!data.errors[activeStep].find(
+              (error: ValidationError) => !!error.error
+            )
+          }
         >
           {activeStep === STEPS.length - 1 ? "Confirm" : "Next"}
         </Button>

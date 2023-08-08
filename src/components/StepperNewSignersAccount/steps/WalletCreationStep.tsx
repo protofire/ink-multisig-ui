@@ -11,7 +11,7 @@ function WalletCreationStep({
 }: {
   walletName: string;
   handleWalletName: (name: string, step: number) => void;
-  errors: ValidationError[];
+  errors: Array<ValidationError[]>;
   step: number;
 }) {
   const { network } = usePolkadotContext();
@@ -19,8 +19,8 @@ function WalletCreationStep({
     <Box>
       <TextField
         label="Name"
-        error={errors[0]?.error}
-        helperText={errors[0]?.message}
+        error={errors[step][0]?.error}
+        helperText={errors[step][0]?.message}
         value={walletName}
         onChange={(e) => handleWalletName(e.target.value, step)}
         fullWidth

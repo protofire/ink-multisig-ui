@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
+import { STEPS } from "@/components/StepperNewSignersAccount/constants";
+import { Owner } from "@/domain/SignatoriesAccount";
+
 export type ValidationError = {
   error: boolean;
   message: string;
@@ -44,9 +47,13 @@ const generateRandomWalletName = () => {
 
 export const useFormSignersAccountState = () => {
   const [walletName, setWalletName] = useState(generateRandomWalletName());
-  const [owners, setOwners] = useState<ArrayOneOrMore<string>>([""]);
-  const [threshold, setThreshold] = useState(0);
-  const [errors, setErrors] = useState([{ error: false, message: "" }]);
+  const [owners, setOwners] = useState<ArrayOneOrMore<Owner>>([
+    { name: "Owner 1", address: "" },
+  ]);
+  const [threshold, setThreshold] = useState(1);
+  const [errors, setErrors] = useState<Array<Array<ValidationError>>>(
+    Array.from({ length: STEPS.length }, () => [])
+  );
 
   // Validation logic
   const validateWalletName = (name: string, step: number): ValidationError => {
@@ -60,23 +67,21 @@ export const useFormSignersAccountState = () => {
       };
     }
     // Modify only the error for the current step
-    setErrors((prev) => {
-      const newErrors = [...prev];
-      newErrors[step] = err;
-      return newErrors;
-    });
+    const newErrors = [...errors];
+    newErrors[step][0] = err;
+    setErrors(newErrors);
 
     return err;
   };
 
-  const validateOwnerName = (name: string, step: number): boolean => {
-    if (name.length <= 50) {
+  const validateOwnerName = (name: string): boolean => {
+    if (name && name.length <= 50) {
       return true;
     }
     return false;
   };
 
-  const validateOwnerAddress = (address: string, step: number): boolean => {
+  const validateOwnerAddress = (address: string): boolean => {
     const pattern = /^0x[a-fA-F0-9]{40}$/;
     if (pattern.test(address)) {
       return true;
@@ -97,11 +102,31 @@ export const useFormSignersAccountState = () => {
     setWalletName(name);
   };
 
-  const handleOwners = (newOwners: ArrayOneOrMore<string>, step: number) => {
+  const handleOwners = (newOwners: ArrayOneOrMore<Owner>, step: number) => {
+    newOwners.forEach((owner, index) => {
+      const err = { error: false, message: "" };
+      if (!validateOwnerName(owner.name)) {
+        err.error = true;
+        err.message = "Owner name must be less than 50 chars";
+      }
+
+      if (!validateOwnerAddress(owner.address)) {
+        err.error = true;
+        err.message = "Owner address must be a valid Ethereum address";
+      }
+
+      const newErrors = [...errors];
+      // Modify only the error for the current step
+      newErrors[step][index] = err;
+      setErrors(newErrors);
+
+      return err;
+    });
+
     setOwners(newOwners);
   };
 
-  const handleThreshold = (newThreshold: number, step: number) => {
+  const handleThreshold = (newThreshold: number) => {
     if (validateThreshold(newThreshold, owners?.length ?? 0)) {
       setThreshold(newThreshold);
     }
@@ -119,5 +144,6 @@ export const useFormSignersAccountState = () => {
     validateOwnerAddress,
     validateThreshold,
     errors,
+    setErrors,
   };
 };
