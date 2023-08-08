@@ -3,17 +3,25 @@ import Button, { ButtonProps } from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import * as React from "react";
 
-interface LoadingButtonProps extends ButtonProps {
+export interface LoadingButtonProps
+  extends Pick<
+    ButtonProps,
+    "ref" | "onClick" | "variant" | "size" | "children" | "sx"
+  > {
   isLoading?: boolean;
 }
 
-export const LoadingButton: React.FC<LoadingButtonProps> = ({
-  isLoading,
-  children,
-  ...props
-}) => {
+export const LoadingButton: React.FC<LoadingButtonProps> = React.forwardRef<
+  HTMLButtonElement,
+  LoadingButtonProps
+>(function RefLoadingButton({ isLoading, children, ...props }, ref) {
   return (
-    <Button {...props} disabled={isLoading} sx={{ position: "relative" }}>
+    <Button
+      ref={ref}
+      {...props}
+      disabled={isLoading}
+      sx={{ position: "relative" }}
+    >
       <Box
         sx={{
           visibility: isLoading ? "hidden" : "visible",
@@ -35,4 +43,4 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
       )}
     </Button>
   );
-};
+});

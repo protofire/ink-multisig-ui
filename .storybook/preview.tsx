@@ -1,9 +1,26 @@
+import React, {useMemo} from "react";
 import { StoryFn, type Preview, StoryContext } from "@storybook/react";
+import { MINIMAL_VIEWPORTS } from "@storybook/addon-viewport";
+
 import ThemeCustomization from "@/themes";
 import { Settings } from "@/themes/types";
 
-import React, {useEffect, useMemo, useState} from "react";
-
+const customViewports = {
+  iphone7: {
+    name: "iPhone 7",
+    styles: {
+      width: "375px",
+      height: "667px",
+    },
+  },
+  samsungGalaxyS21Ultra: {
+    name: "Samsung Galaxy S21 Ultra",
+    styles: {
+      width: "384px",
+      height: "854px",
+    },
+  },
+};
 
 const preview: Preview = {
   parameters: {
@@ -14,6 +31,12 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
+    viewport: {
+      viewports: {
+      ...customViewports,
+      ...MINIMAL_VIEWPORTS
+      }
+    }
   },
   globalTypes: {
     theme: {
