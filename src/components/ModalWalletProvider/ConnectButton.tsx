@@ -30,15 +30,11 @@ export const ConnectButton: React.FC = () => {
           src={accountConnected?.wallet?.logo.src}
         ></Avatar>
         {/*remove later*/}
-
-        <StyledConnectButton onClick={disconnectWallet}>
-          Disconnect
-        </StyledConnectButton>
-
         <AccountSelect
           currentAccount={accountConnected?.address}
           accounts={accounts}
           setAccount={setAccount}
+          disconnectWallet={disconnectWallet}
         />
       </>
     );

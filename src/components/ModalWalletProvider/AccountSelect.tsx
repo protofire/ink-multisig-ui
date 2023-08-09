@@ -65,16 +65,20 @@ export function AccountSelect({
   accounts,
   currentAccount,
   setAccount,
+  disconnectWallet,
 }: {
   accounts: WalletAccount[] | undefined;
   currentAccount: string | undefined;
   setAccount: (account: WalletAccount) => void;
+  disconnectWallet: () => void;
 }) {
   const _handleChange = (event: SelectChangeEvent<unknown>) => {
     const address = event.target.value;
-    if (!accounts) return;
-    const newAccount = accounts.find((element) => element.address === address);
-
+    if (address === OPTION_FOR_DISCONNECTING) {
+      disconnectWallet();
+      return;
+    }
+    const newAccount = accounts?.find((element) => element.address === address);
     if (!newAccount) {
       console.error(
         `Theres not an account with this address ${event.target.value}`
@@ -122,13 +126,6 @@ export function AccountSelect({
           {a.name !== OPTION_FOR_DISCONNECTING && (
             <Stack sx={{ display: "flex", flexDirection: "row" }}>
               <AvatarAccount address={a.address} />
-              {/* {walletLogo && (
-                <Avatar
-                  sx={{ height: "30px", width: "30px", marginTop: "3px" }}
-                  src={walletLogo.src}
-                  alt={walletLogo.alt}
-                />
-              )} */}
               <Stack>
                 <span>{shortNameLonger(a.name as string)}</span>
                 <p>{truncateAddress(a.address)}</p>
