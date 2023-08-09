@@ -2,9 +2,8 @@ import { AppBar, Stack, Toolbar } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
+import { ConnectButton } from "@/components/ModalWalletProvider/ConnectButton";
 import { ROUTES } from "@/config/routes";
-
-import { ConnectButton } from "../ModalWalletProvider/ConnectButton";
 
 interface Props {
   navHidden?: boolean;

@@ -13,6 +13,6 @@ export const mockWallet = {
   installed: false,
 } as Wallet;
 
-export const mockWalletType = (isInstalled: boolean) => {
-  return { ...mockWallet, installed: isInstalled };
+export const mockWalletType = (obj: { title: string; installed: boolean }) => {
+  return { ...mockWallet, ...obj } as Wallet;
 };
