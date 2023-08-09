@@ -62,14 +62,18 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
           </Tooltip>
         </Box>
         <Box marginLeft={1}>
-          <Typography variant="caption" color="white">
+          <Typography variant="subtitle1" color="white" noWrap>
             {name}
           </Typography>
-          <Typography color="white">{truncateAddress(address, 4)}</Typography>
-          <Typography color="white">124,09 AST</Typography>
+          <Typography color="white" variant="caption">
+            {truncateAddress(address, 4)}
+          </Typography>
+          <Typography color="white" fontWeight="bold">
+            124,09 AST
+          </Typography>
         </Box>
       </Box>
-      <Box sx={{ right: "0", position: "absolute", top: "4rem" }}>
+      <Box sx={{ right: "0", position: "absolute", top: "3.5rem" }}>
         <IconButton
           id="basic-button"
           aria-controls={open ? "basic-menu" : undefined}
@@ -81,14 +85,16 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
           <ChangeCircleRoundedIcon
             fontSize="large"
             color="primary"
-            sx={{ transition: "0.5s", "&:hover": { rotate: "180deg" } }}
+            sx={{
+              transition: "0.6s",
+              "&:hover": { scale: "1.1", rotate: "90deg" },
+            }}
           />
         </IconButton>
         <Menu
           id="basic-menu"
-          // anchorEl={anchorEl}
           anchorReference="anchorPosition"
-          anchorPosition={{ top: 200, left: 400 }}
+          anchorPosition={{ top: 140, left: 435 }}
           anchorOrigin={{
             vertical: "center",
             horizontal: "right",
@@ -104,17 +110,17 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
           }}
         >
           <MenuItem onClick={handleClose}>
-            <Typography variant="caption" color="white">
+            <Typography variant="body1" color="white">
               Great-Journey-wallet
             </Typography>
           </MenuItem>
           <MenuItem onClick={handleClose}>
-            <Typography variant="caption" color="white">
+            <Typography variant="body1" color="white">
               Crazy-Journey-wallet
             </Typography>
           </MenuItem>
           <MenuItem onClick={handleClose}>
-            <Typography variant="caption" color="white">
+            <Typography variant="body1" color="white">
               Amazing-Journey-wallet
             </Typography>
           </MenuItem>

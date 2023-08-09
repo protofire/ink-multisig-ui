@@ -19,7 +19,7 @@ export const AccountInfoWrapper = styled(Box)<
     : theme.palette.background.default;
   return {
     backgroundColor: theme.palette.background.default,
-    minHeight: theme.spacing(20),
+    minHeight: theme.spacing(16),
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     paddingTop: theme.spacing(2),
