@@ -6,6 +6,7 @@ import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 
 import { ModalWallet } from ".";
+import { AccountSelect } from "./AccountSelect";
 
 export const ConnectButton: React.FC = () => {
   const { ref: refButton, recentlyClicked } = useRecentlyClicked(500);
@@ -16,6 +17,8 @@ export const ConnectButton: React.FC = () => {
     disconnectWallet,
     isConnected,
     accountConnected,
+    accounts,
+    setAccount,
   } = usePolkadotContext();
 
   if (isConnected)
@@ -31,6 +34,12 @@ export const ConnectButton: React.FC = () => {
         <StyledConnectButton onClick={disconnectWallet}>
           Disconnect
         </StyledConnectButton>
+
+        <AccountSelect
+          currentAccount={accountConnected?.address}
+          accounts={accounts}
+          setAccount={setAccount}
+        />
       </>
     );
 
