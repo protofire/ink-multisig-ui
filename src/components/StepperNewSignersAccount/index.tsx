@@ -7,7 +7,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
@@ -22,6 +22,7 @@ type SaveProps = Omit<SignatoriesAccount, "address">;
 
 type StepperNewSignersAccountProps = {
   save: (props: SaveProps) => void;
+  onComplete: () => void;
   isExecuting: boolean;
   networkId: ChainId;
 };
@@ -30,11 +31,43 @@ function StepperNewSignersAccount({
   save,
   isExecuting,
   networkId,
+  onComplete,
 }: StepperNewSignersAccountProps) {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState<{
+    creation: number;
+    execution: number;
+  }>({ creation: 0, execution: 0 });
   const data = useFormSignersAccountState();
+
+  useEffect(() => {
+    if (!isExecuting) return;
+
+    let executionInterval: NodeJS.Timeout;
+
+    //TODO: Add logic to handle execution steps. This is just a mock.
+    const handleExecution = () => {
+      executionInterval = setInterval(() => {
+        if (activeStep.execution === STEPS.execution.length - 1) {
+          clearInterval(executionInterval);
+          onComplete();
+          return;
+        }
+        setActiveStep((prevActiveStep) => ({
+          ...prevActiveStep,
+          execution: prevActiveStep.execution + 1,
+        }));
+      }, 2000);
+    };
+
+    handleExecution();
+
+    return () => {
+      clearInterval(executionInterval);
+    };
+  }, [isExecuting, activeStep, setActiveStep, onComplete]);
+
   const handleNext = () => {
-    const isLastStep = activeStep === STEPS.length - 1;
+    const isLastStep = activeStep.creation === STEPS.creation.length - 1;
     if (isLastStep) {
       const parsedData: SaveProps = {
         owners: data.owners,
@@ -44,67 +77,119 @@ function StepperNewSignersAccount({
       };
       save(parsedData);
     } else {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setActiveStep((prevActiveStep) => ({
+        ...prevActiveStep,
+        creation: prevActiveStep.creation + 1,
+      }));
     }
+  };
+
+  const handleRedirect = () => {
+    console.log("Redirect to signers account");
   };
 
   const handleBack = () => {
-    const isFirstStep = activeStep === 0;
+    const isFirstStep = activeStep.creation === 0;
     if (isFirstStep) {
       //TODO: Add logic to go back to previous screen.
     } else {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
+      setActiveStep((prevActiveStep) => ({
+        ...prevActiveStep,
+        creation: prevActiveStep.creation - 1,
+      }));
     }
   };
 
-  const renderStepContent = (step: number, footer: JSX.Element) => {
-    const { Component } = STEPS[step];
-    return <Component {...data} footer={footer} step={step} />;
+  const section = isExecuting ? "execution" : "creation";
+  const activeSubStep = isExecuting
+    ? activeStep.execution
+    : activeStep.creation;
+
+  const renderSteps = () => (
+    <Stepper activeStep={activeSubStep} orientation="vertical">
+      {STEPS[section].map((step) => (
+        <Step key={step.id}>
+          <StepLabel>
+            <Typography>{step.name}</Typography>
+          </StepLabel>
+          <StepContent>
+            <Typography variant="subtitle2">{step.description}</Typography>
+          </StepContent>
+        </Step>
+      ))}
+    </Stepper>
+  );
+
+  const renderContent = () => {
+    const { Component } = STEPS[section][activeSubStep];
+    return <Component {...data} footer={renderFooter()} step={activeSubStep} />;
   };
 
-  const renderFooter = () => (
-    <Box
-      mt={2}
-      sx={{ display: "flex", flex: 1, justifyContent: "center", gap: "2rem" }}
-    >
-      <Button onClick={handleBack}>
-        {activeStep === STEPS.length - 1 || activeStep === 0
-          ? "Cancel"
-          : "Back"}
-      </Button>
-      {activeStep <= STEPS.length - 1 && (
-        <Button
-          variant="contained"
-          onClick={handleNext}
-          disabled={
-            !!data.errors[activeStep].find(
-              (error: ValidationError) => !!error.error
-            )
-          }
+  const renderFooter = () => {
+    if (!isExecuting) {
+      return (
+        <Box
+          mt={2}
+          sx={{
+            display: "flex",
+            flex: 1,
+            justifyContent: "center",
+            gap: "2rem",
+          }}
         >
-          {activeStep === STEPS.length - 1 ? "Confirm" : "Next"}
-        </Button>
-      )}
-    </Box>
-  );
+          <Button onClick={handleBack}>
+            {activeStep.creation === STEPS.creation.length - 1 ||
+            activeStep.creation === 0
+              ? "Cancel"
+              : "Back"}
+          </Button>
+          {activeStep.creation <= STEPS.creation.length - 1 && (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              disabled={
+                !!data.errors[activeStep.creation].find(
+                  (error: ValidationError) => !!error.error
+                )
+              }
+            >
+              {activeStep.creation === STEPS.creation.length - 1
+                ? "Confirm"
+                : "Next"}
+            </Button>
+          )}
+        </Box>
+      );
+    } else {
+      return (
+        <Box
+          mt={2}
+          sx={{
+            display: "flex",
+            flex: 1,
+            justifyContent: "center",
+            gap: "2rem",
+          }}
+        >
+          <Button
+            disabled={activeStep.execution < STEPS.execution.length - 1}
+            onClick={handleRedirect}
+          >
+            Start using ink wallet
+          </Button>
+        </Box>
+      );
+    }
+  };
+
   return (
     <Box display="flex" flexDirection="row">
       <Box width={2 / 4}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {STEPS.map((step) => (
-            <Step key={step.id}>
-              <StepLabel>
-                <Typography>{step.name}</Typography>
-              </StepLabel>
-              <StepContent>
-                <Typography variant="subtitle2">{step.description}</Typography>
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
+        {renderSteps()}
+        {isExecuting && renderFooter()}
       </Box>
       <Box width={2 / 4} p={2}>
-        {renderStepContent(activeStep, renderFooter())}
+        {renderContent()}
       </Box>
     </Box>
   );

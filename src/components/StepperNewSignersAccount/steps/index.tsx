@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import ExecutionStep from "./ExecutionStep";
 import OwnersStep from "./OwnersStep";
 import ReviewStep from "./ReviewStep";
 import WalletCreationStep from "./WalletCreationStep";
@@ -41,4 +42,4 @@ function getDisplayName<T>(WrappedComponent: React.ComponentType<T>): string {
   return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-export { OwnersStep, ReviewStep, WalletCreationStep, withCard };
+export { ExecutionStep, OwnersStep, ReviewStep, WalletCreationStep, withCard };

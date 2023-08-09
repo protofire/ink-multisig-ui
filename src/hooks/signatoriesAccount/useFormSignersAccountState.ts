@@ -17,7 +17,7 @@ export const useFormSignersAccountState = () => {
   ]);
   const [threshold, setThreshold] = useState(1);
   const [errors, setErrors] = useState<Array<Array<ValidationError>>>(
-    Array.from({ length: STEPS.length }, () => [])
+    Array.from({ length: STEPS.creation.length }, () => [])
   );
 
   // Validation logic

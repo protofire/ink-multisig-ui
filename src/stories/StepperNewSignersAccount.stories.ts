@@ -17,6 +17,7 @@ export const Default: Story = {
   args: {
     save: console.log,
     isExecuting: false,
+    onComplete: console.log,
     networkId: "acala",
   },
 };
