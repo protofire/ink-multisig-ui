@@ -5,12 +5,12 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useWallet } from "useink";
+import { useAllWallets, useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { CHAINS_ALLOWED } from "@/config/chain";
 import { SetState } from "@/domain/utilityReactTypes";
-import { WalletAccount } from "@/services/useink/types";
+import { Wallet, WalletAccount } from "@/services/useink/types";
 import { createNotImplementedWarning } from "@/utils/error";
 
 interface PolkadotContextProps {
@@ -18,20 +18,29 @@ interface PolkadotContextProps {
   setNetwork: SetState<ChainId | undefined>;
   accounts: WalletAccount[] | undefined;
   accountConnected: WalletAccount | undefined;
+  wallets: Wallet[];
+  isConnected: boolean;
+  connectWallet: (walletName: string) => void;
+  disconnectWallet: () => void;
 }
 
 const PolkadotContext = createContext<PolkadotContextProps>({
   network: undefined,
-  setNetwork: () => createNotImplementedWarning("setNetwork"),
   accounts: undefined,
   accountConnected: undefined,
+  wallets: [],
+  setNetwork: () => createNotImplementedWarning("setNetwork"),
+  connectWallet: () => createNotImplementedWarning("connectWallet"),
+  disconnectWallet: () => createNotImplementedWarning("disconnectWallet"),
+  isConnected: false,
 });
 
 export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [networkId, setNetworkId] = useState<ChainId | undefined>();
-  const { accounts, account } = useWallet();
+  const { accounts, account, connect, disconnect, isConnected } = useWallet();
+  const walletList = useAllWallets();
 
   //TODO replace with at network selector
   useEffect(() => {
@@ -48,6 +57,10 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
         setNetwork: setNetworkId,
         accounts,
         accountConnected: account,
+        wallets: walletList,
+        connectWallet: connect,
+        disconnectWallet: disconnect,
+        isConnected,
       }}
     >
       {children}
