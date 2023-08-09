@@ -20,20 +20,20 @@ import {
 
 type Props = {
   open: boolean;
-  handleClose: () => void;
   wallets: Wallet[];
-  setCurrentWallet: (wallet: Wallet) => void;
+  connectWallet: (wallet: string) => void;
+  onClose: () => void;
 };
-export function ModalWallet({
-  open,
-  handleClose,
-  wallets,
-  setCurrentWallet,
-}: Props) {
+export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
   const walletInstalled = wallets.filter((wallet) => wallet.installed);
   const walletNotInstalled = wallets.filter((wallet) => !wallet.installed);
+
+  const handleClick = (walletName: string) => {
+    onClose();
+    connectWallet(walletName);
+  };
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={onClose}>
       <ModalStyled>
         <ModalTypography id="modal-modal-title" variant="h3">
           Connect your wallet
@@ -46,8 +46,7 @@ export function ModalWallet({
                 <>
                   <ModalStyledListItem
                     onClick={() => {
-                      setCurrentWallet(w);
-                      handleClose();
+                      handleClick(w.extensionName);
                     }}
                   >
                     <ListItemIcon>
@@ -68,8 +67,7 @@ export function ModalWallet({
                 <>
                   <ModalStyledListItem
                     onClick={() => {
-                      setCurrentWallet(w);
-                      handleClose();
+                      handleClick(w.extensionName);
                     }}
                   >
                     <ListItemIcon>

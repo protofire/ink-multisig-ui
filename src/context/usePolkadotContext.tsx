@@ -19,21 +19,27 @@ interface PolkadotContextProps {
   accounts: WalletAccount[] | undefined;
   accountConnected: WalletAccount | undefined;
   wallets: Wallet[];
+  isConnected: boolean;
+  connectWallet: (walletName: string) => void;
+  disconnectWallet: () => void;
 }
 
 const PolkadotContext = createContext<PolkadotContextProps>({
   network: undefined,
-  setNetwork: () => createNotImplementedWarning("setNetwork"),
   accounts: undefined,
   accountConnected: undefined,
   wallets: [],
+  setNetwork: () => createNotImplementedWarning("setNetwork"),
+  connectWallet: () => createNotImplementedWarning("connectWallet"),
+  disconnectWallet: () => createNotImplementedWarning("disconnectWallet"),
+  isConnected: false,
 });
 
 export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [networkId, setNetworkId] = useState<ChainId | undefined>();
-  const { accounts, account } = useWallet();
+  const { accounts, account, connect, disconnect, isConnected } = useWallet();
   const walletList = useAllWallets();
 
   //TODO replace with at network selector
@@ -52,6 +58,9 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
         accounts,
         accountConnected: account,
         wallets: walletList,
+        connectWallet: connect,
+        disconnectWallet: disconnect,
+        isConnected,
       }}
     >
       {children}

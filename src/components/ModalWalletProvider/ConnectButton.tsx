@@ -1,15 +1,39 @@
+import { Avatar } from "@mui/material";
 import * as React from "react";
 
 import { StyledConnectButton } from "@/components/ModalWalletProvider/styled";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 
-import { ModalWallet } from "../WalletSelectModal";
+import { ModalWallet } from ".";
 
 export const ConnectButton: React.FC = () => {
   const { ref: refButton, recentlyClicked } = useRecentlyClicked(500);
   const [open, setOpen] = React.useState(false);
-  const { wallets } = usePolkadotContext();
+  const {
+    wallets,
+    connectWallet,
+    disconnectWallet,
+    isConnected,
+    accountConnected,
+  } = usePolkadotContext();
+
+  if (isConnected)
+    return (
+      <>
+        {/* just to see which wallet was connected to*/}
+        <Avatar
+          style={{ marginRight: "1rem" }}
+          src={accountConnected?.wallet?.logo.src}
+        ></Avatar>
+        {/*remove later*/}
+
+        <StyledConnectButton onClick={disconnectWallet}>
+          Disconnect
+        </StyledConnectButton>
+      </>
+    );
+
   return (
     <>
       <StyledConnectButton
@@ -22,7 +46,8 @@ export const ConnectButton: React.FC = () => {
       <ModalWallet
         wallets={wallets}
         open={open}
-        handleClose={() => setOpen(false)}
+        connectWallet={connectWallet}
+        onClose={() => setOpen(false)}
       />
     </>
   );

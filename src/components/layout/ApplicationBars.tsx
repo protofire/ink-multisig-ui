@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { ROUTES } from "@/config/routes";
 
-import { WalletConnect } from "../WalletConnect";
+import { ConnectButton } from "../ModalWalletProvider/ConnectButton";
 
 interface Props {
   navHidden?: boolean;
@@ -24,7 +24,7 @@ export function ApplicationBars({ navHidden = true }: Props) {
             />
           </Link>
         </Stack>
-        <WalletConnect />
+        <ConnectButton />
       </Toolbar>
     </AppBar>
   );
