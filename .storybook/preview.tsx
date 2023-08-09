@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import { StoryFn, type Preview, StoryContext } from "@storybook/react";
 import { MINIMAL_VIEWPORTS } from "@storybook/addon-viewport";
 
@@ -33,17 +33,17 @@ const preview: Preview = {
     },
     viewport: {
       viewports: {
-      ...customViewports,
-      ...MINIMAL_VIEWPORTS
-      }
-    }
+        ...customViewports,
+        ...MINIMAL_VIEWPORTS,
+      },
+    },
   },
   globalTypes: {
     theme: {
       name: "Theme",
       title: "Theme",
       description: "Theme for your components",
-      defaultValue: "light",
+      defaultValue: "dark",
       toolbar: {
         icon: "paintbrush",
         dynamicTitle: true,
@@ -53,7 +53,7 @@ const preview: Preview = {
         ],
       },
     },
-  }
+  },
 };
 
 export default preview;
@@ -65,16 +65,20 @@ const defaultSettings: Settings = {
   drawerWidth: 240,
 };
 
-
 export const withMuiTheme = (Story: StoryFn, context: StoryContext) => {
   const { theme: themeKey } = context.globals;
-  const _settings = useMemo(() => ({...defaultSettings, mode: themeKey}), [themeKey])
-  
+  const _settings = useMemo(
+    () => ({ ...defaultSettings, mode: themeKey }),
+    [themeKey]
+  );
+
   return (
     <ThemeCustomization settings={_settings}>
       <Story />
     </ThemeCustomization>
-  )
-}
+  );
+};
 
-export const decorators = [withMuiTheme];
+export const decorators = [
+  withMuiTheme, // Adds global styles and theme switching support.
+];

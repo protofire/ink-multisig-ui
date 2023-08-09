@@ -44,19 +44,32 @@ const Palette = ({ mode }: LookSettings): Theme => {
         white: "#fff",
       },
       ...paletteColor,
-      text: {
-        primary: paletteColor.grey[700],
-        secondary: paletteColor.grey[500],
-        disabled: paletteColor.grey[400],
-      },
+      text:
+        mode === "dark"
+          ? {
+              primary: paletteColor.grey[100],
+              secondary: paletteColor.grey[400],
+              disabled: paletteColor.grey[500],
+            }
+          : {
+              primary: paletteColor.grey[800],
+              secondary: paletteColor.grey[500],
+              disabled: paletteColor.grey[400],
+            },
       action: {
         disabled: paletteColor.grey[300],
       },
       divider: paletteColor.grey[200],
-      background: {
-        paper: "#201A1B",
-        default: "#0D0E13",
-      },
+      background:
+        mode === "dark"
+          ? {
+              paper: "#201A1B",
+              default: "#0D0E13",
+            }
+          : {
+              paper: "#FFFFF",
+              default: "#F7F7F9",
+            },
     },
   });
 };
