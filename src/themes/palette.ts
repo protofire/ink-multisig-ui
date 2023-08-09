@@ -15,6 +15,9 @@ const MAIN_COLOR = "#E6007A"; // Mexican pink
 const Palette = ({ mode }: LookSettings): Theme => {
   const colors = presetPalettes;
   colors.primary = generate(MAIN_COLOR);
+  const lightColor = "76, 48, 20";
+  const darkColor = "234, 234, 255";
+  const mainModeColor = mode === "light" ? lightColor : darkColor;
 
   const greyPrimary = [
     "#ffffff",
@@ -44,22 +47,21 @@ const Palette = ({ mode }: LookSettings): Theme => {
         white: "#fff",
       },
       ...paletteColor,
-      text:
-        mode === "dark"
-          ? {
-              primary: paletteColor.grey[100],
-              secondary: paletteColor.grey[400],
-              disabled: paletteColor.grey[500],
-            }
-          : {
-              primary: paletteColor.grey[800],
-              secondary: paletteColor.grey[500],
-              disabled: paletteColor.grey[400],
-            },
-      action: {
-        disabled: paletteColor.grey[300],
+      text: {
+        primary: `rgba(${mainModeColor}, 0.87)`,
+        secondary: `rgba(${mainModeColor}, 0.68)`,
+        disabled: `rgba(${mainModeColor}, 0.38)`,
       },
-      divider: paletteColor.grey[200],
+      action: {
+        active: `rgba(${mainModeColor}, 0.54)`,
+        hover: `rgba(${mainModeColor}, 0.05)`,
+        hoverOpacity: 0.05,
+        selected: `rgba(${mainModeColor}, 0.08)`,
+        disabled: `rgba(${mainModeColor}, 0.26)`,
+        disabledBackground: `rgba(${mainModeColor}, 0.12)`,
+        focus: `rgba(${mainModeColor}, 0.12)`,
+      },
+      divider: `rgba(${mainModeColor}, 0.12)`,
       background:
         mode === "dark"
           ? {
