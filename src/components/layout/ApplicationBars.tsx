@@ -2,9 +2,8 @@ import { AppBar, Stack, Toolbar } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
+import { ConnectButton } from "@/components/ModalWalletProvider/ConnectButton";
 import { ROUTES } from "@/config/routes";
-
-import { WalletConnect } from "../WalletConnect";
 
 interface Props {
   navHidden?: boolean;
@@ -24,7 +23,7 @@ export function ApplicationBars({ navHidden = true }: Props) {
             />
           </Link>
         </Stack>
-        <WalletConnect />
+        <ConnectButton />
       </Toolbar>
     </AppBar>
   );

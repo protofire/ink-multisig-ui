@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ConnectButton } from "@/components/ModalWalletProvider/ConnectButton";
-import { WalletConnect } from "@/components/WalletConnect";
 import { ROUTES } from "@/config/routes";
 
 export function TopBar({
@@ -25,7 +24,6 @@ export function TopBar({
             />
           </Link>
         </Stack>
-        <WalletConnect />
         {buttonActionComponent}
       </Toolbar>
     </AppBar>
