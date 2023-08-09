@@ -3,13 +3,15 @@ import * as React from "react";
 
 import { StyledConnectButton } from "@/components/ModalWalletProvider/styled";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
+import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 
 import { ModalWallet } from ".";
 
 export const ConnectButton: React.FC = () => {
   const { ref: refButton, recentlyClicked } = useRecentlyClicked(500);
-  const [open, setOpen] = React.useState(false);
+  const [displayModalWallet, setDisplayModalWallet] = React.useState(false);
   const {
     wallets,
     connectWallet,
@@ -17,6 +19,10 @@ export const ConnectButton: React.FC = () => {
     isConnected,
     accountConnected,
   } = usePolkadotContext();
+
+  useEventListenerCallback(WalletConnectionEvents.onWalletConnection, () =>
+    setDisplayModalWallet(true)
+  );
 
   if (isConnected)
     return (
@@ -39,15 +45,15 @@ export const ConnectButton: React.FC = () => {
       <StyledConnectButton
         ref={refButton}
         isLoading={recentlyClicked}
-        onClick={() => setOpen(true)}
+        onClick={() => setDisplayModalWallet(true)}
       >
         Connect
       </StyledConnectButton>
       <ModalWallet
         wallets={wallets}
-        open={open}
+        open={displayModalWallet}
         connectWallet={connectWallet}
-        onClose={() => setOpen(false)}
+        onClose={() => setDisplayModalWallet(false)}
       />
     </>
   );
