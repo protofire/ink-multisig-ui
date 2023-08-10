@@ -3,7 +3,7 @@ import { ArrayOneOrMore } from "useink/dist/core";
 
 import { STEPS } from "@/components/StepperNewSignersAccount/constants";
 import { Owner } from "@/domain/SignatoriesAccount";
-import { generateRandomWalletName } from "@/utils/blockchain";
+import { generateRandomWalletName, isValidAddress } from "@/utils/blockchain";
 
 export type ValidationError = {
   error: boolean;
@@ -47,11 +47,7 @@ export const useFormSignersAccountState = () => {
   };
 
   const validateOwnerAddress = (address: string): boolean => {
-    const pattern = /^0x[a-fA-F0-9]{40}$/;
-    if (pattern.test(address)) {
-      return true;
-    }
-    return false;
+    return isValidAddress(address);
   };
 
   const validateThreshold = (threshold: number, owners: number): boolean => {
@@ -77,7 +73,7 @@ export const useFormSignersAccountState = () => {
 
       if (!validateOwnerAddress(owner.address)) {
         err.error = true;
-        err.message = "Owner address must be a valid Ethereum address";
+        err.message = "Owner address must be a valid Polkadot address";
       }
 
       const newErrors = [...errors];

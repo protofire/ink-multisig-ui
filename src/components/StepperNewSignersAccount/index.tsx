@@ -7,9 +7,11 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
+import { ROUTES } from "@/config/routes";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   useFormSignersAccountState,
@@ -17,6 +19,7 @@ import {
 } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
 import { STEPS } from "./constants";
+import { StepperFooter } from "./styled";
 
 type SaveProps = Omit<SignatoriesAccount, "address">;
 
@@ -38,6 +41,7 @@ function StepperNewSignersAccount({
     execution: number;
   }>({ creation: 0, execution: 0 });
   const data = useFormSignersAccountState();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isExecuting) return;
@@ -91,7 +95,7 @@ function StepperNewSignersAccount({
   const handleBack = () => {
     const isFirstStep = activeStep.creation === 0;
     if (isFirstStep) {
-      //TODO: Add logic to go back to previous screen.
+      router.replace(ROUTES.New);
     } else {
       setActiveStep((prevActiveStep) => ({
         ...prevActiveStep,
@@ -128,15 +132,7 @@ function StepperNewSignersAccount({
   const renderFooter = () => {
     if (!isExecuting) {
       return (
-        <Box
-          mt={2}
-          sx={{
-            display: "flex",
-            flex: 1,
-            justifyContent: "center",
-            gap: "2rem",
-          }}
-        >
+        <StepperFooter mt={2}>
           <Button onClick={handleBack}>
             {activeStep.creation === STEPS.creation.length - 1 ||
             activeStep.creation === 0
@@ -158,26 +154,18 @@ function StepperNewSignersAccount({
                 : "Next"}
             </Button>
           )}
-        </Box>
+        </StepperFooter>
       );
     } else {
       return (
-        <Box
-          mt={2}
-          sx={{
-            display: "flex",
-            flex: 1,
-            justifyContent: "center",
-            gap: "2rem",
-          }}
-        >
+        <StepperFooter mt={2}>
           <Button
             disabled={activeStep.execution < STEPS.execution.length - 1}
             onClick={handleRedirect}
           >
             Start using ink wallet
           </Button>
-        </Box>
+        </StepperFooter>
       );
     }
   };

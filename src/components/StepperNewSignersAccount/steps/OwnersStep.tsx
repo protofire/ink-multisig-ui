@@ -12,6 +12,8 @@ import { ArrayOneOrMore } from "useink/dist/core";
 import { Owner } from "@/domain/SignatoriesAccount";
 import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
+import { StyledBox } from "../styled";
+
 function OwnersStep({
   owners,
   threshold,
@@ -62,14 +64,11 @@ function OwnersStep({
 
   return (
     <Box>
-      <Box
+      <StyledBox
         mt={2}
         sx={{
           maxHeight: 300,
           overflowY: "auto",
-          padding: "1rem",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
         }}
         mb={1}
       >
@@ -107,11 +106,11 @@ function OwnersStep({
             )}
           </Box>
         ))}
-        <Button onClick={addOwner}>Add Owner</Button>
-      </Box>
-      <Box
-        sx={{ padding: "1rem", border: "1px solid #ccc", borderRadius: "5px" }}
-      >
+        <Button sx={{ justifyContent: "flex-start" }} onClick={addOwner}>
+          Add Owner
+        </Button>
+      </StyledBox>
+      <StyledBox>
         <Box mb={2}>
           <Typography variant="body1" component="div">
             Confirmation threshold
@@ -132,7 +131,7 @@ function OwnersStep({
             out of {owners.length} owner(s)
           </Typography>
         </Box>
-      </Box>
+      </StyledBox>
     </Box>
   );
 }
