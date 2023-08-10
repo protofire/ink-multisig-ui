@@ -1,5 +1,6 @@
 // import { ArrowCircleRightRounded } from "@mui/icons-material";
 import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import PeopleIcon from "@mui/icons-material/People";
 import {
   Avatar,
@@ -62,11 +63,22 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
           </Tooltip>
         </Box>
         <Box marginLeft={1}>
-          <Typography variant="subtitle1" color="white" noWrap>
-            {name}
-          </Typography>
+          <Tooltip title={name} placement="top" arrow>
+            <Box
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                width: "10rem",
+              }}
+            >
+              <Typography variant="subtitle1" color="white" noWrap>
+                {name}
+              </Typography>
+            </Box>
+          </Tooltip>
           <Typography color="white" variant="caption">
             {truncateAddress(address, 4)}
+            <ContentCopyRoundedIcon fontSize="small" />
           </Typography>
           <Typography color="white" fontWeight="bold">
             124,09 AST
@@ -87,7 +99,13 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
             color="primary"
             sx={{
               transition: "0.6s",
-              "&:hover": { scale: "1.1", rotate: "90deg" },
+              "&.MuiButtonBase-root:hover": {
+                bgcolor: "transparent",
+              },
+              "&.MuiIconButton-root:hover": {
+                scale: "1.1",
+                backgroundColor: "transparent" /* , rotate: "90deg" */,
+              },
             }}
           />
         </IconButton>
