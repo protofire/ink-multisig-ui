@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useBalance } from "useink";
-import { planckToDecimalFormatted } from "useink/utils";
+
+import { planckToDecimalFormatted } from "@/services/useink/substrate/parseUnit";
 
 import { useNetworkApi } from "./useNetworkApi";
 
@@ -43,7 +44,7 @@ export function useGetBalance(address: string | undefined) {
 
     setBalance({ freeBalance, reservedBalance });
     setIsLoading(false);
-  }, [balanceWithoutFormat]);
+  }, [api?.api, balanceWithoutFormat]);
 
   return { balance, isLoading };
 }
