@@ -94,7 +94,7 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
         <Menu
           id="basic-menu"
           anchorReference="anchorPosition"
-          anchorPosition={{ top: 140, left: 435 }}
+          anchorPosition={{ top: 140, left: 580 }}
           anchorOrigin={{
             vertical: "center",
             horizontal: "right",
@@ -110,19 +110,121 @@ export function XsignerAccountAvatar({ address, name, networkName }: Props) {
           }}
         >
           <MenuItem onClick={handleClose}>
-            <Typography variant="body1" color="white">
-              Great-Journey-wallet
-            </Typography>
+            <Box display="flex" alignItems="center" gap="0.5rem">
+              <Box
+                display="flex"
+                gap="0.2rem"
+                flexDirection="column"
+                alignItems="center"
+              >
+                <Avatar>
+                  <Identicon value={address} size={32} theme="beachball" />
+                </Avatar>
+                <Tooltip title="Threshold" arrow>
+                  <Box display="flex" flexDirection="column">
+                    <PeopleIcon fontSize="small" color="primary" />
+                    <Typography
+                      variant="caption"
+                      color="primary"
+                      sx={{ margin: "-4px 0" }}
+                    >
+                      2/4
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              </Box>
+              <Box marginLeft={1}>
+                <Typography variant="subtitle1" color="white" noWrap>
+                  {name}
+                </Typography>
+                <Typography color="white" variant="caption">
+                  {truncateAddress(address, 4)}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography color="white" fontWeight="bold">
+                  124,09 AST
+                </Typography>
+              </Box>
+            </Box>
           </MenuItem>
           <MenuItem onClick={handleClose}>
-            <Typography variant="body1" color="white">
-              Crazy-Journey-wallet
-            </Typography>
+            <Box display="flex" alignItems="center" gap="0.5rem">
+              <Box
+                display="flex"
+                gap="0.2rem"
+                flexDirection="column"
+                alignItems="center"
+              >
+                <Avatar>
+                  <Identicon value={address} size={32} theme="beachball" />
+                </Avatar>
+                <Tooltip title="Threshold" arrow>
+                  <Box display="flex" flexDirection="column">
+                    <PeopleIcon fontSize="small" color="primary" />
+                    <Typography
+                      variant="caption"
+                      color="primary"
+                      sx={{ margin: "-4px 0" }}
+                    >
+                      2/4
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              </Box>
+              <Box marginLeft={1}>
+                <Typography variant="subtitle1" color="white" noWrap>
+                  {name}
+                </Typography>
+                <Typography color="white" variant="caption">
+                  {truncateAddress(address, 4)}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography color="white" fontWeight="bold">
+                  124,09 AST
+                </Typography>
+              </Box>
+            </Box>
           </MenuItem>
           <MenuItem onClick={handleClose}>
-            <Typography variant="body1" color="white">
-              Amazing-Journey-wallet
-            </Typography>
+            <Box display="flex" alignItems="center" gap="0.5rem">
+              <Box
+                display="flex"
+                gap="0.2rem"
+                flexDirection="column"
+                alignItems="center"
+              >
+                <Avatar>
+                  <Identicon value={address} size={32} theme="beachball" />
+                </Avatar>
+                <Tooltip title="Threshold" arrow>
+                  <Box display="flex" flexDirection="column">
+                    <PeopleIcon fontSize="small" color="primary" />
+                    <Typography
+                      variant="caption"
+                      color="primary"
+                      sx={{ margin: "-4px 0" }}
+                    >
+                      2/4
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              </Box>
+              <Box marginLeft={1}>
+                <Typography variant="subtitle1" color="white" noWrap>
+                  {name}
+                </Typography>
+                <Typography color="white" variant="caption">
+                  {truncateAddress(address, 4)}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography color="white" fontWeight="bold">
+                  124,09 AST
+                </Typography>
+              </Box>
+            </Box>
           </MenuItem>
         </Menu>
       </Box>

@@ -28,7 +28,7 @@ export const AccountInfoWrapper = styled(Box)<
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(2),
     borderRadius: theme.spacing(1),
-    background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${_networkColor} 150%, ${_networkColor} )`,
+    background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${_networkColor} 100%, ${_networkColor} )`,
   };
 });
 
