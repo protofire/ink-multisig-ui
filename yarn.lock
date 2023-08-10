@@ -11505,7 +11505,7 @@ use-sidecar@^1.1.2:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
 
-useink@^1.8.0:
+useink@^1.13.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/useink/-/useink-1.13.0.tgz#7865eb3e75bd9efdb00dbefcca25f400d39534d3"
   integrity sha512-fBO0mdGUE6vKSyF+TtNNH2YeE2fIbrmHys+8x8kerha8GjK6zS0ENLVfAmWdVb56phJoPmS+qHfX2Aevk//GxA==

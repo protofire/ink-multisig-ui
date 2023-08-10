@@ -1,7 +1,8 @@
-import { Card, CardProps, styled, useTheme } from "@mui/material";
+import { Card, CardProps, styled } from "@mui/material";
 import { forwardRef, PropsWithChildren } from "react";
 
-interface Props extends PropsWithChildren<Pick<CardProps, "sx" | "elevation">> {
+export interface WidgetCardProps
+  extends PropsWithChildren<Pick<CardProps, "sx" | "elevation">> {
   border: boolean;
 }
 
@@ -13,15 +14,13 @@ const CardStyled = styled(Card)<CardProps & { hasborder: string }>(
   })
 );
 
-export const WidgetCard: React.FC<Props> = forwardRef<HTMLDivElement, Props>(
-  function RefMainCard({ children, border, ...props }, ref) {
-    const theme = useTheme();
-    //   boxShadow = theme.palette.mode === "dark" ? boxShadow || true : boxShadow;
-
-    return (
-      <CardStyled hasborder={border.toString()} ref={ref} {...props}>
-        {children}
-      </CardStyled>
-    );
-  }
-);
+export const WidgetCard: React.FC<WidgetCardProps> = forwardRef<
+  HTMLDivElement,
+  WidgetCardProps
+>(function RefMainCard({ children, border, ...props }, ref) {
+  return (
+    <CardStyled hasborder={border.toString()} ref={ref} {...props}>
+      {children}
+    </CardStyled>
+  );
+});
