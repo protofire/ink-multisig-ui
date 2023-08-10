@@ -7,8 +7,9 @@ interface Props extends PropsWithChildren<Pick<CardProps, "sx" | "elevation">> {
 
 const CardStyled = styled(Card)<CardProps & { hasborder: string }>(
   ({ hasborder }) => ({
+    minHeight: "5rem",
     border: hasborder === "true" ? "1px solid" : "none",
-    borderRadius: 2,
+    borderRadius: 8,
   })
 );
 
