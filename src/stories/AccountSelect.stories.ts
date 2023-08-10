@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { AccountSelect } from "@/components/ModalWalletProvider/AccountSelect";
+import { AccountSelect } from "@/components/AccountSelect";
 import { WalletAccount } from "@/services/useink/types";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -21,9 +21,11 @@ export const AccountList: Story = {
     accounts: [
       {
         address: "5FpWVjTfDzqwzzc6kPZzHQFEsfikd8JCVnEUkBcXkQKWYw8B",
+        name: "Test1",
       },
       {
         address: "5HGoxwXf22nczY4gWJRmo1NACNWTFFQSF3wsZvm2UpJx2Fpx",
+        name: "Test2",
       },
     ] as WalletAccount[],
     currentAccount: "5FpWVjTfDzqwzzc6kPZzHQFEsfikd8JCVnEUkBcXkQKWYw8B",

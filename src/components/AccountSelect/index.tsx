@@ -1,65 +1,16 @@
 import PowerOffIcon from "@mui/icons-material/PowerOff";
-import {
-  MenuItem,
-  MenuItemProps,
-  Select,
-  SelectChangeEvent,
-  SelectProps,
-  Stack,
-  styled,
-} from "@mui/material";
+import { SelectChangeEvent, Stack } from "@mui/material";
 
+import {
+  StyledMenuItem,
+  StyledSelect,
+  StyledTypography,
+} from "@/components/AccountSelect/styled";
+import { AvatarAccount } from "@/components/ModalWalletProvider/AvatarAccount";
 import { WalletAccount } from "@/services/useink/types";
 import { shortNameLonger, truncateAddress } from "@/utils/formatString";
 
-import { AvatarAccount } from "./AvatarAccount";
-
 const OPTION_FOR_DISCONNECTING = "disconnect";
-
-const StyledSelect = styled(Select)<SelectProps>(() => ({
-  color: "white",
-  display: "flex",
-  margin: "0.5rem 0",
-  padding: "0",
-  height: "2.88em",
-  borderRadius: "0.5rem",
-
-  "& fieldset": {
-    top: "0",
-  },
-
-  "& span": {
-    fontSize: "0.8rem",
-    marginLeft: "1rem",
-  },
-
-  "& p": {
-    fontSize: "0.8rem",
-    marginLeft: "1rem",
-    fontWeight: "600",
-    lineHeight: "12px",
-  },
-
-  "& legend": {
-    display: "none",
-  },
-}));
-
-const StyledMenuItem = styled(MenuItem)<MenuItemProps>(() => ({
-  color: "white",
-
-  "& span": {
-    fontSize: "0.8rem",
-    marginLeft: "1rem",
-  },
-
-  "& p": {
-    fontSize: "0.8rem",
-    marginLeft: "1rem",
-    fontWeight: "600",
-    lineHeight: "12px",
-  },
-}));
 
 export function AccountSelect({
   accounts,
@@ -144,15 +95,7 @@ export function AccountSelect({
                 }}
               >
                 <Stack>
-                  <p
-                    style={{
-                      marginLeft: "0px",
-                      height: "10px",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    Disconect Wallet
-                  </p>
+                  <StyledTypography>Disconect Wallet</StyledTypography>
                 </Stack>
               </Stack>
             </>

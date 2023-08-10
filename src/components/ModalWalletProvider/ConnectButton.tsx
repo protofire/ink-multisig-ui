@@ -5,8 +5,8 @@ import { StyledConnectButton } from "@/components/ModalWalletProvider/styled";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 
+import { AccountSelect } from "../AccountSelect";
 import { ModalWallet } from ".";
-import { AccountSelect } from "./AccountSelect";
 
 export const ConnectButton: React.FC = () => {
   const { ref: refButton, recentlyClicked } = useRecentlyClicked(500);
