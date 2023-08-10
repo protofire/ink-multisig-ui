@@ -1,6 +1,6 @@
 import { PalettesProps } from "@ant-design/colors";
 
-// ==============================|| Contract Wizard Theme ||============================== //
+// ==============================|| Xsigner Theme ||============================== //
 
 const Theme = (colors: PalettesProps) => {
   const { red, gold, cyan, green, grey, primary } = colors;
