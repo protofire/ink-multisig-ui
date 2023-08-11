@@ -10,7 +10,7 @@ import { Settings } from "./types";
 // ==============================|| DEFAULT THEME - PALETTE  ||============================== //
 
 type LookSettings = Pick<Settings, "mode" | "skin">;
-const MAIN_COLOR = "#ffe873";
+const MAIN_COLOR = "#ffe873"; // Shandy color
 
 const Palette = ({ mode }: LookSettings): Theme => {
   const colors = presetPalettes;
