@@ -3,10 +3,10 @@ import {
   MenuItemProps,
   Select,
   SelectProps,
-  styled,
   Typography,
   TypographyProps,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 export const StyledSelect = styled(Select)<SelectProps>(() => ({
   color: "white",

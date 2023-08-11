@@ -1,4 +1,5 @@
-import { Box, BoxProps, styled } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 export const AccountInfoWrapper = styled(Box)<
   BoxProps & { networkcolor: string | undefined }

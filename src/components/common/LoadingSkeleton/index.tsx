@@ -1,4 +1,5 @@
-import { Box, BoxProps, styled, useTheme } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export interface LoadingSkeletonProps {

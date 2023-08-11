@@ -1,4 +1,5 @@
-import { Box, BoxProps, styled, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 const BoxWrapper = styled(Box)<BoxProps>(() => ({}));
 

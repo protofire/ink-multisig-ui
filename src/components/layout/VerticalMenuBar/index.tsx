@@ -1,4 +1,5 @@
-import { Drawer, DrawerProps, styled } from "@mui/material";
+import { Drawer, DrawerProps } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
