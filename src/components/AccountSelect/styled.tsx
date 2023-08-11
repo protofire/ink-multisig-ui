@@ -11,7 +11,7 @@ import {
 export const StyledSelect = styled(Select)<SelectProps>(() => ({
   color: "white",
   display: "flex",
-  margin: "0.5rem 0",
+  margin: "0 0",
   padding: "0",
   height: "2.88em",
   borderRadius: "0.5rem",

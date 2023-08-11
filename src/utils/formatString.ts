@@ -43,3 +43,13 @@ export const extractAccountWallet = (input: string): [string, string] => {
   const wallet = match[2] ?? "";
   return [accountName, wallet];
 };
+
+export const formatThreshold = ({
+  threshold,
+  owners,
+}: {
+  threshold: number | undefined;
+  owners: number | undefined;
+}) => {
+  return `${threshold || "-"} / ${owners || "-"}`;
+};

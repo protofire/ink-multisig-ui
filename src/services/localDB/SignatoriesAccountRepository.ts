@@ -12,6 +12,15 @@ export class SignatoriesAccountDatabase
   constructor(db: MyDatabase) {
     this.db = db;
   }
+  async listXsignersAccount(
+    networkId?: Chain["id"]
+  ): Promise<SignatoriesAccount[]> {
+    if (networkId) {
+      return await this.db.signatoriesAccounts.where({ networkId }).toArray();
+    }
+
+    return await this.db.signatoriesAccounts.toArray();
+  }
 
   async addSignatoryAccount(account: SignatoriesAccount): Promise<string> {
     return this.db.signatoriesAccounts.add(account);
@@ -35,7 +44,7 @@ export class SignatoriesAccountDatabase
     return this.db.signatoriesAccounts.delete(address);
   }
 
-  async findSignatoriesByThreshold(
+  async findSignatoriesByOwner(
     walletAddress: string,
     networkId?: Chain["id"]
   ): Promise<SignatoriesAccount[]> {

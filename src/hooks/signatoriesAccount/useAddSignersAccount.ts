@@ -9,7 +9,7 @@ interface SaveOptions {
   onFallback?: (error: string) => void;
 }
 
-export function useAddSignatoriesAccount() {
+export function useAddSignersAccount() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signatoriesAccountRepository } = useLocalDbContext();
