@@ -7,8 +7,8 @@ import {
   Divider,
   Fade,
   Slide,
-  useTheme,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
 
 import { SMART_CONTRACT } from "@/config/images";
