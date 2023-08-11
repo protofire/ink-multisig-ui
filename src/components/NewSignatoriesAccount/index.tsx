@@ -24,8 +24,8 @@ export function NewSignatoriesAccount({ networkId, accountConnected }: Props) {
     const name = "Amazing-Journey0-wallet";
     const secondOwner = "5E4iKX9jcB1sZyBxHV8Xi69ekHF8oWezyG8kc9dC19m6zoso";
     const owners = createArrayOneOrMore([
-      accountConnected.address,
-      secondOwner,
+      { name: "Owner 1", address: accountConnected.address },
+      { name: "Owner 2", address: secondOwner },
     ]);
     const threshold = owners.length;
 

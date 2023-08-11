@@ -7,6 +7,7 @@ import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import { CRYPTO_WALLET } from "@/config/images";
 import { ROUTES } from "@/config/routes";
+import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
 import { useRedirectComparison } from "@/hooks/useRedirectComparison";
 
 export function getTextInstructions(route: string) {
@@ -23,6 +24,12 @@ export function ConnectWalletPage() {
     redirectUrls: [ROUTES.New, ROUTES.Load],
     onMatch: (route) => setInstructions(getTextInstructions(route)),
   });
+
+  const disptachConnect = () => {
+    document.dispatchEvent(
+      new CustomEvent(WalletConnectionEvents.onWalletConnection)
+    );
+  };
 
   return (
     <RouterRedirectGuard>
@@ -44,7 +51,7 @@ export function ConnectWalletPage() {
             {instructions}, you will need a wallet to sign the transaction
           </Typography>
         )}
-        <Button size="large">
+        <Button size="large" onClick={disptachConnect}>
           <Typography variant="h3">Connect your wallet</Typography>
         </Button>
       </MainContentCard>

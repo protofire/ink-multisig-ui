@@ -5,12 +5,13 @@ export const WalletConnect = () => {
   const wallets = useAllWallets();
   const { isConnected, connect, disconnect } = useWallet();
 
-  if (isConnected)
+  if (isConnected) {
     return (
       <Button color="secondary" onClick={disconnect}>
         Disconnect
       </Button>
     );
+  }
 
   return (
     <Box display="flex" flexDirection="row" gap={2}>

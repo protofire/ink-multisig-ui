@@ -42,11 +42,15 @@ export class SignatoriesAccountDatabase
     if (networkId) {
       return await this.db.signatoriesAccounts
         .where({ networkId })
-        .filter((signatory) => signatory.owners.includes(walletAddress))
+        .filter((signatory) =>
+          signatory.owners.map((owner) => owner.address).includes(walletAddress)
+        )
         .toArray();
     } else {
       return await this.db.signatoriesAccounts
-        .filter((signatory) => signatory.owners.includes(walletAddress))
+        .filter((signatory) =>
+          signatory.owners.map((owner) => owner.address).includes(walletAddress)
+        )
         .toArray();
     }
   }

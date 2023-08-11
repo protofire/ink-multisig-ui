@@ -15,6 +15,9 @@ const MAIN_COLOR = "#ffe873";
 const Palette = ({ mode }: LookSettings): Theme => {
   const colors = presetPalettes;
   colors.primary = generate(MAIN_COLOR);
+  const lightColor = "76, 48, 20";
+  const darkColor = "234, 234, 255";
+  const mainModeColor = mode === "light" ? lightColor : darkColor;
 
   const greyPrimary = [
     "#ffffff",
@@ -45,18 +48,30 @@ const Palette = ({ mode }: LookSettings): Theme => {
       },
       ...paletteColor,
       text: {
-        primary: paletteColor.grey[700],
-        secondary: paletteColor.grey[500],
-        disabled: paletteColor.grey[400],
+        primary: `rgba(${mainModeColor}, 0.87)`,
+        secondary: `rgba(${mainModeColor}, 0.68)`,
+        disabled: `rgba(${mainModeColor}, 0.38)`,
       },
       action: {
-        disabled: paletteColor.grey[300],
+        active: `rgba(${mainModeColor}, 0.54)`,
+        hover: `rgba(${mainModeColor}, 0.05)`,
+        hoverOpacity: 0.05,
+        selected: `rgba(${mainModeColor}, 0.08)`,
+        disabled: `rgba(${mainModeColor}, 0.26)`,
+        disabledBackground: `rgba(${mainModeColor}, 0.12)`,
+        focus: `rgba(${mainModeColor}, 0.12)`,
       },
-      divider: paletteColor.grey[200],
-      background: {
-        paper: "#1a1a1a",
-        default: "#121212",
-      },
+      divider: `rgba(${mainModeColor}, 0.12)`,
+      background:
+        mode === "dark"
+          ? {
+              paper: "#1a1a1a",
+              default: "#121212",
+            }
+          : {
+              paper: "#FFFFF",
+              default: "#F7F7F9",
+            },
     },
   });
 };
