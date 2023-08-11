@@ -4,6 +4,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import React from "react";
 
 import { SummaryCard, SummaryCardProps } from "@/components/SummaryCard";
+import { XsignerBalanceText } from "@/components/SummaryCard/XsignerBalanceText";
 
 const meta = {
   title: "Components/SummaryCard",
@@ -35,10 +36,10 @@ export const WithCustomComponent: Story = {
   args: {
     captionTitle: "Balance",
     captionComponent: (
-      <div>
-        <div style={{ color: "red" }}>0.000 ROC</div>
-        <div style={{ color: "green" }}>0.000 ROC</div>
-      </div>
+      <XsignerBalanceText
+        freeBalance="222.3333 DOT"
+        reservedBalance="0.000 DOT"
+      />
     ),
   },
 };

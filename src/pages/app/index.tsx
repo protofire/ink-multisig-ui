@@ -1,6 +1,7 @@
 import { Grid, Typography } from "@mui/material";
 
 import { SummaryCard } from "@/components/SummaryCard";
+import { XsignerBalanceText } from "@/components/SummaryCard/XsignerBalanceText";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
@@ -22,10 +23,10 @@ export default function AppDashboard() {
           captionTitle="Balance"
           widthSkeleton="60%"
           captionComponent={
-            <>
-              <Typography>{balance?.freeBalance}</Typography>
-              <Typography>{balance?.reservedBalance}</Typography>
-            </>
+            <XsignerBalanceText
+              freeBalance={balance?.freeBalance}
+              reservedBalance={balance?.reservedBalance}
+            />
           }
           isLoading={isLoadingBalance}
         />
