@@ -1,4 +1,5 @@
 import { ArrayOneOrMore } from "@/domain/utilityTsTypes";
+import { Astar, ShidenKusama } from "@/services/useink/chains/chaindata";
 import {
   RococoContractsTestnet,
   ShibuyaTestnet,
@@ -8,6 +9,8 @@ import { Chain } from "@/services/useink/types";
 export const CHAINS_ALLOWED: ArrayOneOrMore<Chain> = [
   RococoContractsTestnet,
   ShibuyaTestnet,
+  Astar,
+  ShidenKusama,
 ];
 
 export type ChainColors = {

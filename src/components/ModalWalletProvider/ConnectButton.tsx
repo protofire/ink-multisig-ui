@@ -8,6 +8,7 @@ import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 
 import { AccountSelect } from "../AccountSelect";
+import { NetworkSelect } from "../NetworkSelect";
 import { ModalWallet } from ".";
 
 export const ConnectButton: React.FC = () => {
@@ -21,6 +22,8 @@ export const ConnectButton: React.FC = () => {
     accountConnected,
     accounts,
     setAccount,
+    setNetwork,
+    network,
   } = usePolkadotContext();
 
   useEventListenerCallback(WalletConnectionEvents.onWalletConnection, () =>
@@ -36,6 +39,9 @@ export const ConnectButton: React.FC = () => {
           src={accountConnected?.wallet?.logo.src}
         ></Avatar>
         {/*remove later*/}
+
+        <NetworkSelect currentChain={network} onChange={setNetwork} />
+
         <AccountSelect
           currentAccount={accountConnected?.address}
           accounts={accounts}
