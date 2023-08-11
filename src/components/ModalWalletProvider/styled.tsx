@@ -6,10 +6,10 @@ import {
   ListItemButton,
   ListItemButtonProps,
   ListProps,
-  styled,
   Typography,
   TypographyProps,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import {
   LoadingButton,

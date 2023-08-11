@@ -1,4 +1,5 @@
-import { styled, Typography, TypographyProps } from "@mui/material";
+import { Typography, TypographyProps } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { WidgetCard, WidgetCardProps } from "../common/muiExtended/WidgetCard";
 

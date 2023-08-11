@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
-import createCache from "@emotion/cache";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
@@ -15,15 +14,18 @@ import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
+import createEmotionCache from "@/utils/createEmotionCache";
 
-interface ExtendedProps extends AppProps {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
+
+export interface ExtendedProps extends AppProps {
   emotionCache: EmotionCache;
   Component: NextPage & {
     getLayout?: (_page: React.ReactElement) => React.ReactNode;
     walletRequired?: boolean;
   };
 }
-const clientSideEmotionCache = createCache({ key: "css" });
 
 const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
   dynamic(() => import("useink").then(({ UseInkProvider }) => UseInkProvider), {

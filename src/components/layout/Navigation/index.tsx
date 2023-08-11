@@ -5,9 +5,9 @@ import {
   MenuItem as MuiMenuItem,
   Paper,
   Stack,
-  styled,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import NextLink from "next/link";
 
 import { MENU_ITEMS, NavLink } from "./NavLink";
