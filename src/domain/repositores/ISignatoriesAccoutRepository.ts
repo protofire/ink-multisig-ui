@@ -11,8 +11,9 @@ export interface ISignatoriesAccountRepository {
     account: SignatoriesAccount,
     changes: Partial<SignatoriesAccount>
   ): Promise<number>;
-  findSignatoriesByThreshold(
+  findSignatoriesByOwner(
     walletAddress: string,
     networkId?: Chain["id"]
   ): Promise<SignatoriesAccount[]>;
+  listXsignersAccount(networkId?: Chain["id"]): Promise<SignatoriesAccount[]>;
 }

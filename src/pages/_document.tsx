@@ -1,6 +1,10 @@
-import { Head, Html, Main, NextScript } from "next/document";
+import { DocumentProps, Head, Html, Main, NextScript } from "next/document";
 
-export default function Document() {
+interface MyDocumentProps extends DocumentProps {
+  emotionStyleTags: JSX.Element[];
+}
+
+export default function Document({ emotionStyleTags }: MyDocumentProps) {
   return (
     <Html lang="en">
       <Head>
@@ -8,7 +12,10 @@ export default function Document() {
           name="description"
           content="Ink Multisig UI is a user-friendly interface for interacting with a Multi-Signature smart contract in the Polkadot ecosystem."
         />
-        <link rel="icon" href="/Simplr.ico" />
+        <link rel="shortcut icon" href="/Simplr.ico" />
+        {/* Insertion point for client. This connects with createEmotionCache.ts */}
+        <meta name="emotion-insertion-point" content="" />
+        {emotionStyleTags}
       </Head>
       <body>
         <Main />
