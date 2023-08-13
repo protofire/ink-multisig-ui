@@ -1,17 +1,11 @@
-import {
-  Card,
-  CardActions,
-  CardContent,
-  Divider,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import ExecutionStep from "./ExecutionStep";
 import OwnersStep from "./OwnersStep";
 import ReviewStep from "./ReviewStep";
 import WalletCreationStep from "./WalletCreationStep";
 
-interface ICardFooter {
+interface IBoxFooter {
   footer?: React.ReactNode;
 }
 
@@ -19,18 +13,17 @@ const withCard = <P extends object>(
   WrappedComponent: React.ComponentType<P>,
   title: string
 ) => {
-  const WithCardComponent: React.FC<P & ICardFooter> = (props: ICardFooter) => (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" component="div">
-          {title}
-        </Typography>
-        <Divider />
-        <WrappedComponent {...(props as P)} />
-      </CardContent>
-      {props.footer && <CardActions>{props.footer}</CardActions>}
-    </Card>
-  );
+  const WithCardComponent: React.FC<P & IBoxFooter> = (props: IBoxFooter) => {
+    return (
+      <Box>
+        <Box p={5} mr={8}>
+          <Typography variant="h4">{title}</Typography>
+          <WrappedComponent {...(props as P)} />
+        </Box>
+        {props.footer && <Box p={5}>{props.footer}</Box>}
+      </Box>
+    );
+  };
 
   WithCardComponent.displayName = `WithCard(${getDisplayName(
     WrappedComponent

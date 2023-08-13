@@ -1,12 +1,6 @@
-import {
-  Box,
-  Button,
-  Step,
-  StepContent,
-  StepLabel,
-  Stepper,
-  Typography,
-} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Box, Step, Stepper, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ChainId } from "useink/dist/chains";
@@ -19,7 +13,7 @@ import {
 } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
 import { STEPS } from "./constants";
-import { StepperFooter } from "./styled";
+import { FooterButton, StepperFooter, StyledStepLabel } from "./styled";
 
 type SaveProps = Omit<SignatoriesAccount, "address">;
 
@@ -42,6 +36,7 @@ function StepperNewSignersAccount({
   }>({ creation: 0, execution: 0 });
   const data = useFormSignersAccountState();
   const router = useRouter();
+  const theme = useTheme();
 
   useEffect(() => {
     if (!isExecuting) return;
@@ -113,12 +108,12 @@ function StepperNewSignersAccount({
     <Stepper activeStep={activeSubStep} orientation="vertical">
       {STEPS[section].map((step) => (
         <Step key={step.id}>
-          <StepLabel>
+          <StyledStepLabel
+            active={step.id === activeSubStep ? 1 : 0}
+            completed={step.id < activeSubStep ? 1 : 0}
+          >
             <Typography>{step.name}</Typography>
-          </StepLabel>
-          <StepContent>
-            <Typography variant="subtitle2">{step.description}</Typography>
-          </StepContent>
+          </StyledStepLabel>
         </Step>
       ))}
     </Stepper>
@@ -132,15 +127,21 @@ function StepperNewSignersAccount({
   const renderFooter = () => {
     if (!isExecuting) {
       return (
-        <StepperFooter mt={2}>
-          <Button onClick={handleBack}>
+        <StepperFooter mt={4}>
+          <FooterButton width={134} variant="outlined" onClick={handleBack}>
             {activeStep.creation === STEPS.creation.length - 1 ||
-            activeStep.creation === 0
-              ? "Cancel"
-              : "Back"}
-          </Button>
+            activeStep.creation === 0 ? (
+              "Cancel"
+            ) : (
+              <Typography display="flex" alignItems="center" component="div">
+                <ArrowBackIcon />
+                Back
+              </Typography>
+            )}
+          </FooterButton>
           {activeStep.creation <= STEPS.creation.length - 1 && (
-            <Button
+            <FooterButton
+              width={134}
               variant="contained"
               onClick={handleNext}
               disabled={
@@ -152,19 +153,20 @@ function StepperNewSignersAccount({
               {activeStep.creation === STEPS.creation.length - 1
                 ? "Confirm"
                 : "Next"}
-            </Button>
+            </FooterButton>
           )}
         </StepperFooter>
       );
     } else {
       return (
         <StepperFooter mt={2}>
-          <Button
+          <FooterButton
+            variant="contained"
             disabled={activeStep.execution < STEPS.execution.length - 1}
             onClick={handleRedirect}
           >
-            Start using ink wallet
-          </Button>
+            Start using your wallet
+          </FooterButton>
         </StepperFooter>
       );
     }
@@ -172,11 +174,18 @@ function StepperNewSignersAccount({
 
   return (
     <Box display="flex" flexDirection="row">
-      <Box width={2 / 4}>
+      <Box
+        p={5}
+        sx={{
+          background: isExecuting
+            ? theme.palette.grey.A100
+            : theme.palette.grey.A200,
+        }}
+        width={1 / 3}
+      >
         {renderSteps()}
-        {isExecuting && renderFooter()}
       </Box>
-      <Box width={2 / 4} p={2}>
+      <Box sx={{ background: theme.palette.grey.A100 }} width={2 / 3}>
         {renderContent()}
       </Box>
     </Box>
