@@ -83,7 +83,7 @@ export function XsignerAccountInfoUI({
           </Box>
         </Box>
         {xsigners && (
-          <>
+          <Box sx={{ right: "0", position: "absolute", top: "3rem" }}>
             <SwitchUserAccount
               isOpen={isOpen}
               closeModal={closeModal}
@@ -94,7 +94,7 @@ export function XsignerAccountInfoUI({
               isOpen={isOpen}
               closeModal={closeModal}
             />
-          </>
+          </Box>
         )}
         <Box>
           <Typography variant="caption" color="white">
