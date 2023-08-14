@@ -1,4 +1,3 @@
-import PeopleIcon from "@mui/icons-material/People";
 import { Avatar, Box, Tooltip, Typography } from "@mui/material";
 import Identicon from "@polkadot/react-identicon";
 import * as React from "react";
@@ -50,12 +49,7 @@ export function XsignerAccountInfoUI({
             </Avatar>
             <Tooltip title="Threshold" arrow>
               <Box display="flex" flexDirection="column">
-                <PeopleIcon fontSize="small" color="primary" />
-                <Typography
-                  variant="caption"
-                  color="primary"
-                  sx={{ margin: "-4px 0" }}
-                >
+                <Typography variant="caption" color="primary">
                   {formatThreshold({ threshold, owners: ownersCount })}
                 </Typography>
               </Box>
