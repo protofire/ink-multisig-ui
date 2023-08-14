@@ -29,6 +29,7 @@ export function XsignerAccountInfoUI({
 }: Props) {
   const { isOpen, closeModal, openModal } = useModalBehaviour();
 
+  console.log("__xsigner", xsigners);
   return (
     <AccountInfoWrapper networkcolor={networkColor}>
       <Box
