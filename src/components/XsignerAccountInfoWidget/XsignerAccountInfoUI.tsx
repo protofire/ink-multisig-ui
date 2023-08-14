@@ -9,6 +9,7 @@ import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
 import { SelectXsignerItems } from "./SelectXsignerItems";
 import { AccountInfoWrapper } from "./styled";
+import { SwitchUserAccount } from "./SwitchUserAccount";
 
 type Props = Partial<SignatoriesAccount> & {
   networkName: (typeof CHAINS_ALLOWED)[number]["name"];
@@ -82,12 +83,18 @@ export function XsignerAccountInfoUI({
           </Box>
         </Box>
         {xsigners && (
-          <SelectXsignerItems
-            isOpen={isOpen}
-            openModal={openModal}
-            closeModal={closeModal}
-            xsigners={xsigners}
-          />
+          <>
+            <SwitchUserAccount
+              isOpen={isOpen}
+              closeModal={closeModal}
+              openModal={openModal}
+            />
+            <SelectXsignerItems
+              xsigners={xsigners}
+              isOpen={isOpen}
+              closeModal={closeModal}
+            />
+          </>
         )}
         <Box>
           <Typography variant="caption" color="white">
