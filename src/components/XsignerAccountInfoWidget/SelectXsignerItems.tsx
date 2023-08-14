@@ -54,7 +54,7 @@ export function SelectXsignerItems({
       <Menu
         id="basic-menu"
         anchorReference="anchorPosition"
-        anchorPosition={{ top: 140, left: 580 }}
+        anchorPosition={{ top: 140, left: 420 }}
         anchorOrigin={{
           vertical: "center",
           horizontal: "right",
