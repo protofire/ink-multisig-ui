@@ -1,4 +1,3 @@
-import PeopleIcon from "@mui/icons-material/People";
 import {
   Avatar,
   Box,
@@ -56,12 +55,7 @@ export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
               </Avatar>
               <Tooltip title="Threshold" arrow>
                 <Box display="flex" flexDirection="column">
-                  <PeopleIcon fontSize="small" color="primary" />
-                  <Typography
-                    variant="caption"
-                    color="primary"
-                    sx={{ margin: "-4px 0" }}
-                  >
+                  <Typography variant="caption" color="primary">
                     2/4
                   </Typography>
                 </Box>
