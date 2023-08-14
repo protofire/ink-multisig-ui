@@ -4,13 +4,18 @@ import { MenuItem, MenuItemProps, Select, SelectProps } from "@mui/material";
 export const StyledSelect = styled(Select)<SelectProps>(() => ({
   color: "white",
   padding: "0",
-  margin: "0.5rem 0.5rem",
+  margin: "0 0.5rem",
   borderRadius: "0.5rem",
   width: "202px",
   height: "2.88em",
   display: "flex",
 
+  "&.Mui-focused": {
+    backgroundColor: "#3A3334",
+  },
+
   "& fieldset": {
+    borderColor: "#1a1a1a",
     top: "0",
   },
 

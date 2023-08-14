@@ -1,4 +1,3 @@
-import { Avatar } from "@mui/material";
 import * as React from "react";
 
 import { StyledConnectButton } from "@/components/ModalWalletProvider/styled";
@@ -34,20 +33,20 @@ export const ConnectButton: React.FC = () => {
     return (
       <>
         {/* just to see which wallet was connected to*/}
-        <Avatar
+        {/* <Avatar
           style={{ marginRight: "1rem" }}
           src={accountConnected?.wallet?.logo.src}
-        ></Avatar>
+        ></Avatar> */}
         {/*remove later*/}
 
-        <NetworkSelect currentChain={network} onChange={setNetwork} />
-
         <AccountSelect
-          currentAccount={accountConnected?.address}
+          accountConnected={accountConnected}
           accounts={accounts}
           setAccount={setAccount}
           disconnectWallet={disconnectWallet}
         />
+
+        <NetworkSelect currentChain={network} onChange={setNetwork} />
       </>
     );
 

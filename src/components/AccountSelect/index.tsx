@@ -1,25 +1,26 @@
 import PowerOffIcon from "@mui/icons-material/PowerOff";
-import { SelectChangeEvent, Stack } from "@mui/material";
+import { Avatar, SelectChangeEvent, Stack } from "@mui/material";
 
 import {
   StyledMenuItem,
   StyledSelect,
   StyledTypography,
 } from "@/components/AccountSelect/styled";
-import { AvatarAccount } from "@/components/ModalWalletProvider/AvatarAccount";
 import { WalletAccount } from "@/services/useink/types";
 import { shortNameLonger, truncateAddress } from "@/utils/formatString";
+
+import { AvatarAccount } from "../ModalWalletProvider/AvatarAccount";
 
 const OPTION_FOR_DISCONNECTING = "disconnect";
 
 export function AccountSelect({
   accounts,
-  currentAccount,
+  accountConnected,
   setAccount,
   disconnectWallet,
 }: {
   accounts: WalletAccount[] | undefined;
-  currentAccount: string | undefined;
+  accountConnected: WalletAccount | undefined;
   setAccount: (account: WalletAccount) => void;
   disconnectWallet: () => void;
 }) {
@@ -38,6 +39,8 @@ export function AccountSelect({
     }
     setAccount(newAccount);
   };
+
+  const currentAccount = accountConnected?.address;
   if (!accounts)
     return (
       <StyledSelect
@@ -67,33 +70,40 @@ export function AccountSelect({
     >
       {allAccounts.map((a) => (
         <StyledMenuItem
-          sx={{
-            color: "white",
-          }}
           selected={currentAccount === a.address}
           key={a.address}
           value={a.address}
         >
           {a.name !== OPTION_FOR_DISCONNECTING && (
-            <Stack sx={{ display: "flex", flexDirection: "row" }}>
-              <AvatarAccount address={a.address} />
-              <Stack>
-                <span>{shortNameLonger(a.name as string)}</span>
-                <p>{truncateAddress(a.address)}</p>
+            <>
+              <Stack sx={{ display: "flex", flexDirection: "row" }}>
+                {currentAccount === a.address ? (
+                  <>
+                    <Avatar
+                      sx={{
+                        width: "30px",
+                        height: "30px",
+                        marginTop: "1px",
+                        marginLeft: "5px",
+                      }}
+                      src={accountConnected?.wallet?.logo.src}
+                    ></Avatar>
+                  </>
+                ) : (
+                  <AvatarAccount address={a.address} />
+                )}
+                <Stack>
+                  <span>{shortNameLonger(a.name as string)}</span>
+                  <p>{truncateAddress(a.address)}</p>
+                </Stack>
               </Stack>
-            </Stack>
+            </>
           )}
 
           {a.name === OPTION_FOR_DISCONNECTING && (
             <>
               <PowerOffIcon sx={{ fontSize: "2rem" }} />
-              <Stack
-                sx={{
-                  height: "20px",
-                  justifyContent: "center",
-                  margin: "10px 13px",
-                }}
-              >
+              <Stack>
                 <Stack>
                   <StyledTypography>Disconect Wallet</StyledTypography>
                 </Stack>
