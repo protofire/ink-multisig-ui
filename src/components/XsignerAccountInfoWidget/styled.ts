@@ -9,15 +9,13 @@ export const AccountInfoWrapper = styled(Box)<
     : theme.palette.background.default;
   return {
     backgroundColor: theme.palette.background.default,
-    minHeight: theme.spacing(16),
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    minHeight: theme.spacing(14),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(1),
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
     marginBottom: theme.spacing(2),
-    borderRadius: theme.spacing(1),
-    background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${_networkColor} 100%, ${_networkColor} )`,
+    borderRadius: theme.spacing(0, 0, 1, 1),
+    background: `linear-gradient(to bottom, ${theme.palette.common.black}, ${theme.palette.background.default} 75%, ${_networkColor} 110% )`,
   };
 });

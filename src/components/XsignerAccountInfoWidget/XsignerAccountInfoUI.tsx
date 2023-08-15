@@ -1,4 +1,3 @@
-import PeopleIcon from "@mui/icons-material/People";
 import { Avatar, Box, Tooltip, Typography } from "@mui/material";
 import Identicon from "@polkadot/react-identicon";
 import * as React from "react";
@@ -10,6 +9,7 @@ import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
 import { SelectXsignerItems } from "./SelectXsignerItems";
 import { AccountInfoWrapper } from "./styled";
+import { SwitchUserAccount } from "./SwitchUserAccount";
 
 type Props = Partial<SignatoriesAccount> & {
   networkName: (typeof CHAINS_ALLOWED)[number]["name"];
@@ -50,12 +50,7 @@ export function XsignerAccountInfoUI({
             </Avatar>
             <Tooltip title="Threshold" arrow>
               <Box display="flex" flexDirection="column">
-                <PeopleIcon fontSize="small" color="primary" />
-                <Typography
-                  variant="caption"
-                  color="primary"
-                  sx={{ margin: "-4px 0" }}
-                >
+                <Typography variant="caption" color="primary">
                   {formatThreshold({ threshold, owners: ownersCount })}
                 </Typography>
               </Box>
@@ -88,12 +83,18 @@ export function XsignerAccountInfoUI({
           </Box>
         </Box>
         {xsigners && (
-          <SelectXsignerItems
-            isOpen={isOpen}
-            openModal={openModal}
-            closeModal={closeModal}
-            xsigners={xsigners}
-          />
+          <Box sx={{ right: "0", position: "absolute", top: "3rem" }}>
+            <SwitchUserAccount
+              isOpen={isOpen}
+              closeModal={closeModal}
+              openModal={openModal}
+            />
+            <SelectXsignerItems
+              xsigners={xsigners}
+              isOpen={isOpen}
+              closeModal={closeModal}
+            />
+          </Box>
         )}
         <Box>
           <Typography variant="caption" color="white">
