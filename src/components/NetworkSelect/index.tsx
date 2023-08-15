@@ -1,31 +1,10 @@
 import { Avatar, SelectChangeEvent, Stack } from "@mui/material";
 
-import { CHAINS_ALLOWED } from "@/config/chain";
+import { ChainExtended, CHAINS_ALLOWED } from "@/config/chain";
 import { SetState } from "@/domain/utilityReactTypes";
-import { Chain, ChainId } from "@/services/useink/types";
+import { ChainId } from "@/services/useink/types";
 
 import { StyledMenuItem, StyledSelect } from "./styled";
-
-export type ChainExtended = Chain & {
-  logo: {
-    src: string;
-    alt: string;
-  };
-};
-
-export const createChainObject = (chainList: ChainExtended[]) => {
-  const imgPath = `/assets/chains/`;
-  return chainList.reduce((acc, cv) => {
-    cv.logo = {
-      src: `${imgPath}${cv.id}.png`,
-      alt: `${cv.name} img`,
-    };
-    return { ...acc, [cv.id]: cv };
-  }, {}) as { [name: string]: ChainExtended };
-};
-
-export const ALL_CHAINS_OBJ: { [name: string]: ChainExtended } =
-  createChainObject(CHAINS_ALLOWED as unknown as ChainExtended[]);
 
 export function NetworkSelect({
   currentChain,
@@ -38,18 +17,20 @@ export function NetworkSelect({
     const chainId = event.target.value as ChainId;
     onChange(chainId);
   };
-  const chain = ALL_CHAINS_OBJ[currentChain as string];
+  const chain = CHAINS_ALLOWED.find(
+    (chain: ChainExtended) => chain.id === currentChain
+  );
   return (
     <>
       <StyledSelect
         placeholder="Select Network..."
-        value={chain.id}
+        value={chain?.id}
         onChange={_handleChangeChain}
       >
-        {Object.values(ALL_CHAINS_OBJ).map((option) => (
+        {CHAINS_ALLOWED.map((option: ChainExtended) => (
           <StyledMenuItem
             sx={{ color: "white" }}
-            selected={chain.name === option.name}
+            selected={chain?.name === option.name}
             key={option.id}
             value={option.id}
           >

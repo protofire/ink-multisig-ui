@@ -32,13 +32,6 @@ export const ConnectButton: React.FC = () => {
   if (isConnected)
     return (
       <>
-        {/* just to see which wallet was connected to*/}
-        {/* <Avatar
-          style={{ marginRight: "1rem" }}
-          src={accountConnected?.wallet?.logo.src}
-        ></Avatar> */}
-        {/*remove later*/}
-
         <AccountSelect
           accountConnected={accountConnected}
           accounts={accounts}
