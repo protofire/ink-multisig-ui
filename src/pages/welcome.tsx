@@ -1,6 +1,7 @@
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Box, Button, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -9,6 +10,7 @@ import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import { ROUTES } from "@/config/routes";
 
 export default function WelcomePage() {
+  const theme = useTheme();
   return (
     <MainContentCard>
       <Typography variant="h1" color="white">
@@ -40,7 +42,10 @@ export default function WelcomePage() {
             A new Account that is controlled by one or multiple owners.
           </Typography>
           <Link href={ROUTES.New} passHref>
-            <Button variant="contained">
+            <Button
+              variant="contained"
+              sx={{ color: theme.palette.common.black }}
+            >
               <AddCircleIcon />
               Create new Account
             </Button>

@@ -43,7 +43,7 @@ export const STEPS = {
     },
     {
       id: 2,
-      name: "XSigner Accoun it’s ready!",
+      name: "XSigner Account is ready!",
       Component: withCard(ExecutionStep, "Creating your XSIgners Account"),
     },
   ],

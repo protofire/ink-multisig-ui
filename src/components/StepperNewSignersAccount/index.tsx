@@ -2,7 +2,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Step, Stepper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { ROUTES } from "@/config/routes";
@@ -15,7 +15,7 @@ import {
 import { STEPS } from "./constants";
 import { FooterButton, StepperFooter, StyledStepLabel } from "./styled";
 
-type SaveProps = Omit<SignatoriesAccount, "address">;
+export type SaveProps = Omit<SignatoriesAccount, "address">;
 
 type StepperNewSignersAccountProps = {
   save: (props: SaveProps) => void;
@@ -37,18 +37,29 @@ function StepperNewSignersAccount({
   const data = useFormSignersAccountState();
   const router = useRouter();
   const theme = useTheme();
+  const hasSavedRef = useRef(false);
 
   useEffect(() => {
-    if (!isExecuting) return;
+    if (!isExecuting || hasSavedRef.current) return;
 
     let executionInterval: NodeJS.Timeout;
 
     //TODO: Add logic to handle execution steps. This is just a mock.
-    const handleExecution = () => {
+    const handleExecution = async () => {
       executionInterval = setInterval(() => {
         if (activeStep.execution === STEPS.execution.length - 1) {
           clearInterval(executionInterval);
-          onComplete();
+          if (hasSavedRef.current) return; // Return if already saved
+
+          const parsedData: SaveProps = {
+            owners: data.owners,
+            threshold: data.threshold,
+            name: data.walletName,
+            networkId,
+          };
+
+          save(parsedData);
+          hasSavedRef.current = true;
           return;
         }
         setActiveStep((prevActiveStep) => ({
@@ -63,18 +74,23 @@ function StepperNewSignersAccount({
     return () => {
       clearInterval(executionInterval);
     };
-  }, [isExecuting, activeStep, setActiveStep, onComplete]);
+  }, [
+    isExecuting,
+    activeStep.execution,
+    setActiveStep,
+    onComplete,
+    save,
+    data.owners,
+    data.threshold,
+    data.walletName,
+    networkId,
+  ]);
 
   const handleNext = () => {
     const isLastStep = activeStep.creation === STEPS.creation.length - 1;
     if (isLastStep) {
-      const parsedData: SaveProps = {
-        owners: data.owners,
-        threshold: data.threshold,
-        name: data.walletName,
-        networkId,
-      };
-      save(parsedData);
+      onComplete();
+      return;
     } else {
       setActiveStep((prevActiveStep) => ({
         ...prevActiveStep,
@@ -84,7 +100,7 @@ function StepperNewSignersAccount({
   };
 
   const handleRedirect = () => {
-    console.log("Redirect to signers account");
+    router.replace(ROUTES.App);
   };
 
   const handleBack = () => {
