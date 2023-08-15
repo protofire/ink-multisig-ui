@@ -6,7 +6,7 @@ export const StyledSelect = styled(Select)<SelectProps>(() => ({
   padding: "0",
   margin: "0 0.5rem",
   borderRadius: "0.5rem",
-  width: "202px",
+  width: "180px",
   height: "2.88em",
   display: "flex",
 
@@ -15,8 +15,7 @@ export const StyledSelect = styled(Select)<SelectProps>(() => ({
   },
 
   "& fieldset": {
-    borderColor: "#1a1a1a",
-    top: "0",
+    borderColor: "#1a1a1a !important",
   },
 
   "& p": {
@@ -43,6 +42,5 @@ export const StyledMenuItem = styled(MenuItem)<MenuItemProps>(() => ({
   "& img": {
     width: "auto",
     height: "auto",
-    fontWeight: "600",
   },
 }));
