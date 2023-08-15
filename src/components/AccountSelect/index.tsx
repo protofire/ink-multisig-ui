@@ -1,5 +1,5 @@
 import PowerOffIcon from "@mui/icons-material/PowerOff";
-import { Avatar, SelectChangeEvent, Stack } from "@mui/material";
+import { Avatar, Box, SelectChangeEvent, Stack } from "@mui/material";
 
 import {
   StyledMenuItem,
@@ -8,8 +8,6 @@ import {
 } from "@/components/AccountSelect/styled";
 import { WalletAccount } from "@/services/useink/types";
 import { shortNameLonger, truncateAddress } from "@/utils/formatString";
-
-import { AvatarAccount } from "../ModalWalletProvider/AvatarAccount";
 
 const OPTION_FOR_DISCONNECTING = "disconnect";
 
@@ -25,7 +23,8 @@ export function AccountSelect({
   disconnectWallet: () => void;
 }) {
   const _handleChange = (event: SelectChangeEvent<unknown>) => {
-    const address = event.target.value;
+    const { address } = event.target.value as { address: string };
+
     if (address === OPTION_FOR_DISCONNECTING) {
       disconnectWallet();
       return;
@@ -64,34 +63,49 @@ export function AccountSelect({
 
   return (
     <StyledSelect
-      value={currentAccount}
+      value={{
+        address: accountConnected.address,
+        name: accountConnected.name,
+      }}
       placeholder="Select Account..."
       onChange={_handleChange}
+      renderValue={(value) => {
+        const { address, name } = value as { address: string; name: string };
+        return (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: "30px",
+                  height: "30px",
+                  marginTop: "2px",
+                  marginLeft: "5px",
+                }}
+                src={accountConnected?.wallet?.logo.src}
+              ></Avatar>
+              <Stack>
+                <span>{shortNameLonger(name as string)}</span>
+                <p>{truncateAddress(address as string)}</p>
+              </Stack>
+            </Box>
+          </>
+        );
+      }}
     >
       {allAccounts.map((a) => (
         <StyledMenuItem
-          selected={currentAccount === a.address}
           key={a.address}
-          value={a.address}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - necessary to load object into value
+          value={{ address: a.address, name: a.name }}
         >
           {a.name !== OPTION_FOR_DISCONNECTING && (
             <>
               <Stack sx={{ display: "flex", flexDirection: "row" }}>
-                {currentAccount === a.address ? (
-                  <>
-                    <Avatar
-                      sx={{
-                        width: "30px",
-                        height: "30px",
-                        marginTop: "1px",
-                        marginLeft: "5px",
-                      }}
-                      src={accountConnected?.wallet?.logo.src}
-                    ></Avatar>
-                  </>
-                ) : (
-                  <AvatarAccount address={a.address} />
-                )}
                 <Stack>
                   <span>{shortNameLonger(a.name as string)}</span>
                   <p>{truncateAddress(a.address)}</p>
