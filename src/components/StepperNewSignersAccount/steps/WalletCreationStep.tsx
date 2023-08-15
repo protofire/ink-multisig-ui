@@ -34,6 +34,7 @@ function WalletCreationStep({
       </Box>
       <TextField
         label="Name"
+        autoFocus
         error={errors[step][0]?.error}
         helperText={errors[step][0]?.message}
         value={walletName}

@@ -12,7 +12,7 @@ import { ROUTES } from "@/config/routes";
 export default function WelcomePage() {
   const theme = useTheme();
   return (
-    <MainContentCard>
+    <MainContentCard styles={{ alignItems: "center" }}>
       <Typography variant="h1" color="white">
         Welcome to XSigners
       </Typography>
