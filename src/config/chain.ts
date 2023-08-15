@@ -4,7 +4,7 @@ import {
   RococoContractsTestnet,
   ShibuyaTestnet,
 } from "@/services/useink/chains/testnet-chaindata";
-import { Chain } from "@/services/useink/types";
+import { Chain, ChainId } from "@/services/useink/types";
 
 import { CHAINS_IMG_PATH } from "./images";
 
@@ -26,14 +26,14 @@ export const CHAINS_ALLOWED: ChainExtended[] = CHAINS.map((chain) => {
   return {
     ...chain,
     logo: {
-      src: `${CHAINS_IMG_PATH}${chain.id}.png`,
+      src: `${CHAINS_IMG_PATH}${chain.id ? chain.id : "custom"}.png`,
       alt: `${chain.name} img`,
     },
   };
 });
 
 export type ChainColors = {
-  [key in (typeof CHAINS_ALLOWED)[number]["id"]]?: string;
+  [key in ChainId]?: string;
 };
 
 export const CHAINS_COLORS: ChainColors = {
@@ -41,6 +41,6 @@ export const CHAINS_COLORS: ChainColors = {
   [ShibuyaTestnet.id]: "#FF9F1C",
 };
 
-export function getChain(chainId: (typeof CHAINS_ALLOWED)[number]["id"]) {
+export function getChain(chainId: ChainId) {
   return CHAINS_ALLOWED.find((_chain) => _chain.id === chainId);
 }

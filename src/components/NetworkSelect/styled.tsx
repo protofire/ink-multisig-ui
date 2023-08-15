@@ -13,6 +13,9 @@ export const StyledSelect = styled(Select)<SelectProps>(() => ({
   "&.Mui-focused": {
     backgroundColor: "#3A3334",
   },
+  "&:hover": {
+    backgroundColor: "#2b2728",
+  },
 
   "& fieldset": {
     borderColor: "#1a1a1a !important",
