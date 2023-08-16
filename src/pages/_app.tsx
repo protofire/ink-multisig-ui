@@ -9,7 +9,7 @@ import { InkConfig } from "useink";
 
 import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { CHAINS_ALLOWED } from "@/config/chain";
+import { CHAINS } from "@/config/chain";
 import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
@@ -43,7 +43,7 @@ export default function App(props: ExtendedProps) {
       <UseInkProvider
         config={{
           dappName: "XSigners Wallet",
-          chains: CHAINS_ALLOWED,
+          chains: CHAINS,
         }}
       >
         <PolkadotContextProvider>

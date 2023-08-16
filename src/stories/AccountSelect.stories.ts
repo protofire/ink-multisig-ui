@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AccountSelect } from "@/components/AccountSelect";
 import { WalletAccount } from "@/services/useink/types";
 
+import { mockWallet } from "./ModalWallet/walletsMocked";
+
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: "Layout/AccountSelect",
@@ -28,6 +30,13 @@ export const AccountList: Story = {
         name: "Test2",
       },
     ] as WalletAccount[],
-    currentAccount: "5FpWVjTfDzqwzzc6kPZzHQFEsfikd8JCVnEUkBcXkQKWYw8B",
+    accountConnected: {
+      address: "5FpWVjTfDzqwzzc6kPZzHQFEsfikd8JCVnEUkBcXkQKWYw8B",
+      wallet: {
+        logo: {
+          src: mockWallet.logo.src,
+        },
+      },
+    } as WalletAccount,
   },
 };
