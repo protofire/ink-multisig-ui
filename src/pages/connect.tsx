@@ -34,6 +34,7 @@ export function ConnectWalletPage() {
   return (
     <RouterRedirectGuard>
       <MainContentCard
+        styles={{ alignItems: "center" }}
         title="Connect your Wallet"
         paragraph="To continue with the following actions you need to connect your wallet"
       >

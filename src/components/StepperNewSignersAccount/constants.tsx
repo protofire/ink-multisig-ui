@@ -10,47 +10,41 @@ export const STEPS = {
   creation: [
     {
       id: 0,
-      name: "Select network and name of your ink",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
+      name: "Select a name",
+
       Component: withCard(
         WalletCreationStep,
-        "Select network and name of your ink"
+        "Select a name for your XSigners Account"
       ),
     },
     {
       id: 1,
-      name: "Add owners and set confirmations",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
-      Component: withCard(OwnersStep, "Add owners and set confirmations"),
+      name: "Owners and confirmations",
+
+      Component: withCard(OwnersStep, "Add owners and confirmations"),
     },
     {
       id: 2,
-      name: "Review and confirm",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
-      Component: withCard(ReviewStep, "Review and confirm"),
+      name: "Review",
+
+      Component: withCard(ReviewStep, "Review"),
     },
   ],
   execution: [
     {
       id: 0,
-      name: "Validation transaction",
-      description: "",
-      Component: ExecutionStep,
+      name: "Validating transaction",
+      Component: withCard(ExecutionStep, "Creating your XSIgners Account"),
     },
     {
       id: 1,
       name: "Processing transaction",
-      description: "",
-      Component: ExecutionStep,
+      Component: withCard(ExecutionStep, "Creating your XSIgners Account"),
     },
     {
       id: 2,
-      name: "Ink account is ready",
-      description: "",
-      Component: ExecutionStep,
+      name: "XSigner Account is ready!",
+      Component: withCard(ExecutionStep, "Creating your XSIgners Account"),
     },
   ],
 };

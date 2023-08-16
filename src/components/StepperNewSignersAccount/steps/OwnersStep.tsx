@@ -1,10 +1,14 @@
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import {
   Box,
   Button,
+  IconButton,
   MenuItem,
   Select,
   SelectChangeEvent,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ArrayOneOrMore } from "useink/dist/core";
@@ -44,7 +48,7 @@ function OwnersStep({
   const addOwner = () => {
     const newOwners = [
       ...owners,
-      { name: `Owner ${owners.length + 1}`, address: "" },
+      { name: `Signer ${owners.length + 1}`, address: "" },
     ] as unknown as ArrayOneOrMore<Owner>;
     handleOwners(newOwners, step);
   };
@@ -64,23 +68,21 @@ function OwnersStep({
 
   return (
     <Box>
+      <Typography variant="h6" component="div" mt={1}>
+        Set the owner wallets of your XSigners Account and how many need to
+        confirm to execute a valid transaction.
+      </Typography>
       <StyledBox
         mt={2}
         sx={{
           maxHeight: 300,
           overflowY: "auto",
         }}
-        mb={1}
+        mb={5}
       >
-        <Typography variant="body1" component="div">
-          Add initial multisig owners
-        </Typography>
-        <Typography variant="caption">
-          Lorem ipsum dolor sit amet, consectetur adipiscing
-        </Typography>
         {owners.map((owner, index) => (
-          <Box key={`Owner-${index}`} mb={2} mt={2}>
-            <Box sx={{ display: "flex", gap: "1rem" }} mb={1}>
+          <Box key={`Signer-${index}`} mb={1} mt={2}>
+            <Box display="flex" gap={1} alignItems="center" mb={1}>
               <TextField
                 label="Owner name"
                 value={owner.name}
@@ -89,15 +91,19 @@ function OwnersStep({
                 }
               />
               <TextField
+                fullWidth
                 label="Owner address"
                 value={owner.address}
                 onChange={(e) =>
                   handleOwnerChange(index, e.target.value, "address")
                 }
               />
-              <Button disabled={index === 0} onClick={() => removeOwner(index)}>
-                Remove
-              </Button>
+              <IconButton
+                disabled={index === 0}
+                onClick={() => removeOwner(index)}
+              >
+                <DeleteOutlineOutlinedIcon />
+              </IconButton>
             </Box>
             {errors[step][index]?.error && (
               <Typography variant="caption" color="red">
@@ -106,17 +112,33 @@ function OwnersStep({
             )}
           </Box>
         ))}
-        <Button sx={{ justifyContent: "flex-start" }} onClick={addOwner}>
-          Add Owner
+        <Button
+          variant="text"
+          sx={{ justifyContent: "flex-start", width: "150px", fontSize: 14 }}
+          onClick={addOwner}
+        >
+          + Add new owner
         </Button>
       </StyledBox>
       <StyledBox>
         <Box mb={2}>
-          <Typography variant="body1" component="div">
-            Confirmation threshold
+          <Typography
+            fontWeight="bold"
+            display="flex"
+            alignItems="center"
+            gap={0.5}
+            component="div"
+          >
+            Threshold
+            <Tooltip
+              placement="right"
+              title="Tooltip title for threshold field"
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </Tooltip>
           </Typography>
-          <Typography variant="caption">
-            Lorem ipsum dolor sit amet, consectetur adipiscing
+          <Typography variant="h6">
+            Any transaction requires the confirmation of:
           </Typography>
         </Box>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>

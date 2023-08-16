@@ -12,15 +12,8 @@ export default function NewAccountPage() {
   if (!network || !accountConnected) return <FallbackSpinner />;
 
   return (
-    <MainContentCard
-      title="Create your multisig"
-      paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit,e et dolore magn a aliqua. Ut enim 
-ad minim veniam"
-    >
-      <NewSignatoriesAccount
-        networkId={network}
-        accountConnected={accountConnected}
-      />
+    <MainContentCard title="Create new XSigners Account">
+      <NewSignatoriesAccount networkId={network} />
     </MainContentCard>
   );
 }

@@ -1,8 +1,13 @@
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { ArrayOneOrMore } from "useink/dist/core";
 
+import CopyButton from "@/components/common/CopyButton";
+import { getChain } from "@/config/chain";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 
+import { AccountSigner } from "../AccountSigner";
 import { FlexCenterBox, StyledBox } from "../styled";
 
 function ReviewStep({
@@ -14,37 +19,67 @@ function ReviewStep({
   threshold: number;
   walletName: string;
 }) {
+  const theme = useTheme();
+  const { network } = usePolkadotContext();
+  const networkName = (network && getChain(network)?.name) || "UNKNOWN";
   return (
     <Box>
-      <StyledBox mt={2} mb={1}>
-        <FlexCenterBox>
-          <Typography variant="h6">ink-wallet-name</Typography>
-          <Typography variant="body1">{walletName}</Typography>
-        </FlexCenterBox>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography variant="h6">Threshold</Typography>
-          <Typography variant="body1">
-            {threshold} out of {owners.length} owner(s)
-          </Typography>
-        </Box>
-        <FlexCenterBox>
-          <Typography variant="h6">Owners</Typography>
-          <Typography variant="body1">{owners.length}</Typography>
-        </FlexCenterBox>
-      </StyledBox>
-      <StyledBox mt={2} mb={1}>
-        <FlexCenterBox>
-          <Typography variant="h6">Network fee</Typography>
-          {/* This fee needs to be calculated */}
-          <Typography variant="body1"> ≈ 0,06318 GOR </Typography>
-        </FlexCenterBox>
-      </StyledBox>
+      <Typography variant="h6" component="div" mt={1}>
+        You&apos;re about to create a new XSigners Account and will have to
+        confirm the transaction with your connected wallet.
+      </Typography>
+      <Box display="flex" justifyContent="center">
+        <StyledBox mt={3} mb={1} gap={4}>
+          <FlexCenterBox>
+            <Typography variant="h6" width={200}>
+              Network
+            </Typography>
+            <Typography variant="caption">{networkName}</Typography>
+          </FlexCenterBox>
+          <FlexCenterBox>
+            <Typography variant="h6" width={200}>
+              Name
+            </Typography>
+            <Typography
+              display="flex"
+              alignItems="center"
+              gap={1}
+              component="div"
+            >
+              <Typography
+                color={theme.palette.common.white}
+                fontWeight="bold"
+                variant="body1"
+              >
+                {walletName}
+              </Typography>
+              <CopyButton text={walletName} />
+            </Typography>
+          </FlexCenterBox>
+          <FlexCenterBox>
+            <Typography variant="h6" width={200}>
+              Owners
+            </Typography>
+            <Typography component="div">
+              {owners.map((owner) => (
+                <AccountSigner
+                  key={owner.address}
+                  name={owner.name}
+                  address={owner.address}
+                />
+              ))}
+            </Typography>
+          </FlexCenterBox>
+          <FlexCenterBox>
+            <Typography variant="h6" width={200}>
+              Threshold
+            </Typography>
+            <Typography variant="body1" color={theme.palette.common.white}>
+              {threshold} out of {owners.length} owner(s)
+            </Typography>
+          </FlexCenterBox>
+        </StyledBox>
+      </Box>
     </Box>
   );
 }

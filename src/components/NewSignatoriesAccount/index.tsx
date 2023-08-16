@@ -1,63 +1,45 @@
-import { Box } from "@mui/material";
-import { useRouter } from "next/router";
+import { useState } from "react";
 
 import ErrorMessage from "@/components/common/ErrorMessage";
-import { LoadingButton } from "@/components/common/LoadingButton";
-import { ROUTES } from "@/config/routes";
-import { createArrayOneOrMore } from "@/domain/utilityTsTypes";
+import StepperNewSignersAccount, {
+  SaveProps,
+} from "@/components/StepperNewSignersAccount";
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useAddSignersAccount } from "@/hooks/signatoriesAccount";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
-import { ChainId, WalletAccount } from "@/services/useink/types";
+import { ChainId } from "@/services/useink/types";
 
 interface Props {
   networkId: ChainId;
-  accountConnected: WalletAccount;
 }
 
-export function NewSignatoriesAccount({ networkId, accountConnected }: Props) {
+export function NewSignatoriesAccount({ networkId }: Props) {
   const { save, isLoading, error } = useAddSignersAccount();
+  const [isExecuting, setIsExecuting] = useState(false);
   const { setXsigner } = useSetXsignerSelected();
-  const router = useRouter();
 
-  const createNewAccount = async () => {
+  const handleSave = (data: SaveProps) => {
     const address = "5CQnnhbG8hSwXkzFXm6C5y8okSX6xMa1kjs2UaCHXc5jUE42";
-    const name = "Amazing-Journey0-wallet";
-    const secondOwner = "5E4iKX9jcB1sZyBxHV8Xi69ekHF8oWezyG8kc9dC19m6zoso";
-    const owners = createArrayOneOrMore([
-      { name: "Owner 1", address: accountConnected.address },
-      { name: "Owner 2", address: secondOwner },
-    ]);
-    const threshold = owners.length;
-
-    save(
-      { address, name, owners, threshold, networkId },
-      {
-        onSuccess: (_acc) => {
-          setXsigner(_acc);
-          router.replace(ROUTES.App);
-        },
-      }
-    );
+    const parsedData: SignatoriesAccount = {
+      ...data,
+      address,
+    };
+    save(parsedData, {
+      onSuccess: (_acc) => {
+        setXsigner(_acc);
+      },
+    });
   };
 
   return (
     <>
       {error && <ErrorMessage message={error} />}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-around",
-          width: "100%",
-          mt: "5rem",
-        }}
-      >
-        <p>Vertical Stepper</p>
-        <p>Form To create Wallet</p>
-      </Box>
-
-      <LoadingButton isLoading={isLoading} onClick={createNewAccount}>
-        Create New Fake account
-      </LoadingButton>
+      <StepperNewSignersAccount
+        isExecuting={isExecuting}
+        save={handleSave}
+        onComplete={() => setIsExecuting(true)}
+        networkId={networkId}
+      />
     </>
   );
 }
