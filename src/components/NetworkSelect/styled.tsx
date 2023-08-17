@@ -1,5 +1,12 @@
 import styled from "@emotion/styled";
-import { MenuItem, MenuItemProps, Select, SelectProps } from "@mui/material";
+import {
+  Button,
+  ButtonProps,
+  MenuItem,
+  MenuItemProps,
+  Select,
+  SelectProps,
+} from "@mui/material";
 
 export const StyledSelect = styled(Select)<SelectProps>(() => ({
   color: "white",
@@ -46,4 +53,8 @@ export const StyledMenuItem = styled(MenuItem)<MenuItemProps>(() => ({
     width: "auto",
     height: "auto",
   },
+}));
+
+export const StyledButton = styled(Button)<ButtonProps>(() => ({
+  width: "100%",
 }));
