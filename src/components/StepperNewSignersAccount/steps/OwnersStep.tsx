@@ -13,9 +13,10 @@ import {
 } from "@mui/material";
 import { ArrayOneOrMore } from "useink/dist/core";
 
-import { Owner } from "@/domain/SignatoriesAccount";
+import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
+import { AccountSigner } from "../AccountSigner";
 import { StyledBox } from "../styled";
 
 function OwnersStep({
@@ -26,6 +27,7 @@ function OwnersStep({
   errors,
   setErrors,
   step,
+  account,
 }: {
   owners: ArrayOneOrMore<Owner>;
   threshold: number;
@@ -34,7 +36,9 @@ function OwnersStep({
   errors: Array<ValidationError[]>;
   setErrors: (errors: Array<Array<ValidationError>>) => void;
   step: number;
+  account?: SignatoriesAccount;
 }) {
+  const ownerMap = account?.owners ?? owners;
   const handleOwnerChange = (
     index: number,
     value: string,
@@ -80,7 +84,7 @@ function OwnersStep({
         }}
         mb={5}
       >
-        {owners.map((owner, index) => (
+        {ownerMap.map((owner, index) => (
           <Box key={`Signer-${index}`} mb={1} mt={2}>
             <Box display="flex" gap={1} alignItems="center" mb={1}>
               <TextField
@@ -90,20 +94,33 @@ function OwnersStep({
                   handleOwnerChange(index, e.target.value, "name")
                 }
               />
-              <TextField
-                fullWidth
-                label="Owner address"
-                value={owner.address}
-                onChange={(e) =>
-                  handleOwnerChange(index, e.target.value, "address")
-                }
-              />
-              <IconButton
-                disabled={index === 0}
-                onClick={() => removeOwner(index)}
-              >
-                <DeleteOutlineOutlinedIcon />
-              </IconButton>
+              {!account ? (
+                <TextField
+                  fullWidth
+                  label="Owner address"
+                  value={owner.address}
+                  onChange={(e) =>
+                    handleOwnerChange(index, e.target.value, "address")
+                  }
+                />
+              ) : (
+                <Box ml={1}>
+                  <AccountSigner
+                    key={owner.address}
+                    name={owner.name}
+                    address={owner.address}
+                    truncateAmount={16}
+                  />
+                </Box>
+              )}
+              {!account && (
+                <IconButton
+                  disabled={index === 0}
+                  onClick={() => removeOwner(index)}
+                >
+                  <DeleteOutlineOutlinedIcon />
+                </IconButton>
+              )}
             </Box>
             {errors[step][index]?.error && (
               <Typography variant="caption" color="red">
@@ -112,13 +129,15 @@ function OwnersStep({
             )}
           </Box>
         ))}
-        <Button
-          variant="text"
-          sx={{ justifyContent: "flex-start", width: "150px", fontSize: 14 }}
-          onClick={addOwner}
-        >
-          + Add new owner
-        </Button>
+        {!account && (
+          <Button
+            variant="text"
+            sx={{ justifyContent: "flex-start", width: "150px", fontSize: 14 }}
+            onClick={addOwner}
+          >
+            + Add new owner
+          </Button>
+        )}
       </StyledBox>
       <StyledBox>
         <Box mb={2}>
@@ -142,13 +161,17 @@ function OwnersStep({
           </Typography>
         </Box>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Select value={threshold} onChange={handleThresholdChange}>
-            {owners.map((owner, index) => (
-              <MenuItem key={owner.name} value={index + 1}>
-                {index + 1}
-              </MenuItem>
-            ))}
-          </Select>
+          {!account ? (
+            <Select value={threshold} onChange={handleThresholdChange}>
+              {owners.map((owner, index) => (
+                <MenuItem key={owner.name} value={index + 1}>
+                  {index + 1}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            account.threshold
+          )}
           <Typography variant="body1">
             out of {owners.length} owner(s)
           </Typography>

@@ -10,12 +10,14 @@ interface Props {
   name: string;
   showCopy?: boolean;
   showExplorer?: boolean;
+  truncateAmount?: number;
 }
 
 export function AccountSigner({
   address,
   name,
   showCopy = true,
+  truncateAmount = 4,
   showExplorer = true,
 }: Props) {
   const theme = useTheme();
@@ -29,7 +31,9 @@ export function AccountSigner({
           {name}
         </Typography>
         <Typography display="flex" alignItems="center" gap={1} component="div">
-          <Typography fontSize={12}>{truncateAddress(address, 4)}</Typography>
+          <Typography fontSize={12}>
+            {truncateAddress(address, truncateAmount)}
+          </Typography>
           {showCopy && <CopyButton text={address} />}
         </Typography>
       </Box>

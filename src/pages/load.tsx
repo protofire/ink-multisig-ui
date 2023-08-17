@@ -1,27 +1,26 @@
-import { Box } from "@mui/material";
 import { ReactNode } from "react";
+import { ChainId } from "useink/dist/chains";
 
+import ErrorMessage from "@/components/common/ErrorMessage";
 import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
+import StepperNewSignersAccount from "@/components/StepperNewSignersAccount";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { useListSignersAccount } from "@/hooks/signatoriesAccount";
 
 export default function NewAccountPage() {
+  const { network } = usePolkadotContext();
+  const { data, error } = useListSignersAccount({ networkId: network });
   return (
-    <MainContentCard
-      title="Load your multisig"
-      paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit,e et dolore magn a aliqua. Ut enim 
-ad minim veniam"
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-around",
-          width: "100%",
-          mt: "5rem",
-        }}
-      >
-        <p>Vertical Stepper</p>
-        <p>Form To create Wallet</p>
-      </Box>
+    <MainContentCard title="Import a XSigners Account">
+      <>
+        {error && <ErrorMessage message={error} />}
+        <StepperNewSignersAccount
+          isExecuting={false}
+          account={data?.[0]}
+          networkId={network as ChainId}
+        />
+      </>
     </MainContentCard>
   );
 }

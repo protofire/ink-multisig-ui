@@ -18,10 +18,11 @@ import { FooterButton, StepperFooter, StyledStepLabel } from "./styled";
 export type SaveProps = Omit<SignatoriesAccount, "address">;
 
 type StepperNewSignersAccountProps = {
-  save: (props: SaveProps) => void;
-  onComplete: () => void;
+  save?: (props: SaveProps) => void;
+  onComplete?: () => void;
   isExecuting: boolean;
   networkId: ChainId;
+  account?: SignatoriesAccount;
 };
 
 function StepperNewSignersAccount({
@@ -29,6 +30,7 @@ function StepperNewSignersAccount({
   isExecuting,
   networkId,
   onComplete,
+  account,
 }: StepperNewSignersAccountProps) {
   const [activeStep, setActiveStep] = useState<{
     creation: number;
@@ -58,7 +60,7 @@ function StepperNewSignersAccount({
             networkId,
           };
 
-          save(parsedData);
+          save?.(parsedData);
           hasSavedRef.current = true;
           return;
         }
@@ -89,7 +91,8 @@ function StepperNewSignersAccount({
   const handleNext = () => {
     const isLastStep = activeStep.creation === STEPS.creation.length - 1;
     if (isLastStep) {
-      onComplete();
+      onComplete?.();
+      handleRedirect(ROUTES.App);
       return;
     } else {
       setActiveStep((prevActiveStep) => ({
@@ -99,14 +102,14 @@ function StepperNewSignersAccount({
     }
   };
 
-  const handleRedirect = () => {
-    router.replace(ROUTES.App);
+  const handleRedirect = (route: string) => {
+    router.replace(route);
   };
 
   const handleBack = () => {
     const isFirstStep = activeStep.creation === 0;
     if (isFirstStep) {
-      router.replace(ROUTES.New);
+      handleRedirect(ROUTES.Welcome);
     } else {
       setActiveStep((prevActiveStep) => ({
         ...prevActiveStep,
@@ -137,7 +140,14 @@ function StepperNewSignersAccount({
 
   const renderContent = () => {
     const { Component } = STEPS[section][activeSubStep];
-    return <Component {...data} footer={renderFooter()} step={activeSubStep} />;
+    return (
+      <Component
+        {...data}
+        account={account}
+        footer={renderFooter()}
+        step={activeSubStep}
+      />
+    );
   };
 
   const renderFooter = () => {
@@ -179,7 +189,7 @@ function StepperNewSignersAccount({
           <FooterButton
             variant="contained"
             disabled={activeStep.execution < STEPS.execution.length - 1}
-            onClick={handleRedirect}
+            onClick={() => handleRedirect(ROUTES.App)}
           >
             Start using your wallet
           </FooterButton>
