@@ -1,18 +1,20 @@
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
-import { Avatar, Box, List, Stack } from "@mui/material";
+import { Avatar, Stack } from "@mui/material";
 import Identicon from "@polkadot/react-identicon";
 import * as React from "react";
 
 import { getChain } from "@/config/chain";
 import { shortNameLonger, truncateAddress } from "@/utils/formatString";
 
-import { StyledButton } from "../NetworkSelect/styled";
 import {
   AddressBookWidgetStyled,
   IconBoxStyled,
   ListItemtyled,
   NetworkBoxStyled,
+  StyledBox,
+  StyledButton,
+  StyledList,
 } from "./styled";
 
 export const AddressBookWidget = () => {
@@ -40,14 +42,10 @@ export const AddressBookWidget = () => {
   ];
   return (
     <AddressBookWidgetStyled border={false}>
-      <List>
+      <StyledList>
         {data.map((a, index) => (
           <ListItemtyled key={index}>
-            <Box
-              sx={{
-                display: "flex",
-              }}
-            >
+            <StyledBox>
               <Identicon value={a.address} theme="polkadot" />
               <Stack
                 sx={{
@@ -76,10 +74,10 @@ export const AddressBookWidget = () => {
                   <p>{a.chain?.name}</p>
                 </Stack>
               </NetworkBoxStyled>
-            </Box>
+            </StyledBox>
           </ListItemtyled>
         ))}
-      </List>
+      </StyledList>
       <StyledButton
         style={{
           color: "#FFE873",
