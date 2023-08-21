@@ -14,7 +14,7 @@ import {
 import { ArrayOneOrMore } from "useink/dist/core";
 
 import { Owner } from "@/domain/SignatoriesAccount";
-import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
+import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 import { StyledBox } from "../styled";
 

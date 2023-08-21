@@ -10,7 +10,7 @@ import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   useFormSignersAccountState,
   ValidationError,
-} from "@/hooks/signatoriesAccount/useFormSignersAccountState";
+} from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 import { STEPS } from "./constants";
 import { FooterButton, StepperFooter, StyledStepLabel } from "./styled";

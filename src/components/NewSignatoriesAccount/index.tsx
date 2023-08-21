@@ -5,7 +5,7 @@ import StepperNewSignersAccount, {
   SaveProps,
 } from "@/components/StepperNewSignersAccount";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { useAddSignersAccount } from "@/hooks/signatoriesAccount";
+import { useNewSignersAccount } from "@/hooks/xsignersAccount";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { ChainId } from "@/services/useink/types";
 
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export function NewSignatoriesAccount({ networkId }: Props) {
-  const { save, isLoading, error } = useAddSignersAccount();
+  const { save, isLoading, error } = useNewSignersAccount();
   const [isExecuting, setIsExecuting] = useState(false);
   const { setXsigner } = useSetXsignerSelected();
 

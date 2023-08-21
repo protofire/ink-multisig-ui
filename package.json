@@ -35,7 +35,8 @@
     "react-dropzone": "^14.2.3",
     "react-loading-skeleton": "^3.3.1",
     "sass": "^1.63.6",
-    "useink": "^1.13.0"
+    "useink": "^1.13.0",
+    "xsigners-sdk": "^0.0.5"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.2.1",
