@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { MultisigFactory } from "xsigners-sdk/src";
+import { ContractPromise } from "@polkadot/api-contract";
+import { useCallback, useEffect, useState } from "react";
+import { useCall } from "useink";
 
-import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { customReportError } from "@/utils/error";
 
-import { useNetworkApi } from "../useNetworkApi";
+import { useSdkXsigners } from "../useSdkXsigners";
 
 interface SaveOptions {
   onSuccess?: (account: SignatoriesAccount) => void;
@@ -15,30 +15,49 @@ interface SaveOptions {
 export function useNewSignersAccount() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { signatoriesAccountRepository } = useLocalDbContext();
-  const apiProvider = useNetworkApi();
-  const contractBuilder = apiProvider && new MultisigFactory(apiProvider.api);
+  const { multisigFactory, network } = useSdkXsigners();
+  const [contractPromise, setContractPromise] = useState<ContractPromise>();
+  const newMultisig = useCall(
+    contractPromise &&
+      network && {
+        contract: contractPromise,
+        chainId: network,
+      },
+    "newMultisig"
+  );
 
-  async function save(
-    account: SignatoriesAccount,
-    options?: SaveOptions
-  ): Promise<SignatoriesAccount | void> {
-    setIsLoading(true);
+  useEffect(() => {
+    if (!multisigFactory) return;
 
-    try {
-      await signatoriesAccountRepository
-        ?.addSignatoryAccount(account)
-        .finally(() => options?.onSuccess?.(account));
+    setContractPromise(multisigFactory.buildContractPromise());
+  }, [multisigFactory]);
 
-      return account;
-    } catch (err) {
-      const errorFormated = customReportError(err);
-      setError(errorFormated);
-      options?.onFallback?.(errorFormated);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const save = useCallback(
+    async (
+      account: SignatoriesAccount,
+      options?: SaveOptions
+    ): Promise<SignatoriesAccount | void> => {
+      setIsLoading(true);
+
+      try {
+        newMultisig
+          .send([
+            account.threshold,
+            account.owners.map((o) => o.address).join(","),
+          ])
+          .then(console.log);
+
+        return account;
+      } catch (err) {
+        const errorFormated = customReportError(err);
+        setError(errorFormated);
+        options?.onFallback?.(errorFormated);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [newMultisig]
+  );
 
   return { save, isLoading, error };
 }

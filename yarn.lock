@@ -11808,10 +11808,10 @@ xmlchars@^2.2.0:
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xsigners-sdk@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/xsigners-sdk/-/xsigners-sdk-0.0.5.tgz#13d116a6e55926f6f3482e346e2fedfb0ebdc89d"
-  integrity sha512-G/GlfKbfw7DF98k+aqKhPJAKbQOITdElzTiuy2absBguFHTz16rXONpEZZ/Td2TivYhBrMcAP8mds5ss86QcBw==
+xsigners-sdk-test@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/xsigners-sdk-test/-/xsigners-sdk-test-0.0.1.tgz#64721b563e0c5609b42351115d48567670c23083"
+  integrity sha512-EOiwp1dSFb530rMJbF4s+0b+sJ9XEAp4nZUfvKTgL0d7FAwSuiw/ydOD9c0ghgCXw8gNeDTYj2SS921i8R70pQ==
 
 xtend@^4.0.2, xtend@~4.0.1:
   version "4.0.2"
