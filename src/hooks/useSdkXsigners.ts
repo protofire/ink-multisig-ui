@@ -1,14 +1,38 @@
 import { useMemo } from "react";
-import { MultisigFactory } from "xsigners-sdk-test/dist/xsigners_sdk/src";
+import { MultisigFactory, MultisigFactorySdk } from "xsigners-sdk-test";
+
+import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { KeyringPair } from "@/services/substrate/types";
+import { ChainId } from "@/services/useink/types";
 
 import { useNetworkApi } from "./useNetworkApi";
 
-export function useSdkXsigners() {
+interface UseSdkXsigners {
+  multisigFactory: MultisigFactory | undefined;
+  network: ChainId | undefined;
+  metadata?: { addressChain: string; ContractAbi: string };
+}
+
+export function useSdkXsigners(): UseSdkXsigners {
   const { apiPromise, network } = useNetworkApi() || {};
+  const { accountConnected } = usePolkadotContext();
+
   const multisigFactory = useMemo(
-    () => apiPromise && network && new MultisigFactory(apiPromise, network),
-    [apiPromise, network]
+    () =>
+      apiPromise &&
+      network &&
+      accountConnected &&
+      MultisigFactorySdk.factory(
+        network,
+        accountConnected as Partial<KeyringPair> as KeyringPair,
+        apiPromise
+      ),
+    [accountConnected, apiPromise, network]
+  );
+  const metadata = useMemo(
+    () => network && MultisigFactorySdk.contractMetadata(network),
+    [network]
   );
 
-  return { multisigFactory, network };
+  return { multisigFactory, network, metadata };
 }

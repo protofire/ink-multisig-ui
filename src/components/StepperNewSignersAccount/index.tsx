@@ -42,38 +42,28 @@ function StepperNewSignersAccount({
   useEffect(() => {
     if (!isExecuting || hasSavedRef.current) return;
 
-    let executionInterval: NodeJS.Timeout;
-
-    //TODO: Add logic to handle execution steps. This is just a mock.
     const handleExecution = async () => {
-      executionInterval = setInterval(() => {
-        if (activeStep.execution === STEPS.execution.length - 1) {
-          clearInterval(executionInterval);
-          if (hasSavedRef.current) return; // Return if already saved
+      if (activeStep.execution === STEPS.execution.length - 1) {
+        if (hasSavedRef.current) return; // Return if already saved
 
-          const parsedData: SaveProps = {
-            owners: data.owners,
-            threshold: data.threshold,
-            name: data.walletName,
-            networkId,
-          };
+        const parsedData: SaveProps = {
+          owners: data.owners,
+          threshold: data.threshold,
+          name: data.walletName,
+          networkId,
+        };
 
-          save(parsedData);
-          hasSavedRef.current = true;
-          return;
-        }
-        setActiveStep((prevActiveStep) => ({
-          ...prevActiveStep,
-          execution: prevActiveStep.execution + 1,
-        }));
-      }, 2000);
+        await save(parsedData);
+        hasSavedRef.current = true;
+        return;
+      }
+      setActiveStep((prevActiveStep) => ({
+        ...prevActiveStep,
+        execution: prevActiveStep.execution + 1,
+      }));
     };
 
     handleExecution();
-
-    return () => {
-      clearInterval(executionInterval);
-    };
   }, [
     isExecuting,
     activeStep.execution,

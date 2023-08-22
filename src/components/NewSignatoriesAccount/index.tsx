@@ -18,7 +18,7 @@ export function NewSignatoriesAccount({ networkId }: Props) {
   const [isExecuting, setIsExecuting] = useState(false);
   const { setXsigner } = useSetXsignerSelected();
 
-  const handleSave = (data: SaveProps) => {
+  const handleSave = async (data: SaveProps) => {
     const address = "5CQnnhbG8hSwXkzFXm6C5y8okSX6xMa1kjs2UaCHXc5jUE42";
     const parsedData: SignatoriesAccount = {
       ...data,
@@ -35,7 +35,7 @@ export function NewSignatoriesAccount({ networkId }: Props) {
     <>
       {error && <ErrorMessage message={error} />}
       <StepperNewSignersAccount
-        isExecuting={isExecuting}
+        isExecuting={isExecuting || isLoading}
         save={handleSave}
         onComplete={() => setIsExecuting(true)}
         networkId={networkId}

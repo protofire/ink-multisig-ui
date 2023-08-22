@@ -1,8 +1,7 @@
-import { ContractPromise } from "@polkadot/api-contract";
-import { useCallback, useEffect, useState } from "react";
-import { useCall } from "useink";
+import { useCallback, useState } from "react";
 
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { generateSalt } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
 import { useSdkXsigners } from "../useSdkXsigners";
@@ -15,22 +14,7 @@ interface SaveOptions {
 export function useNewSignersAccount() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { multisigFactory, network } = useSdkXsigners();
-  const [contractPromise, setContractPromise] = useState<ContractPromise>();
-  const newMultisig = useCall(
-    contractPromise &&
-      network && {
-        contract: contractPromise,
-        chainId: network,
-      },
-    "newMultisig"
-  );
-
-  useEffect(() => {
-    if (!multisigFactory) return;
-
-    setContractPromise(multisigFactory.buildContractPromise());
-  }, [multisigFactory]);
+  const { multisigFactory } = useSdkXsigners();
 
   const save = useCallback(
     async (
@@ -38,14 +22,20 @@ export function useNewSignersAccount() {
       options?: SaveOptions
     ): Promise<SignatoriesAccount | void> => {
       setIsLoading(true);
+      if (!multisigFactory) return;
+      const salt = generateSalt(64);
+      const owners = account.owners.map((o) => o.address);
 
       try {
-        newMultisig
-          .send([
-            account.threshold,
-            account.owners.map((o) => o.address).join(","),
-          ])
-          .then(console.log);
+        await multisigFactory.tx.newMultisig(account.threshold, owners, salt);
+
+        // newMultisig.signAndSend(
+        //   [account.threshold],
+        //   undefined,
+        //   (result, api, error) => {
+        //     console.log("result", result, "api", api, "error", error);
+        //   }
+        // );
 
         return account;
       } catch (err) {
@@ -56,7 +46,7 @@ export function useNewSignersAccount() {
         setIsLoading(false);
       }
     },
-    [newMultisig]
+    [multisigFactory]
   );
 
   return { save, isLoading, error };

@@ -2,6 +2,17 @@
 # yarn lockfile v1
 
 
+"@727-ventures/typechain-types@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@727-ventures/typechain-types/-/typechain-types-1.1.2.tgz#bba22f3d25c8cbe1cbc8fcfb09614e4cfec8298d"
+  integrity sha512-Ed9pxucmrwl9bO8sAiWorP7fRUO+feekwN2UP9GV4/XDsgtSH5RPJSEeSooYJLpwALElinX7Imekg9MQmuXpmg==
+  dependencies:
+    "@polkadot/api" "^10.8.1"
+    "@polkadot/api-contract" "^10.8.1"
+    "@types/bn.js" "^5.1.0"
+    "@types/node" "^18.0.3"
+    camelcase "^6.3.0"
+
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
@@ -2061,7 +2072,7 @@
     rxjs "^7.8.1"
     tslib "^2.5.3"
 
-"@polkadot/api-contract@^10.8.1":
+"@polkadot/api-contract@^10.8.1", "@polkadot/api-contract@^10.9.1":
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api-contract/-/api-contract-10.9.1.tgz#6820836df2d0efa10d08d58fd85e3513a5d4c537"
   integrity sha512-BJjFYSFtsUlClC3mgvPNQ5h/7LZd5gVfexwl+mDgLd/6SN4dUBQjIXhlIL5a1cGYjq3EROuu7t0agG2DIaiZMQ==
@@ -2092,7 +2103,7 @@
     rxjs "^7.8.1"
     tslib "^2.5.3"
 
-"@polkadot/api@10.9.1", "@polkadot/api@^10.8.1":
+"@polkadot/api@10.9.1", "@polkadot/api@^10.7.2", "@polkadot/api@^10.8.1":
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-10.9.1.tgz#156b3436f45ef18218960804988c1f552d2c4e46"
   integrity sha512-ND/2UqZBWvtt4PfV03OStTKg0mxmPk4UpMAgJKutdgsz/wP9CYJ1KbjwFgPNekL9JnzbKQsWyQNPVrcw7kQk8A==
@@ -3691,7 +3702,7 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
-"@types/bn.js@^5.1.1":
+"@types/bn.js@^5.1.0", "@types/bn.js@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.1.tgz#b51e1b55920a4ca26e9285ff79936bbdec910682"
   integrity sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==
@@ -3921,6 +3932,11 @@
   version "16.18.39"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.39.tgz#aa39a1a87a40ef6098ee69689a1acb0c1b034832"
   integrity sha512-8q9ZexmdYYyc5/cfujaXb4YOucpQxAV4RMG0himLyDUOEr8Mr79VrqsFI+cQ2M2h89YIuy95lbxuYjxT4Hk4kQ==
+
+"@types/node@^18.0.3":
+  version "18.17.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.17.7.tgz#8be4a95467c4f2a94cae65f30ee1cf98760525cb"
+  integrity sha512-WJj/p/cIg6zUsxv1n2leZHpvn8hr9TYuLQxAZxZcK/7+5t5ukmJGelOLGOy3L1MLhAO/sapTJGd1V7kvoIuzUg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -5135,7 +5151,7 @@ camelcase@^5.3.1:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
-camelcase@^6.2.0:
+camelcase@^6.2.0, camelcase@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.3.0.tgz#5685b95eb209ac9c0c177467778c9c84df58ba9a"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
@@ -11808,10 +11824,15 @@ xmlchars@^2.2.0:
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xsigners-sdk-test@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/xsigners-sdk-test/-/xsigners-sdk-test-0.0.1.tgz#64721b563e0c5609b42351115d48567670c23083"
-  integrity sha512-EOiwp1dSFb530rMJbF4s+0b+sJ9XEAp4nZUfvKTgL0d7FAwSuiw/ydOD9c0ghgCXw8gNeDTYj2SS921i8R70pQ==
+xsigners-sdk-test@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/xsigners-sdk-test/-/xsigners-sdk-test-0.0.8.tgz#a0914171a38ae3e3a22d281385c757738df3fed0"
+  integrity sha512-ELRX5Pda9IGNpk9NdUYQKgr2EyXbkqmjMB83/lDz5mJLaeqR/ZDzsbrBFKsB6cYWOeben+x5WWs07tUrzdcjcg==
+  dependencies:
+    "@727-ventures/typechain-types" "^1.1.2"
+    "@polkadot/api" "^10.7.2"
+    "@polkadot/api-contract" "^10.9.1"
+    bn.js "^5.2.1"
 
 xtend@^4.0.2, xtend@~4.0.1:
   version "4.0.2"
