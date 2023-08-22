@@ -70,7 +70,6 @@ export const NoItems = styled(ListItem)<ListItemProps>(() => ({
 export const IconBoxStyled = styled(Box)<BoxProps>(() => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "space-",
   width: "80px",
 
   "& svg": {
