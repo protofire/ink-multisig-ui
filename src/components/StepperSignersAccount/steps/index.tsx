@@ -1,10 +1,5 @@
 import { Box, Typography } from "@mui/material";
 
-import ExecutionStep from "./ExecutionStep";
-import OwnersStep from "./OwnersStep";
-import ReviewStep from "./ReviewStep";
-import WalletCreationStep from "./WalletCreationStep";
-
 interface IBoxFooter {
   footer?: React.ReactNode;
 }
@@ -35,4 +30,4 @@ function getDisplayName<T>(WrappedComponent: React.ComponentType<T>): string {
   return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-export { ExecutionStep, OwnersStep, ReviewStep, WalletCreationStep, withCard };
+export { withCard };

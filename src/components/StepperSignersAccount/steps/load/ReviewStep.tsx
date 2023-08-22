@@ -6,22 +6,22 @@ import CopyButton from "@/components/common/CopyButton";
 import NetworkBadge from "@/components/NetworkBadge";
 import { CHAINS_ALLOWED, getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { Owner } from "@/domain/SignatoriesAccount";
 import { truncateAddress } from "@/utils/formatString";
 
-import { AccountSigner } from "../AccountSigner";
-import { FlexCenterBox, StyledBox } from "../styled";
+import { AccountSigner } from "../../AccountSigner";
+import { FlexCenterBox, StyledBox } from "../../styled";
 
 function ReviewStep({
+  walletName,
   owners,
   threshold,
-  walletName,
-  account,
+  address,
 }: {
+  walletName: string;
   owners: ArrayOneOrMore<Owner>;
   threshold: number;
-  walletName: string;
-  account?: SignatoriesAccount;
+  address: string;
 }) {
   const theme = useTheme();
   const { network } = usePolkadotContext();
@@ -29,12 +29,11 @@ function ReviewStep({
   const { logo } = CHAINS_ALLOWED.find(
     (chain) => chain.name === networkName
   ) || { logo: { src: "", alt: "" } };
+
   return (
     <Box>
       <Typography variant="h6" component="div" mt={1}>
-        {!account
-          ? "You&apos;re about to create a new XSigners Account and will have to confirm the transaction with your connected wallet."
-          : "You're about to import a XSigners Account."}
+        You&apos;re about to import a XSigners Account.
       </Typography>
       <Box display="flex" justifyContent="center">
         <StyledBox mt={3} mb={1} gap={4}>
@@ -70,28 +69,26 @@ function ReviewStep({
               <CopyButton text={walletName} />
             </Typography>
           </FlexCenterBox>
-          {account && (
-            <FlexCenterBox>
-              <Typography variant="h6" width={200}>
-                Address
-              </Typography>
+          <FlexCenterBox>
+            <Typography variant="h6" width={200}>
+              Address
+            </Typography>
+            <Typography
+              display="flex"
+              alignItems="center"
+              gap={1}
+              component="div"
+            >
               <Typography
-                display="flex"
-                alignItems="center"
-                gap={1}
-                component="div"
+                color={theme.palette.common.white}
+                fontWeight="bold"
+                variant="body1"
               >
-                <Typography
-                  color={theme.palette.common.white}
-                  fontWeight="bold"
-                  variant="body1"
-                >
-                  {truncateAddress(account.address, 12)}
-                </Typography>
-                <CopyButton text={account.address} />
+                {truncateAddress(address, 12)}
               </Typography>
-            </FlexCenterBox>
-          )}
+              <CopyButton text={address} />
+            </Typography>
+          </FlexCenterBox>
           <FlexCenterBox>
             <Typography variant="h6" width={200}>
               Owners
@@ -112,7 +109,7 @@ function ReviewStep({
               Threshold
             </Typography>
             <Typography variant="body1" color={theme.palette.common.white}>
-              {threshold} out of {owners.length} owner(s)
+              {threshold ?? 0} out of {owners.length} owner(s)
             </Typography>
           </FlexCenterBox>
         </StyledBox>
