@@ -1,7 +1,6 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { hexToU8a, isHex } from "@polkadot/util";
-import BN from "bn.js";
-import { randomBytes } from "crypto";
+import { createHash, randomBytes } from "crypto";
 
 export const isValidAddress = (address: string | undefined) => {
   try {
@@ -18,19 +17,32 @@ export const genRanHex: (size?: number) => `0x${string}` = (size = 32) =>
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join("")}`;
 
+export function hex_to_bytes(hex: string): number[] {
+  const buffer = Buffer.from(hex.slice(2), "hex");
+  const numbers: number[] = Array.from(buffer);
+  return numbers;
+}
+
+export function generateHash(input: string): number[] {
+  const hash = createHash("sha256");
+  hash.update(input);
+  return hex_to_bytes(hash.digest("hex"));
+}
+
 /**
  * Generates a random salt of the specified length.
  *
  * @param {number} length - The length of the salt.
- * @returns {Array<(number | string | BN)>} - The generated salt.
+ * @returns {Array<(number)>} - The generated salt.
  */
-export function generateSalt(length: number): Array<number | string | BN> {
-  const salt: Array<number | string | BN> = [];
+export function generateSalt(length: number): Array<number> {
+  const salt: Array<number> = [];
+  const bytes = randomBytes(length);
+
   for (let i = 0; i < length; i++) {
-    // Generates a random number between 0 and 255
-    const randomNum = randomBytes(1)[0];
-    salt.push(new BN(randomNum));
+    salt.push(bytes[i]);
   }
+
   return salt;
 }
 

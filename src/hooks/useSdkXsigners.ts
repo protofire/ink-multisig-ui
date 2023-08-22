@@ -34,5 +34,7 @@ export function useSdkXsigners(): UseSdkXsigners {
     [network]
   );
 
+  console.log("__multisigFactory", multisigFactory);
+
   return { multisigFactory, network, metadata };
 }

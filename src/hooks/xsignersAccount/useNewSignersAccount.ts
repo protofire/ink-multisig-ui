@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { generateSalt } from "@/utils/blockchain";
+import { generateHash } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
 import { useSdkXsigners } from "../useSdkXsigners";
@@ -23,7 +23,7 @@ export function useNewSignersAccount() {
     ): Promise<SignatoriesAccount | void> => {
       setIsLoading(true);
       if (!multisigFactory) return;
-      const salt = generateSalt(64);
+      const salt = generateHash(Date.now.toString());
       const owners = account.owners.map((o) => o.address);
 
       try {
