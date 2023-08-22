@@ -5,87 +5,63 @@ import Identicon from "@polkadot/react-identicon";
 import * as React from "react";
 
 import { getChain } from "@/config/chain";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 import { shortNameLonger, truncateAddress } from "@/utils/formatString";
 
 import {
   AddressBookWidgetStyled,
   IconBoxStyled,
-  ListItemtyled,
+  ListItemstyled,
   NetworkBoxStyled,
+  NoItems,
   StyledBox,
   StyledButton,
   StyledList,
+  StyledStack,
 } from "./styled";
 
 export const AddressBookWidget = () => {
-  const data = [
-    {
-      address: "5FpWVjTfDzqwzzc6kPZzHQFEsfikd8JCVnEUkBcXkQKWYw8B",
-      name: "Protofire Accounts",
-      chain: getChain("astar"),
-    },
-    {
-      address: "5FWbLCgqF3VHhGPJjnTp3RwB8yW3Zf4wcLv1NMqLEEJaaMNS",
-      name: "Protofire Accounts",
-      chain: getChain("shibuya-testnet"),
-    },
-    {
-      address: "5HGoxwXf22nczY4gWJRmo1NACNWTFFQSF3wsZvm2UpJx2Fpx",
-      name: "Protofire Accounts",
-      chain: getChain("astar"),
-    },
-    {
-      address: "5DArcAaciV7pV8ymGMa6d1Nw65BpWbkG1B5qAvFFLii4gFE6",
-      name: "Protofire Accounts",
-      chain: getChain("shibuya-testnet"),
-    },
-  ];
+  const { network } = usePolkadotContext();
+  const { data } = useListAddressBook(network as string);
+
   return (
     <AddressBookWidgetStyled border={false}>
-      <StyledList>
-        {data.map((a, index) => (
-          <ListItemtyled key={index}>
-            <StyledBox>
-              <Identicon value={a.address} theme="polkadot" />
-              <Stack
-                sx={{
-                  marginLeft: "1.5rem",
-                  minWidth: "100px",
-                  width: "280px",
-                }}
-              >
-                <span>{shortNameLonger(a.name as string)}</span>
-                <p>{truncateAddress(a.address as string, 12)}</p>
-              </Stack>
-              <IconBoxStyled>
-                <ContentCopyRoundedIcon onClick={() => undefined} />
-                <ArrowOutwardIcon onClick={() => undefined} />
-              </IconBoxStyled>
-              <NetworkBoxStyled>
-                <Avatar
-                  sx={{
-                    width: "25px",
-                    height: "25px",
-                  }}
-                  src={a.chain?.logo.src}
-                  alt={a.chain?.logo.alt}
-                />
-                <Stack>
-                  <p>{a.chain?.name}</p>
-                </Stack>
-              </NetworkBoxStyled>
-            </StyledBox>
-          </ListItemtyled>
-        ))}
-      </StyledList>
-      <StyledButton
-        style={{
-          color: "#FFE873",
-        }}
-      >
-        {" "}
-        View All{" "}
-      </StyledButton>
+      {data?.length == 0 ? (
+        <StyledList>
+          <NoItems>There are no registered address in this network</NoItems>
+        </StyledList>
+      ) : (
+        <>
+          <StyledList>
+            {data?.map((a, index) => (
+              <ListItemstyled key={index}>
+                <StyledBox>
+                  <Identicon value={a.address} theme="polkadot" />
+                  <StyledStack>
+                    <span>{shortNameLonger(a.name as string)}</span>
+                    <p>{truncateAddress(a.address as string, 12)}</p>
+                  </StyledStack>
+                  <IconBoxStyled>
+                    <ContentCopyRoundedIcon onClick={() => undefined} />
+                    <ArrowOutwardIcon onClick={() => undefined} />
+                  </IconBoxStyled>
+                  <NetworkBoxStyled>
+                    <Avatar
+                      src={getChain(a.networkId)?.logo.src}
+                      alt={getChain(a.networkId)?.logo.alt}
+                    />
+                    <Stack>
+                      <p>{getChain(a.networkId)?.name}</p>
+                    </Stack>
+                  </NetworkBoxStyled>
+                </StyledBox>
+              </ListItemstyled>
+            ))}
+          </StyledList>
+          <StyledButton> View All </StyledButton>
+        </>
+      )}
     </AddressBookWidgetStyled>
   );
 };

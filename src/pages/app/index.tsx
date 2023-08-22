@@ -56,7 +56,7 @@ export default function AppDashboard() {
           </Typography>
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <AddressBookWidget />
         </Grid>
       </Grid>
