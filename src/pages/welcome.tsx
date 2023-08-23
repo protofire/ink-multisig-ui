@@ -12,7 +12,12 @@ import { ROUTES } from "@/config/routes";
 export default function WelcomePage() {
   const theme = useTheme();
   return (
-    <MainContentCard styles={{ alignItems: "center" }}>
+    <MainContentCard
+      styles={{
+        alignItems: "center",
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
       <Typography variant="h1" color="white">
         Welcome to XSigners
       </Typography>
@@ -59,15 +64,15 @@ export default function WelcomePage() {
           }}
         >
           <Typography variant="h3" color="white">
-            Add existing Account
+            Import existing Account
           </Typography>
           <Typography variant="body1" color="white">
-            Already have a xSigners Account? Add it via its address.
+            Already have a XSigners Account? Add it via its address.
           </Typography>
           <Link href={ROUTES.Load} passHref>
             <Button variant="outlined">
               <AccountBalanceWalletIcon />
-              Add existing Account
+              Import existing Account
             </Button>
           </Link>
         </Box>
