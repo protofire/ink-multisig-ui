@@ -1,9 +1,10 @@
 import { useState } from "react";
 
 import ErrorMessage from "@/components/common/ErrorMessage";
-import StepperNewSignersAccount, {
+import {
+  CreateNewAccount,
   SaveProps,
-} from "@/components/StepperNewSignersAccount";
+} from "@/components/StepperSignersAccount";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useAddSignersAccount } from "@/hooks/signatoriesAccount";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
@@ -34,7 +35,7 @@ export function NewSignatoriesAccount({ networkId }: Props) {
   return (
     <>
       {error && <ErrorMessage message={error} />}
-      <StepperNewSignersAccount
+      <CreateNewAccount
         isExecuting={isExecuting}
         save={handleSave}
         onComplete={() => setIsExecuting(true)}

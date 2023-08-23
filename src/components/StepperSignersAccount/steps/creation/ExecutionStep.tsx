@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-import { StyledBox } from "../styled";
+import { StyledBox } from "../../styled";
 
 function ExecutionStep() {
   return (

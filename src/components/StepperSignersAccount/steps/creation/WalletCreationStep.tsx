@@ -1,6 +1,6 @@
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Box, Link, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Link, TextField, Typography } from "@mui/material";
 
+import NetworkBadge from "@/components/NetworkBadge";
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
@@ -17,20 +17,20 @@ function WalletCreationStep({
   step: number;
 }) {
   const { network } = usePolkadotContext();
-  const networkName = (network && getChain(network)?.name) || "UNKNOWN";
+  const { logo, name: networkName } = getChain(network);
 
   return (
     <Box mt={3} display="flex" gap={2.25} flexDirection="column">
-      <Box display="flex" alignItems="center" gap={1}>
-        <Typography variant="caption" component="div">
-          You are on {networkName}
+      <Box display="flex" alignItems="center" gap={1.25}>
+        <Typography variant="caption" fontWeight={500} component="div">
+          You are on
         </Typography>
-        <Tooltip
-          placement="right"
-          title="This network is the one that has been selected in the top Network selector"
-        >
-          <HelpOutlineIcon fontSize="small" />
-        </Tooltip>
+        <NetworkBadge
+          name={networkName}
+          logo={logo.src}
+          logoSize={{ width: 14, height: 14 }}
+          description={logo.alt}
+        />
       </Box>
       <TextField
         label="Name"

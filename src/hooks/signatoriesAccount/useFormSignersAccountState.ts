@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
-import { STEPS } from "@/components/StepperNewSignersAccount/constants";
+import { DEFAULT_STEPS } from "@/components/StepperSignersAccount/constants";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 import { generateRandomWalletName, isValidAddress } from "@/utils/blockchain";
@@ -11,9 +11,11 @@ export type ValidationError = {
   message: string;
 };
 
-const INVALID_ADDRESS_ERROR = "Owner address must be a valid Polkadot address.";
-const INVALID_OWNER_NAME_ERROR = "Owner name must be less than 50 chars.";
-const INVALID_WALLET_NAME_ERROR =
+export const INVALID_ADDRESS_ERROR =
+  "Owner address must be a valid Polkadot address.";
+export const INVALID_OWNER_NAME_ERROR =
+  "Owner name must be less than 50 chars.";
+export const INVALID_WALLET_NAME_ERROR =
   "Wallet name must exist and be less than 50 chars.";
 
 const VALIDATIONS = {
@@ -26,13 +28,14 @@ const VALIDATIONS = {
 
 export const useFormSignersAccountState = () => {
   const [walletName, setWalletName] = useState(generateRandomWalletName());
+  const [address, setAddress] = useState<string | undefined>();
   const { accountConnected } = usePolkadotContext();
   const [owners, setOwners] = useState<ArrayOneOrMore<Owner>>([
     { name: "Signer 1", address: accountConnected?.address ?? "" },
   ]);
   const [threshold, setThreshold] = useState(1);
   const initialErrors = useMemo(
-    () => Array.from({ length: STEPS.creation.length }, () => []),
+    () => Array.from({ length: DEFAULT_STEPS.creation.length }, () => []),
     []
   );
   const [errors, setErrors] =
@@ -52,56 +55,101 @@ export const useFormSignersAccountState = () => {
   }, [accountConnected]);
 
   // Handlers for each field
-  const handleWalletName = (name: string, step: number) => {
-    const error = VALIDATIONS.walletName(name)
-      ? { error: false, message: "" }
-      : {
-          error: true,
-          message: INVALID_WALLET_NAME_ERROR,
-        };
+  const handleWalletName = useCallback(
+    (name: string, step: number, field = 0) => {
+      const error = VALIDATIONS.walletName(name)
+        ? { error: false, message: "" }
+        : {
+            error: true,
+            message: INVALID_WALLET_NAME_ERROR,
+          };
 
-    const newErrors = [...errors];
-    newErrors[step][0] = error;
-    setErrors(newErrors);
-    setWalletName(name);
-  };
-
-  const handleOwners = (newOwners: ArrayOneOrMore<Owner>, step: number) => {
-    newOwners.forEach((owner, index) => {
-      let errorMessage = "";
-
-      if (!VALIDATIONS.ownerAddress(owner.address)) {
-        errorMessage = INVALID_ADDRESS_ERROR;
+      if (JSON.stringify(errors[step][field]) !== JSON.stringify(error)) {
+        const newErrors = [...errors];
+        newErrors[step][field] = error;
+        setErrors(newErrors);
       }
 
-      if (!VALIDATIONS.ownerName(owner.name)) {
-        errorMessage = INVALID_OWNER_NAME_ERROR;
-      }
+      setWalletName(name);
+    },
+    [errors]
+  );
 
-      const error = {
-        error: !!errorMessage,
-        message: errorMessage,
-      };
+  const handleOwners = useCallback(
+    (newOwners: ArrayOneOrMore<Owner>, step: number) => {
+      let updateRequired = false; // A flag to check if an update is really needed
 
       const newErrors = [...errors];
-      newErrors[step][index] = error;
-      setErrors(newErrors);
-    });
 
-    setOwners(newOwners);
-  };
+      newOwners.forEach((owner, index) => {
+        let errorMessage = "";
 
-  const handleThreshold = (newThreshold: number) => {
-    if (VALIDATIONS.threshold(newThreshold, owners.length)) {
-      setThreshold(newThreshold);
-    }
-  };
+        if (!VALIDATIONS.ownerAddress(owner.address)) {
+          errorMessage = INVALID_ADDRESS_ERROR;
+        }
+
+        if (!VALIDATIONS.ownerName(owner.name)) {
+          errorMessage = INVALID_OWNER_NAME_ERROR;
+        }
+
+        const error = {
+          error: !!errorMessage,
+          message: errorMessage,
+        };
+
+        // Check if the current error is different from the new one
+        if (JSON.stringify(newErrors[step][index]) !== JSON.stringify(error)) {
+          newErrors[step][index] = error;
+          updateRequired = true;
+        }
+      });
+
+      if (updateRequired) {
+        setErrors(newErrors);
+      }
+
+      setOwners(newOwners);
+    },
+    [errors]
+  );
+
+  const handleThreshold = useCallback(
+    (newThreshold: number) => {
+      if (VALIDATIONS.threshold(newThreshold, owners.length)) {
+        setThreshold(newThreshold);
+      }
+    },
+    [owners.length]
+  );
+
+  const handleAddress = useCallback(
+    (newAddress: string, step: number, field = 0) => {
+      const error = !VALIDATIONS.ownerAddress(newAddress);
+      const currentError = errors[step][field];
+      const newError = {
+        error,
+        message: error ? INVALID_ADDRESS_ERROR : "",
+      };
+
+      // Only set errors if there's a genuine change
+      if (JSON.stringify(currentError) !== JSON.stringify(newError)) {
+        const newErrors = [...errors];
+        newErrors[step][field] = newError;
+        setErrors(newErrors);
+      }
+
+      setAddress(newAddress);
+    },
+    [errors]
+  );
 
   return {
     walletName,
+    address,
     owners,
     threshold,
     handleWalletName,
+    handleAddress,
     handleOwners,
     handleThreshold,
     errors,
