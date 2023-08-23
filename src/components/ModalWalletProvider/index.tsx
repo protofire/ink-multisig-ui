@@ -32,6 +32,10 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
     onClose();
     connectWallet(walletName);
   };
+
+  const openInNewTab = (url: string) => {
+    window.open(url, "_blank", "noopener, noreferrer");
+  };
   return (
     <Modal open={open} onClose={onClose}>
       <ModalStyled>
@@ -67,7 +71,7 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
                 <>
                   <ModalStyledListItem
                     onClick={() => {
-                      handleClick(w.extensionName);
+                      openInNewTab(w.installUrl);
                     }}
                   >
                     <ListItemIcon>
