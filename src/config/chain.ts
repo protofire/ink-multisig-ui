@@ -43,6 +43,7 @@ export const CHAINS_COLORS: ChainColors = {
 
 const UNKNOWN_CHAIN = {
   name: "UNKNOWN",
+  id: "unknown-network",
   logo: {
     src: `${CHAINS_IMG_PATH}custom.png`,
     alt: `unknown chain img`,
