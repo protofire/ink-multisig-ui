@@ -1,7 +1,7 @@
 import { Box, Link, TextField, Typography } from "@mui/material";
 
 import NetworkBadge from "@/components/NetworkBadge";
-import { CHAINS_ALLOWED, getChain } from "@/config/chain";
+import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
@@ -17,10 +17,8 @@ function WalletCreationStep({
   step: number;
 }) {
   const { network } = usePolkadotContext();
-  const networkName = (network && getChain(network)?.name) || "UNKNOWN";
-  const { logo } = CHAINS_ALLOWED.find(
-    (chain) => chain.name === networkName
-  ) || { logo: { src: "", alt: "" } };
+  const { logo, name: networkName } = getChain(network);
+
   return (
     <Box mt={3} display="flex" gap={2.25} flexDirection="column">
       <Box display="flex" alignItems="center" gap={1.25}>

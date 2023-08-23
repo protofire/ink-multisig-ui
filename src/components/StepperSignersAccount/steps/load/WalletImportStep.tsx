@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
 import NetworkBadge from "@/components/NetworkBadge";
-import { CHAINS_ALLOWED, getChain } from "@/config/chain";
+import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 import { useFetchSignersAccount } from "@/hooks/signatoriesAccount/useFetchSignersAccount";
@@ -32,10 +32,7 @@ function WalletImportStep({
   const { network } = usePolkadotContext();
   const { data, error, isLoading } = useFetchSignersAccount({ address });
   const [tempAddress, setTempAddress] = useState(address);
-  const networkName = (network && getChain(network)?.name) || "UNKNOWN";
-  const { logo } = CHAINS_ALLOWED.find(
-    (chain) => chain.name === networkName
-  ) || { logo: { src: "", alt: "" } };
+  const { logo, name: networkName } = getChain(network);
 
   useDebouncedEffect(
     async () => {

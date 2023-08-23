@@ -4,7 +4,7 @@ import { ArrayOneOrMore } from "useink/dist/core";
 
 import CopyButton from "@/components/common/CopyButton";
 import NetworkBadge from "@/components/NetworkBadge";
-import { CHAINS_ALLOWED, getChain } from "@/config/chain";
+import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 
@@ -22,10 +22,8 @@ function ReviewStep({
 }) {
   const theme = useTheme();
   const { network } = usePolkadotContext();
-  const networkName = (network && getChain(network)?.name) || "UNKNOWN";
-  const { logo } = CHAINS_ALLOWED.find(
-    (chain) => chain.name === networkName
-  ) || { logo: { src: "", alt: "" } };
+  const { logo, name: networkName } = getChain(network);
+
   return (
     <Box>
       <Typography variant="h6" component="div" mt={1}>
