@@ -57,13 +57,13 @@ function WalletImportStep({
   return (
     <Box mt={3} display="flex" gap={2.25} flexDirection="column">
       <Box display="flex" alignItems="center" gap={1.25}>
-        <Typography variant="caption" fontWeight={500} component="div">
+        <Typography variant="body1" component="p">
           You are importing from
         </Typography>
         <NetworkBadge
           name={networkName}
           logo={logo.src}
-          logoSize={{ width: 14, height: 14 }}
+          logoSize={{ width: 20, height: 20 }}
           description={logo.alt}
         />
       </Box>

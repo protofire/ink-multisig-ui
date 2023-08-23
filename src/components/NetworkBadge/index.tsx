@@ -31,7 +31,7 @@ export default function NetworkBadge({
           alt={description}
         />
         <Stack>
-          <Typography fontWeight={700} variant="caption">
+          <Typography fontWeight={700} variant="body1">
             {name}
           </Typography>
         </Stack>
