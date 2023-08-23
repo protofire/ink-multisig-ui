@@ -3,7 +3,9 @@ import { Box, Step, Stepper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { useContract, useEvents, useEventSubscription, useTx } from "useink";
 import { ChainId } from "useink/dist/chains";
+import { MultisigFactorySdk } from "xsigners-sdk-test";
 
 import { ROUTES } from "@/config/routes";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
@@ -11,6 +13,7 @@ import {
   useFormSignersAccountState,
   ValidationError,
 } from "@/hooks/xsignersAccount/useFormSignersAccountState";
+import { generateHash } from "@/utils/blockchain";
 
 import { STEPS } from "./constants";
 import { FooterButton, StepperFooter, StyledStepLabel } from "./styled";
@@ -39,13 +42,24 @@ function StepperNewSignersAccount({
   const theme = useTheme();
   const hasSavedRef = useRef(false);
 
+  const metadata = MultisigFactorySdk.contractMetadata("shibuya-testnet");
+  const multisigFactoryContract = useContract(
+    metadata?.addressChain,
+    JSON.parse(metadata?.ContractAbi),
+    "shibuya-testnet"
+  );
+  const newMultisigTx = useTx(multisigFactoryContract, "newMultisig");
+  useEventSubscription(multisigFactoryContract);
+  const { events: multisigFactoryEvents } = useEvents(
+    multisigFactoryContract?.contract.address,
+    ["NewMultisig"]
+  );
+
   useEffect(() => {
     if (!isExecuting || hasSavedRef.current) return;
-
     const handleExecution = async () => {
       if (activeStep.execution === STEPS.execution.length - 1) {
         if (hasSavedRef.current) return; // Return if already saved
-
         const parsedData: SaveProps = {
           owners: data.owners,
           threshold: data.threshold,
@@ -53,14 +67,20 @@ function StepperNewSignersAccount({
           networkId,
         };
 
-        await save(parsedData);
+        const date = new Date();
+        const salt = generateHash(date.toString());
+        const owners = parsedData.owners.map((o) => o.address);
+
+        // Here we create the Tx and then send it to the wallet to be signed.
+        // We DO NOT wait for the wallet to sign it, we just send it.
+        newMultisigTx.signAndSend([parsedData.threshold, owners, salt]);
         hasSavedRef.current = true;
         return;
       }
-      setActiveStep((prevActiveStep) => ({
-        ...prevActiveStep,
-        execution: prevActiveStep.execution + 1,
-      }));
+      // setActiveStep((prevActiveStep) => ({
+      //   ...prevActiveStep,
+      //   execution: prevActiveStep.execution + 1,
+      // }));
     };
 
     handleExecution();
@@ -75,6 +95,15 @@ function StepperNewSignersAccount({
     data.walletName,
     networkId,
   ]);
+
+  useEffect(() => {
+    if (!multisigFactoryEvents || multisigFactoryEvents.length === 0) return;
+    console.log("multisigFactoryEvents", multisigFactoryEvents);
+    setActiveStep((prevActiveStep) => ({
+      ...prevActiveStep,
+      execution: prevActiveStep.execution + 1,
+    }));
+  }, [multisigFactoryEvents]);
 
   const handleNext = () => {
     const isLastStep = activeStep.creation === STEPS.creation.length - 1;
@@ -193,6 +222,9 @@ function StepperNewSignersAccount({
       </Box>
       <Box sx={{ background: theme.palette.grey.A100 }} width={2 / 3}>
         {renderContent()}
+      </Box>
+      <Box>
+        <h2>Status: {newMultisigTx?.status}</h2>
       </Box>
     </Box>
   );
