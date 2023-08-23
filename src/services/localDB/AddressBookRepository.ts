@@ -1,4 +1,4 @@
-import { AddressBook, AddressBookList } from "@/domain/AddressBooks";
+import { AddressBook } from "@/domain/AddressBooks";
 import { IAddressBookRepository } from "@/domain/repositores/IAddressBookRepository";
 import {
   getLocalStorageState,
@@ -32,18 +32,18 @@ const globalData = [
 export class AddressBookRepository implements IAddressBookRepository {
   private readonly storageKey = "addressBook";
 
-  getAddressList(networkId: string): AddressBookList | null {
+  getAddressList(networkId: string): AddressBook[] | null {
     // Remove this default LocalStorage Values
     setLocalStorageState("addressBook", globalData);
     //
-    const result = getLocalStorageState<AddressBookList>(
+    const result = getLocalStorageState<AddressBook[]>(
       this.storageKey,
-      null as unknown as AddressBookList
+      null as unknown as AddressBook[]
     );
-    const data = Object.values(result as unknown as AddressBookList).filter(
+    const data = Object.values(result as unknown as AddressBook[]).filter(
       (element) => element.networkId === networkId
     );
-    return data as AddressBookList;
+    return data as AddressBook[];
   }
 
   saveAddress(account: AddressBook): void {

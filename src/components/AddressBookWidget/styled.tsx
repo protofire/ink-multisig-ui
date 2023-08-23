@@ -27,19 +27,26 @@ export const StyledBox = styled(Box)<BoxProps>(() => ({
   maxWidth: "600px",
   margin: "0 auto",
 
-  "& span": {
-    fontSize: "1rem",
-  },
-
-  "& svg": {
-    width: "40px",
-    marginRight: "1rem",
+  "& .ui--IdentityIcon": {
+    "& svg": {
+      width: "45px",
+    },
   },
 }));
 
 export const StyledStack = styled(Box)<BoxProps>(() => ({
-  paddingTop: "5px",
-  minWidth: "280px",
+  paddingTop: "8px",
+  minWidth: "220px",
+  marginLeft: "1rem",
+
+  "& span": {
+    fontSize: "0.875rem",
+    fontWeight: "600",
+  },
+  "& p": {
+    fontSize: "0.75rem",
+    fontWeight: "normal",
+  },
 }));
 
 export const StyledList = styled(List)<TypographyProps>(() => ({
@@ -75,7 +82,6 @@ export const IconBoxStyled = styled(Box)<BoxProps>(() => ({
   "& svg": {
     cursor: "pointer",
     color: "#848484",
-    width: "32px",
   },
 
   "& svg:last-child": {
@@ -84,14 +90,13 @@ export const IconBoxStyled = styled(Box)<BoxProps>(() => ({
 }));
 
 export const NetworkBoxStyled = styled(Box)<BoxProps>(() => ({
-  marginLeft: "1.4rem",
   display: "flex",
   alignItems: "center",
 
   "& p": {
     marginLeft: "0.5rem",
     fontWeight: "bold",
-    fontSize: "1rem",
+    fontSize: "0.9rem",
   },
 
   "& img": {

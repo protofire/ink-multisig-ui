@@ -1,9 +1,9 @@
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import { Avatar, Stack } from "@mui/material";
 import Identicon from "@polkadot/react-identicon";
 import * as React from "react";
 
+import CopyButton from "@/components/common/CopyButton";
+import OpenNewTabButton from "@/components/common/OpenNewTabButton";
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
@@ -24,6 +24,8 @@ import {
 export const AddressBookWidget = () => {
   const { network } = usePolkadotContext();
   const { data } = useListAddressBook(network as string);
+  // Remove this mock variable
+  const mockURL = "https://polkadot.subscan.io/";
 
   return (
     <AddressBookWidgetStyled border={false}>
@@ -34,30 +36,30 @@ export const AddressBookWidget = () => {
       ) : (
         <>
           <StyledList>
-            {data?.map((a, index) => (
-              <ListItemstyled key={index}>
-                <StyledBox>
-                  <Identicon value={a.address} theme="polkadot" />
-                  <StyledStack>
-                    <span>{shortNameLonger(a.name as string)}</span>
-                    <p>{truncateAddress(a.address as string, 12)}</p>
-                  </StyledStack>
-                  <IconBoxStyled>
-                    <ContentCopyRoundedIcon onClick={() => undefined} />
-                    <ArrowOutwardIcon onClick={() => undefined} />
-                  </IconBoxStyled>
-                  <NetworkBoxStyled>
-                    <Avatar
-                      src={getChain(a.networkId)?.logo.src}
-                      alt={getChain(a.networkId)?.logo.alt}
-                    />
-                    <Stack>
-                      <p>{getChain(a.networkId)?.name}</p>
-                    </Stack>
-                  </NetworkBoxStyled>
-                </StyledBox>
-              </ListItemstyled>
-            ))}
+            {data?.map((a, index) => {
+              const network = getChain(a.networkId);
+              return (
+                <ListItemstyled key={index}>
+                  <StyledBox>
+                    <Identicon value={a.address} theme="polkadot" />
+                    <StyledStack>
+                      <span>{shortNameLonger(a.name as string)}</span>
+                      <p>{truncateAddress(a.address as string, 12)}</p>
+                    </StyledStack>
+                    <IconBoxStyled>
+                      <CopyButton text={a.address}></CopyButton>
+                      <OpenNewTabButton text={mockURL} />
+                    </IconBoxStyled>
+                    <NetworkBoxStyled>
+                      <Avatar src={network?.logo.src} alt={network?.logo.alt} />
+                      <Stack>
+                        <p>{network?.name}</p>
+                      </Stack>
+                    </NetworkBoxStyled>
+                  </StyledBox>
+                </ListItemstyled>
+              );
+            })}
           </StyledList>
           <StyledButton> View All </StyledButton>
         </>

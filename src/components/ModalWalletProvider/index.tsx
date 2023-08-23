@@ -9,6 +9,7 @@ import {
 import React from "react";
 
 import { Wallet } from "@/services/useink/types";
+import { openInNewTab } from "@/utils/browserMethods";
 
 import {
   ModalStyled,
@@ -33,9 +34,6 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
     connectWallet(walletName);
   };
 
-  const openInNewTab = (url: string) => {
-    window.open(url, "_blank", "noopener, noreferrer");
-  };
   return (
     <Modal open={open} onClose={onClose}>
       <ModalStyled>

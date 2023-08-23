@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { useLocalDbContext } from "@/context/uselocalDbContext";
-import { AddressBookList } from "@/domain/AddressBooks";
+import { AddressBook } from "@/domain/AddressBooks";
 import { customReportError } from "@/utils/error";
 
 export function useListAddressBook(networkId: string) {
-  const [data, setData] = useState<AddressBookList | null>(null);
+  const [data, setData] = useState<AddressBook[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addressBookRepository } = useLocalDbContext();
