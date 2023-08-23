@@ -13,9 +13,9 @@ export default function WelcomePage() {
   const theme = useTheme();
   return (
     <MainContentCard
-      styles={{
+      stylesContainer={{
         alignItems: "center",
-        backgroundColor: theme.palette.background.paper,
+        sx: { backgroundColor: theme.palette.background.paper },
       }}
     >
       <Typography variant="h1" color="white">
