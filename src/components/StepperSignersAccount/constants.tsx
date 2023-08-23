@@ -1,4 +1,4 @@
-import { withCard } from "./steps";
+import { IBoxFooter, withCard } from "./steps";
 import {
   ExecutionStep as CreationExecutionStep,
   OwnersStep as CreationOwnerStep,
@@ -15,9 +15,13 @@ export type StepProps = {
   creation: Array<{
     id: number;
     name: string;
-    Component: React.FC<any>;
+    Component: React.FC<any & IBoxFooter>;
   }>;
-  execution: Array<{ id: number; name: string; Component: React.FC<any> }>;
+  execution: Array<{
+    id: number;
+    name: string;
+    Component: React.FC<any & IBoxFooter>;
+  }>;
 };
 export const DEFAULT_STEPS: StepProps = {
   creation: [

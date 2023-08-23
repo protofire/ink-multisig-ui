@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-interface IBoxFooter {
+export interface IBoxFooter {
   footer?: React.ReactNode;
 }
 
