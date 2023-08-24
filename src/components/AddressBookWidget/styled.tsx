@@ -29,7 +29,7 @@ export const StyledBox = styled(Box)<BoxProps>(() => ({
 
   "& .ui--IdentityIcon": {
     "& svg": {
-      width: "45px",
+      width: "35px",
     },
   },
 }));
@@ -57,7 +57,7 @@ export const StyledList = styled(List)<TypographyProps>(() => ({
 export const ListItemstyled = styled(ListItem)<ListItemProps>(() => ({
   backgroundImage: "none",
   backgroundColor: "#1a1a1a",
-  margin: "3px 0px",
+  margin: "2px 0px",
   display: "flex",
   alignContent: "center",
   "&:first-child": {
@@ -72,6 +72,8 @@ export const ListItemstyled = styled(ListItem)<ListItemProps>(() => ({
 export const NoItems = styled(ListItem)<ListItemProps>(() => ({
   backgroundColor: "#1a1a1a",
   borderRadius: "8px",
+  minHeight: "15rem",
+  justifyContent: "center",
 }));
 
 export const IconBoxStyled = styled(Box)<BoxProps>(() => ({
@@ -100,8 +102,8 @@ export const NetworkBoxStyled = styled(Box)<BoxProps>(() => ({
   },
 
   "& img": {
-    width: "25px",
-    height: "25px",
+    width: "20px",
+    height: "20px",
   },
 }));
 
