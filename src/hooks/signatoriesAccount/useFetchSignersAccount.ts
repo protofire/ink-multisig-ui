@@ -1,53 +1,59 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@apollo/client";
+import gql from "graphql-tag";
+import { ArrayOneOrMore } from "useink/dist/core";
 
-import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { Owner } from "@/domain/SignatoriesAccount";
 import { customReportError } from "@/utils/error";
 
 interface Props {
   address: string;
+  walletName: string;
 }
 
-export function useFetchSignersAccount({ address }: Props) {
-  const [data, setData] = useState<SignatoriesAccount | undefined>(undefined);
-  const { accountConnected } = usePolkadotContext();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+interface MultisigData {
+  id: string;
+  addressHex: string;
+  addressSS58: string;
+  owners: string[];
+  threshold: number;
+}
 
-  useEffect(() => {
-    if (!address) return;
+interface MyQueryResponse {
+  multisigs: MultisigData[];
+}
 
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        // mock fake promise - This will be replaced once we have the API
-        const result = await new Promise<SignatoriesAccount>((resolve) => {
-          setTimeout(() => {
-            resolve({
-              address,
-              name: "My-imported-wallet",
-              threshold: 1,
-              owners: [
-                {
-                  address: accountConnected?.address ?? "",
-                  name: "Signer 1",
-                },
-              ],
-            } as SignatoriesAccount);
-          }, 1000);
-        });
-        setData(result);
-      } catch (err) {
-        const errorFormated = customReportError(err);
-        setError(errorFormated);
-      } finally {
-        setIsLoading(false);
+const FETCH_MULTISIG = gql`
+  query MyQuery($address: String!) {
+    multisigs(where: { addressSS58_eq: $address }) {
+      owners
+      threshold
+      addressSS58
+      addressHex
+    }
+  }
+`;
+
+export function useFetchSignersAccount({ address, walletName }: Props) {
+  const { loading, error, data } = useQuery<MyQueryResponse>(FETCH_MULTISIG, {
+    variables: { address },
+    skip: !address,
+  });
+
+  const formattedData = data?.multisigs[0]
+    ? {
+        address: data.multisigs[0].addressSS58,
+        name: walletName,
+        threshold: data.multisigs[0].threshold,
+        owners: data.multisigs[0].owners.map((address, index) => ({
+          address,
+          name: `Signer ${index + 1}`,
+        })) as ArrayOneOrMore<Owner>,
       }
-    };
+    : undefined;
 
-    fetchData();
-  }, [accountConnected?.address, address]);
-
-  return { data, isLoading, error };
+  return {
+    data: formattedData,
+    isLoading: loading,
+    error: error ? customReportError(error) : null,
+  };
 }

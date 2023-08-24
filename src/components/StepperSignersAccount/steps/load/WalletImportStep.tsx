@@ -1,4 +1,10 @@
-import { Box, Link, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
@@ -15,6 +21,7 @@ function WalletImportStep({
   handleOwners,
   handleThreshold,
   errors,
+  setErrors,
   step,
   walletName,
   address,
@@ -26,11 +33,15 @@ function WalletImportStep({
   handleThreshold: (threshold: number) => void;
   handleAddress: (address: string, step: number, field?: number) => void;
   errors: Array<ValidationError[]>;
+  setErrors: React.Dispatch<React.SetStateAction<ValidationError[][]>>;
   step: number;
   address: string;
 }) {
   const { network } = usePolkadotContext();
-  const { data, error, isLoading } = useFetchSignersAccount({ address });
+  const { data, error, isLoading } = useFetchSignersAccount({
+    address,
+    walletName,
+  });
   const [tempAddress, setTempAddress] = useState(address);
   const { logo, name: networkName } = getChain(network);
 
@@ -42,6 +53,20 @@ function WalletImportStep({
     [tempAddress]
   );
 
+  useEffect(() => {
+    if (!isLoading && address) {
+      if (error || !data) {
+        setErrors((prev: Array<Array<ValidationError>>) => {
+          const newErrors = [...prev];
+          newErrors[step][0] = {
+            error: true,
+            message: "Multisig not found.",
+          };
+          return newErrors;
+        });
+      }
+    }
+  }, [error, isLoading, data, address, setErrors, step]);
   useEffect(() => {
     handleAddress(address, step);
   }, []);
@@ -75,6 +100,9 @@ function WalletImportStep({
         margin="normal"
         error={errors[step][0]?.error}
         helperText={errors[step][0]?.message}
+        InputProps={{
+          endAdornment: isLoading && <CircularProgress size={20} />,
+        }}
       />
       <TextField
         label="Name"

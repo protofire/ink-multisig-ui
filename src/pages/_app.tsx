@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
@@ -15,6 +16,11 @@ import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
 import createEmotionCache from "@/utils/createEmotionCache";
+
+const squidClient = new ApolloClient({
+  uri: "https://squid.subsquid.io/ink-multisig-shibuya/v/v1/graphql",
+  cache: new InMemoryCache(),
+});
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -39,29 +45,31 @@ export default function App(props: ExtendedProps) {
     Component.getLayout ?? ((page) => <AppLayout>{page}</AppLayout>);
 
   return (
-    <CacheProvider value={emotionCache}>
-      <UseInkProvider
-        config={{
-          dappName: "XSigners Wallet",
-          chains: CHAINS,
-        }}
-      >
-        <PolkadotContextProvider>
-          <LocalDbProvider>
-            <SettingsThemeConsumer>
-              {({ settings }) => {
-                return (
-                  <ThemeCustomization settings={settings}>
-                    <WalletConnectionGuard walletRequired={walletRequired}>
-                      {getLayout(<Component {...pageProps} />)}
-                    </WalletConnectionGuard>
-                  </ThemeCustomization>
-                );
-              }}
-            </SettingsThemeConsumer>
-          </LocalDbProvider>
-        </PolkadotContextProvider>
-      </UseInkProvider>
-    </CacheProvider>
+    <ApolloProvider client={squidClient}>
+      <CacheProvider value={emotionCache}>
+        <UseInkProvider
+          config={{
+            dappName: "XSigners Wallet",
+            chains: CHAINS,
+          }}
+        >
+          <PolkadotContextProvider>
+            <LocalDbProvider>
+              <SettingsThemeConsumer>
+                {({ settings }) => {
+                  return (
+                    <ThemeCustomization settings={settings}>
+                      <WalletConnectionGuard walletRequired={walletRequired}>
+                        {getLayout(<Component {...pageProps} />)}
+                      </WalletConnectionGuard>
+                    </ThemeCustomization>
+                  );
+                }}
+              </SettingsThemeConsumer>
+            </LocalDbProvider>
+          </PolkadotContextProvider>
+        </UseInkProvider>
+      </CacheProvider>
+    </ApolloProvider>
   );
 }
