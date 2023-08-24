@@ -36,16 +36,16 @@ export const TransactionQueueWidget = () => {
                       src="/assets/arrow-receive.svg"
                       alt="Arrow receive"
                       priority
-                      width={40}
-                      height={40}
+                      width={30}
+                      height={30}
                     />
                   ) : (
                     <Image
                       src="/assets/arrow-send.svg"
                       alt="Arrow receive"
                       priority
-                      width={40}
-                      height={40}
+                      width={30}
+                      height={30}
                     />
                   )}
                   <StyledStack>

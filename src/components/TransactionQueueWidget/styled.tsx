@@ -22,14 +22,13 @@ export const TransactionQueueStyled = styled(WidgetCard)<WidgetCardProps>(
 
 export const StyledBox = styled(Box)<BoxProps>(() => ({
   display: "flex",
+  maxWidth: "600px",
   margin: "0 auto",
-  justifyItems: "center",
   alignItems: "center",
 }));
 
 export const StyledStack = styled(Box)<BoxProps>(() => ({
-  minWidth: "100px",
-  width: "230px",
+  minWidth: "220px",
   marginLeft: "1.5rem",
 
   "& span": {
@@ -50,8 +49,7 @@ export const StyledList = styled(List)<TypographyProps>(() => ({
 export const ListItemtyled = styled(ListItem)<ListItemProps>(() => ({
   backgroundImage: "none",
   backgroundColor: "#1a1a1a",
-  height: "70px",
-  margin: "3px 0px",
+  margin: "2px 0px",
   display: "flex",
   alignContent: "center",
   "&:first-child": {
@@ -66,6 +64,8 @@ export const ListItemtyled = styled(ListItem)<ListItemProps>(() => ({
 export const NoItems = styled(ListItem)<ListItemProps>(() => ({
   backgroundColor: "#1a1a1a",
   borderRadius: "8px",
+  minHeight: "15rem",
+  justifyContent: "center",
 }));
 
 export const StyledValueBox = styled(Box)<BoxProps>(() => ({

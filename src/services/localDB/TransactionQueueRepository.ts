@@ -49,10 +49,13 @@ export class TransactionQueueRepository implements ITransactionQueueRepository {
       this.storageKey,
       null as unknown as TransactionQueue[]
     );
-    const data = Object.values(result as unknown as TransactionQueue[]).filter(
-      (element) => element.address === address
-    );
-    return data as TransactionQueue[];
+
+    // Filter commented
+    // const data = Object.values(result as unknown as TransactionQueue[]).filter(
+    //   (element) => element.address === address
+    // );
+    // return data as TransactionQueue[];
+    return Object.values(result as TransactionQueue[]);
   }
 
   saveAddress(account: AddressBook): void {
