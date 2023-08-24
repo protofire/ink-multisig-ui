@@ -57,11 +57,17 @@ export default function AppDashboard() {
           </Typography>
         </Grid>
 
+        <Grid item xs={6}>
+          <Typography variant="h3" color="#FFE873">
+            Transaction queue
+          </Typography>
+        </Grid>
+
         <Grid item xs={12} sm={12} md={6}>
           <AddressBookWidget />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <TransactionQueueWidget />
         </Grid>
       </Grid>

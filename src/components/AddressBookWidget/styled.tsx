@@ -57,6 +57,7 @@ export const StyledList = styled(List)<TypographyProps>(() => ({
 export const ListItemstyled = styled(ListItem)<ListItemProps>(() => ({
   backgroundImage: "none",
   backgroundColor: "#1a1a1a",
+  height: "70px",
   margin: "3px 0px",
   display: "flex",
   alignContent: "center",
