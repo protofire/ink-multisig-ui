@@ -22,7 +22,7 @@ function WalletCreationStep({
   return (
     <Box mt={3} display="flex" gap={2.25} flexDirection="column">
       <Box display="flex" alignItems="center" gap={1.25}>
-        <Typography variant="caption" fontWeight={500} component="div">
+        <Typography variant="body1" component="p">
           You are on
         </Typography>
         <NetworkBadge
@@ -44,16 +44,17 @@ function WalletCreationStep({
       />
       <Box mt={5}>
         <Typography
-          variant="body1"
-          component="div"
+          variant="caption"
+          component="p"
           display="flex"
           alignItems="center"
           gap={0.5}
+          sx={{ fontSize: "0.875rem" }}
         >
           By continuing, you agree to our
-          <Link href="https://app.safe.global/terms">terms of use</Link>
+          <Link href="#">terms of use</Link>
           and
-          <Link href="https://app.safe.global/privacy"> privacy policy.</Link>
+          <Link href="#"> privacy policy.</Link>
         </Typography>
       </Box>
     </Box>
