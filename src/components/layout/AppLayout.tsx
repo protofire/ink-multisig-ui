@@ -16,7 +16,7 @@ const ContentWrapper = styled(Box)<BoxProps & { drawerwidth: number }>(
   ({ theme, drawerwidth }) => ({
     width: "100%",
     paddingTop: theme.spacing(2),
-    paddingLeft: theme.spacing(scalePixels(drawerwidth) + 2),
+    paddingLeft: theme.spacing(scalePixels(drawerwidth) + 4),
     paddingRight: theme.spacing(4),
     [theme.breakpoints.down("sm")]: {
       paddingLeft: theme.spacing(2),
