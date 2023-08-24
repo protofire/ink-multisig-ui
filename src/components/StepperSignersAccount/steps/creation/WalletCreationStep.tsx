@@ -1,6 +1,6 @@
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Box, Link, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Link, TextField, Typography } from "@mui/material";
 
+import NetworkBadge from "@/components/NetworkBadge";
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
@@ -17,20 +17,20 @@ function WalletCreationStep({
   step: number;
 }) {
   const { network } = usePolkadotContext();
-  const networkName = (network && getChain(network)?.name) || "UNKNOWN";
+  const { logo, name: networkName } = getChain(network);
 
   return (
     <Box mt={3} display="flex" gap={2.25} flexDirection="column">
-      <Box display="flex" alignItems="center" gap={1}>
-        <Typography variant="caption" component="div">
-          You are on {networkName}
+      <Box display="flex" alignItems="center" gap={1.25}>
+        <Typography variant="body1" component="p">
+          You are on
         </Typography>
-        <Tooltip
-          placement="right"
-          title="This network is the one that has been selected in the top Network selector"
-        >
-          <HelpOutlineIcon fontSize="small" />
-        </Tooltip>
+        <NetworkBadge
+          name={networkName}
+          logo={logo.src}
+          logoSize={{ width: 14, height: 14 }}
+          description={logo.alt}
+        />
       </Box>
       <TextField
         label="Name"
@@ -44,16 +44,17 @@ function WalletCreationStep({
       />
       <Box mt={5}>
         <Typography
-          variant="body1"
-          component="div"
+          variant="caption"
+          component="p"
           display="flex"
           alignItems="center"
           gap={0.5}
+          sx={{ fontSize: "0.875rem" }}
         >
           By continuing, you agree to our
-          <Link href="https://app.safe.global/terms">terms of use</Link>
+          <Link href="#">terms of use</Link>
           and
-          <Link href="https://app.safe.global/privacy"> privacy policy.</Link>
+          <Link href="#"> privacy policy.</Link>
         </Typography>
       </Box>
     </Box>

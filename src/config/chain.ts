@@ -41,6 +41,18 @@ export const CHAINS_COLORS: ChainColors = {
   [ShibuyaTestnet.id]: "#FF9F1C",
 };
 
-export function getChain(chainId: ChainId) {
-  return CHAINS_ALLOWED.find((_chain) => _chain.id === chainId);
+const UNKNOWN_CHAIN = {
+  name: "UNKNOWN",
+  id: "unknown-network",
+  logo: {
+    src: `${CHAINS_IMG_PATH}custom.png`,
+    alt: `unknown chain img`,
+  },
+};
+
+export function getChain(chainId?: ChainId) {
+  if (!chainId) return UNKNOWN_CHAIN;
+  return (
+    CHAINS_ALLOWED.find((_chain) => _chain.id === chainId) ?? UNKNOWN_CHAIN
+  );
 }

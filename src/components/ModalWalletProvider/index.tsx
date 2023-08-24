@@ -9,6 +9,7 @@ import {
 import React from "react";
 
 import { Wallet } from "@/services/useink/types";
+import { openInNewTab } from "@/utils/browserMethods";
 
 import {
   ModalStyled,
@@ -32,6 +33,7 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
     onClose();
     connectWallet(walletName);
   };
+
   return (
     <Modal open={open} onClose={onClose}>
       <ModalStyled>
@@ -67,7 +69,7 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
                 <>
                   <ModalStyledListItem
                     onClick={() => {
-                      handleClick(w.extensionName);
+                      openInNewTab(w.installUrl);
                     }}
                   >
                     <ListItemIcon>
