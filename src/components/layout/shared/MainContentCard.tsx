@@ -3,25 +3,23 @@ import React, { PropsWithChildren } from "react";
 
 import { BoxContentCentered } from "@/components/common/muiExtended";
 
-interface MyCardProps extends PropsWithChildren {
+interface MyCardProps extends PropsWithChildren<BoxProps> {
   title?: string;
   paragraph?: string;
-  styles?: BoxProps;
+  stylesContainer?: BoxProps;
 }
 
 export const MainContentCard: React.FC<MyCardProps> = ({
   title,
   paragraph,
   children,
-  styles,
+  stylesContainer: styles,
+  sx,
 }) => {
   return (
     <BoxContentCentered
       m={7}
-      sx={{
-        maxWidth: "100%",
-        minHeight: "calc(100vh - 30rem)",
-      }}
+      sx={{ maxWidth: "100%", minHeight: "calc(100vh - 30rem)", ...sx }}
     >
       <BoxContentCentered {...styles}>
         <Box>

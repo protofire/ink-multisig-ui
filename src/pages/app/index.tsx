@@ -51,7 +51,7 @@ export default function AppDashboard() {
           marginTop: "1rem",
         }}
       >
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Typography variant="h3" color="#FFE873">
             Address book
           </Typography>

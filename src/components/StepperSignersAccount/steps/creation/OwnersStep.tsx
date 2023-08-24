@@ -16,7 +16,7 @@ import { ArrayOneOrMore } from "useink/dist/core";
 import { Owner } from "@/domain/SignatoriesAccount";
 import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 
-import { StyledBox } from "../styled";
+import { StyledBox } from "../../styled";
 
 function OwnersStep({
   owners,
@@ -90,6 +90,7 @@ function OwnersStep({
                   handleOwnerChange(index, e.target.value, "name")
                 }
               />
+
               <TextField
                 fullWidth
                 label="Owner address"
@@ -98,6 +99,7 @@ function OwnersStep({
                   handleOwnerChange(index, e.target.value, "address")
                 }
               />
+
               <IconButton
                 disabled={index === 0}
                 onClick={() => removeOwner(index)}

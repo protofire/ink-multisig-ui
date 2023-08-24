@@ -11,7 +11,7 @@ export function AccountAvatar({ address }: Props) {
   return (
     <Box display="flex" alignItems="center">
       <Avatar>
-        <Identicon value={address} size={32} theme="jdenticon" />
+        <Identicon value={address} size={32} theme="beachball" />
       </Avatar>
       <Box marginLeft={1}>
         <Typography color="white">{truncateAddress(address, 4)}</Typography>
