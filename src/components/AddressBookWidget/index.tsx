@@ -41,7 +41,7 @@ export const AddressBookWidget = () => {
               return (
                 <ListItemstyled key={index}>
                   <StyledBox>
-                    <Identicon value={a.address} theme="polkadot" />
+                    <Identicon value={a.address} size={32} theme="beachball" />
                     <StyledStack>
                       <span>{shortNameLonger(a.name as string)}</span>
                       <p>{truncateAddress(a.address as string, 12)}</p>

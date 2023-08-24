@@ -26,16 +26,10 @@ export const StyledBox = styled(Box)<BoxProps>(() => ({
   display: "flex",
   maxWidth: "600px",
   margin: "0 auto",
-
-  "& .ui--IdentityIcon": {
-    "& svg": {
-      width: "35px",
-    },
-  },
+  alignItems: "center",
 }));
 
 export const StyledStack = styled(Box)<BoxProps>(() => ({
-  paddingTop: "8px",
   minWidth: "220px",
   marginLeft: "1rem",
 

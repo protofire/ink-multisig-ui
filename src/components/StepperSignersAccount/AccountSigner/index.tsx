@@ -24,7 +24,7 @@ export function AccountSigner({
   return (
     <Box display="flex" alignItems="center">
       <Avatar>
-        <Identicon value={address} size={32} theme="jdenticon" />
+        <Identicon value={address} size={32} theme="beachball" />
       </Avatar>
       <Box marginLeft={1}>
         <Typography color={theme.palette.common.white} fontSize={14}>
