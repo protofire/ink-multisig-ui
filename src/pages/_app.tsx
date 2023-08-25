@@ -18,7 +18,7 @@ import ThemeCustomization from "@/themes";
 import createEmotionCache from "@/utils/createEmotionCache";
 
 const squidClient = new ApolloClient({
-  uri: "https://squid.subsquid.io/ink-multisig-shibuya/v/v1/graphql",
+  uri: "https://squid.subsquid.io/ink-multisig-shibuya/v/v2/graphql",
   cache: new InMemoryCache(),
 });
 

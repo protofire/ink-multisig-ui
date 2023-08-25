@@ -17,6 +17,7 @@ export const INVALID_OWNER_NAME_ERROR =
   "Owner name must be less than 50 chars.";
 export const INVALID_WALLET_NAME_ERROR =
   "Wallet name must exist and be less than 50 chars.";
+export const DUPLICATE_ADDRESS_ERROR = "Duplicate owner address detected.";
 
 const VALIDATIONS = {
   walletName: (name: string) => name && name.length <= 50,
@@ -80,16 +81,27 @@ export const useFormSignersAccountState = () => {
       let updateRequired = false; // A flag to check if an update is really needed
 
       const newErrors = [...errors];
+      const seenAddresses = new Set<string>();
 
       newOwners.forEach((owner, index) => {
         let errorMessage = "";
 
-        if (!VALIDATIONS.ownerAddress(owner.address)) {
-          errorMessage = INVALID_ADDRESS_ERROR;
+        // Check for duplicated addresses
+        if (seenAddresses.has(owner.address)) {
+          errorMessage = DUPLICATE_ADDRESS_ERROR;
+        } else {
+          seenAddresses.add(owner.address);
         }
 
-        if (!VALIDATIONS.ownerName(owner.name)) {
-          errorMessage = INVALID_OWNER_NAME_ERROR;
+        // Continue with other validations if no duplicate error
+        if (!errorMessage) {
+          if (!VALIDATIONS.ownerAddress(owner.address)) {
+            errorMessage = INVALID_ADDRESS_ERROR;
+          }
+
+          if (!VALIDATIONS.ownerName(owner.name)) {
+            errorMessage = INVALID_OWNER_NAME_ERROR;
+          }
         }
 
         const error = {
