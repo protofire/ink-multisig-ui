@@ -1,18 +1,22 @@
 import { Box, BoxProps, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const BoxWrapper = styled(Box)<BoxProps>(() => ({}));
+const BoxWrapper = styled(Box)<BoxProps>(() => ({
+  padding: "1rem",
+}));
 
 interface Props {
   freeBalance: string | undefined;
-  reservedBalance: string | undefined;
+  reservedBalance?: string | undefined;
+  totalBalance?: string | undefined;
 }
 
 export function XsignerBalanceText({ freeBalance, reservedBalance }: Props) {
   return (
     <BoxWrapper>
-      <Typography>{freeBalance}</Typography>
-      <Typography>{reservedBalance}</Typography>
+      <Typography>Transferrable: {freeBalance}</Typography>
+      <Typography>Reserved: {reservedBalance}</Typography>
+      <Typography>Total Balance: {reservedBalance}</Typography>
     </BoxWrapper>
   );
 }

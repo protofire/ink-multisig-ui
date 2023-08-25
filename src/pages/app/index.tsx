@@ -1,4 +1,6 @@
-import { Grid, Typography } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Grid, Popover, Typography } from "@mui/material";
+import React from "react";
 
 import { AddressBookWidget } from "@/components/AddressBookWidget";
 import { SummaryCard } from "@/components/SummaryCard";
@@ -12,23 +14,64 @@ export default function AppDashboard() {
   const { balance, isLoading: isLoadingBalance } = useGetBalance(
     xSignerSelected?.address
   );
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h5">Summary</Typography>
-        </Grid>
-
+      <Grid container spacing={3} mt={2}>
         <Grid item xs={12} sm={6} md={3}>
           <SummaryCard
             captionTitle="Balance"
             widthSkeleton="60%"
             captionComponent={
-              <XsignerBalanceText
-                freeBalance={balance?.freeBalance}
-                reservedBalance={balance?.reservedBalance}
-              />
+              <>
+                {/*  <XsignerBalanceText freeBalance={balance?.freeBalance} /> */}
+                <Typography
+                  component="div"
+                  aria-owns={open ? "mouse-over-popover" : undefined}
+                  aria-haspopup="true"
+                  onMouseEnter={handlePopoverOpen}
+                  onMouseLeave={handlePopoverClose}
+                >
+                  <Typography variant="h3" color="white" component="span">
+                    120 ROC
+                  </Typography>{" "}
+                  <InfoOutlinedIcon />
+                </Typography>
+                <Popover
+                  id="mouse-over-popover"
+                  sx={{
+                    pointerEvents: "none",
+                  }}
+                  open={open}
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "center",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "center",
+                    horizontal: "left",
+                  }}
+                  onClose={handlePopoverClose}
+                  disableRestoreFocus
+                >
+                  <XsignerBalanceText
+                    freeBalance={balance?.freeBalance}
+                    reservedBalance={balance?.reservedBalance}
+                  />
+                </Popover>
+              </>
             }
             isLoading={isLoadingBalance}
           />
@@ -40,7 +83,7 @@ export default function AppDashboard() {
           <SummaryCard captionTitle="Tracked NFTs" caption="3" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <SummaryCard captionTitle="Transactions queued" caption="0" />
+          <SummaryCard captionTitle="Owners" caption="0" />
         </Grid>
       </Grid>
       <Grid
@@ -51,8 +94,8 @@ export default function AppDashboard() {
         }}
       >
         <Grid item xs={12}>
-          <Typography variant="h3" color="#FFE873">
-            Address book
+          <Typography variant="h3" color="primary">
+            Pinned addresses
           </Typography>
         </Grid>
 
