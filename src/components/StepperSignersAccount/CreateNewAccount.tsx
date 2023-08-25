@@ -2,7 +2,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Step, Stepper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { ROUTES } from "@/config/routes";
@@ -16,7 +16,7 @@ import { DEFAULT_STEPS, StepProps } from "./constants";
 import { FooterButton, StepperFooter, StyledStepLabel } from "./styled";
 
 export type StepperNewSignersAccountProps = {
-  save?: (props: SaveProps) => void;
+  save: (props: SaveProps) => void;
   onComplete?: () => void;
   isExecuting: boolean;
   networkId: ChainId;
@@ -37,42 +37,58 @@ function CreateNewAccount({
   const data = useFormSignersAccountState();
   const router = useRouter();
   const theme = useTheme();
-  const hasSavedRef = useRef(false);
+  const [toExecute, setToExecute] = useState(true);
 
   useEffect(() => {
-    if (!isExecuting || hasSavedRef.current) return;
-    const handleExecution = async () => {
-      if (activeStep.execution === steps.execution.length - 1) {
-        if (hasSavedRef.current) return; // Return if already saved
+    // const parsedData: SaveProps = {
+    //   owners: data.owners,
+    //   threshold: data.threshold,
+    //   name: data.walletName,
+    //   networkId,
+    // };
+    save({
+      owners: data.owners,
+      threshold: data.threshold,
+      name: data.walletName,
+      networkId,
+    });
+    setToExecute(false);
+  }, [data.owners, data.threshold, data.walletName, networkId, save]);
 
-        const parsedData: SaveProps = {
-          owners: data.owners,
-          threshold: data.threshold,
-          name: data.walletName,
-          networkId,
-        };
+  // useEffect(() => {
+  //   if (!isExecuting || hasSavedRef.current) return;
+  //   const handleExecution = async () => {
+  //     if (activeStep.execution === steps.execution.length - 1) {
+  //       if (hasSavedRef.current) return; // Return if already saved
 
-        save?.(parsedData);
-        hasSavedRef.current = true;
-        return;
-      }
-      setActiveStep((prevActiveStep) => ({
-        ...prevActiveStep,
-        execution: prevActiveStep.execution + 1,
-      }));
-    };
+  //       const parsedData: SaveProps = {
+  //         owners: data.owners,
+  //         threshold: data.threshold,
+  //         name: data.walletName,
+  //         networkId,
+  //       };
 
-    handleExecution();
-  }, [
-    isExecuting,
-    activeStep.execution,
-    setActiveStep,
-    onComplete,
-    save,
-    data,
-    networkId,
-    steps.execution.length,
-  ]);
+  //       save(parsedData);
+  //       hasSavedRef.current = true;
+  //       return;
+  //     }
+  //     setActiveStep((prevActiveStep) => ({
+  //       ...prevActiveStep,
+  //       execution: prevActiveStep.execution + 1,
+  //     }));
+  //   };
+
+  //   handleExecution();
+  // }, [
+  //   isExecuting,
+  //   activeStep.execution,
+  //   setActiveStep,
+  //   onComplete,
+  //   save,
+  //   data,
+  //   networkId,
+  //   steps.execution.length,
+  // ]);
 
   const handleNext = () => {
     const isLastStep = activeStep.creation === steps.creation.length - 1;
@@ -194,9 +210,6 @@ function CreateNewAccount({
       </Box>
       <Box sx={{ background: theme.palette.grey.A100 }} width={2 / 3}>
         {renderContent()}
-      </Box>
-      <Box>
-        <h2>Status: {newMultisigTx?.status}</h2>
       </Box>
     </Box>
   );
