@@ -20,7 +20,9 @@ export default function AppDashboard() {
           <SummaryCard
             captionTitle="Balance"
             widthSkeleton="60%"
-            captionComponent={<XsignerBalanceText balance={balance} />}
+            captionComponent={
+              balance && <XsignerBalanceText balance={balance} />
+            }
             isLoading={isLoadingBalance}
           />
         </Grid>
