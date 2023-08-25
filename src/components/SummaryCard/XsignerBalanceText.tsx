@@ -11,12 +11,16 @@ interface Props {
   totalBalance?: string | undefined;
 }
 
-export function XsignerBalanceText({ freeBalance, reservedBalance }: Props) {
+export function XsignerBalanceText({
+  freeBalance,
+  reservedBalance,
+  totalBalance,
+}: Props) {
   return (
     <BoxWrapper>
       <Typography>Transferrable: {freeBalance}</Typography>
       <Typography>Reserved: {reservedBalance}</Typography>
-      <Typography>Total Balance: {reservedBalance}</Typography>
+      <Typography>Total Balance: {totalBalance}</Typography>
     </BoxWrapper>
   );
 }

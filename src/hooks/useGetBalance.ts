@@ -18,6 +18,7 @@ export function useGetBalance(address: string | undefined) {
     () => ({
       freeBalance: _balance?.freeBalance,
       reservedBalance: _balance?.reservedBalance,
+      totalBalance: _balance?.freeBalance.add(_balance.reservedBalance),
     }),
     [_balance?.freeBalance, _balance?.reservedBalance]
   );
