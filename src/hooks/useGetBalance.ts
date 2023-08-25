@@ -5,9 +5,10 @@ import { planckToDecimalFormatted } from "@/services/useink/substrate/parseUnit"
 
 import { useNetworkApi } from "./useNetworkApi";
 
-interface XsignerBalance {
+export interface XsignerBalance {
   freeBalance?: string;
   reservedBalance?: string;
+  totalBalance?: string;
 }
 
 export function useGetBalance(address: string | undefined) {
