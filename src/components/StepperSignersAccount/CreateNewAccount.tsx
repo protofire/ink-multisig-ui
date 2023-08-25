@@ -2,7 +2,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Step, Stepper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { ROUTES } from "@/config/routes";
@@ -10,6 +10,7 @@ import {
   useFormSignersAccountState,
   ValidationError,
 } from "@/hooks/xsignersAccount/useFormSignersAccountState";
+import { TransactionStatus } from "@/services/useink/types";
 
 import { SaveProps } from ".";
 import { DEFAULT_STEPS, StepProps } from "./constants";
@@ -21,6 +22,7 @@ export type StepperNewSignersAccountProps = {
   isExecuting: boolean;
   networkId: ChainId;
   steps?: StepProps;
+  txStatus: TransactionStatus;
 };
 
 function CreateNewAccount({
@@ -29,6 +31,7 @@ function CreateNewAccount({
   networkId,
   onComplete,
   steps = DEFAULT_STEPS,
+  txStatus,
 }: StepperNewSignersAccountProps) {
   const [activeStep, setActiveStep] = useState<{
     creation: number;
@@ -37,58 +40,37 @@ function CreateNewAccount({
   const data = useFormSignersAccountState();
   const router = useRouter();
   const theme = useTheme();
-  const [toExecute, setToExecute] = useState(true);
+  const hasBeenCalled = useRef(false);
 
   useEffect(() => {
-    // const parsedData: SaveProps = {
-    //   owners: data.owners,
-    //   threshold: data.threshold,
-    //   name: data.walletName,
-    //   networkId,
-    // };
+    if (!isExecuting || hasBeenCalled.current) return;
+
     save({
       owners: data.owners,
       threshold: data.threshold,
       name: data.walletName,
       networkId,
     });
-    setToExecute(false);
-  }, [data.owners, data.threshold, data.walletName, networkId, save]);
+    hasBeenCalled.current = true;
+  }, [data, isExecuting, networkId, save]);
 
-  // useEffect(() => {
-  //   if (!isExecuting || hasSavedRef.current) return;
-  //   const handleExecution = async () => {
-  //     if (activeStep.execution === steps.execution.length - 1) {
-  //       if (hasSavedRef.current) return; // Return if already saved
-
-  //       const parsedData: SaveProps = {
-  //         owners: data.owners,
-  //         threshold: data.threshold,
-  //         name: data.walletName,
-  //         networkId,
-  //       };
-
-  //       save(parsedData);
-  //       hasSavedRef.current = true;
-  //       return;
-  //     }
-  //     setActiveStep((prevActiveStep) => ({
-  //       ...prevActiveStep,
-  //       execution: prevActiveStep.execution + 1,
-  //     }));
-  //   };
-
-  //   handleExecution();
-  // }, [
-  //   isExecuting,
-  //   activeStep.execution,
-  //   setActiveStep,
-  //   onComplete,
-  //   save,
-  //   data,
-  //   networkId,
-  //   steps.execution.length,
-  // ]);
+  useEffect(() => {
+    if (txStatus === "PendingSignature" && activeStep.execution === 0) {
+      setActiveStep((prevActiveStep) => ({
+        ...prevActiveStep,
+        execution: prevActiveStep.execution + 1,
+      }));
+    }
+    if (
+      (txStatus === "InBlock" || txStatus === "Finalized") &&
+      activeStep.execution === 1
+    ) {
+      setActiveStep((prevActiveStep) => ({
+        ...prevActiveStep,
+        execution: prevActiveStep.execution + 1,
+      }));
+    }
+  }, [activeStep.execution, txStatus]);
 
   const handleNext = () => {
     const isLastStep = activeStep.creation === steps.creation.length - 1;

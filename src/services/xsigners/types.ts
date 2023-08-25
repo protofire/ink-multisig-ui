@@ -1,5 +1,6 @@
 export interface RawXsignerAccount {
+  address: string;
   threshold: number;
   owners: Array<string>;
-  address: string;
+  salt: string;
 }

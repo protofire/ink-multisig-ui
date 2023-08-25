@@ -9,16 +9,27 @@ interface SaveOptions {
   onFallback?: (error: string) => void;
 }
 
-export function useAddSignersAccount() {
+interface SaveXsignerProps {
+  account: SignatoriesAccount;
+  options?: SaveOptions;
+}
+
+export interface UseAddSignersAccount {
+  save: (props: SaveXsignerProps) => Promise<SignatoriesAccount | void>;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function useAddSignersAccount(): UseAddSignersAccount {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signatoriesAccountRepository } = useLocalDbContext();
 
   async function save(
-    account: SignatoriesAccount,
-    options?: SaveOptions
+    props: SaveXsignerProps
   ): Promise<SignatoriesAccount | void> {
     setIsLoading(true);
+    const { account, options } = props;
 
     try {
       await signatoriesAccountRepository

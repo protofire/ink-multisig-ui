@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { useEvents, useEventSubscription, useTx } from "useink";
 
-import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { SaveProps } from "@/components/StepperSignersAccount";
 import { useMultisigFactoryContract } from "@/hooks/useTxMultisigFactory";
+import { generateHash } from "@/utils/blockchain";
+import { customReportError } from "@/utils/error";
 
-interface SaveOptions {
-  onSuccess?: (account: SignatoriesAccount) => void;
-  onFallback?: (error: string) => void;
-}
+import { UseAddSignersAccount } from "./useAddSignersAccount";
 
-export function useNewSignersAccount() {
+export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [newAccount, setNewAccount] = useState<SaveProps>();
+
   const { multisigFactoryContract } = useMultisigFactoryContract();
   const newMultisigTx = useTx(multisigFactoryContract, "newMultisig");
   useEventSubscription(multisigFactoryContract);
@@ -21,57 +22,41 @@ export function useNewSignersAccount() {
   );
 
   useEffect(() => {
-    if (!multisigFactoryEvents || multisigFactoryEvents.length === 0) return;
-    console.log("multisigFactoryEvents", multisigFactoryEvents);
-    // setActiveStep((prevActiveStep) => ({
-    //   ...prevActiveStep,
-    //   execution: prevActiveStep.execution + 1,
-    // }));
-  }, [multisigFactoryEvents]);
+    if (
+      !multisigFactoryEvents ||
+      multisigFactoryEvents.length === 0 ||
+      !newAccount
+    )
+      return;
+    const address = multisigFactoryEvents[0].args[0] as string;
 
-  // const save = useCallback(
-  //   async (
-  //     account: SignatoriesAccount,
-  //     options?: SaveOptions
-  //   ): Promise<SignatoriesAccount | void> => {
-  //     setIsLoading(true);
-  //     if (!multisigFactory) return;
-  //     const salt = generateHash(Date.now.toString());
-  //     const owners = account.owners.map((o) => o.address);
-
-  //     try {
-  //       // await multisigFactory.tx.newMultisig(account.threshold, owners, salt);
-
-  //       // newMultisig.signAndSend(
-  //       //   [account.threshold],
-  //       //   undefined,
-  //       //   (result, api, error) => {
-  //       //     console.log("result", result, "api", api, "error", error);
-  //       //   }
-  //       // );
-
-  //       return account;
-  //     } catch (err) {
-  //       const errorFormated = customReportError(err);
-  //       setError(errorFormated);
-  //       options?.onFallback?.(errorFormated);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   },
-  //   [multisigFactory]
-  // );
+    onSave({ account: { ...newAccount, address } });
+  }, [multisigFactoryEvents, newAccount, onSave]);
 
   const signAndSend = useCallback(
-    (threshold: number, owners: string[], salt: number[]) => {
+    (account: SaveProps) => {
+      setError(null);
+
+      const date = new Date();
+      const salt = generateHash(date.toString());
+      const owners = account.owners.map((o) => o.address);
+      const threshold = account.threshold;
+
       newMultisigTx.signAndSend(
         [threshold, owners, salt],
         undefined,
-        console.log
+        (_result, _api, _error) => {
+          if (_error) {
+            const errorFormated = customReportError(_error);
+            setError(errorFormated);
+          } else if (_result?.isCompleted) {
+            setNewAccount(account);
+          }
+        }
       );
     },
     [newMultisigTx]
   );
 
-  return { signAndSend, isLoading, error, status: newMultisigTx.status };
+  return { signAndSend, isLoading, error, txStatus: newMultisigTx.status };
 }
