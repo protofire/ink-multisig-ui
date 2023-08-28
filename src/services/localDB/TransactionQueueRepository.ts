@@ -14,6 +14,7 @@ const globalData = [
     value: "300",
     token: "ROC",
     txValidation: "1",
+    timestamp: "20/07/2023 18:33",
   },
   {
     address: "5FWbLCgqF3VHhGPJjnTp3RwB8yW3Zf4wcLv1NMqLEEJaaMNS",
@@ -21,6 +22,7 @@ const globalData = [
     value: "300",
     token: "ROC",
     txValidation: "1",
+    timestamp: "20/07/2023 18:33",
   },
   {
     address: "5FWbLCgqF3VHhGPJjnTp3RwB8yW3Zf4wcLv1NMqLEEJaaMNS",
@@ -28,6 +30,7 @@ const globalData = [
     value: "300",
     token: "ROC",
     txValidation: "1",
+    timestamp: "20/07/2023 18:33",
   },
   {
     address: "5FWbLCgqF3VHhGPJjnTp3RwB8yW3Zf4wcLv1NMqLEEJaaMNS",
@@ -35,6 +38,7 @@ const globalData = [
     value: "300",
     token: "ROC",
     txValidation: "1",
+    timestamp: "20/07/2023 18:33",
   },
 ];
 

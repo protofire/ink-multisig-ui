@@ -5,4 +5,5 @@ export interface TransactionQueue {
   token: string;
   type: string;
   txValidation: string;
+  timestamp: string;
 }

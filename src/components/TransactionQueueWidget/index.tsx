@@ -1,20 +1,15 @@
-import Image from "next/image";
 import * as React from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useTransactionQueue } from "@/hooks/transactionQueue/useTransactionQueue";
-import { truncateAddress } from "@/utils/formatString";
 
 import {
-  ListItemtyled,
   NoItems,
-  StyledBox,
   StyledButton,
   StyledList,
-  StyledStack,
-  StyledValueBox,
   TransactionQueueStyled,
 } from "./styled";
+import { TransactionQueueItem } from "./TransactionQueueItem";
 
 export const TransactionQueueWidget = () => {
   const { accountConnected } = usePolkadotContext();
@@ -27,41 +22,7 @@ export const TransactionQueueWidget = () => {
         </StyledList>
       ) : (
         <>
-          <StyledList>
-            {data?.map((a, index) => (
-              <ListItemtyled key={index}>
-                <StyledBox>
-                  {a.type === "Send" ? (
-                    <Image
-                      src="/assets/arrow-receive.svg"
-                      alt="Arrow receive"
-                      priority
-                      width={30}
-                      height={30}
-                    />
-                  ) : (
-                    <Image
-                      src="/assets/arrow-send.svg"
-                      alt="Arrow receive"
-                      priority
-                      width={30}
-                      height={30}
-                    />
-                  )}
-                  <StyledStack>
-                    <span>{a.type}</span>
-                    <p>{truncateAddress(a.address as string, 12)}</p>
-                  </StyledStack>
-                  <StyledValueBox>
-                    {a.type === "Send" ? "-" : "+"} {`${a.value} ${a.token}`}
-                    <span>
-                      {a.txValidation}/{a.txValidation}
-                    </span>
-                  </StyledValueBox>
-                </StyledBox>
-              </ListItemtyled>
-            ))}
-          </StyledList>
+          <TransactionQueueItem data={data} />
           <StyledButton> View All </StyledButton>
         </>
       )}

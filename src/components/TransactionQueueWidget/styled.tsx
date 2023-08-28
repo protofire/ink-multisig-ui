@@ -35,6 +35,12 @@ export const StyledStack = styled(Box)<BoxProps>(() => ({
     fontSize: "0.875rem",
     fontWeight: "600",
   },
+
+  "& span:nth-child(2)": {
+    marginLeft: "0.8rem",
+    fontSize: "0.73rem",
+  },
+
   "& p": {
     fontSize: "0.75rem",
     fontWeight: "normal",
@@ -75,18 +81,6 @@ export const StyledValueBox = styled(Box)<BoxProps>(() => ({
     marginLeft: "1.5rem",
     fontSize: "0.9rem",
     fontWeight: "normal",
-  },
-}));
-
-export const NetworkBoxStyled = styled(Box)<BoxProps>(() => ({
-  marginLeft: "1rem",
-  display: "flex",
-  alignItems: "center",
-
-  "& p": {
-    marginLeft: "0.5rem",
-    fontWeight: "bold",
-    fontSize: "1.2rem",
   },
 }));
 
