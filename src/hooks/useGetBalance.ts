@@ -24,7 +24,6 @@ export function useGetBalance(address: string | undefined) {
     [_balance?.freeBalance, _balance?.reservedBalance]
   );
   const api = useNetworkApi();
-
   useEffect(() => {
     if (!api?.api) return;
 
@@ -44,7 +43,15 @@ export function useGetBalance(address: string | undefined) {
       }
     );
 
-    setBalance({ freeBalance, reservedBalance });
+    const totalBalance = planckToDecimalFormatted(
+      balanceWithoutFormat?.totalBalance,
+      {
+        significantFigures: 4,
+        api: api?.api,
+      }
+    );
+
+    setBalance({ freeBalance, reservedBalance, totalBalance });
     setIsLoading(false);
   }, [api?.api, balanceWithoutFormat]);
 

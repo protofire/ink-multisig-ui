@@ -35,7 +35,7 @@ export function XsignerBalanceText({ balance }: Props) {
         onMouseLeave={handlePopoverClose}
       >
         <Typography variant="h3" color="white" component="span">
-          120 ROC
+          {freeBalance}
         </Typography>{" "}
         <InfoOutlinedIcon />
       </Typography>
