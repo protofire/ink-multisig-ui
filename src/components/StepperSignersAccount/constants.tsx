@@ -23,7 +23,7 @@ export type StepProps = {
     Component: React.FC<any & IBoxFooter>;
   }>;
 };
-export const DEFAULT_STEPS: StepProps = {
+export const CREATION_STEPS: StepProps = {
   creation: [
     {
       id: 0,

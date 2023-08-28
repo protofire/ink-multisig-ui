@@ -69,7 +69,7 @@ const nouns = [
   "Desert",
   "River",
   "Sky",
-  "Island.",
+  "Island",
 ];
 
 let counter = 0;

@@ -6,15 +6,16 @@ import { useMultisigFactoryContract } from "@/hooks/useTxMultisigFactory";
 import { generateHash } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
+import { useSetXsignerSelected } from "../xsignerSelected/useSetXsignerSelected";
 import { UseAddSignersAccount } from "./useAddSignersAccount";
 
 export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [newAccount, setNewAccount] = useState<SaveProps>();
-
+  const { setXsigner } = useSetXsignerSelected();
   const { multisigFactoryContract } = useMultisigFactoryContract();
   const newMultisigTx = useTx(multisigFactoryContract, "newMultisig");
+
   useEventSubscription(multisigFactoryContract);
   const { events: multisigFactoryEvents } = useEvents(
     multisigFactoryContract?.contract.address,
@@ -30,8 +31,10 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
       return;
     const address = multisigFactoryEvents[0].args[0] as string;
 
-    onSave({ account: { ...newAccount, address } });
-  }, [multisigFactoryEvents, newAccount, onSave]);
+    const xsignerAccount = { account: { ...newAccount, address } };
+    onSave(xsignerAccount);
+    setXsigner(xsignerAccount.account);
+  }, [multisigFactoryEvents, newAccount, onSave, setXsigner]);
 
   const signAndSend = useCallback(
     (account: SaveProps) => {
@@ -58,5 +61,5 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
     [newMultisigTx]
   );
 
-  return { signAndSend, isLoading, error, txStatus: newMultisigTx.status };
+  return { signAndSend, error, txStatus: newMultisigTx.status };
 }

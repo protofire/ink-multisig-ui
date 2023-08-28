@@ -3,7 +3,7 @@ import { Box, TextField, Tooltip, Typography } from "@mui/material";
 import { ArrayOneOrMore } from "useink/dist/core";
 
 import { Owner } from "@/domain/SignatoriesAccount";
-import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
+import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 import { AccountSigner } from "../../AccountSigner";
 import { StyledBox } from "../../styled";

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
@@ -25,26 +25,27 @@ export function useAddSignersAccount(): UseAddSignersAccount {
   const [error, setError] = useState<string | null>(null);
   const { signatoriesAccountRepository } = useLocalDbContext();
 
-  async function save(
-    props: SaveXsignerProps
-  ): Promise<SignatoriesAccount | void> {
-    setIsLoading(true);
-    const { account, options } = props;
+  const save = useCallback(
+    async (props: SaveXsignerProps): Promise<SignatoriesAccount | void> => {
+      setIsLoading(true);
+      const { account, options } = props;
 
-    try {
-      await signatoriesAccountRepository
-        ?.addSignatoryAccount(account)
-        .finally(() => options?.onSuccess?.(account));
+      try {
+        await signatoriesAccountRepository
+          ?.addSignatoryAccount(account)
+          .finally(() => options?.onSuccess?.(account));
 
-      return account;
-    } catch (err) {
-      const errorFormated = customReportError(err);
-      setError(errorFormated);
-      options?.onFallback?.(errorFormated);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+        return account;
+      } catch (err) {
+        const errorFormated = customReportError(err);
+        setError(errorFormated);
+        options?.onFallback?.(errorFormated);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [signatoriesAccountRepository]
+  );
 
   return { save, isLoading, error };
 }
