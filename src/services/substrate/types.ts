@@ -7,6 +7,7 @@ export type {
   ContractCallOutcome,
   ContractOptions,
 } from "@polkadot/api-contract/types";
+export type { KeyringPair } from "@polkadot/keyring/types";
 export type {
   AnyJson,
   Codec,

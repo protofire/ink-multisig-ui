@@ -18,7 +18,7 @@ export default function NetworkBadge({
   showTooltip?: boolean;
 }) {
   return (
-    <StyledStack logoSize={logoSize}>
+    <StyledStack logosize={logoSize}>
       <Stack flexDirection="row" alignItems="center">
         <Avatar
           sx={{

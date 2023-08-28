@@ -18,33 +18,34 @@ export function useGetBalance(address: string | undefined) {
     () => ({
       freeBalance: _balance?.freeBalance,
       reservedBalance: _balance?.reservedBalance,
+      totalBalance: _balance?.freeBalance.add(_balance.reservedBalance),
     }),
     [_balance?.freeBalance, _balance?.reservedBalance]
   );
   const api = useNetworkApi();
 
   useEffect(() => {
-    if (!api?.api) return;
+    if (!api?.apiPromise) return;
 
     setIsLoading(true);
     const freeBalance = planckToDecimalFormatted(
       balanceWithoutFormat?.freeBalance,
       {
         significantFigures: 4,
-        api: api?.api,
+        api: api?.apiPromise,
       }
     );
     const reservedBalance = planckToDecimalFormatted(
       balanceWithoutFormat?.reservedBalance,
       {
         significantFigures: 4,
-        api: api?.api,
+        api: api?.apiPromise,
       }
     );
 
     setBalance({ freeBalance, reservedBalance });
     setIsLoading(false);
-  }, [api?.api, balanceWithoutFormat]);
+  }, [api?.apiPromise, balanceWithoutFormat]);
 
   return { balance, isLoading };
 }

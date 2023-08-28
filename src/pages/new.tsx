@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
-import { NewSignatoriesAccount } from "@/components/NewSignatoriesAccount";
+import { CreateNewAccount } from "@/components/StepperSignersAccount";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 
 export default function NewAccountPage() {
@@ -13,7 +13,7 @@ export default function NewAccountPage() {
 
   return (
     <MainContentCard title="Create new XSigners Account">
-      <NewSignatoriesAccount networkId={network} />
+      <CreateNewAccount networkId={network} />
     </MainContentCard>
   );
 }
