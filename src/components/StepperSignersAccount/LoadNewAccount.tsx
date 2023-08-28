@@ -1,12 +1,23 @@
-import { LOAD_STEPS } from "./constants";
-import CreateNewAccount, {
-  StepperNewSignersAccountProps,
-} from "./CreateNewAccount";
+import BaseStepper from "@/components/StepperSignersAccount/BaseStepper";
+import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
-function LoadNewAccount(props: StepperNewSignersAccountProps) {
+import { useManagerActiveStep } from "../StepperSignersAccount/useManagerActiveStep";
+import { LOAD_STEPS } from "./constants";
+
+// interface LoadNewAccountProps {}
+
+export function LoadNewAccount() {
+  const data = useFormSignersAccountState();
+  const managerStep = useManagerActiveStep();
+
   return (
     <>
-      <CreateNewAccount {...props} steps={LOAD_STEPS} />
+      <BaseStepper
+        isExecuting={false}
+        steps={LOAD_STEPS}
+        data={data}
+        managerStep={managerStep}
+      />
     </>
   );
 }

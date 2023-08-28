@@ -6,9 +6,9 @@ import NetworkBadge from "@/components/NetworkBadge";
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
-import { useFetchSignersAccount } from "@/hooks/signatoriesAccount/useFetchSignersAccount";
-import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
 import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
+import { useFetchSignersAccount } from "@/hooks/xsignersAccount/useFetchSignersAccount";
+import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 function WalletImportStep({
   handleWalletName,

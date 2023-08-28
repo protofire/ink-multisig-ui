@@ -4,8 +4,8 @@ import { PropsWithChildren, useEffect } from "react";
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useFindSignersAccount } from "@/hooks/signatoriesAccount/useFindSignersAccount";
 import { useDelay } from "@/hooks/useDelay";
+import { useFindSignersAccount } from "@/hooks/xsignersAccount/useFindSignersAccount";
 import { DELAY_UNTIL_READ_WALLETS } from "@/services/useink/constants";
 
 type Props = PropsWithChildren;
