@@ -1,5 +1,5 @@
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { Box, BoxProps, Popover, Typography } from "@mui/material";
+import { Box, BoxProps, Divider, Popover, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 
@@ -7,6 +7,7 @@ import { XsignerBalance } from "@/hooks/useGetBalance";
 
 const BoxWrapper = styled(Box)<BoxProps>(() => ({
   padding: "1rem",
+  minWidth: "18rem",
 }));
 
 interface Props {
@@ -33,11 +34,12 @@ export function XsignerBalanceText({ balance }: Props) {
         aria-haspopup="true"
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
+        sx={{ display: "flex", gap: "0.4rem" }}
       >
         <Typography variant="h3" color="white" component="span">
           {freeBalance}
         </Typography>{" "}
-        <InfoOutlinedIcon />
+        <InfoOutlinedIcon fontSize="medium" />
       </Typography>
       <Popover
         id="mouse-over-popover"
@@ -58,9 +60,31 @@ export function XsignerBalanceText({ balance }: Props) {
         disableRestoreFocus
       >
         <BoxWrapper>
-          <Typography variant="body1">Transferrable: {freeBalance}</Typography>
-          <Typography variant="body1">Reserved: {reservedBalance}</Typography>
-          <Typography variant="body1">Total Balance: {totalBalance}</Typography>
+          <Box display={"flex"} justifyContent={"space-between"}>
+            <Typography variant="body1" component="span">
+              Transferrable:
+            </Typography>{" "}
+            <Typography variant="body1" component="span">
+              {freeBalance}
+            </Typography>
+          </Box>
+          <Box display={"flex"} justifyContent={"space-between"}>
+            <Typography variant="body1" component="span">
+              Reserved:
+            </Typography>
+            <Typography variant="body1" component="span">
+              {reservedBalance}
+            </Typography>
+          </Box>
+          <Divider />
+          <Box display={"flex"} justifyContent={"space-between"} mt={1}>
+            <Typography variant="body1" fontWeight={800} component="span">
+              Total Balance:{" "}
+            </Typography>
+            <Typography variant="body1" fontWeight={800} component="span">
+              {totalBalance}
+            </Typography>
+          </Box>
         </BoxWrapper>
       </Popover>
     </>
