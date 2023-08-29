@@ -1,6 +1,6 @@
 import { CHAINS_COLORS, getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useListSignersAccount } from "@/hooks/signatoriesAccount";
+import { useListSignersAccount } from "@/hooks/xsignersAccount";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
 import { XsignerAccountInfoUI } from "./XsignerAccountInfoUI";

@@ -3,7 +3,7 @@ import { Box, Link, TextField, Typography } from "@mui/material";
 import NetworkBadge from "@/components/NetworkBadge";
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { ValidationError } from "@/hooks/signatoriesAccount/useFormSignersAccountState";
+import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 function WalletCreationStep({
   walletName,
