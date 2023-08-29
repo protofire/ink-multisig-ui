@@ -55,7 +55,7 @@ export const ConnectButton: React.FC = () => {
       <ModalWallet
         wallets={wallets}
         open={displayModalWallet}
-        handleClose={() => setOpenModal(!openModal)}
+        handleClose={() => setDisplayModalWallet(false)}
         connectWallet={connectWallet}
         onClose={() => setDisplayModalWallet(false)}
       />
