@@ -47,7 +47,7 @@ export function useGetBalance(address: string | undefined) {
       balanceWithoutFormat?.totalBalance,
       {
         significantFigures: 4,
-        api: api?.api,
+        api: api?.apiPromise,
       }
     );
 
