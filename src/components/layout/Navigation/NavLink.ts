@@ -1,4 +1,5 @@
 import {
+  Book,
   BuildSharp as IconTxBuilder,
   HomeRounded,
   SvgIconComponent,
@@ -18,6 +19,7 @@ export type NavLink = {
 const icons = {
   HomeRounded,
   IconTxBuilder,
+  Book,
 };
 
 export const MENU_ITEMS: NavLink[] = [
@@ -35,6 +37,14 @@ export const MENU_ITEMS: NavLink[] = [
     type: "item",
     url: ROUTES.TxBuilder,
     icon: icons.IconTxBuilder,
+    target: true,
+  },
+  {
+    id: "addressBook",
+    title: "Address Book",
+    type: "item",
+    url: ROUTES.AddressBook,
+    icon: icons.Book,
     target: true,
   },
 ];
