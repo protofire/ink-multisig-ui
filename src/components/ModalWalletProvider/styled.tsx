@@ -17,10 +17,14 @@ import {
 } from "@/components/common/LoadingButton";
 
 export const StyledConnectButton = styled(LoadingButton)<LoadingButtonProps>(
-  () => ({
-    backgroundColor: "#BA0061",
-    color: "#FFFF",
-    width: "115px",
+  ({ theme }) => ({
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.black,
+    "&:hover": {
+      opacity: "0.9",
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.black,
+    },
   })
 );
 
