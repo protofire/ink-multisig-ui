@@ -44,15 +44,14 @@ export default function AppDashboard() {
           marginTop: "1rem",
         }}
       >
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Typography variant="h3" color="primary">
             Pinned addresses
-
           </Typography>
         </Grid>
 
         <Grid item xs={6}>
-          <Typography variant="h3" color="#FFE873">
+          <Typography variant="h3" color="primary">
             Transaction queue
           </Typography>
         </Grid>
