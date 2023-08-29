@@ -8,7 +8,7 @@ import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepositor
 import { customReportError } from "@/utils/error";
 
 interface Props {
-  address: string;
+  address: string | undefined;
   walletName: string;
 }
 
@@ -29,7 +29,7 @@ export function useFindXsignerOwners({ address, walletName }: Props) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await repository.getMultisigByAddress(address);
+        const result = await repository.getMultisigByAddress(address as string);
         if (result) {
           setData({
             address: result.addressSS58,

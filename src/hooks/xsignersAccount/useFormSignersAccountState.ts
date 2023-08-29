@@ -4,12 +4,30 @@ import { ArrayOneOrMore } from "useink/dist/core";
 import { CREATION_STEPS } from "@/components/StepperSignersAccount/constants";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
+import { SetState } from "@/domain/utilityReactTypes";
 import { generateRandomWalletName, isValidAddress } from "@/utils/blockchain";
 
 export type ValidationError = {
   error: boolean;
   message: string;
 };
+
+export interface UseFormSignersAccountStateReturn {
+  walletName: string;
+  address: string | undefined;
+  owners: ArrayOneOrMore<Owner>;
+  threshold: number;
+  handleWalletName: (name: string, step: number, field?: number) => void;
+  handleAddress: (
+    newAddress: string | undefined,
+    step: number,
+    field?: number
+  ) => void;
+  handleOwners: (newOwners: ArrayOneOrMore<Owner>, step: number) => void;
+  handleThreshold: (newThreshold: number) => void;
+  errors: Array<Array<ValidationError>>;
+  setErrors: SetState<Array<Array<ValidationError>>>;
+}
 
 export const INVALID_ADDRESS_ERROR =
   "Owner address must be a valid Polkadot address.";
@@ -135,7 +153,7 @@ export const useFormSignersAccountState = () => {
   );
 
   const handleAddress = useCallback(
-    (newAddress: string, step: number, field = 0) => {
+    (newAddress: string | undefined, step: number, field = 0) => {
       const error = !VALIDATIONS.ownerAddress(newAddress);
       const currentError = errors[step][field];
       const newError = {

@@ -6,16 +6,16 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ArrayOneOrMore } from "useink/dist/core";
 
 import NetworkBadge from "@/components/NetworkBadge";
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { Owner } from "@/domain/SignatoriesAccount";
-import { SetState } from "@/domain/utilityReactTypes";
 import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { useFindXsignerOwners } from "@/hooks/xsignerOwners/useFindXsignerOwners";
-import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
+import {
+  UseFormSignersAccountStateReturn,
+  ValidationError,
+} from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 function WalletImportStep({
   handleWalletName,
@@ -27,17 +27,7 @@ function WalletImportStep({
   walletName,
   address,
   handleAddress,
-}: {
-  walletName: string;
-  handleWalletName: (name: string, step: number, field?: number) => void;
-  handleOwners: (owners: ArrayOneOrMore<Owner>, step: number) => void;
-  handleThreshold: (threshold: number) => void;
-  handleAddress: (address: string, step: number, field?: number) => void;
-  setErrors: SetState<ValidationError[][]>;
-  errors: Array<ValidationError[]>;
-  step: number;
-  address: string;
-}) {
+}: UseFormSignersAccountStateReturn & { step: number }) {
   const { network } = usePolkadotContext();
   const { data, error, isLoading } = useFindXsignerOwners({
     address,
@@ -49,6 +39,7 @@ function WalletImportStep({
 
   useDebouncedEffect(
     async () => {
+      if (!tempAddress) return;
       handleAddress(tempAddress, step);
     },
     500, // 500ms delay
@@ -57,16 +48,15 @@ function WalletImportStep({
 
   useEffect(() => {
     if (!isLoading && address) {
-      if (error || !data) {
-        setErrors((prev: Array<Array<ValidationError>>) => {
-          const newErrors = [...prev];
-          newErrors[step][0] = {
-            error: true,
-            message: "Multisig not found.",
-          };
-          return newErrors;
-        });
-      }
+      const isNotFound = error || !data;
+      setErrors((prev: Array<Array<ValidationError>>) => {
+        const newErrors = [...prev];
+        newErrors[step][0] = {
+          error: !!isNotFound,
+          message: isNotFound ? "Multisig not found." : "",
+        };
+        return newErrors;
+      });
     }
   }, [error, isLoading, data, address, setErrors, step]);
 
