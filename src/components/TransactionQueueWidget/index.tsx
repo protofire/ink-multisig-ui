@@ -22,7 +22,11 @@ export const TransactionQueueWidget = () => {
         </StyledList>
       ) : (
         <>
-          <TransactionQueueItem data={data} />
+          <StyledList>
+            {data?.map((tx, index) => (
+              <TransactionQueueItem data={tx} key={index} />
+            ))}
+          </StyledList>
           <StyledButton> View All </StyledButton>
         </>
       )}

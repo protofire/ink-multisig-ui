@@ -7,52 +7,48 @@ import { truncateAddress } from "@/utils/formatString";
 import {
   ListItemtyled,
   StyledBox,
-  StyledList,
   StyledStack,
   StyledValueBox,
 } from "./styled";
 
 interface Props {
-  data: TransactionQueue[] | null;
+  data: TransactionQueue | undefined;
+  key: number;
 }
 
-export const TransactionQueueItem = ({ data }: Props) => {
+export const TransactionQueueItem = ({ data: tx, key }: Props) => {
   return (
-    <StyledList>
-      {data?.map((a, index) => (
-        <ListItemtyled key={index}>
-          <StyledBox>
-            {a.type === "Send" ? (
-              <Image
-                src="/assets/arrow-receive.svg"
-                alt="Arrow receive"
-                priority
-                width={30}
-                height={30}
-              />
-            ) : (
-              <Image
-                src="/assets/arrow-send.svg"
-                alt="Arrow receive"
-                priority
-                width={30}
-                height={30}
-              />
-            )}
-            <StyledStack>
-              <span>{a.type}</span>
-              <span>{a.timestamp}</span>
-              <p>{truncateAddress(a.address as string, 12)}</p>
-            </StyledStack>
-            <StyledValueBox>
-              {a.type === "Send" ? "-" : "+"} {`${a.value} ${a.token}`}
-              <span>
-                {a.txValidation}/{a.txValidation}
-              </span>
-            </StyledValueBox>
-          </StyledBox>
-        </ListItemtyled>
-      ))}
-    </StyledList>
+    <ListItemtyled key={key}>
+      <StyledBox>
+        {tx?.type === "Send" ? (
+          <Image
+            src="/assets/arrow-receive.svg"
+            alt="Arrow receive"
+            priority
+            width={30}
+            height={30}
+          />
+        ) : (
+          <Image
+            src="/assets/arrow-send.svg"
+            alt="Arrow receive"
+            priority
+            width={30}
+            height={30}
+          />
+        )}
+        <StyledStack>
+          <span>{tx?.type}</span>
+          <span>{tx?.timestamp}</span>
+          <p>{truncateAddress(tx?.address as string, 12)}</p>
+        </StyledStack>
+        <StyledValueBox>
+          {tx?.type === "Send" ? "-" : "+"} {`${tx?.value} ${tx?.token}`}
+          <span>
+            {tx?.txValidation}/{tx?.txValidation}
+          </span>
+        </StyledValueBox>
+      </StyledBox>
+    </ListItemtyled>
   );
 };

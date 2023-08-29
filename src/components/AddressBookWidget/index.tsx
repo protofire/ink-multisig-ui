@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { ChainExtended, getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 
@@ -23,7 +24,18 @@ export const AddressBookWidget = () => {
         </StyledList>
       ) : (
         <>
-          <AddressBookItem data={data} />
+          <StyledList>
+            {data?.map((addressBook, index) => {
+              const network = getChain(addressBook.networkId);
+              return (
+                <AddressBookItem
+                  addressBook={addressBook}
+                  network={network as ChainExtended}
+                  key={index}
+                />
+              );
+            })}
+          </StyledList>
           <StyledButton> View All </StyledButton>
         </>
       )}
