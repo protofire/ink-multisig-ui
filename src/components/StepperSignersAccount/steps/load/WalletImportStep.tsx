@@ -1,4 +1,10 @@
-import { Box, Link, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
@@ -6,14 +12,16 @@ import NetworkBadge from "@/components/NetworkBadge";
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
+import { SetState } from "@/domain/utilityReactTypes";
 import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
-import { useFetchSignersAccount } from "@/hooks/xsignersAccount/useFetchSignersAccount";
+import { useFindXsignerOwners } from "@/hooks/xsignerOwners/useFindXsignerOwners";
 import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 function WalletImportStep({
   handleWalletName,
   handleOwners,
   handleThreshold,
+  setErrors,
   errors,
   step,
   walletName,
@@ -25,12 +33,17 @@ function WalletImportStep({
   handleOwners: (owners: ArrayOneOrMore<Owner>, step: number) => void;
   handleThreshold: (threshold: number) => void;
   handleAddress: (address: string, step: number, field?: number) => void;
+  setErrors: SetState<ValidationError[][]>;
   errors: Array<ValidationError[]>;
   step: number;
   address: string;
 }) {
   const { network } = usePolkadotContext();
-  const { data, error, isLoading } = useFetchSignersAccount({ address });
+  const { data, error, isLoading } = useFindXsignerOwners({
+    address,
+    walletName,
+  });
+
   const [tempAddress, setTempAddress] = useState(address);
   const { logo, name: networkName } = getChain(network);
 
@@ -41,6 +54,21 @@ function WalletImportStep({
     500, // 500ms delay
     [tempAddress]
   );
+
+  useEffect(() => {
+    if (!isLoading && address) {
+      if (error || !data) {
+        setErrors((prev: Array<Array<ValidationError>>) => {
+          const newErrors = [...prev];
+          newErrors[step][0] = {
+            error: true,
+            message: "Multisig not found.",
+          };
+          return newErrors;
+        });
+      }
+    }
+  }, [error, isLoading, data, address, setErrors, step]);
 
   useEffect(() => {
     handleAddress(address, step);
@@ -75,6 +103,9 @@ function WalletImportStep({
         margin="normal"
         error={errors[step][0]?.error}
         helperText={errors[step][0]?.message}
+        InputProps={{
+          endAdornment: isLoading && <CircularProgress size={20} />,
+        }}
       />
       <TextField
         label="Name"
