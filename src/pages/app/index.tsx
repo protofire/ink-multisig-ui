@@ -16,20 +16,13 @@ export default function AppDashboard() {
 
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h5">Summary</Typography>
-        </Grid>
-
+      <Grid container spacing={3} mt={2}>
         <Grid item xs={12} sm={6} md={3}>
           <SummaryCard
             captionTitle="Balance"
             widthSkeleton="60%"
             captionComponent={
-              <XsignerBalanceText
-                freeBalance={balance?.freeBalance}
-                reservedBalance={balance?.reservedBalance}
-              />
+              balance && <XsignerBalanceText balance={balance} />
             }
             isLoading={isLoadingBalance}
           />
@@ -41,7 +34,7 @@ export default function AppDashboard() {
           <SummaryCard captionTitle="Tracked NFTs" caption="3" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <SummaryCard captionTitle="Transactions queued" caption="0" />
+          <SummaryCard captionTitle="Owners" caption="0" />
         </Grid>
       </Grid>
       <Grid
@@ -54,6 +47,15 @@ export default function AppDashboard() {
         <Grid item xs={6}>
           <Typography variant="h3" color="#FFE873">
             Address book
+          </Typography>
+          <Typography variant="h3" color="primary">
+            Pinned addresses
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography variant="h3" color="primary">
+            Transaction queue
           </Typography>
         </Grid>
 

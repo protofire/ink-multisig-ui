@@ -31,15 +31,14 @@ export const LoadingState: Story = {
     widthSkeleton: "60%",
   },
 };
-
+const balance = {
+  freeBalance: "222.333 DOT",
+  reservedBalance: "0.000 DOT",
+  totalBalance: "222.333 DOT",
+};
 export const WithCustomComponent: Story = {
   args: {
     captionTitle: "Balance",
-    captionComponent: (
-      <XsignerBalanceText
-        freeBalance="222.3333 DOT"
-        reservedBalance="0.000 DOT"
-      />
-    ),
+    captionComponent: <XsignerBalanceText balance={balance} />,
   },
 };

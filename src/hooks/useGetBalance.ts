@@ -5,9 +5,10 @@ import { planckToDecimalFormatted } from "@/services/useink/substrate/parseUnit"
 
 import { useNetworkApi } from "./useNetworkApi";
 
-interface XsignerBalance {
+export interface XsignerBalance {
   freeBalance?: string;
   reservedBalance?: string;
+  totalBalance?: string;
 }
 
 export function useGetBalance(address: string | undefined) {
@@ -23,7 +24,6 @@ export function useGetBalance(address: string | undefined) {
     [_balance?.freeBalance, _balance?.reservedBalance]
   );
   const api = useNetworkApi();
-
   useEffect(() => {
     if (!api?.apiPromise) return;
 
@@ -43,7 +43,15 @@ export function useGetBalance(address: string | undefined) {
       }
     );
 
-    setBalance({ freeBalance, reservedBalance });
+    const totalBalance = planckToDecimalFormatted(
+      balanceWithoutFormat?.totalBalance,
+      {
+        significantFigures: 4,
+        api: api?.apiPromise,
+      }
+    );
+
+    setBalance({ freeBalance, reservedBalance, totalBalance });
     setIsLoading(false);
   }, [api?.apiPromise, balanceWithoutFormat]);
 

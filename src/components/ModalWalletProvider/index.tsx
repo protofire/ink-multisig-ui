@@ -1,6 +1,9 @@
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Avatar,
   Box,
+  Chip,
+  IconButton,
   ListItem,
   ListItemIcon,
   ListItemText,
@@ -24,8 +27,15 @@ type Props = {
   wallets: Wallet[];
   connectWallet: (wallet: string) => void;
   onClose: () => void;
+  handleClose: () => void;
 };
-export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
+export function ModalWallet({
+  open,
+  wallets,
+  connectWallet,
+  onClose,
+  handleClose,
+}: Props) {
   const walletInstalled = wallets.filter((wallet) => wallet.installed);
   const walletNotInstalled = wallets.filter((wallet) => !wallet.installed);
 
@@ -35,13 +45,24 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={handleClose}>
       <ModalStyled>
         <ModalTypography id="modal-modal-title" variant="h3">
           Connect your wallet
         </ModalTypography>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <Box>
-          <ModalTypography variant="h6">Installed Wallets</ModalTypography>
           <ModalStyledList disablePadding>
             {walletInstalled.map((w) => (
               <ListItem key={w.title}>
@@ -55,6 +76,12 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
                       <Avatar src={w.logo.src} alt={w.logo.alt} />
                     </ListItemIcon>
                     <ListItemText primary={`${w.title}`} />
+                    <Chip
+                      label="Installed"
+                      color="success"
+                      variant="outlined"
+                      size="small"
+                    />
                   </ModalStyledListItem>
                 </>
               </ListItem>
@@ -75,7 +102,13 @@ export function ModalWallet({ open, wallets, connectWallet, onClose }: Props) {
                     <ListItemIcon>
                       <Avatar src={w.logo.src} alt={w.logo.alt} />
                     </ListItemIcon>
-                    <ListItemText primary={`Install ${w.title}`} />
+                    <ListItemText primary={`${w.title}`} />
+                    <Chip
+                      label="Installation needed"
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                    />
                   </ModalStyledListItem>
                 </>
               </ListItem>
