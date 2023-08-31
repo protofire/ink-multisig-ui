@@ -45,9 +45,6 @@ export default function AppDashboard() {
         }}
       >
         <Grid item xs={6}>
-          <Typography variant="h3" color="#FFE873">
-            Address book
-          </Typography>
           <Typography variant="h3" color="primary">
             Pinned addresses
           </Typography>
@@ -55,12 +52,6 @@ export default function AppDashboard() {
 
         <Grid item xs={6}>
           <Typography variant="h3" color="primary">
-            Transaction queue
-          </Typography>
-        </Grid>
-
-        <Grid item xs={6}>
-          <Typography variant="h3" color="#FFE873">
             Transaction queue
           </Typography>
         </Grid>
