@@ -32,6 +32,13 @@ export function useTxDispatchNotification({
       toast.update(idToast, {
         render: `The ${msgPrefix} will be proccessed in a block`,
         type: "info",
+        isLoading: true,
+      });
+    }
+    if (idToast && tx.status === "InBlock") {
+      toast.update(idToast, {
+        render: `The ${msgPrefix} was proccessed`,
+        type: "info",
         isLoading: false,
         autoClose: 1000,
       });

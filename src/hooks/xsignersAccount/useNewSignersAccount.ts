@@ -39,6 +39,10 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
     const xsignerAccount = { account: { ...newAccount, address } };
     onSave(xsignerAccount);
     setXsigner(xsignerAccount.account);
+    addNotification({
+      message: `Xsigner account was created successfully`,
+      type: "success",
+    });
   }, [addNotification, multisigFactoryEvents, newAccount, onSave, setXsigner]);
 
   const signAndSend = useCallback(
@@ -60,11 +64,6 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
             addNotification({ message: errorFormated, type: "error" });
           } else if (_result?.isCompleted) {
             setNewAccount(account);
-          } else if (_result?.isInBlock) {
-            addNotification({
-              message: `Xsigner account was created successfully`,
-              type: "success",
-            });
           }
         }
       );
