@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { CacheProvider, EmotionCache } from "@emotion/react";
@@ -8,6 +9,8 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { InkConfig } from "useink";
 
+import { AppToastNotifications } from "@/components/AppToastNotification";
+import { AppNotificationsContextProvider } from "@/components/AppToastNotification/AppNotificationsContext";
 import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { CHAINS } from "@/config/chain";
@@ -59,9 +62,12 @@ export default function App(props: ExtendedProps) {
                 {({ settings }) => {
                   return (
                     <ThemeCustomization settings={settings}>
-                      <WalletConnectionGuard walletRequired={walletRequired}>
-                        {getLayout(<Component {...pageProps} />)}
-                      </WalletConnectionGuard>
+                      <AppNotificationsContextProvider>
+                        <WalletConnectionGuard walletRequired={walletRequired}>
+                          {getLayout(<Component {...pageProps} />)}
+                        </WalletConnectionGuard>
+                        <AppToastNotifications />
+                      </AppNotificationsContextProvider>
                     </ThemeCustomization>
                   );
                 }}

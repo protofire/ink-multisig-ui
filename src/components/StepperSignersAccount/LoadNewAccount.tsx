@@ -6,16 +6,16 @@ import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 
+import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
 import { useManagerActiveStep } from "../StepperSignersAccount/useManagerActiveStep";
 import { LOAD_STEPS } from "./constants";
-
-// interface LoadNewAccountProps {}
 
 export function LoadNewAccount() {
   const data = useFormSignersAccountState();
   const managerStep = useManagerActiveStep();
   const { network } = usePolkadotContext();
   const { setXsigner } = useSetXsignerSelected();
+  const { addNotification } = useAppNotificationContext();
 
   const handleImportedAccount = () => {
     const account: SignatoriesAccount = {
@@ -26,6 +26,10 @@ export function LoadNewAccount() {
       threshold: data.threshold,
     };
     setXsigner(account);
+    addNotification({
+      message: "Your Xsigner account has been successfully imported",
+      type: "success",
+    });
   };
 
   return (
