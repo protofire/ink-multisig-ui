@@ -36,7 +36,7 @@ export const StyledStack = styled(Box)<BoxProps>(() => ({
     fontWeight: "600",
   },
 
-  "& span:nth-child(2)": {
+  "& span:nth-of-type(2)": {
     marginLeft: "0.8rem",
     fontSize: "0.73rem",
   },
@@ -58,7 +58,7 @@ export const ListItemtyled = styled(ListItem)<ListItemProps>(() => ({
   margin: "2px 0px",
   display: "flex",
   alignContent: "center",
-  "&:first-child": {
+  "&:first-of-type": {
     borderRadius: "8px 8px 0px 0px",
   },
 

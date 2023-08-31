@@ -1,5 +1,5 @@
-import { AddressBook } from "@/components/AddressBook";
+import { AddressBookPage } from "@/components/AddressBook";
 
-export default function AddressBookPage() {
-  return <AddressBook />;
+export default function AddressBook() {
+  return <AddressBookPage />;
 }
