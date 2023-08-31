@@ -1,11 +1,11 @@
-import { Button, CardMedia, Typography } from "@mui/material";
-import Image from "next/image";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import { Button, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { ReactNode, useState } from "react";
 
 import { RouterRedirectGuard } from "@/components/guards/RouterRedirectGuard";
 import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
-import { CRYPTO_WALLET } from "@/config/images";
 import { ROUTES } from "@/config/routes";
 import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
 import { useRedirectComparison } from "@/hooks/useRedirectComparison";
@@ -19,6 +19,7 @@ export function getTextInstructions(route: string) {
 }
 export function ConnectWalletPage() {
   const [instructions, setInstructions] = useState<string | undefined>();
+  const theme = useTheme();
 
   useRedirectComparison({
     redirectUrls: [ROUTES.New, ROUTES.Load],
@@ -34,26 +35,21 @@ export function ConnectWalletPage() {
   return (
     <RouterRedirectGuard>
       <MainContentCard
-        stylesContainer={{ alignItems: "center" }}
+        stylesContainer={{
+          alignItems: "center",
+          sx: { backgroundColor: theme.palette.background.paper },
+        }}
         title="Connect your Wallet"
-        paragraph="To continue with the following actions you need to connect your wallet"
+        paragraph="To continue with the following actions you need to connect your wallet."
       >
-        <CardMedia>
-          <Image
-            priority
-            src={CRYPTO_WALLET}
-            alt={"Icon wallet"}
-            width={256}
-            height={256}
-          />
-        </CardMedia>
         {instructions && (
           <Typography variant="body1">
-            {instructions}, you will need a wallet to sign the transaction
+            {instructions}, you will need a wallet to sign the transaction.
           </Typography>
         )}
-        <Button size="large" onClick={disptachConnect}>
-          <Typography variant="h3">Connect your wallet</Typography>
+        <Button variant="contained" onClick={disptachConnect}>
+          <AccountBalanceWalletIcon />
+          Connect your wallet
         </Button>
       </MainContentCard>
     </RouterRedirectGuard>
