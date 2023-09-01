@@ -89,6 +89,7 @@ const AddressBookTable = ({ network }: Props) => {
                         label="Required"
                         onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.address}
+                        sx={{ minWidth: "33rem" }}
                       />
                     </TableCell>
                   </>
