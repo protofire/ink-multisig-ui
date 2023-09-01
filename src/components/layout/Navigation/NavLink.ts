@@ -2,6 +2,7 @@ import {
   Book,
   HomeRounded,
   Layers as IconTxBuilder,
+  Settings as IconSettings,
   SvgIconComponent,
 } from "@mui/icons-material";
 
@@ -47,7 +48,8 @@ export const MENU_ITEMS: NavLink[] = [
     url: ROUTES.AddressBook,
     icon: icons.Book,
     target: true,
-  },{
+  },
+  {
     id: "settings",
     title: "Settings",
     type: "item",
