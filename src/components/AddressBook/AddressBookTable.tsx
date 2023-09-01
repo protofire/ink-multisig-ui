@@ -149,17 +149,19 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                       onClick={() => handleSave(index)}
                     />
                   ) : (
-                    <SvgIconButton
-                      initialToolTipText="Edit"
-                      icon={Edit}
-                      onClick={() => handleEdit(addressBook.address)}
-                    />
+                    <>
+                      <SvgIconButton
+                        initialToolTipText="Edit"
+                        icon={Edit}
+                        onClick={() => handleEdit(addressBook.address)}
+                      />
+                      <SvgIconButton
+                        initialToolTipText="Delete"
+                        icon={Delete}
+                        onClick={() => handleDelete(index)}
+                      />
+                    </>
                   )}
-                  <SvgIconButton
-                    initialToolTipText="Delete"
-                    icon={Delete}
-                    onClick={() => handleDelete(index)}
-                  />
                 </TableCell>
               </TableRow>
             );
