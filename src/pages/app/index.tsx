@@ -1,9 +1,11 @@
 import { Grid, Typography } from "@mui/material";
+import Link from "next/link";
 
 import { AddressBookWidget } from "@/components/AddressBookWidget";
 import { SummaryCard } from "@/components/SummaryCard";
 import { XsignerBalanceText } from "@/components/SummaryCard/XsignerBalanceText";
 import { TransactionQueueWidget } from "@/components/TransactionQueueWidget";
+import { ROUTES } from "@/config/routes";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
@@ -34,7 +36,13 @@ export default function AppDashboard() {
           <SummaryCard captionTitle="Tracked NFTs" caption="3" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <SummaryCard captionTitle="Owners" caption="0" />
+          <Link href={ROUTES.Settings}>
+            <SummaryCard
+              captionTitle="Owners"
+              caption={xSignerSelected?.owners.length.toString()}
+              isLoading={xSignerSelected ? false : true}
+            />
+          </Link>
         </Grid>
       </Grid>
       <Grid
