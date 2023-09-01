@@ -1,4 +1,5 @@
-import { Box, Button, Modal, TextField } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, Button, IconButton, Modal, TextField } from "@mui/material";
 import React, { ChangeEvent } from "react";
 
 import { getChain } from "@/config/chain";
@@ -15,6 +16,7 @@ type Props = {
   handleSubmit: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   onClose: () => void;
   network: ChainId | undefined;
+  handleClose: () => void;
 };
 export function ModalAddressBook({
   open,
@@ -22,6 +24,7 @@ export function ModalAddressBook({
   handleSubmit,
   onClose,
   network,
+  handleClose,
 }: Props) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     handleSubmit(e);
@@ -29,11 +32,23 @@ export function ModalAddressBook({
   };
   const chain = getChain(network);
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={handleClose}>
       <ModalStyled>
         <ModalTypography id="modal-modal-title" variant="h3">
           Create entry
         </ModalTypography>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <TextField
           required
           id="name"
