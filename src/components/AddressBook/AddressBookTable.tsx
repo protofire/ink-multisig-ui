@@ -113,6 +113,7 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                         label="Address"
                         onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.address}
+                        sx={{ minWidth: "33rem" }}
                       />
                     </TableCell>
                   </>
