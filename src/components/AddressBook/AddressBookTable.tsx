@@ -1,4 +1,4 @@
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Save } from "@mui/icons-material";
 import {
   Table,
   TableBody,
@@ -7,9 +7,10 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import React, { Dispatch, SetStateAction, useCallback } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 
 import { getChain } from "@/config/chain";
+import { setLocalStorageState } from "@/utils/localStorage";
 
 import CopyButton from "../common/CopyButton";
 import OpenNewTabButton from "../common/OpenNewTabButton";
@@ -21,12 +22,16 @@ import { AddressBookInput } from ".";
 // Remove this mock variable, replace with true value
 const mockURL = "https://polkadot.subscan.io/";
 
+const ITEM_LOCAL_STORAGE = "addressBook";
+
 type Props = {
   data: AddressBookInput[] | undefined;
   setAddressBookData: Dispatch<SetStateAction<AddressBookInput[] | undefined>>;
 };
 
 const AddressBookTable = ({ data, setAddressBookData }: Props) => {
+  const [editInput, setEditInput] = useState<AddressBookInput[]>([]);
+
   const handleEdit = useCallback(
     (address: string) => {
       const obj = data?.map((element) => {
@@ -38,11 +43,38 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
         }
         return element;
       });
-
       setAddressBookData(obj);
     },
     [data, setAddressBookData]
   );
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    e.preventDefault();
+    setEditInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleDelete = (index: number) => {
+    if (!data) return;
+    const newArray = data.filter((_, i) => index !== i);
+    setAddressBookData(newArray);
+    setLocalStorageState(ITEM_LOCAL_STORAGE, newArray);
+  };
+
+  const handleSave = (index: number) => {
+    if (!data) return;
+    const copyData = [...data];
+    let element = copyData[index];
+    element = {
+      ...element,
+      ...editInput,
+      isEditable: false,
+    } as AddressBookInput;
+    copyData[index] = element;
+    setAddressBookData(copyData);
+    setLocalStorageState(ITEM_LOCAL_STORAGE, copyData);
+  };
 
   return (
     <>
@@ -65,16 +97,20 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                     <TableCell>
                       <TextField
                         required
-                        id="outlined-required"
+                        id="name"
+                        name="name"
                         label="Required"
+                        onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.name}
                       />
                     </TableCell>
                     <TableCell>
                       <TextField
                         required
-                        id="outlined-required"
+                        id="address"
+                        name="address"
                         label="Required"
+                        onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.address}
                       />
                     </TableCell>
@@ -99,15 +135,23 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                   ></NetworkBadge>
                 </TableCell>
                 <TableCell>
-                  <SvgIconButton
-                    initialToolTipText="Edit"
-                    icon={Edit}
-                    onClick={() => handleEdit(addressBook.address)}
-                  />
+                  {addressBook.isEditable ? (
+                    <SvgIconButton
+                      initialToolTipText="Save"
+                      icon={Save}
+                      onClick={() => handleSave(index)}
+                    />
+                  ) : (
+                    <SvgIconButton
+                      initialToolTipText="Edit"
+                      icon={Edit}
+                      onClick={() => handleEdit(addressBook.address)}
+                    />
+                  )}
                   <SvgIconButton
                     initialToolTipText="Delete"
                     icon={Delete}
-                    onClick={() => undefined}
+                    onClick={() => handleDelete(index)}
                   />
                 </TableCell>
               </TableRow>
