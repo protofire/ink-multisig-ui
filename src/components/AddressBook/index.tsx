@@ -62,17 +62,26 @@ export const AddressBookPage = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "2rem",
+          marginBottom: "2rem",
+        }}
+      >
         <Typography variant="h3" color="#FFE873">
           Address book
         </Typography>
         <ButtonBase
           sx={{
             color: "#FFE873",
+            fontSize: "1rem",
+            fontWeight: "800",
           }}
           onClick={() => setDisplayModalWallet(true)}
         >
-          + CreateEntry
+          + Create entry
         </ButtonBase>
       </Box>
       <AddressBookWidgetStyled border={false}>

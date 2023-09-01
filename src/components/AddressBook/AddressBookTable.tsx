@@ -1,4 +1,4 @@
-import { Delete, Edit, Save } from "@mui/icons-material";
+import { Delete, Edit, TaskAlt } from "@mui/icons-material";
 import {
   Table,
   TableBody,
@@ -81,9 +81,9 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Network</TableCell>
+            <TableCell>NAME</TableCell>
+            <TableCell>ADDRESS</TableCell>
+            <TableCell>NETWORK</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -99,7 +99,7 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                         required
                         id="name"
                         name="name"
-                        label="Required"
+                        label="Name"
                         onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.name}
                       />
@@ -109,7 +109,7 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                         required
                         id="address"
                         name="address"
-                        label="Required"
+                        label="Address"
                         onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.address}
                       />
@@ -129,7 +129,7 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                   <NetworkBadge
                     logo={chain.logo.src}
                     description={chain.logo.alt}
-                    logoSize={{ width: 14, height: 14 }}
+                    logoSize={{ width: 16, height: 16 }}
                     name={chain.name}
                     showTooltip={false}
                   ></NetworkBadge>
@@ -138,7 +138,7 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                   {addressBook.isEditable ? (
                     <SvgIconButton
                       initialToolTipText="Save"
-                      icon={Save}
+                      icon={TaskAlt}
                       onClick={() => handleSave(index)}
                     />
                   ) : (

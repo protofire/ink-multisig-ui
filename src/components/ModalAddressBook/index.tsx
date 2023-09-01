@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Modal, TextField } from "@mui/material";
+import { Box, Button, Modal, TextField } from "@mui/material";
 import React, { ChangeEvent } from "react";
 
 import { getChain } from "@/config/chain";
@@ -66,7 +66,7 @@ export function ModalAddressBook({
           <NetworkBadge
             logo={chain?.logo.src}
             description={chain?.logo.alt}
-            logoSize={{ width: 14, height: 14 }}
+            logoSize={{ width: 16, height: 16 }}
             name={chain.name}
             showTooltip={false}
           ></NetworkBadge>
@@ -79,8 +79,12 @@ export function ModalAddressBook({
             marginTop: "2rem",
           }}
         >
-          <ButtonBase onClick={onClose}> Cancel </ButtonBase>
-          <ButtonBase onClick={handleClick}> Save </ButtonBase>
+          <Button variant="outlined" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleClick}>
+            Save
+          </Button>
         </Box>
       </ModalStyled>
     </Modal>
