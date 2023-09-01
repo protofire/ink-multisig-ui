@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useEvents, useEventSubscription, useTx } from "useink";
 
+import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { SaveProps } from "@/components/StepperSignersAccount";
+import { useTxDispatchNotification } from "@/hooks/useTxDispatchNotfication";
 import { useMultisigFactoryContract } from "@/hooks/useTxMultisigFactory";
+import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { generateHash } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
-import { useSetXsignerSelected } from "../xsignerSelected/useSetXsignerSelected";
 import { UseAddSignersAccount } from "./useAddSignersAccount";
 
 export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
@@ -15,12 +17,15 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
   const { setXsigner } = useSetXsignerSelected();
   const { multisigFactoryContract } = useMultisigFactoryContract();
   const newMultisigTx = useTx(multisigFactoryContract, "newMultisig");
+  const { addNotification } = useAppNotificationContext();
 
   useEventSubscription(multisigFactoryContract);
   const { events: multisigFactoryEvents } = useEvents(
     multisigFactoryContract?.contract.address,
     ["NewMultisig"]
   );
+
+  useTxDispatchNotification({ tx: newMultisigTx });
 
   useEffect(() => {
     if (
@@ -34,7 +39,11 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
     const xsignerAccount = { account: { ...newAccount, address } };
     onSave(xsignerAccount);
     setXsigner(xsignerAccount.account);
-  }, [multisigFactoryEvents, newAccount, onSave, setXsigner]);
+    addNotification({
+      message: `Xsigner account was created successfully`,
+      type: "success",
+    });
+  }, [addNotification, multisigFactoryEvents, newAccount, onSave, setXsigner]);
 
   const signAndSend = useCallback(
     (account: SaveProps) => {
@@ -52,13 +61,14 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
           if (_error) {
             const errorFormated = customReportError(_error);
             setError(errorFormated);
+            addNotification({ message: errorFormated, type: "error" });
           } else if (_result?.isCompleted) {
             setNewAccount(account);
           }
         }
       );
     },
-    [newMultisigTx]
+    [addNotification, newMultisigTx]
   );
 
   return { signAndSend, error, txStatus: newMultisigTx.status };
