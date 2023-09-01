@@ -6,6 +6,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 
@@ -117,9 +118,15 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                   </>
                 ) : (
                   <>
-                    <TableCell>{addressBook.name}</TableCell>
                     <TableCell>
-                      {addressBook.address}{" "}
+                      <Typography variant="body1">
+                        {addressBook.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body1" component="span">
+                        {addressBook.address}
+                      </Typography>{" "}
                       <CopyButton text={addressBook?.address as string} />
                       <OpenNewTabButton text={mockURL} />
                     </TableCell>
