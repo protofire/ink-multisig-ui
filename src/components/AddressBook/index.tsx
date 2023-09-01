@@ -102,6 +102,7 @@ export const AddressBookPage = () => {
         handleOnChange={handleOnChange}
         handleSubmit={handleSubmit}
         network={network}
+        handleClose={() => setDisplayModalWallet(false)}
       />
     </>
   );
