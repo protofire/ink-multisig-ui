@@ -33,6 +33,7 @@ const Palette = ({ mode }: LookSettings): Theme => {
     "#000000",
     "#201a1b",
     "#352f30",
+    "#837376",
   ];
   const greyAscent = ["#fafafa", "#bfbfbf", "#434343", "#1f1f1f"];
   const greyConstant = ["#fafafb", "#e6ebf1"];
