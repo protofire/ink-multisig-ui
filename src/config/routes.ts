@@ -5,6 +5,7 @@ export const ROUTES = {
   Load: "/load",
   Connect: "/connect",
   App: "/app",
+  AddressBook: "/app/address-book",
   TxBuilder: "/app/transaction-builder",
   Settings: "/app/settings",
 } as const;

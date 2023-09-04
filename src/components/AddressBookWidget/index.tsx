@@ -1,6 +1,9 @@
+import { Button } from "@mui/material";
+import Link from "next/link";
 import * as React from "react";
 
 import { ChainExtended, getChain } from "@/config/chain";
+import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 
@@ -20,7 +23,12 @@ export const AddressBookWidget = () => {
     <AddressBookWidgetStyled border={false}>
       {data?.length == 0 ? (
         <StyledList>
-          <NoItems>There are no registered address in this network</NoItems>
+          <NoItems>
+            There are no registered address in this network yet.{" "}
+            <Link href={ROUTES.AddressBook} passHref>
+              <Button variant="outlined">Add new address</Button>
+            </Link>
+          </NoItems>
         </StyledList>
       ) : (
         <>
