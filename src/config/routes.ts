@@ -8,6 +8,7 @@ export const ROUTES = {
   AddressBook: "/app/address-book",
   TxBuilder: "/app/transaction-builder",
   Settings: "/app/settings",
+  Assets: "/app/assets",
 } as const;
 
 export type RouteValue = (typeof ROUTES)[keyof typeof ROUTES];
