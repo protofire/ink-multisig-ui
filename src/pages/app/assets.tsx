@@ -6,10 +6,10 @@ export default function AssetsPage() {
   return (
     <Box
       p={2}
+      mt={4}
       display="flex"
       flexDirection="column"
       justifyContent="center"
-      height="60vh"
     >
       <Typography mb={1} variant="h3" color="primary">
         Assets

@@ -35,7 +35,7 @@ export default function GenericTable({ columns, rows }: GenericTableProps) {
         aria-label="generic table"
       >
         <TableHead>
-          <TableRow sx={{ borderBottom: "2px solid #120D0E" }}>
+          <TableRow sx={{ borderBottom: "2px solid black" }}>
             {columns.map((column) => (
               <StyledTableCell
                 key={column.id}
@@ -52,8 +52,10 @@ export default function GenericTable({ columns, rows }: GenericTableProps) {
             <TableRow
               key={index}
               sx={{
-                "&:last-child td, &:last-child th": { border: 0 },
-                borderBottom: "2px solid #120D0E",
+                "&:last-child": {
+                  borderColor: "transparent",
+                },
+                borderBottom: "2px solid black",
               }}
             >
               {columns.map((column) => {
