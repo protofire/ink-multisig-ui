@@ -22,7 +22,7 @@ export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
     <Menu
       id="basic-menu"
       anchorReference="anchorPosition"
-      anchorPosition={{ top: 140, left: 420 }}
+      anchorPosition={{ top: 200, left: 520 }}
       anchorOrigin={{
         vertical: "center",
         horizontal: "right",
