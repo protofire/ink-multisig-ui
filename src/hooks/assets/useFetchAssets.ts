@@ -30,11 +30,11 @@ function useFetchAssets() {
     fetchData();
   }, []);
 
-  const selectDataByKey = (key: AssetType) => {
+  const listAssetByType = (key: AssetType) => {
     return data ? data[key] : null;
   };
 
-  return { data, selectDataByKey, error, loading };
+  return { data, listAssetByType, error, loading };
 }
 
 const assetsData = [

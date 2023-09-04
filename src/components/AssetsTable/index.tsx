@@ -22,9 +22,9 @@ const types: AssetType[] = ["token", "nft"];
 
 export default function AssetsTable() {
   const [type, setType] = useState(types[0]);
-  const { selectDataByKey, error, loading } = useFetchAssets();
+  const { listAssetByType, error, loading } = useFetchAssets();
 
-  const tableData = selectDataByKey(type);
+  const tableData = listAssetByType(type);
 
   const handleChange = (newValue: number) => {
     setType(types[newValue]);
