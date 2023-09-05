@@ -11384,10 +11384,10 @@ xmlchars@^2.2.0:
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xsigners-sdk-test@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/xsigners-sdk-test/-/xsigners-sdk-test-0.0.9.tgz#5a6750a3bd4e57a892371aa71dc65973321d1a43"
-  integrity sha512-v9vDUWl8bIzvH2FNEp8eLMXsLr7OkqWek0ebzwbQN04c/mlFXfxSEGpQEwmZJa/ckLq1ZGTutXUS37QUi1bfGg==
+xsigners-sdk-test@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/xsigners-sdk-test/-/xsigners-sdk-test-0.0.10.tgz#fe5df31f57ef769d5ced0a35d227e99e011e382d"
+  integrity sha512-BFVLdB9fMsSe3fLXAoIgpFh3aJvtt4C4EKqh8QWuakZqXdS5dyX2so6/pfjKjQL5HfYF9rFtIfQUVMfexdgroQ==
   dependencies:
     "@727-ventures/typechain-types" "^1.1.2"
     "@polkadot/api" "^10.7.2"
