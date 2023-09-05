@@ -1,4 +1,4 @@
-import { Delete, Edit, TaskAlt } from "@mui/icons-material";
+import { Delete, Edit, Save } from "@mui/icons-material";
 import {
   Table,
   TableBody,
@@ -6,75 +6,47 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
-import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { getChain } from "@/config/chain";
-import { setLocalStorageState } from "@/utils/localStorage";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { AddressBook } from "@/domain/AddressBooks";
+import { useDeleteAddressBook } from "@/hooks/addressBook/useDeleteAddressBook";
+import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
+import { useUpdateAddressBook } from "@/hooks/addressBook/useUpdateAddressBook";
 
 import CopyButton from "../common/CopyButton";
 import OpenNewTabButton from "../common/OpenNewTabButton";
 import SvgIconButton from "../common/SvgIconButton";
 import NetworkBadge from "../NetworkBadge";
-import { AddressBookInput } from ".";
 
 // TODO:
 // Remove this mock variable, replace with true value
 const mockURL = "https://polkadot.subscan.io/";
 
-const ITEM_LOCAL_STORAGE = "addressBook";
+const AddressBookTable = () => {
+  const { network } = usePolkadotContext();
+  const { data } = useFetchAddressBook(network);
+  const { updateAddressBook, handleChange } = useUpdateAddressBook();
+  const { deleteAddressBook } = useDeleteAddressBook();
+  const [tempData, setTempData] = useState<AddressBook[]>([]);
 
-type Props = {
-  data: AddressBookInput[] | undefined;
-  setAddressBookData: Dispatch<SetStateAction<AddressBookInput[] | undefined>>;
-};
+  useEffect(() => {
+    setTempData(data);
+  }, [data]);
 
-const AddressBookTable = ({ data, setAddressBookData }: Props) => {
-  const [editInput, setEditInput] = useState<AddressBookInput[]>([]);
-
-  const handleEdit = useCallback(
-    (address: string) => {
-      const obj = data?.map((element) => {
-        if (element.address === address) {
-          return {
-            ...element,
-            isEditable: !element.isEditable,
-          };
-        }
-        return element;
-      });
-      setAddressBookData(obj);
-    },
-    [data, setAddressBookData]
-  );
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    e.preventDefault();
-    setEditInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleDelete = (index: number) => {
-    if (!data) return;
-    const newArray = data.filter((_, i) => index !== i);
-    setAddressBookData(newArray);
-    setLocalStorageState(ITEM_LOCAL_STORAGE, newArray);
-  };
-
-  const handleSave = (index: number) => {
-    if (!data) return;
-    const copyData = [...data];
-    let element = copyData[index];
-    element = {
-      ...element,
-      ...editInput,
-      isEditable: false,
-    } as AddressBookInput;
-    copyData[index] = element;
-    setAddressBookData(copyData);
-    setLocalStorageState(ITEM_LOCAL_STORAGE, copyData);
+  const editAddressBook = (address: string) => {
+    const obj = data?.map((element) => {
+      if (element.address === address) {
+        return {
+          ...element,
+          isEditable: !element.isEditable,
+        };
+      }
+      return element;
+    }) as AddressBook[];
+    setTempData(obj);
   };
 
   return (
@@ -82,14 +54,14 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>NAME</TableCell>
-            <TableCell>ADDRESS</TableCell>
-            <TableCell>NETWORK</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Network</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.map((addressBook, index) => {
+          {tempData?.map((addressBook, index) => {
             const chain = getChain(addressBook.networkId);
             return (
               <TableRow key={index}>
@@ -100,7 +72,7 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                         required
                         id="name"
                         name="name"
-                        label="Name"
+                        label="Required"
                         onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.name}
                       />
@@ -110,24 +82,17 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                         required
                         id="address"
                         name="address"
-                        label="Address"
+                        label="Required"
                         onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.address}
-                        sx={{ minWidth: "33rem" }}
                       />
                     </TableCell>
                   </>
                 ) : (
                   <>
+                    <TableCell>{addressBook.name}</TableCell>
                     <TableCell>
-                      <Typography variant="body1">
-                        {addressBook.name}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body1" component="span">
-                        {addressBook.address}
-                      </Typography>{" "}
+                      {addressBook.address}{" "}
                       <CopyButton text={addressBook?.address as string} />
                       <OpenNewTabButton text={mockURL} />
                     </TableCell>
@@ -137,7 +102,7 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                   <NetworkBadge
                     logo={chain.logo.src}
                     description={chain.logo.alt}
-                    logoSize={{ width: 16, height: 16 }}
+                    logoSize={{ width: 14, height: 14 }}
                     name={chain.name}
                     showTooltip={false}
                   ></NetworkBadge>
@@ -146,23 +111,21 @@ const AddressBookTable = ({ data, setAddressBookData }: Props) => {
                   {addressBook.isEditable ? (
                     <SvgIconButton
                       initialToolTipText="Save"
-                      icon={TaskAlt}
-                      onClick={() => handleSave(index)}
+                      icon={Save}
+                      onClick={() => updateAddressBook(addressBook.address)}
                     />
                   ) : (
-                    <>
-                      <SvgIconButton
-                        initialToolTipText="Edit"
-                        icon={Edit}
-                        onClick={() => handleEdit(addressBook.address)}
-                      />
-                      <SvgIconButton
-                        initialToolTipText="Delete"
-                        icon={Delete}
-                        onClick={() => handleDelete(index)}
-                      />
-                    </>
+                    <SvgIconButton
+                      initialToolTipText="Edit"
+                      icon={Edit}
+                      onClick={() => editAddressBook(addressBook.address)}
+                    />
                   )}
+                  <SvgIconButton
+                    initialToolTipText="Delete"
+                    icon={Delete}
+                    onClick={() => deleteAddressBook(addressBook.address)}
+                  />
                 </TableCell>
               </TableRow>
             );

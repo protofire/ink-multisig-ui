@@ -1,8 +1,10 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Button, IconButton, Modal, TextField } from "@mui/material";
-import React, { ChangeEvent } from "react";
+import React, { useEffect } from "react";
 
 import { getChain } from "@/config/chain";
+import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
+import { useAddAddressBook } from "@/hooks/addressBook/useAddAddressBook";
 import { ChainId } from "@/services/useink/types";
 
 import NetworkBadge from "../NetworkBadge";
@@ -10,26 +12,33 @@ import { ModalStyled, ModalTypography } from "./styled";
 
 type Props = {
   open: boolean;
-  handleOnChange: (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  handleSubmit: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   onClose: () => void;
   network: ChainId | undefined;
   handleClose: () => void;
 };
+
 export function ModalAddressBook({
   open,
-  handleOnChange,
-  handleSubmit,
   onClose,
   network,
   handleClose,
 }: Props) {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    handleSubmit(e);
-    onClose();
-  };
+  const { handleChangeInput, handleClick, error } = useAddAddressBook();
+
+  useEffect(() => {
+    document.addEventListener(AddressBookEvents.onAddressBookCreation, () => {
+      onClose();
+    });
+    return () => {
+      document.removeEventListener(
+        AddressBookEvents.onAddressBookCreation,
+        () => {
+          onClose();
+        }
+      );
+    };
+  }, [onClose]);
+
   const chain = getChain(network);
   return (
     <Modal open={open} onClose={handleClose}>
@@ -55,9 +64,11 @@ export function ModalAddressBook({
           label="Name"
           name="name"
           placeholder={"magnificent-astar"}
-          onChange={handleOnChange}
+          onChange={handleChangeInput}
         />
         <TextField
+          error={error.isError}
+          helperText={error.helperText}
           sx={{
             marginTop: "2rem",
           }}
@@ -65,7 +76,7 @@ export function ModalAddressBook({
           id="address"
           label="Address"
           name="address"
-          onChange={handleOnChange}
+          onChange={handleChangeInput}
           placeholder={"5FpWVjTfDzqwzzc6kPZzHQFEsfikd8JCVnEUkBcXkQKWYw8B"}
         />
         <Box
@@ -97,7 +108,11 @@ export function ModalAddressBook({
           <Button variant="outlined" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleClick}>
+          <Button
+            disabled={error.isError}
+            variant="contained"
+            onClick={handleClick}
+          >
             Save
           </Button>
         </Box>

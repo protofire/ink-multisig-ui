@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { ChainExtended, getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
+import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
 
 import { AddressBookItem } from "./AddressBookItem";
 import {
@@ -14,11 +14,11 @@ import {
 
 export const AddressBookWidget = () => {
   const { network } = usePolkadotContext();
-  const { data } = useListAddressBook(network as string);
+  const { data } = useFetchAddressBook(network as string);
 
   return (
     <AddressBookWidgetStyled border={false}>
-      {data?.length == 0 ? (
+      {data?.length === 0 ? (
         <StyledList>
           <NoItems>There are no registered address in this network</NoItems>
         </StyledList>

@@ -5,24 +5,55 @@ import {
   setLocalStorageState,
 } from "@/utils/localStorage";
 
+const dataByNetwork = (data: AddressBook[], networkId: string) => {
+  return Object.values(data).filter(
+    (element) => element.networkId === networkId
+  );
+};
+
+const getData = (storageKey: string): AddressBook[] | null => {
+  return getLocalStorageState<AddressBook[] | null>(storageKey, null);
+};
+
 export class AddressBookRepository implements IAddressBookRepository {
   private readonly storageKey = "addressBook";
 
   getAddressList(networkId: string): AddressBook[] {
-    const result = getLocalStorageState<AddressBook[]>(
-      this.storageKey,
-      null as unknown as AddressBook[]
-    );
-
-    if (!result) return [];
-
-    const data = Object.values(result as unknown as AddressBook[]).filter(
-      (element) => element.networkId === networkId
-    );
-    return data;
+    const data = getData(this.storageKey);
+    if (!data) return [];
+    return dataByNetwork(data, networkId);
   }
 
-  saveAddress(account: AddressBook): void {
-    setLocalStorageState(this.storageKey, account);
+  addAddress(newAddress: AddressBook | undefined): void {
+    const data = getData(this.storageKey);
+    if (data && newAddress) {
+      this.saveAddress(Object.values(data).concat(newAddress));
+    }
+  }
+
+  getItemByByAddress(accountAddress: string): AddressBook | undefined {
+    const data = getData(this.storageKey);
+    if (!data) return undefined;
+    const filterElement = Object.values(data).find(
+      (element) => element.address === accountAddress
+    );
+    return filterElement;
+  }
+
+  saveAddress(newData: AddressBook[]): void {
+    setLocalStorageState(this.storageKey, newData);
+  }
+
+  deleteAddress(accountAddress: string): void {
+    const data = getLocalStorageState<AddressBook[] | null>(
+      this.storageKey,
+      null
+    );
+    if (!data) return;
+    const filter = Object.values(data).filter(
+      (element) => element.address !== accountAddress
+    );
+    console.log("data", filter);
+    setLocalStorageState(this.storageKey, filter);
   }
 }
