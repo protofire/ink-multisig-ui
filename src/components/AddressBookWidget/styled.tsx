@@ -68,6 +68,9 @@ export const NoItems = styled(ListItem)<ListItemProps>(() => ({
   borderRadius: "8px",
   minHeight: "15rem",
   justifyContent: "center",
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
 }));
 
 export const IconBoxStyled = styled(Box)<BoxProps>(() => ({

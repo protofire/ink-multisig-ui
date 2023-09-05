@@ -4,6 +4,7 @@ import {
   Layers as IconTxBuilder,
   Settings as IconSettings,
   SvgIconComponent,
+  Toll as IconAssets,
 } from "@mui/icons-material";
 
 import { ROUTES } from "@/config/routes";
@@ -22,6 +23,7 @@ const icons = {
   IconTxBuilder,
   Book,
   IconSettings,
+  IconAssets,
 };
 
 export const MENU_ITEMS: NavLink[] = [
@@ -34,7 +36,15 @@ export const MENU_ITEMS: NavLink[] = [
     target: true,
   },
   {
-    id: "tx-builder",
+    id: "assets",
+    title: "Assets",
+    type: "item",
+    url: ROUTES.Assets,
+    icon: icons.IconAssets,
+    target: true,
+  },
+  {
+    id: "docs",
     title: "Tx Builder",
     type: "item",
     url: ROUTES.TxBuilder,
