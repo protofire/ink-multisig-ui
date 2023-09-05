@@ -7,7 +7,6 @@ export const ROUTES = {
   App: "/app",
   AddressBook: "/app/address-book",
   TxBuilder: "/app/transaction-builder",
-  AddressBook: "/app/address-book",
   Settings: "/app/settings",
   Assets: "/app/assets",
 } as const;
