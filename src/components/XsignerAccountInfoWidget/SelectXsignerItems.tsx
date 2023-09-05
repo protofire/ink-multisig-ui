@@ -11,13 +11,20 @@ import * as React from "react";
 
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { UseModalBehaviour } from "@/hooks/useModalBehaviour";
-import { truncateAddress } from "@/utils/formatString";
+import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
 interface Props extends Partial<UseModalBehaviour> {
   xsigners: SignatoriesAccount[];
+  ownersCount: number | undefined;
 }
 
-export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
+export function SelectXsignerItems({
+  isOpen,
+  closeModal,
+  xsigners,
+  threshold,
+  ownersCount,
+}: Props) {
   return (
     <Menu
       id="basic-menu"
@@ -56,7 +63,7 @@ export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
               <Tooltip title="Threshold" arrow>
                 <Box display="flex" flexDirection="column">
                   <Typography variant="caption" color="primary">
-                    2/4
+                    {formatThreshold({ threshold, owners: ownersCount })}
                   </Typography>
                 </Box>
               </Tooltip>
