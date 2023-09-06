@@ -5,15 +5,34 @@ import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { AddressBook } from "@/domain/AddressBooks";
 import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
 import { ChainId } from "@/services/useink/types";
+import { isValidAddress } from "@/utils/blockchain";
+
+const VALIDATIONS = {
+  isValidAddress: isValidAddress,
+  existAddress: (accountAddress: string, data: AddressBook[]): boolean =>
+    data.some((element) => element.address === accountAddress),
+};
+
+const ERROR_MESSAGES = {
+  ALREADY_EXITS: "This address is already registered",
+  INVALID_ADDRESS: "This is not a valid address",
+};
+
+const initialErrorState = {
+  isError: false,
+  helperText: "",
+};
 
 export function useAddAddressBook() {
   const { addressBookRepository } = useLocalDbContext();
-  const [formInput, setFormInput] = useState<AddressBook>();
-  const [error, setError] = useState({
-    isError: false,
-    helperText: "",
-  });
   const { network } = usePolkadotContext();
+  const [formInput, setFormInput] = useState<AddressBook>({
+    address: "",
+    name: "",
+    isEditable: false,
+    networkId: network ?? "astar",
+  });
+  const [error, setError] = useState(initialErrorState);
 
   const handleChangeInput = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -30,23 +49,29 @@ export function useAddAddressBook() {
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    const exist = VALIDATIONS.existAddress(
+      formInput?.address,
+      addressBookRepository.getAddressList(network as ChainId)
+    );
 
-    if (!formInput) return;
-    const valid = isValidAddress(formInput?.address);
-    if (valid) {
+    if (exist) {
       setError({
         isError: true,
-        helperText: "This address is already registered",
+        helperText: ERROR_MESSAGES.ALREADY_EXITS,
       });
       return;
     }
-    addAddress(formInput, network);
-  };
+    const isValid = VALIDATIONS.isValidAddress(formInput.address);
+    if (!isValid) {
+      setError({
+        isError: true,
+        helperText: ERROR_MESSAGES.INVALID_ADDRESS,
+      });
+      return;
+    }
 
-  const isValidAddress = (accountAddress: string): boolean => {
-    const data = addressBookRepository.getAddressList(network as ChainId);
-    const filter = data.some((element) => element.address === accountAddress);
-    return filter;
+    addAddress(formInput, network);
+    setError(initialErrorState);
   };
 
   const addAddress = (
@@ -63,14 +88,19 @@ export function useAddAddressBook() {
 
     addressBookRepository.addAddress(newRegister);
     document.dispatchEvent(
-      new CustomEvent(AddressBookEvents.onAddressBookCreation)
+      new CustomEvent(AddressBookEvents.onFetchAddressBook)
     );
+  };
+
+  const resetErrorState = () => {
+    setError(initialErrorState);
   };
 
   return {
     addAddress,
     handleChangeInput,
     handleClick,
+    resetErrorState,
     error,
   };
 }

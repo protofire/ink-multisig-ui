@@ -48,7 +48,6 @@ export const AddressBookPage = () => {
       </AddressBookWidgetStyled>
       <ModalAddressBook
         open={displayModalWallet}
-        onClose={() => setDisplayModalWallet(false)}
         network={network}
         handleClose={() => setDisplayModalWallet(false)}
       />

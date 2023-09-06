@@ -37,22 +37,18 @@ export function useFetchAddressBook(networkId: string | undefined) {
     if (!networkId || !addressBookRepository) return;
     fetchData(networkId);
 
-    document.addEventListener(AddressBookEvents.onAddressBookCreation, () => {
+    document.addEventListener(AddressBookEvents.onFetchAddressBook, () => {
       fetchData(networkId);
     });
     return () => {
-      document.removeEventListener(
-        AddressBookEvents.onAddressBookCreation,
-        () => {
-          fetchData(networkId);
-        }
-      );
+      document.removeEventListener(AddressBookEvents.onFetchAddressBook, () => {
+        fetchData(networkId);
+      });
     };
   }, [addressBookRepository, fetchData, networkId]);
 
   return {
     data,
-    setData,
     isLoading,
     error,
   };

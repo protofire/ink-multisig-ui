@@ -15,7 +15,7 @@ export function useDeleteAddressBook() {
     try {
       addressBookRepository.deleteAddress(accountAddress);
       document.dispatchEvent(
-        new CustomEvent(AddressBookEvents.onAddressBookCreation)
+        new CustomEvent(AddressBookEvents.onFetchAddressBook)
       );
     } catch (err) {
       const errorFormated = customReportError(err);

@@ -12,32 +12,29 @@ import { ModalStyled, ModalTypography } from "./styled";
 
 type Props = {
   open: boolean;
-  onClose: () => void;
-  network: ChainId | undefined;
   handleClose: () => void;
+  network: ChainId | undefined;
 };
 
-export function ModalAddressBook({
-  open,
-  onClose,
-  network,
-  handleClose,
-}: Props) {
-  const { handleChangeInput, handleClick, error } = useAddAddressBook();
+export function ModalAddressBook({ open, network, handleClose }: Props) {
+  const { handleChangeInput, handleClick, error, resetErrorState } =
+    useAddAddressBook();
 
   useEffect(() => {
-    document.addEventListener(AddressBookEvents.onAddressBookCreation, () => {
-      onClose();
+    resetErrorState();
+  }, [open, resetErrorState]);
+
+  useEffect(() => {
+    document.addEventListener(AddressBookEvents.onFetchAddressBook, () => {
+      handleClose();
     });
+
     return () => {
-      document.removeEventListener(
-        AddressBookEvents.onAddressBookCreation,
-        () => {
-          onClose();
-        }
-      );
+      document.removeEventListener(AddressBookEvents.onFetchAddressBook, () => {
+        handleClose();
+      });
     };
-  }, [onClose]);
+  }, [handleClose]);
 
   const chain = getChain(network);
   return (
@@ -105,14 +102,10 @@ export function ModalAddressBook({
             marginTop: "2rem",
           }}
         >
-          <Button variant="outlined" onClick={onClose}>
+          <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
-          <Button
-            disabled={error.isError}
-            variant="contained"
-            onClick={handleClick}
-          >
+          <Button variant="contained" onClick={handleClick}>
             Save
           </Button>
         </Box>
