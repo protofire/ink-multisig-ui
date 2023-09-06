@@ -15,16 +15,9 @@ import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
 interface Props extends Partial<UseModalBehaviour> {
   xsigners: SignatoriesAccount[];
-  ownersCount: number | undefined;
 }
 
-export function SelectXsignerItems({
-  isOpen,
-  closeModal,
-  xsigners,
-  threshold,
-  ownersCount,
-}: Props) {
+export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
   return (
     <Menu
       id="basic-menu"
@@ -63,7 +56,10 @@ export function SelectXsignerItems({
               <Tooltip title="Threshold" arrow>
                 <Box display="flex" flexDirection="column">
                   <Typography variant="caption" color="primary">
-                    {formatThreshold({ threshold, owners: ownersCount })}
+                    {formatThreshold({
+                      threshold: xsigner.threshold,
+                      owners: xsigner.owners.length,
+                    })}
                   </Typography>
                 </Box>
               </Tooltip>
