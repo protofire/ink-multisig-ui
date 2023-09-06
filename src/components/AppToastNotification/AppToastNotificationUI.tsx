@@ -20,6 +20,7 @@ export function AppToastNotificationUI({
       pauseOnFocusLoss
       draggable
       pauseOnHover
+      style={{ marginTop: "4rem" }}
     />
   );
 }
