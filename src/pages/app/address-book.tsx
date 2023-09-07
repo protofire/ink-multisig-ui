@@ -1,5 +1,9 @@
-import { AddressBookPage } from "@/components/AddressBook";
+import { ChainId } from "useink/dist/chains";
 
-export default function AddressBook() {
-  return <AddressBookPage />;
+import { AddressBookContainer } from "@/components/AddressBook";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
+
+export default function AddressBookPage() {
+  const { network } = usePolkadotContext();
+  return <AddressBookContainer network={network as ChainId} />;
 }

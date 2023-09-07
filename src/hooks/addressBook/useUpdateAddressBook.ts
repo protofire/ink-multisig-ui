@@ -16,7 +16,7 @@ export function useUpdateAddressBook() {
   };
 
   const updateAddressBook = (addressBook: string) => {
-    const item = addressBookRepository.getItemByByAddress(addressBook);
+    const item = addressBookRepository.getItemByAddress(addressBook);
     const element = {
       ...item,
       ...editInput,
@@ -28,10 +28,10 @@ export function useUpdateAddressBook() {
       (element) => element.address === addressBook
     );
     tempData[index] = element;
-    addressBookRepository.saveAddress(tempData);
     document.dispatchEvent(
       new CustomEvent(AddressBookEvents.onFetchAddressBook)
     );
+    addressBookRepository.saveAddress(tempData);
   };
 
   return {

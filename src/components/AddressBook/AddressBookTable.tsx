@@ -10,11 +10,11 @@ import {
 import React, { useEffect, useState } from "react";
 
 import { getChain } from "@/config/chain";
-import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { AddressBook } from "@/domain/AddressBooks";
+import { AddressBookInput } from "@/domain/AddressBooks";
 import { useDeleteAddressBook } from "@/hooks/addressBook/useDeleteAddressBook";
 import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
 import { useUpdateAddressBook } from "@/hooks/addressBook/useUpdateAddressBook";
+import { ChainId } from "@/services/useink/types";
 
 import CopyButton from "../common/CopyButton";
 import OpenNewTabButton from "../common/OpenNewTabButton";
@@ -25,19 +25,23 @@ import NetworkBadge from "../NetworkBadge";
 // Remove this mock variable, replace with true value
 const mockURL = "https://polkadot.subscan.io/";
 
-const AddressBookTable = () => {
-  const { network } = usePolkadotContext();
+type Props = {
+  network: ChainId;
+};
+
+const AddressBookTable = ({ network }: Props) => {
   const { data } = useFetchAddressBook(network);
   const { updateAddressBook, handleChange } = useUpdateAddressBook();
   const { deleteAddressBook } = useDeleteAddressBook();
-  const [tempData, setTempData] = useState<AddressBook[]>([]);
+  const [tempData, setTempData] = useState<AddressBookInput[]>([]);
 
   useEffect(() => {
-    setTempData(data);
+    setTempData(data as AddressBookInput[]);
   }, [data]);
 
   const editAddressBook = (address: string) => {
-    const obj = data?.map((element) => {
+    const tempData = data as AddressBookInput[];
+    const obj = tempData?.map((element) => {
       if (element.address === address) {
         return {
           ...element,
@@ -45,7 +49,7 @@ const AddressBookTable = () => {
         };
       }
       return element;
-    }) as AddressBook[];
+    });
     setTempData(obj);
   };
 

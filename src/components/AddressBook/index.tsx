@@ -1,15 +1,18 @@
 import { Box, ButtonBase, Typography } from "@mui/material";
 import React from "react";
 
-import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
+import { ChainId } from "@/services/useink/types";
 
 import { ModalAddressBook } from "../ModalAddressBook";
 import AddressBookTable from "./AddressBookTable";
 import { AddressBookWidgetStyled, NoItems, StyledList } from "./styled";
 
-export const AddressBookPage = () => {
-  const { network } = usePolkadotContext();
+type Props = {
+  network: ChainId;
+};
+
+export const AddressBookContainer = ({ network }: Props) => {
   const { data } = useFetchAddressBook(network);
   const [displayModalWallet, setDisplayModalWallet] = React.useState(false);
 
@@ -43,7 +46,7 @@ export const AddressBookPage = () => {
             <NoItems>There are no registered address in this network</NoItems>
           </StyledList>
         ) : (
-          <AddressBookTable />
+          <AddressBookTable network={network} />
         )}
       </AddressBookWidgetStyled>
       <ModalAddressBook

@@ -31,7 +31,7 @@ export class AddressBookRepository implements IAddressBookRepository {
     }
   }
 
-  getItemByByAddress(accountAddress: string): AddressBook | undefined {
+  getItemByAddress(accountAddress: string): AddressBook | undefined {
     const data = getData(this.storageKey);
     if (!data) return undefined;
     const filterElement = Object.values(data).find(
@@ -45,15 +45,11 @@ export class AddressBookRepository implements IAddressBookRepository {
   }
 
   deleteAddress(accountAddress: string): void {
-    const data = getLocalStorageState<AddressBook[] | null>(
-      this.storageKey,
-      null
-    );
+    const data = getData(this.storageKey);
     if (!data) return;
     const filter = Object.values(data).filter(
       (element) => element.address !== accountAddress
     );
-    console.log("data", filter);
     setLocalStorageState(this.storageKey, filter);
   }
 }

@@ -22,7 +22,7 @@ export function ModalAddressBook({ open, network, handleClose }: Props) {
 
   useEffect(() => {
     resetErrorState();
-  }, [open, resetErrorState]);
+  }, [open]);
 
   useEffect(() => {
     document.addEventListener(AddressBookEvents.onFetchAddressBook, () => {
