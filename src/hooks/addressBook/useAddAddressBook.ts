@@ -29,7 +29,6 @@ export function useAddAddressBook() {
   const [formInput, setFormInput] = useState<AddressBook>({
     address: "",
     name: "",
-    isEditable: false,
     networkId: network ?? "astar",
   });
   const [error, setError] = useState(initialErrorState);
@@ -83,7 +82,6 @@ export function useAddAddressBook() {
       networkId: network as ChainId,
       name: addressBook?.name,
       address: addressBook?.address,
-      isEditable: false,
     };
 
     addressBookRepository.addAddress(newRegister);
