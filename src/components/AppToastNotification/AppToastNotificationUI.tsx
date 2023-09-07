@@ -9,6 +9,18 @@ export function AppToastNotificationUI({
   position = "top-right",
 }: Props): JSX.Element {
   return (
-    <ToastContainer theme="dark" autoClose={autoClose} position={position} />
+    <ToastContainer
+      theme="dark"
+      autoClose={autoClose}
+      position={position}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      style={{ marginTop: "4rem" }}
+    />
   );
 }

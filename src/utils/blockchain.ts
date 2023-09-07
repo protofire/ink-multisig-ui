@@ -79,5 +79,5 @@ export const generateRandomWalletName = () => {
   const noun = nouns[Math.floor(Math.random() * nouns.length)];
   const uniqueNumber = counter++;
 
-  return `${adjective}-${noun}-${uniqueNumber}-wallet`;
+  return `${adjective}-${noun}-${uniqueNumber}`;
 };

@@ -11,7 +11,7 @@ import * as React from "react";
 
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { UseModalBehaviour } from "@/hooks/useModalBehaviour";
-import { truncateAddress } from "@/utils/formatString";
+import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
 interface Props extends Partial<UseModalBehaviour> {
   xsigners: SignatoriesAccount[];
@@ -22,7 +22,7 @@ export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
     <Menu
       id="basic-menu"
       anchorReference="anchorPosition"
-      anchorPosition={{ top: 140, left: 420 }}
+      anchorPosition={{ top: 200, left: 520 }}
       anchorOrigin={{
         vertical: "center",
         horizontal: "right",
@@ -56,7 +56,10 @@ export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
               <Tooltip title="Threshold" arrow>
                 <Box display="flex" flexDirection="column">
                   <Typography variant="caption" color="primary">
-                    2/4
+                    {formatThreshold({
+                      threshold: xsigner.threshold,
+                      owners: xsigner.owners.length,
+                    })}
                   </Typography>
                 </Box>
               </Tooltip>
