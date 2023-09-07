@@ -23,7 +23,7 @@ export function AccountSelect({
   disconnectWallet: () => void;
 }) {
   const _handleChange = (event: SelectChangeEvent<unknown>) => {
-    const { address } = event.target.value as { address: string };
+    const address = event.target.value as string;
 
     if (address === OPTION_FOR_DISCONNECTING) {
       disconnectWallet();
@@ -63,14 +63,15 @@ export function AccountSelect({
 
   return (
     <StyledSelect
-      value={{
-        address: accountConnected.address,
-        name: accountConnected.name,
-      }}
+      value={accountConnected.address}
       placeholder="Select Account..."
       onChange={_handleChange}
       renderValue={(value) => {
-        const { address, name } = value as { address: string; name: string };
+        const address = value as string;
+
+        const name = accounts?.find(
+          (account) => account.address === address
+        )?.name;
         return (
           <>
             <Box
@@ -97,12 +98,7 @@ export function AccountSelect({
       }}
     >
       {allAccounts.map((a) => (
-        <StyledMenuItem
-          key={a.address}
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore - necessary to load object into value
-          value={{ address: a.address, name: a.name }}
-        >
+        <StyledMenuItem key={a.address} value={a.address}>
           {a.name !== OPTION_FOR_DISCONNECTING && (
             <>
               <Stack sx={{ display: "flex", flexDirection: "row" }}>
