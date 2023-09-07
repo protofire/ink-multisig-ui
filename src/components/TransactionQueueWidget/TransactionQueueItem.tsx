@@ -13,12 +13,11 @@ import {
 
 interface Props {
   data: TransactionQueue | undefined;
-  key: number;
 }
 
-export const TransactionQueueItem = ({ data: tx, key }: Props) => {
+export const TransactionQueueItem = ({ data: tx }: Props) => {
   return (
-    <ListItemtyled key={key}>
+    <ListItemtyled>
       <StyledBox>
         {tx?.type === "Send" ? (
           <Image

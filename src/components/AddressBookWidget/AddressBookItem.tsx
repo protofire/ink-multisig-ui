@@ -19,16 +19,14 @@ import {
 interface Props {
   addressBook: AddressBook | null;
   network: ChainExtended;
-  key: number;
 }
 
-export const AddressBookItem = ({ addressBook, network, key }: Props) => {
+export const AddressBookItem = ({ addressBook, network }: Props) => {
   // TODO:
   // Remove this mock variable, replace with true value
   const mockURL = "https://polkadot.subscan.io/";
-
   return (
-    <ListItemstyled key={key}>
+    <ListItemstyled>
       <StyledBox>
         <Avatar>
           <Identicon value={addressBook?.address} size={32} theme="beachball" />

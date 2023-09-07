@@ -54,7 +54,7 @@ export const ListItemstyled = styled(ListItem)<ListItemProps>(() => ({
   margin: "2px 0px",
   display: "flex",
   alignContent: "center",
-  "&:first-child": {
+  "&:first-of-type": {
     borderRadius: "8px 8px 0px 0px",
   },
 

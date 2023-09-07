@@ -5,7 +5,7 @@ import { AddressBook } from "@/domain/AddressBooks";
 import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
 import { customReportError } from "@/utils/error";
 
-export function useListAddressBook(networkId: string | undefined) {
+export function useFetchAddressBook(networkId: string | undefined) {
   const [data, setData] = useState<AddressBook[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -5,3 +5,7 @@ export interface AddressBook {
   name: string;
   networkId: Chain["id"];
 }
+
+export type AddressBookInput = AddressBook & {
+  isEditable: boolean;
+};
