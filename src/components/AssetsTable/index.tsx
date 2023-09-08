@@ -20,11 +20,11 @@ const columns = [
 ] as Column[];
 
 const types: AssetType[] = ["token", "nft"];
-const ADDRESS = "WTqq9UiVRmRBcEwsv3FkDrEhQHXkXS1oA6tcP94BUdUq6JF"; // Set address here. This will be replaced by Add Asset feature.
 
 export default function AssetsTable() {
   const [type, setType] = useState(types[0]);
-  const { listAssetByType, error, loading } = useFetchAssets(ADDRESS);
+  const address = "WTqq9UiVRmRBcEwsv3FkDrEhQHXkXS1oA6tcP94BUdUq6JF"; // Set address here. This will be replaced by Add Asset feature.
+  const { listAssetByType, error, loading } = useFetchAssets(address);
   const { addNotification } = useAppNotificationContext();
 
   useEffect(() => {
