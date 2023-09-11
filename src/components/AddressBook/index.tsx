@@ -26,7 +26,7 @@ export const AddressBookContainer = ({ network }: Props) => {
           marginBottom: "2rem",
         }}
       >
-        <Typography variant="h3" color="#FFE873">
+        <Typography variant="h3" color="primary">
           Address book
         </Typography>
         <ButtonBase
