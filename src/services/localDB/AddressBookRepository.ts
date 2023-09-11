@@ -24,11 +24,13 @@ export class AddressBookRepository implements IAddressBookRepository {
     return dataByNetwork(data, networkId);
   }
 
-  addAddress(newAddress: AddressBook | undefined): void {
-    const data = getData(this.storageKey);
-    if (data && newAddress) {
-      this.saveAddress(Object.values(data).concat(newAddress));
+  addAddress(newAddress: AddressBook): void {
+    const data = getData(this.storageKey) as AddressBook[];
+    if (!data) {
+      this.saveAddress([newAddress]);
+      return;
     }
+    this.saveAddress(Object.values(data).concat(newAddress));
   }
 
   getItemByAddress(accountAddress: string): AddressBook | undefined {
