@@ -7,6 +7,8 @@ import { CacheProvider, EmotionCache } from "@emotion/react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
+import { Router } from "next/router";
+import NProgress from "nprogress";
 import { InkConfig } from "useink";
 
 import { AppToastNotifications } from "@/components/AppToastNotification";
@@ -19,6 +21,17 @@ import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
 import createEmotionCache from "@/utils/createEmotionCache";
+
+// Progressbar Loader
+Router.events.on("routeChangeStart", () => {
+  NProgress.start();
+});
+Router.events.on("routeChangeError", () => {
+  NProgress.done();
+});
+Router.events.on("routeChangeComplete", () => {
+  NProgress.done();
+});
 
 export const squidClient = new ApolloClient({
   uri: "https://squid.subsquid.io/ink-multisig-shibuya/v/v2/graphql",
