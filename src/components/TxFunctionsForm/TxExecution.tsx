@@ -37,8 +37,8 @@ export function TxExecution({
           <Image
             alt={"Smart Contract inside polkadot parachains"}
             src={SMART_CONTRACT}
-            width={300}
-            height={200}
+            width={30}
+            height={20}
             color={theme.palette.primary.contrastText}
             priority
           />

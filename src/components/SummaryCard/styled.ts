@@ -14,4 +14,5 @@ export const SummaryCardStyled = styled(WidgetCard)<WidgetCardProps>(() => ({
 
 export const TextSummary = styled(Typography)<TypographyProps>(() => ({
   fontSize: "2em",
+  lineHeight: "1.1",
 }));

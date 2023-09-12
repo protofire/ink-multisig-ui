@@ -5,13 +5,15 @@ import AssetsTable from "@/components/AssetsTable";
 export default function AssetsPage() {
   return (
     <Box
-      p={2}
-      mt={4}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        marginTop: "2rem",
+        marginBottom: "2rem",
+      }}
     >
-      <Typography mb={1} variant="h3" color="primary">
+      <Typography mb={2} variant="h3" color="primary">
         Assets
       </Typography>
       <AssetsTable />

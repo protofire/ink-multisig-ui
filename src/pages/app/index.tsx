@@ -54,7 +54,7 @@ export default function AppDashboard() {
       >
         <Grid item xs={6}>
           <Typography variant="h3" color="primary">
-            Address Book
+            Address book
           </Typography>
         </Grid>
 

@@ -45,7 +45,7 @@ export const MENU_ITEMS: NavLink[] = [
   },
   {
     id: "docs",
-    title: "Tx Builder",
+    title: "Transaction builder",
     type: "item",
     url: ROUTES.TxBuilder,
     icon: icons.IconTxBuilder,
@@ -53,7 +53,7 @@ export const MENU_ITEMS: NavLink[] = [
   },
   {
     id: "addressBook",
-    title: "Address Book",
+    title: "Address book",
     type: "item",
     url: ROUTES.AddressBook,
     icon: icons.Book,
