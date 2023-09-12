@@ -11,12 +11,6 @@ import AssetTabs from "./Tabs";
 const columns = [
   { id: "name", label: "ASSET" },
   { id: "balance", label: "BALANCE", align: "left" },
-  {
-    id: "value",
-    label: "VALUE",
-    align: "left",
-    format: (value: number) => `${value}`,
-  },
 ] as Column[];
 
 const types: AssetType[] = ["token", "nft"];

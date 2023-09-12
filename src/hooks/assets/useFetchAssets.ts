@@ -14,7 +14,6 @@ export type Asset = {
   address: string;
   name: string;
   balance: number;
-  value: number;
 };
 
 const DEFAULT_DATA = {
@@ -59,7 +58,6 @@ function useFetchAssets(address: string) {
           address,
           name: name?.value.decoded || "UNKNOWN",
           balance: balance?.value.decoded || 0,
-          value: 0,
         } as Asset;
 
         setData((prevData) => ({
