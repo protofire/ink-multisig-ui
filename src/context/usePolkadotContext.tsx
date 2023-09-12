@@ -8,7 +8,7 @@ import React, {
 import { useAllWallets, useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
-import { CHAINS_ALLOWED } from "@/config/chain";
+import { DEFAULT_CHAIN } from "@/config/chain";
 import { SetState } from "@/domain/utilityReactTypes";
 import { Wallet, WalletAccount } from "@/services/useink/types";
 import { createNotImplementedWarning } from "@/utils/error";
@@ -45,12 +45,11 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
     useWallet();
   const walletList = useAllWallets();
 
-  //TODO replace with at network selector
   useEffect(() => {
     if (networkId) return;
 
-    // set Rococo by default
-    setNetworkId(CHAINS_ALLOWED[0].id);
+    // set default chain according environment
+    setNetworkId(DEFAULT_CHAIN);
   }, [networkId]);
 
   return (

@@ -6,7 +6,12 @@ import {
 } from "@/services/useink/chains/testnet-chaindata";
 import { Chain, ChainId } from "@/services/useink/types";
 
+import { IS_DEVELOPMENT } from "./app";
 import { CHAINS_IMG_PATH } from "./images";
+
+export const DEFAULT_CHAIN: Chain["id"] = IS_DEVELOPMENT
+  ? "shibuya-testnet"
+  : "astar";
 
 export type ChainExtended = Chain & {
   logo: {
