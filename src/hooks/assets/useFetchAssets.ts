@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Call } from "useink";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore-next-line
 import { decodeError } from "useink/core";
+import { DecodedContractResult } from "useink/dist/core";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 
@@ -20,6 +19,25 @@ const DEFAULT_DATA = {
   token: [],
   nft: [],
 };
+
+function isThereTokenDifference({
+  previousTokenInfo,
+  newTokenBalance,
+  newTokenName,
+}: {
+  previousTokenInfo: {
+    balance: unknown | undefined;
+    name: unknown | undefined;
+  };
+  newTokenBalance: DecodedContractResult<unknown> | undefined;
+  newTokenName: DecodedContractResult<unknown> | undefined;
+}) {
+  return (
+    JSON.stringify(previousTokenInfo.balance) !==
+      JSON.stringify(newTokenBalance) ||
+    JSON.stringify(previousTokenInfo.name) !== JSON.stringify(newTokenName)
+  );
+}
 
 function useFetchAssets(address: string) {
   const [data, setData] = useState<{ token: Asset[]; nft: any[] }>(
@@ -49,9 +67,11 @@ function useFetchAssets(address: string) {
     const balance = (getValue as Omit<Call<unknown>, "send">).result;
     const name = (getName as Omit<Call<unknown>, "send">).result;
     if (
-      JSON.stringify(previousValueRef.current.balance) !==
-        JSON.stringify(balance) ||
-      JSON.stringify(previousValueRef.current.name) !== JSON.stringify(name)
+      isThereTokenDifference({
+        previousTokenInfo: previousValueRef.current,
+        newTokenBalance: balance,
+        newTokenName: name,
+      })
     ) {
       if (balance?.ok && name?.ok) {
         const asset = {

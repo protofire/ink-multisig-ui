@@ -2,7 +2,7 @@ export type { Chain, ChainId } from "useink/dist/chains";
 export type { TransactionStatus, WalletAccount } from "useink/dist/core";
 // 👆 Avoiding any using the implementation of talisman https://github.com/TalismanSociety/talisman-connect/blob/master/packages/connect-wallets/src/types.ts
 
-export interface WalletAccountType {
+export interface WalletAccount {
   address: string;
   source: string;
   name?: string;
@@ -11,7 +11,7 @@ export interface WalletAccountType {
 }
 
 export type SubscriptionFn = (
-  accounts: WalletAccountType[] | undefined
+  accounts: WalletAccount[] | undefined
 ) => void | Promise<void>;
 
 export interface WalletLogoProps {
@@ -57,7 +57,7 @@ interface Connector {
   enable: (dappName: string) => unknown;
 
   // Get accounts function
-  getAccounts: (anyType?: boolean) => Promise<WalletAccountType[]>;
+  getAccounts: (anyType?: boolean) => Promise<WalletAccount[]>;
 
   // The subscribe to accounts function
   subscribeAccounts: (callback: SubscriptionFn) => unknown;
