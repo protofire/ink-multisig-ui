@@ -4,7 +4,7 @@ import { MultisigFactorySdk } from "xsigners-sdk-test";
 import { ContractPromise } from "@/services/substrate/types";
 import { ChainId } from "@/services/useink/types";
 
-import { useNetworkApi } from "./useNetworkApi";
+import { useNetworkApi } from "../useNetworkApi";
 
 interface UseSdkXsigners {
   multisigFactoryContract: ChainContract<ContractPromise> | undefined;

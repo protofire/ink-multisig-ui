@@ -1,28 +1,30 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useFetchAssets, { AssetType } from "@/hooks/assets/useFetchAssets";
 
+import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import BasicTable, { Column } from "../common/Table";
 import AssetTabs from "./Tabs";
 
 const columns = [
-  { id: "asset", label: "ASSET" },
+  { id: "name", label: "ASSET" },
   { id: "balance", label: "BALANCE", align: "left" },
-  {
-    id: "value",
-    label: "VALUE",
-    align: "left",
-    format: (value: number) => `${value}`,
-  },
 ] as Column[];
 
 const types: AssetType[] = ["token", "nft"];
 
 export default function AssetsTable() {
   const [type, setType] = useState(types[0]);
-  const { listAssetByType, error, loading } = useFetchAssets();
+  const address = "WTqq9UiVRmRBcEwsv3FkDrEhQHXkXS1oA6tcP94BUdUq6JF"; // Set address here. This will be replaced by Add Asset feature.
+  const { listAssetByType, error, loading } = useFetchAssets(address);
+  const { addNotification } = useAppNotificationContext();
+
+  useEffect(() => {
+    if (!error) return;
+    addNotification({ message: error, type: "error" });
+  }, [addNotification, error]);
 
   const tableData = listAssetByType(type);
 

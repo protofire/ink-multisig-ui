@@ -3,8 +3,8 @@ import { useEvents, useEventSubscription, useTx } from "useink";
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { SaveProps } from "@/components/StepperSignersAccount";
+import { useMultisigFactoryContract } from "@/hooks/contractPromise/useTxMultisigFactory";
 import { useTxDispatchNotification } from "@/hooks/useTxDispatchNotfication";
-import { useMultisigFactoryContract } from "@/hooks/useTxMultisigFactory";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { generateHash } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
