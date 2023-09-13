@@ -1,22 +1,23 @@
 import * as React from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useTransactionQueue } from "@/hooks/transactionQueue/useTransactionQueue";
+import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
 
 import {
   NoItems,
   StyledButton,
   StyledList,
-  TransactionQueueStyled,
+  TxQueueWidgetStyled,
 } from "./styled";
-import { TransactionQueueItem } from "./TransactionQueueItem";
+import { TxQueueWidgetItem } from "./TxQueueWidgetItem";
 
-export const TransactionQueueWidget = () => {
+export const TxQueueWidget = () => {
   const { accountConnected } = usePolkadotContext();
-  const { data } = useTransactionQueue(accountConnected?.address);
+  const { data } = useListTxQueue(accountConnected?.address);
+  console.log("data", data);
   return (
-    <TransactionQueueStyled border={false}>
-      {data?.length === 0 ? (
+    <TxQueueWidgetStyled border={false}>
+      {!data ? (
         <StyledList>
           <NoItems>There are no transactions in this account</NoItems>
         </StyledList>
@@ -24,12 +25,12 @@ export const TransactionQueueWidget = () => {
         <>
           <StyledList>
             {data?.map((tx, index) => (
-              <TransactionQueueItem data={tx} key={index} />
+              <TxQueueWidgetItem data={tx} key={index} />
             ))}
           </StyledList>
           <StyledButton> View All </StyledButton>
         </>
       )}
-    </TransactionQueueStyled>
+    </TxQueueWidgetStyled>
   );
 };

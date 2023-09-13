@@ -12,13 +12,11 @@ import { styled } from "@mui/material/styles";
 
 import { WidgetCard, WidgetCardProps } from "../common/muiExtended/WidgetCard";
 
-export const TransactionQueueStyled = styled(WidgetCard)<WidgetCardProps>(
-  () => ({
-    backgroundImage: "none",
-    backgroundColor: "transparent",
-    boxShadow: "none",
-  })
-);
+export const TxQueueWidgetStyled = styled(WidgetCard)<WidgetCardProps>(() => ({
+  backgroundImage: "none",
+  backgroundColor: "transparent",
+  boxShadow: "none",
+}));
 
 export const StyledBox = styled(Box)<BoxProps>(() => ({
   display: "flex",
