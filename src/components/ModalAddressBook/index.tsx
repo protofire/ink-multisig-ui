@@ -17,11 +17,11 @@ type Props = {
 };
 
 export function ModalAddressBook({ open, network, handleClose }: Props) {
-  const { handleChangeInput, handleClick, error, resetErrorState } =
+  const { handleChangeInput, handleClick, error, resetState } =
     useAddAddressBook();
 
   useEffect(() => {
-    resetErrorState();
+    resetState(network as ChainId);
   }, [open]);
 
   useEffect(() => {
@@ -60,12 +60,14 @@ export function ModalAddressBook({ open, network, handleClose }: Props) {
           id="name"
           label="Name"
           name="name"
+          error={error.name.isError}
+          helperText={error.name.helperText}
           placeholder={"magnificent-astar"}
           onChange={handleChangeInput}
         />
         <TextField
-          error={error.isError}
-          helperText={error.helperText}
+          error={error.address.isError}
+          helperText={error.address.helperText}
           sx={{
             marginTop: "2rem",
           }}

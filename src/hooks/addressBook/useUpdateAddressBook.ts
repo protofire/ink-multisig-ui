@@ -28,10 +28,10 @@ export function useUpdateAddressBook() {
       (element) => element.address === addressBook
     );
     tempData[index] = element;
+    addressBookRepository.saveAddress(tempData);
     document.dispatchEvent(
       new CustomEvent(AddressBookEvents.onFetchAddressBook)
     );
-    addressBookRepository.saveAddress(tempData);
   };
 
   return {
