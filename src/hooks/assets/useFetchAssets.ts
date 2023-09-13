@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Call } from "useink";
-import { decodeError } from "useink/core";
-import { DecodedContractResult } from "useink/dist/core";
+import { DecodedContractResult, decodeError } from "useink/dist/core";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 
@@ -85,11 +84,11 @@ function useFetchAssets(address: string) {
           nft: prevData.nft,
         }));
       } else {
-        let error = "";
+        let error: string | null = "";
         if (!balance?.ok && balance?.error) {
-          error = decodeError(balance.error, contract);
+          error = decodeError(balance.error, contract) || null;
         } else if (!name?.ok && name?.error) {
-          error = decodeError(name.error, contract);
+          error = decodeError(name.error, contract) || null;
         }
         setError(error);
       }
