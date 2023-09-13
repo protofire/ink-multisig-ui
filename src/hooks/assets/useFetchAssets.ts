@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Call } from "useink";
-import { DecodedContractResult, decodeError } from "useink/dist/core";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-expect-error
+import { decodeError } from "useink/core";
+import { DecodedContractResult } from "useink/dist/core";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 
@@ -84,11 +87,11 @@ function useFetchAssets(address: string) {
           nft: prevData.nft,
         }));
       } else {
-        let error: string | null = "";
+        let error = "";
         if (!balance?.ok && balance?.error) {
-          error = decodeError(balance.error, contract) || null;
+          error = decodeError(balance.error, contract);
         } else if (!name?.ok && name?.error) {
-          error = decodeError(name.error, contract) || null;
+          error = decodeError(name.error, contract);
         }
         setError(error);
       }
