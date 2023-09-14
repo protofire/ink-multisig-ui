@@ -1,14 +1,8 @@
+import { WalletAccount } from "useink/dist/core";
+
 export type { Chain, ChainId } from "useink/dist/chains";
 export type { TransactionStatus, WalletAccount } from "useink/dist/core";
 // 👆 Avoiding any using the implementation of talisman https://github.com/TalismanSociety/talisman-connect/blob/master/packages/connect-wallets/src/types.ts
-
-export interface WalletAccount {
-  address: string;
-  source: string;
-  name?: string;
-  wallet?: Wallet;
-  signer?: unknown;
-}
 
 export type SubscriptionFn = (
   accounts: WalletAccount[] | undefined
