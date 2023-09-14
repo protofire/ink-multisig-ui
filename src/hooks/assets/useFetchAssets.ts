@@ -9,7 +9,7 @@ export type AssetType = "token" | "nft";
 export type Asset = {
   address: string;
   name: string;
-  balance: number;
+  balance: string;
 };
 
 const DEFAULT_DATA = {
@@ -26,56 +26,61 @@ function useFetchAssets(address: string) {
   const [loading, setLoading] = useState(true);
 
   const checkIfExist = useCallback(
-    (address: string) => {
-      return data.token.some((item) => item.address === address);
+    (name: string, balance: string) => {
+      if (!balance || !name) return false;
+
+      return data.token.some(
+        (item) => item.name === name && item.balance === balance
+      );
     },
     [data.token]
   );
 
-  const {
-    data: getName,
-    error: nameError,
-    reset: resetName,
-  } = useCall(address, "psp22Metadata::tokenName");
-  const {
-    data: getBalance,
-    error: balanceError,
-    reset: resetBalance,
-  } = useCall(address, "psp22::balanceOf", [accountConnected?.address || ""]);
+  const { data: getName, error: nameError } = useCall(
+    address,
+    "psp22Metadata::tokenName"
+  );
+  const { data: getBalance, error: balanceError } = useCall(
+    address,
+    "psp22::balanceOf",
+    [accountConnected?.address || ""]
+  );
 
   useEffect(() => {
-    if (!address) return;
-    resetName();
-    resetBalance();
-  }, [address, resetBalance, resetName]);
+    setLoading(true);
 
-  useEffect(() => {
-    if (!address) {
-      setLoading(false);
-      return;
-    }
-    if (!checkIfExist(address)) {
-      if (getName.ok && getBalance.ok) {
-        const asset = {
-          address,
-          name: getName.value || "UNKNOWN",
-          balance: getBalance.value || 0,
-        } as Asset;
-        setData((prevData) => ({
-          token: [...prevData.token, asset],
-          nft: prevData.nft,
-        }));
-      } else {
-        let error = "";
-        if (!getBalance.ok && nameError) {
-          error = nameError;
-        } else if (!getName.ok && balanceError) {
-          error = balanceError;
-        }
-        setError(error);
+    const fetchData = async () => {
+      if (!address) {
+        setLoading(false);
+        return;
       }
-    }
-    setLoading(false);
+
+      if (!checkIfExist(getName.value as string, getBalance.value as string)) {
+        if (getName.ok && getBalance.ok) {
+          const asset = {
+            address,
+            name: getName.value || "UNKNOWN",
+            balance: getBalance.value || "0",
+          } as Asset;
+          setData((prevData) => ({
+            token: [...prevData.token, asset],
+            nft: prevData.nft,
+          }));
+        } else {
+          let error = "";
+          if (!getBalance.ok && nameError) {
+            error = nameError;
+          } else if (!getName.ok && balanceError) {
+            error = balanceError;
+          }
+          setError(error);
+        }
+      }
+    };
+
+    fetchData().finally(() => {
+      setLoading(false);
+    });
   }, [address, balanceError, checkIfExist, getBalance, getName, nameError]);
 
   const listAssetByType = useCallback(

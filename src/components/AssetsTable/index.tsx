@@ -19,9 +19,7 @@ const types: AssetType[] = ["token", "nft"];
 export default function AssetsTable() {
   const [type, setType] = useState(types[0]);
   const [open, setOpen] = useState(false);
-  const [address, setAddress] = useState(
-    "WTqq9UiVRmRBcEwsv3FkDrEhQHXkXS1oA6tcP94BUdUq6JF"
-  );
+  const [address, setAddress] = useState("");
   const { listAssetByType, error, loading } = useFetchAssets(address);
   const { addNotification } = useAppNotificationContext();
   useEffect(() => {

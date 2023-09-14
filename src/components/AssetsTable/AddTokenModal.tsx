@@ -22,8 +22,11 @@ export default function AddTokenModal(props: Props) {
   const { open, handleOpen, handleNewToken } = props;
   const theme = useTheme();
   const [address, setAddress] = React.useState("");
-  const { data: getName } = useCall(address, "psp22Metadata::tokenName");
-  const { data: getDecimals } = useCall(
+  const { data: getName, reset: resetName } = useCall(
+    address,
+    "psp22Metadata::tokenName"
+  );
+  const { data: getDecimals, reset: resetDecimals } = useCall(
     address,
     "psp22Metadata::tokenDecimals"
   );
@@ -39,11 +42,17 @@ export default function AddTokenModal(props: Props) {
     setAddress("");
   };
 
+  const onOpen = () => {
+    handleOpen(true);
+    resetName();
+    resetDecimals();
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <Button
         sx={{ position: "absolute", right: "20px", zIndex: 1 }}
-        onClick={() => handleOpen(true)}
+        onClick={onOpen}
       >
         + Add token
       </Button>

@@ -40,8 +40,8 @@ export function useCall(
   };
 
   useEffect(() => {
+    reset();
     const fetchContractData = async () => {
-      setData(DEFAULT_RESPONSE);
       if (contract) {
         const apiCaller = contract.api.call.contractsApi;
         const abiMessage = toContractAbiMessage(contract, methodName);
