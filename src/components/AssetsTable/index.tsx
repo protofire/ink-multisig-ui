@@ -24,7 +24,6 @@ export default function AssetsTable() {
   );
   const { listAssetByType, error, loading } = useFetchAssets(address);
   const { addNotification } = useAppNotificationContext();
-
   useEffect(() => {
     if (!error) return;
     addNotification({ message: error, type: "error" });

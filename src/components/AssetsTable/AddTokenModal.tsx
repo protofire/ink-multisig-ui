@@ -9,12 +9,8 @@ import {
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";
-import { Call } from "useink";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-expect-error
-import { pickDecoded } from "useink/utils";
 
-import { usePSPTx } from "@/hooks/usePSPTx";
+import { useCall } from "@/hooks/useCall";
 
 type Props = {
   open: boolean;
@@ -26,16 +22,11 @@ export default function AddTokenModal(props: Props) {
   const { open, handleOpen, handleNewToken } = props;
   const theme = useTheme();
   const [address, setAddress] = React.useState("");
-  const { tx: getName } = usePSPTx({
+  const { data: getName } = useCall(address, "psp22Metadata::tokenName");
+  const { data: getDecimals } = useCall(
     address,
-    method: "psp22Metadata::tokenName",
-  });
-  const { tx: getDecimals } = usePSPTx({
-    address,
-    method: "psp22Metadata::tokenDecimals",
-  });
-  const getNameTx = getName as Omit<Call<unknown>, "send">;
-  const getDecimalsTx = getDecimals as Omit<Call<unknown>, "send">;
+    "psp22Metadata::tokenDecimals"
+  );
 
   const handleSend = () => {
     handleNewToken(address);
@@ -103,24 +94,24 @@ export default function AddTokenModal(props: Props) {
             />
             <TextField
               label="Token name"
-              value={pickDecoded(getNameTx.result) || ""}
-              InputLabelProps={{ shrink: !!pickDecoded(getNameTx.result) }}
+              value={getName?.value || ""}
+              InputLabelProps={{ shrink: !!getName?.ok }}
               fullWidth
               margin="normal"
               InputProps={{
-                endAdornment: address && !pickDecoded(getNameTx.result) && (
+                endAdornment: address && !getName?.value && (
                   <CircularProgress size={20} />
                 ),
               }}
             />
             <TextField
-              value={pickDecoded(getDecimalsTx.result) || ""}
-              InputLabelProps={{ shrink: !!pickDecoded(getDecimalsTx.result) }}
+              value={getDecimals?.value || ""}
+              InputLabelProps={{ shrink: !!getDecimals?.ok }}
               label="Decimals"
               autoFocus
               fullWidth
               InputProps={{
-                endAdornment: address && !pickDecoded(getDecimalsTx.result) && (
+                endAdornment: address && !getDecimals?.value && (
                   <CircularProgress size={20} />
                 ),
               }}
@@ -142,11 +133,7 @@ export default function AddTokenModal(props: Props) {
               <Button
                 onClick={handleSend}
                 variant="contained"
-                disabled={
-                  !address ||
-                  (!pickDecoded(getDecimalsTx.result) &&
-                    !pickDecoded(getNameTx.result))
-                }
+                disabled={!address || (!getName?.value && !getDecimals?.value)}
                 sx={{ width: 134 }}
               >
                 Add
