@@ -66,6 +66,10 @@ function useFetchAssets(address: string) {
   }>({ balance: {}, name: {} });
 
   useEffect(() => {
+    if (!address) {
+      setLoading(false);
+      return;
+    }
     const balance = (getValue as Omit<Call<unknown>, "send">).result;
     const name = (getName as Omit<Call<unknown>, "send">).result;
     if (
