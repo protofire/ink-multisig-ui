@@ -30,7 +30,7 @@ export function useUpdateAddressBook() {
     tempData[index] = element;
     addressBookRepository.saveAddress(tempData);
     document.dispatchEvent(
-      new CustomEvent(AddressBookEvents.onFetchAddressBook)
+      new CustomEvent(AddressBookEvents.addressBookUpdated)
     );
   };
 

@@ -1,3 +1,3 @@
 export enum AddressBookEvents {
-  onFetchAddressBook = "onFetchAddressBook",
+  addressBookUpdated = "addressBookUpdated ",
 }

@@ -5,7 +5,7 @@ import * as React from "react";
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
+import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 
 import { ModalAddressBook } from "../ModalAddressBook";
 import { AddressBookItem } from "./AddressBookItem";
@@ -18,7 +18,7 @@ import {
 
 export const AddressBookWidget = () => {
   const { network } = usePolkadotContext();
-  const { data } = useFetchAddressBook(network as string);
+  const { data } = useListAddressBook(network as string);
   const [displayModalWallet, setDisplayModalWallet] = React.useState(false);
 
   return (

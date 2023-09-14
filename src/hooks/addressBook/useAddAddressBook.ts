@@ -20,6 +20,8 @@ const ERROR_MESSAGES = {
   INVALID_ADDRESS: "This is not a valid address",
 };
 
+const DEFAULT_CHAIN = "rococo-contracts-testnet";
+
 const initialErrorState = {
   name: {
     isError: false,
@@ -34,7 +36,7 @@ const initialErrorState = {
 const initialFormState = (network: ChainId) => ({
   address: "",
   name: "",
-  networkId: network ?? "astar",
+  networkId: network ?? DEFAULT_CHAIN,
 });
 
 export const useAddAddressBook = () => {
@@ -124,7 +126,7 @@ export const useAddAddressBook = () => {
 
     addressBookRepository.addAddress(newRegister);
     document.dispatchEvent(
-      new CustomEvent(AddressBookEvents.onFetchAddressBook)
+      new CustomEvent(AddressBookEvents.addressBookUpdated)
     );
   };
 

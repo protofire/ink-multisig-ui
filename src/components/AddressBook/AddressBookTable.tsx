@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { getChain } from "@/config/chain";
 import { AddressBookInput } from "@/domain/AddressBooks";
 import { useDeleteAddressBook } from "@/hooks/addressBook/useDeleteAddressBook";
-import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
+import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 import { useUpdateAddressBook } from "@/hooks/addressBook/useUpdateAddressBook";
 import { ChainId } from "@/services/useink/types";
 
@@ -30,7 +30,7 @@ type Props = {
 };
 
 const AddressBookTable = ({ network }: Props) => {
-  const { data } = useFetchAddressBook(network);
+  const { data } = useListAddressBook(network);
   const { updateAddressBook, handleChange } = useUpdateAddressBook();
   const { deleteAddressBook } = useDeleteAddressBook();
   const [tempData, setTempData] = useState<AddressBookInput[]>([]);

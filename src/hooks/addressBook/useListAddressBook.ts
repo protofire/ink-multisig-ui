@@ -37,11 +37,11 @@ export function useListAddressBook(networkId: string | undefined) {
     if (!networkId || !addressBookRepository) return;
     fetchData(networkId);
 
-    document.addEventListener(AddressBookEvents.onFetchAddressBook, () => {
+    document.addEventListener(AddressBookEvents.addressBookUpdated, () => {
       fetchData(networkId);
     });
     return () => {
-      document.removeEventListener(AddressBookEvents.onFetchAddressBook, () => {
+      document.removeEventListener(AddressBookEvents.addressBookUpdated, () => {
         fetchData(networkId);
       });
     };

@@ -21,16 +21,17 @@ export function ModalAddressBook({ open, network, handleClose }: Props) {
     useAddAddressBook();
 
   useEffect(() => {
-    resetState(network as ChainId);
+    if (!network) return;
+    resetState(network);
   }, [open]);
 
   useEffect(() => {
-    document.addEventListener(AddressBookEvents.onFetchAddressBook, () => {
+    document.addEventListener(AddressBookEvents.addressBookUpdated, () => {
       handleClose();
     });
 
     return () => {
-      document.removeEventListener(AddressBookEvents.onFetchAddressBook, () => {
+      document.removeEventListener(AddressBookEvents.addressBookUpdated, () => {
         handleClose();
       });
     };
