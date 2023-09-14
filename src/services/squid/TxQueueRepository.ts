@@ -9,12 +9,8 @@ import {
 } from "@/domain/repositores/ITxQueueRepository";
 
 const FETCH_QUEUE = gql`
-  query MyQuery {
-    multisigs(
-      where: {
-        addressHex_eq: "0xcd56a6dbfdffb4207042d465c03c8570cb0d7ad0bcf10c6b4735c8710b348db5"
-      }
-    ) {
+  query MyQuery($address: String!) {
+    multisigs(where: { addressSS58_eq: $address }) {
       addressSS58
       transactions(orderBy: txId_ASC) {
         selector
@@ -25,8 +21,10 @@ const FETCH_QUEUE = gql`
         approvalCount
         status
         lastUpdatedTimestamp
+        value
       }
       addressHex
+      owners
     }
   }
 `;

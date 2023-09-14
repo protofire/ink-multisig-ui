@@ -3,7 +3,7 @@ export interface TxQueueData {
   addressHex: string;
   addressSS58: string;
   transactions: Tx[];
-  threshold: number;
+  owners: string[];
 }
 
 export interface Tx {
@@ -15,6 +15,7 @@ export interface Tx {
   approvalCount: number;
   status: string;
   lastUpdatedTimestamp: string;
+  value: number;
 }
 
 export interface MyQueryVariables {

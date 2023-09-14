@@ -13,6 +13,7 @@ import {
 
 interface Props {
   data: Tx | undefined;
+  threshold: number;
 }
 
 const txType = {
@@ -23,6 +24,10 @@ const txType = {
   EXECUTED_FAIL: {
     img: "/assets/arrow-send.svg",
     type: "Receive",
+  },
+  PENDING: {
+    img: "",
+    type: "Pending",
   },
 };
 
@@ -37,12 +42,13 @@ const formatDate = (inputDate: string) => {
   });
 };
 
-export const TxQueueWidgetItem = ({ data }: Props) => {
+export const TxQueueWidgetItem = ({ data, threshold }: Props) => {
   const type = data?.status as keyof typeof txType;
   const txData = txType[type];
-  const value = 300;
+  const value = data?.value;
   const token = "ROC";
   const aprovalCount = data?.approvalCount;
+  const address = data?.contractAddress;
   const date = formatDate(data?.lastUpdatedTimestamp as string);
 
   return (
@@ -58,12 +64,12 @@ export const TxQueueWidgetItem = ({ data }: Props) => {
         <StyledStack>
           <span>{txData.type}</span>
           <span>{date}</span>
-          <p>{truncateAddress(data?.proposer as string, 12)}</p>
+          <p>{truncateAddress(address, 12)}</p>
         </StyledStack>
         <StyledValueBox>
           {txData?.type === "Send" ? "-" : "+"} {`${value} ${token}`}
           <span>
-            {aprovalCount}/{aprovalCount}
+            {aprovalCount}/{threshold}
           </span>
         </StyledValueBox>
       </StyledBox>

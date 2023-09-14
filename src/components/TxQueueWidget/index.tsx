@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
+import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
 import {
   NoItems,
@@ -12,20 +12,24 @@ import {
 import { TxQueueWidgetItem } from "./TxQueueWidgetItem";
 
 export const TxQueueWidget = () => {
-  const { accountConnected } = usePolkadotContext();
-  const { data } = useListTxQueue(accountConnected?.address);
-  console.log("data", data);
+  const { xSignerSelected } = useGetXsignerSelected();
+  const { data } = useListTxQueue(xSignerSelected?.address);
+  const validator = !data || data.transactions.length === 0;
   return (
     <TxQueueWidgetStyled border={false}>
-      {!data ? (
+      {validator ? (
         <StyledList>
           <NoItems>There are no transactions in this account</NoItems>
         </StyledList>
       ) : (
         <>
           <StyledList>
-            {data?.map((tx, index) => (
-              <TxQueueWidgetItem data={tx} key={index} />
+            {data?.transactions.map((tx, index) => (
+              <TxQueueWidgetItem
+                data={tx}
+                key={index}
+                threshold={data.owners.length}
+              />
             ))}
           </StyledList>
           <StyledButton> View All </StyledButton>
