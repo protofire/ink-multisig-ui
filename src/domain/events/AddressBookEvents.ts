@@ -1,3 +1,3 @@
-export enum AddressBookEvents {
-  addressBookUpdated = "addressBookUpdated ",
+export const enum AddressBookEvents {
+  addressBookUpdated = "addressBookUpdated",
 }
