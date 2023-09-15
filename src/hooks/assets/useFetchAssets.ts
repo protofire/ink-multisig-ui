@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-
-import { useCall } from "../useCall";
+import { useCall } from "@/hooks/useCall";
 
 export type AssetType = "token" | "nft";
 

@@ -35,12 +35,17 @@ export default function AssetsTable() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <AddTokenModal
-        open={open}
-        handleOpen={setOpen}
-        handleNewToken={(address: string) => setAddress(address)}
-      />
-      <AssetTabs options={["Tokens", "NFTs"]} onChange={handleChange}>
+      <AssetTabs
+        options={["Tokens", "NFTs"]}
+        onChange={handleChange}
+        rightComponent={
+          <AddTokenModal
+            open={open}
+            handleOpen={setOpen}
+            handleNewToken={(address: string) => setAddress(address)}
+          />
+        }
+      >
         {!loading ? (
           <BasicTable columns={columns} rows={tableData} />
         ) : (

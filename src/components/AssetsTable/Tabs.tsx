@@ -13,6 +13,7 @@ type AssetTabsProps = {
   options: string[];
   children: React.ReactNode;
   onChange?: (newValue: number) => void;
+  rightComponent: React.ReactNode;
 };
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -48,7 +49,15 @@ export default function AssetTabs(props: AssetTabsProps) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box
+        display="flex"
+        flexDirection="row-reverse"
+        justifyContent="space-between"
+        sx={{ borderBottom: 1, borderColor: "divider" }}
+      >
+        <Box display="flex" alignItems="flex-end">
+          {props.rightComponent}
+        </Box>
         <Tabs value={value} onChange={handleChange}>
           {props.options.map((option, index) => (
             <Tab

@@ -50,12 +50,7 @@ export default function AddTokenModal(props: Props) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Button
-        sx={{ position: "absolute", right: "20px", zIndex: 1 }}
-        onClick={onOpen}
-      >
-        + Add token
-      </Button>
+      <Button onClick={onOpen}>+ Add token</Button>
       <Modal
         open={open}
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -117,7 +112,6 @@ export default function AddTokenModal(props: Props) {
               value={getDecimals?.value || ""}
               InputLabelProps={{ shrink: !!getDecimals?.ok }}
               label="Decimals"
-              autoFocus
               fullWidth
               InputProps={{
                 endAdornment: address && !getDecimals?.value && (
