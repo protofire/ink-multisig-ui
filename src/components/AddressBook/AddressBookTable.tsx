@@ -120,17 +120,19 @@ const AddressBookTable = ({ network }: Props) => {
                       onClick={() => updateAddressBook(addressBook.address)}
                     />
                   ) : (
-                    <SvgIconButton
-                      initialToolTipText="Edit"
-                      icon={Edit}
-                      onClick={() => editAddressBook(addressBook.address)}
-                    />
+                    <>
+                      <SvgIconButton
+                        initialToolTipText="Edit"
+                        icon={Edit}
+                        onClick={() => editAddressBook(addressBook.address)}
+                      />
+                      <SvgIconButton
+                        initialToolTipText="Delete"
+                        icon={Delete}
+                        onClick={() => deleteAddressBook(addressBook.address)}
+                      />
+                    </>
                   )}
-                  <SvgIconButton
-                    initialToolTipText="Delete"
-                    icon={Delete}
-                    onClick={() => deleteAddressBook(addressBook.address)}
-                  />
                 </TableCell>
               </TableRow>
             );
