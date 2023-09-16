@@ -24,7 +24,7 @@ export const TxQueueWidget = () => {
       ) : (
         <>
           <StyledList>
-            {data?.transactions.map((tx, index) => (
+            {data.transactions.map((tx, index) => (
               <TxQueueWidgetItem
                 data={tx}
                 key={index}

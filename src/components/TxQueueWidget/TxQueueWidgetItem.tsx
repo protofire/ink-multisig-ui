@@ -1,6 +1,7 @@
 import Image from "next/image";
 import * as React from "react";
 
+import { TX_TYPE } from "@/config/images";
 import { Tx } from "@/domain/repositores/ITxQueueRepository";
 import { truncateAddress } from "@/utils/formatString";
 
@@ -12,21 +13,21 @@ import {
 } from "./styled";
 
 interface Props {
-  data: Tx | undefined;
+  data: Tx;
   threshold: number;
 }
 
 const txType = {
   EXECUTED_SUCCESS: {
-    img: "/assets/arrow-receive.svg",
+    img: TX_TYPE.SEND,
     type: "Send",
   },
   EXECUTED_FAIL: {
-    img: "/assets/arrow-send.svg",
+    img: TX_TYPE.RECEIVE,
     type: "Receive",
   },
   PENDING: {
-    img: "",
+    img: TX_TYPE.PENDING,
     type: "Pending",
   },
 };
@@ -43,13 +44,13 @@ const formatDate = (inputDate: string) => {
 };
 
 export const TxQueueWidgetItem = ({ data, threshold }: Props) => {
-  const type = data?.status as keyof typeof txType;
+  const type = data.status as keyof typeof txType;
   const txData = txType[type];
-  const value = data?.value;
+  const value = data.value;
   const token = "ROC";
-  const aprovalCount = data?.approvalCount;
-  const address = data?.contractAddress;
-  const date = formatDate(data?.lastUpdatedTimestamp as string);
+  const aprovalCount = data.approvalCount;
+  const address = data.contractAddress;
+  const date = formatDate(data.lastUpdatedTimestamp as string);
 
   return (
     <ListItemtyled>
