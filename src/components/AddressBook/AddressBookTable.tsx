@@ -114,7 +114,7 @@ const AddressBookTable = ({ network }: Props) => {
                   <NetworkBadge
                     logo={chain.logo.src}
                     description={chain.logo.alt}
-                    logoSize={{ width: 14, height: 14 }}
+                    logoSize={{ width: 16, height: 16 }}
                     name={chain.name}
                     showTooltip={false}
                   ></NetworkBadge>
