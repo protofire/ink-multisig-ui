@@ -1,3 +1,3 @@
-export enum AddressBookEvents {
-  onFetchAddressBook = "onFetchAddressBook",
+export const enum AddressBookEvents {
+  addressBookUpdated = "addressBookUpdated",
 }

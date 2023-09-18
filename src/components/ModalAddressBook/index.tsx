@@ -17,20 +17,21 @@ type Props = {
 };
 
 export function ModalAddressBook({ open, network, handleClose }: Props) {
-  const { handleChangeInput, handleClick, error, resetErrorState } =
+  const { handleChangeInput, handleClick, error, resetState } =
     useAddAddressBook();
 
   useEffect(() => {
-    resetErrorState();
+    if (!network) return;
+    resetState(network);
   }, [open]);
 
   useEffect(() => {
-    document.addEventListener(AddressBookEvents.onFetchAddressBook, () => {
+    document.addEventListener(AddressBookEvents.addressBookUpdated, () => {
       handleClose();
     });
 
     return () => {
-      document.removeEventListener(AddressBookEvents.onFetchAddressBook, () => {
+      document.removeEventListener(AddressBookEvents.addressBookUpdated, () => {
         handleClose();
       });
     };
@@ -60,12 +61,14 @@ export function ModalAddressBook({ open, network, handleClose }: Props) {
           id="name"
           label="Name"
           name="name"
+          error={error.name.isError}
+          helperText={error.name.helperText}
           placeholder={"magnificent-astar"}
           onChange={handleChangeInput}
         />
         <TextField
-          error={error.isError}
-          helperText={error.helperText}
+          error={error.address.isError}
+          helperText={error.address.helperText}
           sx={{
             marginTop: "2rem",
           }}

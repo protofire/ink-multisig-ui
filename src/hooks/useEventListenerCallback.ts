@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
 
 import { IS_DEVELOPMENT } from "@/config/app";
+import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
 import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
 
 type EventCallback = () => void;
-type EventNames = keyof typeof WalletConnectionEvents;
+type EventNames =
+  | keyof typeof AddressBookEvents
+  | keyof typeof WalletConnectionEvents;
 
 export function useEventListenerCallback(
   events: EventNames[] | EventNames, // accept any array of strings as event names

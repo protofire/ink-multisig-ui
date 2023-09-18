@@ -1,7 +1,7 @@
 import { Box, ButtonBase, Typography } from "@mui/material";
 import React from "react";
 
-import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
+import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 import { ChainId } from "@/services/useink/types";
 
 import { ModalAddressBook } from "../ModalAddressBook";
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const AddressBookContainer = ({ network }: Props) => {
-  const { data } = useFetchAddressBook(network);
+  const { data } = useListAddressBook(network);
   const [displayModalWallet, setDisplayModalWallet] = React.useState(false);
 
   return (

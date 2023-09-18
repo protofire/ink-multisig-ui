@@ -1,4 +1,4 @@
-import { Delete, Edit, Save } from "@mui/icons-material";
+import { Delete, Edit, TaskAlt } from "@mui/icons-material";
 import {
   Table,
   TableBody,
@@ -6,13 +6,14 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 import { getChain } from "@/config/chain";
 import { AddressBookInput } from "@/domain/AddressBooks";
 import { useDeleteAddressBook } from "@/hooks/addressBook/useDeleteAddressBook";
-import { useFetchAddressBook } from "@/hooks/addressBook/useFetchAddressBook";
+import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 import { useUpdateAddressBook } from "@/hooks/addressBook/useUpdateAddressBook";
 import { ChainId } from "@/services/useink/types";
 
@@ -30,7 +31,7 @@ type Props = {
 };
 
 const AddressBookTable = ({ network }: Props) => {
-  const { data } = useFetchAddressBook(network);
+  const { data } = useListAddressBook(network);
   const { updateAddressBook, handleChange } = useUpdateAddressBook();
   const { deleteAddressBook } = useDeleteAddressBook();
   const [tempData, setTempData] = useState<AddressBookInput[]>([]);
@@ -58,9 +59,9 @@ const AddressBookTable = ({ network }: Props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Network</TableCell>
+            <TableCell>NAME</TableCell>
+            <TableCell>ADDRESS</TableCell>
+            <TableCell>NETWORK</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -89,14 +90,21 @@ const AddressBookTable = ({ network }: Props) => {
                         label="Required"
                         onChange={(e) => handleChange(e)}
                         defaultValue={addressBook.address}
+                        sx={{ minWidth: "33rem" }}
                       />
                     </TableCell>
                   </>
                 ) : (
                   <>
-                    <TableCell>{addressBook.name}</TableCell>
                     <TableCell>
-                      {addressBook.address}{" "}
+                      <Typography variant="body1">
+                        {addressBook.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body1" component="span">
+                        {addressBook.address}
+                      </Typography>{" "}
                       <CopyButton text={addressBook?.address as string} />
                       <OpenNewTabButton text={mockURL} />
                     </TableCell>
@@ -106,7 +114,7 @@ const AddressBookTable = ({ network }: Props) => {
                   <NetworkBadge
                     logo={chain.logo.src}
                     description={chain.logo.alt}
-                    logoSize={{ width: 14, height: 14 }}
+                    logoSize={{ width: 16, height: 16 }}
                     name={chain.name}
                     showTooltip={false}
                   ></NetworkBadge>
@@ -115,21 +123,23 @@ const AddressBookTable = ({ network }: Props) => {
                   {addressBook.isEditable ? (
                     <SvgIconButton
                       initialToolTipText="Save"
-                      icon={Save}
+                      icon={TaskAlt}
                       onClick={() => updateAddressBook(addressBook.address)}
                     />
                   ) : (
-                    <SvgIconButton
-                      initialToolTipText="Edit"
-                      icon={Edit}
-                      onClick={() => editAddressBook(addressBook.address)}
-                    />
+                    <>
+                      <SvgIconButton
+                        initialToolTipText="Edit"
+                        icon={Edit}
+                        onClick={() => editAddressBook(addressBook.address)}
+                      />
+                      <SvgIconButton
+                        initialToolTipText="Delete"
+                        icon={Delete}
+                        onClick={() => deleteAddressBook(addressBook.address)}
+                      />
+                    </>
                   )}
-                  <SvgIconButton
-                    initialToolTipText="Delete"
-                    icon={Delete}
-                    onClick={() => deleteAddressBook(addressBook.address)}
-                  />
                 </TableCell>
               </TableRow>
             );
