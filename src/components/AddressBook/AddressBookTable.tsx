@@ -59,9 +59,9 @@ const AddressBookTable = ({ network }: Props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Network</TableCell>
+            <TableCell>NAME</TableCell>
+            <TableCell>ADDRESS</TableCell>
+            <TableCell>NETWORK</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
