@@ -1,4 +1,4 @@
-import { Delete, Edit, Save } from "@mui/icons-material";
+import { Delete, Edit, TaskAlt } from "@mui/icons-material";
 import {
   Table,
   TableBody,
@@ -123,7 +123,7 @@ const AddressBookTable = ({ network }: Props) => {
                   {addressBook.isEditable ? (
                     <SvgIconButton
                       initialToolTipText="Save"
-                      icon={Save}
+                      icon={TaskAlt}
                       onClick={() => updateAddressBook(addressBook.address)}
                     />
                   ) : (
