@@ -1,24 +1,27 @@
 import { useEffect, useState } from "react";
 
-import { useLocalDbContext } from "@/context/uselocalDbContext";
-import { TransactionQueue } from "@/domain/TransactionQueue";
+import { TxQueueData } from "@/domain/repositores/ITxQueueRepository";
+import { squidClient } from "@/pages/_app";
+import { TxQueueRepository } from "@/services/squid/TxQueueRepository";
 import { customReportError } from "@/utils/error";
 
-export function useTransactionQueue(address: string | undefined) {
-  const [data, setData] = useState<TransactionQueue[] | null>(null);
+const repository = new TxQueueRepository(squidClient);
+
+export function useListTxQueue(address: string | undefined) {
+  const [data, setData] = useState<TxQueueData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { transactionQueueRepository } = useLocalDbContext();
 
   useEffect(() => {
-    if (!address || !transactionQueueRepository) return;
-
     const fetchData = async () => {
+      if (!address) return;
       setIsLoading(true);
       setError(null);
       try {
-        const result = transactionQueueRepository.getQueue(address);
-        setData(result);
+        const result = await repository.getQueue(address);
+        if (result) {
+          setData(result);
+        }
       } catch (err) {
         const errorFormated = customReportError(err);
         setError(errorFormated);
@@ -28,7 +31,7 @@ export function useTransactionQueue(address: string | undefined) {
     };
 
     fetchData();
-  }, [address, transactionQueueRepository]);
+  }, [address]);
 
   return { data, isLoading, error };
 }

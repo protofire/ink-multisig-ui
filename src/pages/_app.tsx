@@ -34,7 +34,7 @@ Router.events.on("routeChangeComplete", () => {
 });
 
 export const squidClient = new ApolloClient({
-  uri: "https://squid.subsquid.io/ink-multisig-shibuya/v/v2/graphql",
+  uri: "https://squid.subsquid.io/ink-multisig-shibuya/v/v3/graphql",
   cache: new InMemoryCache(),
 });
 
