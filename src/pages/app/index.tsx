@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AddressBookWidget } from "@/components/AddressBookWidget";
 import { SummaryCard } from "@/components/SummaryCard";
 import { XsignerBalanceText } from "@/components/SummaryCard/XsignerBalanceText";
-import { TransactionQueueWidget } from "@/components/TransactionQueueWidget";
+import { TxQueueWidget } from "@/components/TxQueueWidget";
 import { ROUTES } from "@/config/routes";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
@@ -69,7 +69,7 @@ export default function AppDashboard() {
         </Grid>
 
         <Grid item xs={12} sm={12} md={6}>
-          <TransactionQueueWidget />
+          <TxQueueWidget />
         </Grid>
       </Grid>
     </>
