@@ -73,7 +73,7 @@ function WalletImportStep({
   }, [data, error, handleThreshold, handleWalletName, handleOwners, step]);
 
   return (
-    <Box mt={3} display="flex" gap={2.25} flexDirection="column">
+    <Box mt={3} display="flex" gap={1} flexDirection="column">
       <Box display="flex" alignItems="center" gap={1.25}>
         <Typography variant="body1" component="p">
           You are importing from
@@ -107,7 +107,7 @@ function WalletImportStep({
         fullWidth
         margin="normal"
       />
-      <Box mt={5}>
+      <Box mt={4}>
         <Typography
           variant="caption"
           component="p"
