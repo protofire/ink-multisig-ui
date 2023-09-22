@@ -3,7 +3,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Box, Button, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useCallback } from "react";
 
 import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
@@ -11,6 +11,24 @@ import { ROUTES } from "@/config/routes";
 
 export default function WelcomePage() {
   const theme = useTheme();
+
+  const insertToDb = useCallback(async () => {
+    const res = await fetch("/api/db", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tx_hash: "0x12345",
+        method_name: "method_name",
+        args: "0x123123sdfsdf",
+        creationTimestamp: "2023-09-21T10:00:00Z",
+        inUse: false,
+      }),
+    });
+    console.log(res);
+  }, []);
+
   return (
     <MainContentCard
       stylesContainer={{
@@ -76,6 +94,9 @@ export default function WelcomePage() {
             </Button>
           </Link>
         </Box>
+        <Button variant="outlined" onClick={() => insertToDb()}>
+          Insert to DB
+        </Button>
       </Box>
     </MainContentCard>
   );
