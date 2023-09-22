@@ -46,11 +46,9 @@ export function XsignerAccountInfoUI({
             flexDirection="column"
             alignItems="center"
           >
-            <Tooltip title="Copy address" placement="top" arrow>
-              <Avatar>
-                <Identicon value={address} size={32} theme="beachball" />
-              </Avatar>
-            </Tooltip>
+            <Avatar>
+              <Identicon value={address} size={32} theme="beachball" />
+            </Avatar>
             <Tooltip title="Threshold" arrow>
               <Box display="flex" flexDirection="column">
                 <Typography variant="caption" color="primary">
