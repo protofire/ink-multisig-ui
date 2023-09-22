@@ -1,4 +1,5 @@
 import { ArrayOneOrMore } from "@/domain/utilityTsTypes";
+// Astar and Shiden will be disabled until we deploy the contract for this parachanins
 // import { Astar, ShidenKusama } from "@/services/useink/chains/chaindata";
 import {
   RococoContractsTestnet,
