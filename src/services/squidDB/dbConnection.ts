@@ -1,11 +1,11 @@
 import { Pool } from "pg";
 
 const pool = new Pool({
-  user: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASS || "postgres",
-  host: process.env.DB_HOST || "localhost",
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 23798,
-  database: process.env.DB_NAME || "squid",
+  user: process.env.NEXT_DB_USER || "postgres",
+  password: process.env.NEXT_DB_PASS || "postgres",
+  host: process.env.NEXT_DB_HOST || "localhost",
+  port: process.env.NEXT_DB_PORT ? parseInt(process.env.NEXT_DB_PORT) : 23798,
+  database: process.env.NEXT_DB_NAME || "squid",
 });
 
 export async function insertTxData(
