@@ -7,6 +7,7 @@ import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useModalBehaviour } from "@/hooks/useModalBehaviour";
 import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
+import CopyButton from "../common/CopyButton";
 import { SelectXsignerItems } from "./SelectXsignerItems";
 import { AccountInfoWrapper } from "./styled";
 import { SwitchUserAccount } from "./SwitchUserAccount";
@@ -45,9 +46,11 @@ export function XsignerAccountInfoUI({
             flexDirection="column"
             alignItems="center"
           >
-            <Avatar>
-              <Identicon value={address} size={32} theme="beachball" />
-            </Avatar>
+            <Tooltip title="Copy address" placement="top" arrow>
+              <Avatar>
+                <Identicon value={address} size={32} theme="beachball" />
+              </Avatar>
+            </Tooltip>
             <Tooltip title="Threshold" arrow>
               <Box display="flex" flexDirection="column">
                 <Typography variant="caption" color="primary">
@@ -72,10 +75,8 @@ export function XsignerAccountInfoUI({
             </Tooltip>
             <Typography color="white" variant="caption">
               {truncateAddress(address, 4)}
-              {/* TODO 
-            <ContentCopyRoundedIcon fontSize="small" /> */}
             </Typography>
-
+            <CopyButton text={address as string} />
             {/* TODO 
           <Typography color="white" fontWeight="bold">
             124,09 AST

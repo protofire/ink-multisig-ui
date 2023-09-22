@@ -13,6 +13,8 @@ import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { UseModalBehaviour } from "@/hooks/useModalBehaviour";
 import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
+import CopyButton from "../common/CopyButton";
+
 interface Props extends Partial<UseModalBehaviour> {
   xsigners: SignatoriesAccount[];
 }
@@ -71,6 +73,7 @@ export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
               <Typography color="white" variant="caption">
                 {truncateAddress(xsigner.address, 4)}
               </Typography>
+              <CopyButton text={xsigner.address as string} />
             </Box>
             <Box>
               {/* 
