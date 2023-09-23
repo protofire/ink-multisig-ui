@@ -11,7 +11,7 @@ type Props = {
   setField: (field: string, value: string | number) => void;
   setErrors: (errors: string[]) => void;
   errors: string[];
-  amount: number;
+  amount: string;
   to: string;
 };
 
@@ -58,7 +58,7 @@ export const ReviewTokens = (props: Props) => {
                 fontWeight="bold"
                 variant="body1"
               >
-                {amount ?? 0} SBY
+                {amount}
               </Typography>
             </Typography>
           </FlexCenterBox>

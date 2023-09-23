@@ -12,14 +12,14 @@ import { useEffect, useState } from "react";
 
 import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useGetBalance, XsignerBalance } from "@/hooks/useGetBalance";
-import { isValidAddress } from "@/utils/blockchain";
+import { useGetBalance } from "@/hooks/useGetBalance";
+import { isValidAddress, splitTokenAmount } from "@/utils/blockchain";
 
 type Props = {
   setField: (field: string, value: string | number) => void;
   setErrors: (errors: string[]) => void;
   errors: string[];
-  amount: number;
+  amount: string;
   to: string;
 };
 
@@ -28,18 +28,21 @@ export const SendTokens = (props: Props) => {
   const { accountConnected, network } = usePolkadotContext();
 
   const { balance } = useGetBalance(accountConnected?.address);
-  const [token, setToken] = useState<string>(balance?.freeBalance ?? "");
+  const [tokenBalance, setTokenBalance] = useState<string>(
+    balance?.freeBalance ?? ""
+  );
   const chain = getChain(network);
-
-  const getBalance = (balance: XsignerBalance | undefined) => {
-    if (!balance?.freeBalance) return 0;
-    return Number(balance.freeBalance.replace(/\D/g, ""));
-  };
+  const formattedAmount = splitTokenAmount(amount)?.amount ?? 0;
 
   const handleMax = () => {
-    const value = getBalance(balance);
-    setField("amount", value);
+    setField("amount", balance?.freeBalance ?? "");
   };
+
+  const handleNewAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const token = splitTokenAmount(balance?.freeBalance);
+    setField("amount", `${e.target.value} ${token?.tokenSymbol}`);
+  };
+
   useEffect(() => {
     if (!to) {
       setErrors(["Recipient address is required.", ...errors.splice(1)]);
@@ -54,12 +57,12 @@ export const SendTokens = (props: Props) => {
   }, [to, setErrors]);
 
   useEffect(() => {
-    if (JSON.stringify(balance?.freeBalance) === JSON.stringify(token)) return;
+    if (balance?.freeBalance === tokenBalance) return;
 
-    setToken(balance?.freeBalance ?? "");
+    setTokenBalance(balance?.freeBalance ?? "");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(balance?.freeBalance), setToken]);
+  }, [balance?.freeBalance, setTokenBalance]);
   return (
     <Box
       display="flex"
@@ -89,8 +92,8 @@ export const SendTokens = (props: Props) => {
       <Box display="flex" alignItems="center" gap={4}>
         <TextField
           label="Amount *"
-          onChange={(e) => setField("amount", e.target.value)}
-          value={amount ?? 0}
+          onChange={handleNewAmount}
+          value={formattedAmount}
           margin="normal"
           error={!!errors[1]}
           helperText={errors[1]}
@@ -109,9 +112,9 @@ export const SendTokens = (props: Props) => {
         />
         <Select
           label=""
-          value={token}
+          value={tokenBalance}
           defaultChecked
-          onChange={(event) => setToken(event.target.value)}
+          onChange={(event) => setTokenBalance(event.target.value)}
         >
           <MenuItem value={balance?.freeBalance} selected>
             <Box display="flex" alignItems="center" gap={1}>

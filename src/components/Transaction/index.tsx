@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
+import { splitTokenAmount } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
@@ -12,11 +13,11 @@ import { steps } from "./steps";
 
 type TxData = {
   to: string;
-  amount: number;
+  amount: string;
   token: string;
 };
 
-export const Transaction = ({ action }: { action: string }) => {
+export const Transaction = () => {
   const theme = useTheme();
 
   const [txData, setTxData] = useState<TxData>();
@@ -40,13 +41,14 @@ export const Transaction = ({ action }: { action: string }) => {
 
   const handleNext = async () => {
     if (isLastStep) {
+      const amount = Number(splitTokenAmount(txData?.amount)?.amount ?? 0);
       if (!txData?.to || !accountConnected?.address) return;
-      const transfer = api.apiPromise?.tx.balances.transfer(
-        txData.to,
-        txData.amount ?? 0
-      );
       try {
         setIsLoading(true);
+        const transfer = api.apiPromise?.tx.balances.transfer(
+          txData.to,
+          amount
+        );
         await transfer?.signAndSend(accountConnected?.address, {
           signer: accountConnected?.signer,
         });
