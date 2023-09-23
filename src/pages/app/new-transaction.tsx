@@ -96,7 +96,7 @@ export default function NewTransaction() {
           </Box>
         </>
       )}
-      {actionSelected && <Transaction action={actionSelected} />}
+      {actionSelected && <Transaction />}
     </Box>
   );
 }
