@@ -9,4 +9,5 @@ export const TX_TYPE = {
   SEND: "/assets/arrow-receive.svg",
   RECEIVE: "/assets/arrow-send.svg",
   PENDING: "",
+  CONTRACT: "/assets/arrow-outward.svg",
 };
