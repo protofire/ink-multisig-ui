@@ -18,8 +18,11 @@ export const MainContentCard: React.FC<MyCardProps> = ({
 }) => {
   return (
     <BoxContentCentered
-      m={7}
-      sx={{ maxWidth: "100%", minHeight: "calc(100vh - 30rem)", ...sx }}
+      sx={{
+        maxWidth: "100%",
+        margin: { xs: 1, sm: 2, md: 3, lg: 4, xl: 7 },
+        ...sx,
+      }}
     >
       <BoxContentCentered {...styles}>
         <Box>

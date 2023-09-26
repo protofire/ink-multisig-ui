@@ -67,7 +67,7 @@ const CopyButton = ({
           <SvgIcon
             component={ContentCopyIcon}
             inheritViewBox
-            fontSize="small"
+            sx={{ fontSize: "1rem" }}
           />
         )}
       </IconButton>

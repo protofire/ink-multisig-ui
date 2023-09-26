@@ -85,7 +85,7 @@ function BaseStepper({
   const renderFooter = () => {
     if (!isExecuting) {
       return (
-        <StepperFooter mt={4}>
+        <StepperFooter mt={2}>
           <FooterButton width={134} variant="outlined" onClick={handleBack}>
             {activeStep.creation === steps.creation.length - 1 ||
             activeStep.creation === 0 ? (

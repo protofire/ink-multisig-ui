@@ -33,7 +33,7 @@ function ReviewStep({
         You&apos;re about to import a XSigners Account.
       </Typography>
       <Box display="flex" justifyContent="center">
-        <StyledBox mt={3} mb={1} gap={4}>
+        <StyledBox mt={3} mb={1} gap={2}>
           <FlexCenterBox>
             <Typography variant="h6" width={200}>
               Network
@@ -41,7 +41,7 @@ function ReviewStep({
             <NetworkBadge
               logo={logo.src}
               description={logo.alt}
-              logoSize={{ width: 14, height: 14 }}
+              logoSize={{ width: 20, height: 20 }}
               name={networkName}
               showTooltip={false}
             />

@@ -57,7 +57,7 @@ export const ModalStyled = styled(Box)<BoxProps>(() => ({
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 680,
-  height: 400,
+  minHeight: 400,
   textAlign: "justify",
   backgroundColor: "rgba(0, 0, 0, 1)",
   border: "2px solid #000",
