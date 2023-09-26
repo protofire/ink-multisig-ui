@@ -123,7 +123,7 @@ function OwnersStep({
         </Button>
       </StyledBox>
       <StyledBox>
-        <Box mb={2}>
+        <Box mb={1}>
           <Typography
             fontWeight="bold"
             display="flex"

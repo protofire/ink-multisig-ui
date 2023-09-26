@@ -15,7 +15,11 @@ export default function WelcomePage() {
     <MainContentCard
       stylesContainer={{
         alignItems: "center",
-        sx: { backgroundColor: theme.palette.background.paper },
+        sx: {
+          backgroundColor: theme.palette.background.paper,
+          margin: { xs: 1, sm: 2, md: 3, lg: 4, xl: 8 },
+          padding: { xs: 1, sm: 2, md: 3, lg: 4, xl: 8 },
+        },
       }}
     >
       <Typography variant="h1" color="white">

@@ -11,7 +11,7 @@ export function useTxDispatchNotification({
   tx,
   title,
 }: UseTxDispatchNotification) {
-  const msgPrefix = title ? `${title} tx` : "Tx";
+  const msgPrefix = title ? `${title} transaction` : "Transaction";
   const [idToast, setIdToast] = useState<string | number>(0);
 
   useEffect(() => {

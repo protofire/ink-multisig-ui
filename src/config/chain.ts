@@ -1,5 +1,6 @@
 import { ArrayOneOrMore } from "@/domain/utilityTsTypes";
-import { Astar, ShidenKusama } from "@/services/useink/chains/chaindata";
+// Astar and Shiden will be disabled until we deploy the contract for this parachanins
+// import { Astar, ShidenKusama } from "@/services/useink/chains/chaindata";
 import {
   RococoContractsTestnet,
   ShibuyaTestnet,
@@ -23,8 +24,8 @@ export type ChainExtended = Chain & {
 export const CHAINS: ArrayOneOrMore<Chain> = [
   RococoContractsTestnet,
   ShibuyaTestnet,
-  Astar,
-  ShidenKusama,
+  // Astar,
+  // ShidenKusama,
 ];
 
 export const CHAINS_ALLOWED: ChainExtended[] = CHAINS.map((chain) => {
