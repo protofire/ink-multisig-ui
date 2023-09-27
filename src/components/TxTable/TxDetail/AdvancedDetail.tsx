@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@mui/material";
 
-import { DEFAULT_COL_WIDTH, StyledTypography } from "./styled";
+import { DEFAULT_COL_WIDTH } from "./styled";
 
 type Props = { data: undefined };
 
@@ -44,7 +44,7 @@ export const AdvancedDetail = (data: Props) => (
     {advancedDetails.map((detail) => (
       <>
         <Grid item {...DEFAULT_COL_WIDTH.name}>
-          <StyledTypography>{detail.name}</StyledTypography>
+          <Typography color="#837376">{detail.name}</Typography>
         </Grid>
         <Grid item {...DEFAULT_COL_WIDTH.value}>
           <Typography>{detail.value}</Typography>

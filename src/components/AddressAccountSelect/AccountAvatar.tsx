@@ -16,8 +16,8 @@ export function AccountAvatar({ address, name, truncateLenght = 4 }: Props) {
         <Identicon value={address} size={32} theme="beachball" />
       </Avatar>
       <Box marginLeft={1}>
-        {name !== undefined ? <span>{shortNameLonger(name)}</span> : <></>}
-        <Typography color={name !== undefined ? "#636669" : "white"}>
+        {name === undefined ? <></> : <span>{shortNameLonger(name)}</span>}
+        <Typography color={name === undefined ? "white" : "#636669"}>
           {truncateAddress(address, truncateLenght)}
         </Typography>
       </Box>

@@ -1,8 +1,8 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 
 import { truncateAddress } from "@/utils/formatString";
 
-import { DEFAULT_COL_WIDTH, StyledTypography } from "./styled";
+import { CustomGridItem } from "./styled";
 
 type ReceivedDetailProps = { address: string };
 
@@ -18,30 +18,14 @@ export const ReceivedDetail = (data: ReceivedDetailProps) => {
   return (
     <>
       <Grid container>
-        <Grid item {...DEFAULT_COL_WIDTH.name}>
-          <StyledTypography>Transaction hash:</StyledTypography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.value}>
-          <Typography>{dumpData.txHash}</Typography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.name}>
-          <StyledTypography>safeTxHash: </StyledTypography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.value}>
-          <Typography>{dumpData.safeTxHahs}</Typography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.name}>
-          <StyledTypography>Created: </StyledTypography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.value}>
-          <Typography>{dumpData.created}</Typography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.name}>
-          <StyledTypography>Executed: </StyledTypography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.value}>
-          <Typography>{dumpData.executed}</Typography>
-        </Grid>
+        <CustomGridItem colType="name">Transaction hash</CustomGridItem>
+        <CustomGridItem colType="value">{dumpData.txHash}</CustomGridItem>
+        <CustomGridItem colType="name">safeTxHash:</CustomGridItem>
+        <CustomGridItem colType="value">{dumpData.safeTxHahs}</CustomGridItem>
+        <CustomGridItem colType="name">Created:</CustomGridItem>
+        <CustomGridItem colType="value">{dumpData.created}</CustomGridItem>
+        <CustomGridItem colType="name">Executed:</CustomGridItem>
+        <CustomGridItem colType="value">{dumpData.executed}</CustomGridItem>
       </Grid>
     </>
   );

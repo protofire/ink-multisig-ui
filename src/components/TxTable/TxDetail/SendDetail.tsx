@@ -1,10 +1,10 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
 import CopyButton from "@/components/common/CopyButton";
 import OpenNewTabButton from "@/components/common/OpenNewTabButton";
 
-import { DEFAULT_COL_WIDTH, StyledTypography } from "./styled";
+import { CustomGridItem } from "./styled";
 
 type Props = {
   address: string;
@@ -16,18 +16,13 @@ export const SendDetail = (data: Props) => {
   const { address, name, mockUrl } = data;
   return (
     <Grid container>
-      <Grid item {...DEFAULT_COL_WIDTH.name}>
-        <StyledTypography>Created at:</StyledTypography>
-      </Grid>
-      <Grid item {...DEFAULT_COL_WIDTH.value}>
-        <Typography>Sep 10, 2023 - 12:53:00 PM</Typography>
-      </Grid>
-      <Grid item {...DEFAULT_COL_WIDTH.name}>
-        <StyledTypography>Created by: </StyledTypography>
-      </Grid>
-      <Grid
-        item
-        {...DEFAULT_COL_WIDTH.value}
+      <CustomGridItem colType="name">Created at:</CustomGridItem>
+      <CustomGridItem colType="value">
+        Sep 10, 2023 - 12:53:00 PM
+      </CustomGridItem>
+      <CustomGridItem colType="name">Created by:</CustomGridItem>
+      <CustomGridItem
+        colType="value"
         sx={{ margin: "22px 0px", display: "flex" }}
       >
         <AccountAvatar
@@ -39,13 +34,9 @@ export const SendDetail = (data: Props) => {
           <CopyButton text={address} />
           <OpenNewTabButton text={mockUrl} />
         </Box>
-      </Grid>
-      <Grid item {...DEFAULT_COL_WIDTH.name}>
-        <StyledTypography>Transaction hash:</StyledTypography>
-      </Grid>
-      <Grid item {...DEFAULT_COL_WIDTH.value}>
-        <Typography>BFGSBWmxadVYDrEG7zHIJ</Typography>
-      </Grid>
+      </CustomGridItem>
+      <CustomGridItem colType="name">Transaction hash:</CustomGridItem>
+      <CustomGridItem colType="value">BFGSBWmxadVYDrEG7zHIJ</CustomGridItem>
     </Grid>
   );
 };

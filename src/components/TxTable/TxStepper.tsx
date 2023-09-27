@@ -5,6 +5,7 @@ import { Button, Link } from "@mui/material";
 import Box from "@mui/material/Box";
 import Step from "@mui/material/Step";
 import StepContent from "@mui/material/StepContent";
+import { StepIconProps } from "@mui/material/StepIcon";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
@@ -30,6 +31,14 @@ const CircleStepIconRoot = styled("div")(() => ({
   },
 }));
 
+const ColorlibStepIconRoot = styled("div")<{
+  ownerState: { completed?: boolean; active?: boolean };
+}>(() => ({
+  zIndex: 1,
+  marginTop: "5px",
+  color: "#ADD500",
+}));
+
 const CircleStepIcon = (isSigned: boolean) => {
   return (
     <CircleStepIconRoot>
@@ -41,6 +50,24 @@ const CircleStepIcon = (isSigned: boolean) => {
     </CircleStepIconRoot>
   );
 };
+
+function ColorlibStepIcon(props: StepIconProps) {
+  const { active, completed, className } = props;
+
+  const icons: { [index: string]: React.ReactElement } = {
+    1: <AddCircleIcon />,
+    2: <CheckCircleIcon />,
+  };
+
+  return (
+    <ColorlibStepIconRoot
+      ownerState={{ completed, active }}
+      className={className}
+    >
+      {icons[String(props.icon)]}
+    </ColorlibStepIconRoot>
+  );
+}
 
 const owners = [
   {
@@ -61,17 +88,16 @@ const owners = [
 ];
 
 export default function TxStepper() {
-  const [activeStep, setActiveStep] = React.useState(1);
   const [showOwners, setShowOwners] = React.useState(true);
 
   return (
     <Box
       sx={{ maxWidth: 400, padding: "20px", borderLeft: "3px solid #120D0E" }}
     >
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper orientation="vertical">
         <Step>
           <StepLabel
-            StepIconComponent={AddCircleIcon}
+            StepIconComponent={ColorlibStepIcon}
             sx={{
               color: "#ADD500",
               fontSize: "1.5rem",
@@ -82,7 +108,7 @@ export default function TxStepper() {
         </Step>
         <Step>
           <StepLabel
-            StepIconComponent={CheckCircleIcon}
+            StepIconComponent={ColorlibStepIcon}
             sx={{
               color: "#ADD500",
               display: "flex",
@@ -96,7 +122,7 @@ export default function TxStepper() {
         </Step>
         {showOwners ? (
           owners.map((owner, index) => (
-            <Step key={index} active={true}>
+            <Step key={index}>
               <StepLabel
                 StepIconComponent={() => CircleStepIcon(owner.isSigned)}
               >

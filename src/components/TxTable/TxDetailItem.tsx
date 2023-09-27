@@ -57,8 +57,6 @@ export const TxDetailItem = ({ data, txData, txType }: Props) => {
             },
           }}
           container
-          spacing={3}
-          mt={2}
         >
           <StyledGrid item xs={1} sm={1} md={1}>
             <Typography>{data.nonce}</Typography>
@@ -93,7 +91,7 @@ export const TxDetailItem = ({ data, txData, txType }: Props) => {
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
             <Typography>
-              {`${data.status == "EXECUTED_SUCCESS" ? "" : "-"}  ${
+              {`${data.status === "EXECUTED_SUCCESS" ? "" : "-"}  ${
                 data.value
               } ${data.token}`}
             </Typography>

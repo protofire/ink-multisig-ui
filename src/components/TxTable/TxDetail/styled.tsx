@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import { Typography, TypographyProps } from "@mui/material";
+import { Grid, GridProps, Typography } from "@mui/material";
+import React, { PropsWithChildren } from "react";
 
 export const DEFAULT_COL_WIDTH = {
   name: {
@@ -14,6 +14,27 @@ export const DEFAULT_COL_WIDTH = {
   },
 };
 
-export const StyledTypography = styled(Typography)<TypographyProps>(() => ({
-  color: "#837376",
-}));
+export type ColType = typeof DEFAULT_COL_WIDTH;
+
+type CustomGridProps = {
+  colType: keyof ColType;
+  defaultWidth?: ColType;
+  gridProps?: GridProps;
+};
+
+export const CustomGridItem: React.FC<
+  PropsWithChildren<CustomGridProps & GridProps>
+> = ({ children, colType, defaultWidth = DEFAULT_COL_WIDTH, gridProps }) => {
+  const type = defaultWidth[colType];
+  const TypographyComponent = {
+    name: <Typography color="#837376">{children}</Typography>,
+    value: <Typography>{children}</Typography>,
+  };
+  const _children =
+    typeof children === "string" ? TypographyComponent[colType] : children;
+  return (
+    <Grid item {...type} {...gridProps}>
+      {_children}
+    </Grid>
+  );
+};
