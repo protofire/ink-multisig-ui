@@ -1,6 +1,7 @@
 import {
   Book,
   HomeRounded,
+  ImportExport,
   Layers as IconTxBuilder,
   Settings as IconSettings,
   SvgIconComponent,
@@ -24,6 +25,7 @@ const icons = {
   Book,
   IconSettings,
   IconAssets,
+  ImportExport,
 };
 
 export const MENU_ITEMS: NavLink[] = [
@@ -41,6 +43,14 @@ export const MENU_ITEMS: NavLink[] = [
     type: "item",
     url: ROUTES.Assets,
     icon: icons.IconAssets,
+    target: true,
+  },
+  {
+    id: "transactions",
+    title: "Transactions",
+    type: "item",
+    url: ROUTES.TxDetails,
+    icon: icons.ImportExport,
     target: true,
   },
   {
