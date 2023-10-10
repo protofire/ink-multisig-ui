@@ -9,6 +9,7 @@ export interface SummaryCardProps {
   captionComponent?: React.ReactNode;
   isLoading?: boolean;
   widthSkeleton?: string;
+  styles?: any;
 }
 
 export const SummaryCard = ({
@@ -17,6 +18,7 @@ export const SummaryCard = ({
   captionComponent,
   isLoading,
   widthSkeleton,
+  styles,
 }: SummaryCardProps) => {
   const _captionComponent = isLoading ? (
     <LoadingSkeleton count={2} width={widthSkeleton} />
@@ -25,7 +27,7 @@ export const SummaryCard = ({
   );
 
   return (
-    <SummaryCardStyled border={false}>
+    <SummaryCardStyled border={false} sx={styles}>
       {_captionComponent && !caption ? (
         _captionComponent
       ) : (

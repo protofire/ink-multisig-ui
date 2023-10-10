@@ -10,6 +10,7 @@ export const ROUTES = {
   Settings: "/app/settings",
   Assets: "/app/assets",
   TxDetails: "/app/transaction-details",
+  NewTx: "/app/new-transaction",
 } as const;
 
 export type RouteValue = (typeof ROUTES)[keyof typeof ROUTES];

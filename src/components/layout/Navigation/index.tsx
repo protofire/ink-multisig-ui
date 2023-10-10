@@ -1,4 +1,6 @@
 import {
+  Box,
+  Button,
   ButtonProps,
   Link as MuiLink,
   ListItemIcon,
@@ -9,6 +11,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
+
+import { ROUTES } from "@/config/routes";
 
 import { MENU_ITEMS, NavLink } from "./NavLink";
 
@@ -51,8 +56,19 @@ const NavItem = (props: NavLink & { currentPath: string }) => {
 };
 
 const Navigation = ({ currentPath }: { currentPath: string }) => {
+  const router = useRouter();
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack direction="column" spacing={2}>
+      <Box display="flex" m={0.5}>
+        <Button
+          onClick={() => router.replace(ROUTES.NewTx)}
+          color="primary"
+          variant="contained"
+          sx={{ width: "100%" }}
+        >
+          New transaction
+        </Button>
+      </Box>
       <Paper sx={{ width: "100%", background: "transparent" }}>
         {MENU_ITEMS.map((item, index) => (
           <NavItem key={index} currentPath={currentPath} {...item} />
