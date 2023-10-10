@@ -14,7 +14,8 @@ export interface XsignerBalance {
 export function useGetBalance(address: string | undefined) {
   const [isLoading, setIsLoading] = useState(true);
   const [balance, setBalance] = useState<XsignerBalance>();
-  const _balance = useBalance({ address });
+  const { apiPromise: api, network } = useNetworkApi();
+  const _balance = useBalance({ address }, network);
   const balanceWithoutFormat = useMemo(
     () => ({
       freeBalance: _balance?.freeBalance,
@@ -23,23 +24,22 @@ export function useGetBalance(address: string | undefined) {
     }),
     [_balance?.freeBalance, _balance?.reservedBalance]
   );
-  const api = useNetworkApi();
   useEffect(() => {
-    if (!api?.apiPromise) return;
+    if (!api) return;
 
     setIsLoading(true);
     const freeBalance = planckToDecimalFormatted(
       balanceWithoutFormat?.freeBalance,
       {
         significantFigures: 4,
-        api: api?.apiPromise,
+        api,
       }
     );
     const reservedBalance = planckToDecimalFormatted(
       balanceWithoutFormat?.reservedBalance,
       {
         significantFigures: 4,
-        api: api?.apiPromise,
+        api,
       }
     );
 
@@ -47,13 +47,13 @@ export function useGetBalance(address: string | undefined) {
       balanceWithoutFormat?.totalBalance,
       {
         significantFigures: 4,
-        api: api?.apiPromise,
+        api: api,
       }
     );
 
     setBalance({ freeBalance, reservedBalance, totalBalance });
     setIsLoading(false);
-  }, [api?.apiPromise, balanceWithoutFormat]);
+  }, [api, balanceWithoutFormat]);
 
   return { balance, isLoading };
 }
