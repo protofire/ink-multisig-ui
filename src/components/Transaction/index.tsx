@@ -45,9 +45,11 @@ export const Transaction = () => {
       if (!txData?.to || !accountConnected?.address) return;
       try {
         setIsLoading(true);
+        const decimals = api.apiPromise?.registry.chainDecimals[0] ?? 18;
+        const convertedValue = BigInt(amount * 10 ** decimals);
         const transfer = api.apiPromise?.tx.balances.transfer(
           txData.to,
-          amount
+          convertedValue
         );
         await transfer?.signAndSend(accountConnected?.address, {
           signer: accountConnected?.signer,
