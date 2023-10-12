@@ -1,8 +1,8 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Button, CircularProgress } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import { ChainExtended, getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { splitTokenAmount } from "@/utils/blockchain";
@@ -10,34 +10,43 @@ import { customReportError } from "@/utils/error";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
 import { steps } from "./steps";
+import { TransactionBox } from "./styled";
 
 type TxData = {
   to: string;
   amount: string;
   token: string;
+  chain: ChainExtended;
 };
 
 export const Transaction = () => {
-  const theme = useTheme();
-
   const [txData, setTxData] = useState<TxData>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const api = useNetworkApi();
   const { addNotification } = useAppNotificationContext();
-  const { accountConnected } = usePolkadotContext();
+  const { accountConnected, network } = usePolkadotContext();
 
   const isLastStep = currentStep === steps.length - 1;
-
   const Component = steps[currentStep].Component;
-  const setField = (field: string, value: string) => {
-    const data = {
-      ...txData,
-      [field]: value,
-    } as TxData;
-    setTxData(data);
-  };
+
+  const setField = useCallback(
+    (field: string, value: unknown) => {
+      const data = {
+        ...txData,
+        [field]: value,
+      } as TxData;
+      setTxData(data);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(txData)]
+  );
+
+  useEffect(() => {
+    const chain = getChain(network);
+    setField("chain", chain);
+  }, [network, setField]);
 
   const handleNext = async () => {
     if (isLastStep) {
@@ -70,14 +79,7 @@ export const Transaction = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      gap={2}
-      sx={{ background: theme.palette.grey.A100 }}
-      justifyContent="center"
-      p={4}
-    >
+    <TransactionBox p={4}>
       <Box display="flex" alignItems="center" flexDirection="column">
         <Component
           {...txData}
@@ -114,6 +116,6 @@ export const Transaction = () => {
           </Button>
         </Box>
       </Box>
-    </Box>
+    </TransactionBox>
   );
 };

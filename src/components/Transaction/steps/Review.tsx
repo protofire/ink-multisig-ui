@@ -1,11 +1,9 @@
 import { Avatar, Box, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
-import { getChain } from "@/config/chain";
-import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { ChainExtended } from "@/config/chain";
 
-import { FlexCenterBox, StyledBox } from "../styled";
+import { FlexCenterBox, StyledBox, TypographyBodyStyled } from "../styled";
 
 type Props = {
   setField: (field: string, value: string | number) => void;
@@ -13,13 +11,11 @@ type Props = {
   errors: string[];
   amount: string;
   to: string;
+  chain: ChainExtended;
 };
 
 export const ReviewTokens = (props: Props) => {
-  const { to, amount } = props;
-  const { network } = usePolkadotContext();
-  const theme = useTheme();
-  const chain = getChain(network);
+  const { to, amount, chain } = props;
 
   return (
     <Box display="flex" alignItems="center" flexDirection="column" gap={2}>
@@ -50,16 +46,12 @@ export const ReviewTokens = (props: Props) => {
               component="div"
             >
               <Avatar src={chain?.logo.src} alt={chain?.logo.alt} />
-              <Typography color={theme.palette.common.white} variant="body1">
+              <TypographyBodyStyled variant="body1">
                 {chain?.name}
-              </Typography>
-              <Typography
-                color={theme.palette.common.white}
-                fontWeight="bold"
-                variant="body1"
-              >
+              </TypographyBodyStyled>
+              <TypographyBodyStyled fontWeight="bold" variant="body1">
                 {amount}
-              </Typography>
+              </TypographyBodyStyled>
             </Typography>
           </FlexCenterBox>
         </StyledBox>

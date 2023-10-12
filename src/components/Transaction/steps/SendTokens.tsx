@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   MenuItem,
   Select,
   TextField,
@@ -10,10 +9,12 @@ import {
 import Identicon from "@polkadot/react-identicon";
 import { useEffect, useState } from "react";
 
-import { getChain } from "@/config/chain";
+import { ChainExtended } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { isValidAddress, splitTokenAmount } from "@/utils/blockchain";
+
+import InputWithMax from "../inputs/InputWithMax";
 
 type Props = {
   setField: (field: string, value: string | number) => void;
@@ -21,26 +22,21 @@ type Props = {
   errors: string[];
   amount: string;
   to: string;
+  chain: ChainExtended;
 };
 
 export const SendTokens = (props: Props) => {
-  const { setField, setErrors, to, errors, amount } = props;
-  const { accountConnected, network } = usePolkadotContext();
-
+  const { setField, setErrors, to, errors, chain } = props;
+  const { accountConnected } = usePolkadotContext();
   const { balance } = useGetBalance(accountConnected?.address);
   const [tokenBalance, setTokenBalance] = useState<string>(
     balance?.freeBalance ?? ""
   );
-  const chain = getChain(network);
-  const formattedAmount = splitTokenAmount(amount)?.amount ?? 0;
+  const maxValueAmount = splitTokenAmount(balance?.freeBalance)?.amount ?? "";
 
-  const handleMax = () => {
-    setField("amount", balance?.freeBalance ?? "");
-  };
-
-  const handleNewAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleValueChange = (value: string) => {
     const token = splitTokenAmount(balance?.freeBalance);
-    setField("amount", `${e.target.value} ${token?.tokenSymbol}`);
+    setField("amount", `${value} ${token?.tokenSymbol}`);
   };
 
   useEffect(() => {
@@ -90,25 +86,13 @@ export const SendTokens = (props: Props) => {
         }}
       />
       <Box display="flex" alignItems="center" gap={4}>
-        <TextField
+        <InputWithMax
           label="Amount *"
-          onChange={handleNewAmount}
-          value={formattedAmount}
-          margin="normal"
+          maxValue={maxValueAmount}
+          defaultValue="0"
+          onValueChange={handleValueChange}
           error={!!errors[1]}
           helperText={errors[1]}
-          InputLabelProps={{ shrink: true }}
-          InputProps={{
-            endAdornment: (
-              <Button
-                onClick={handleMax}
-                sx={{ height: "30px" }}
-                variant="outlined"
-              >
-                MAX
-              </Button>
-            ),
-          }}
         />
         <Select
           label=""
