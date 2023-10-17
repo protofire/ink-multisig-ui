@@ -19,6 +19,17 @@ const FETCH_MULTISIG = gql`
   }
 `;
 
+const FETCH_MULTISIGS_BY_OWNER = gql`
+  query MyQuery($address: [String!]!) {
+    multisigs(where: { owners_containsAny: $address }) {
+      owners
+      threshold
+      addressSS58
+      addressHex
+    }
+  }
+`;
+
 export class XsignerOwnersRepository implements IXsignerOwnersRepository {
   constructor(private client: ApolloClient<NormalizedCacheObject>) {}
 
@@ -31,5 +42,18 @@ export class XsignerOwnersRepository implements IXsignerOwnersRepository {
     );
 
     return data?.multisigs[0] || null;
+  }
+
+  async getMultisigsByOwner(address: string): Promise<MultisigData[] | null> {
+    const { data } = await this.client.query<MyQueryResponse, MyQueryVariables>(
+      {
+        query: FETCH_MULTISIGS_BY_OWNER,
+        variables: {
+          address: [address],
+        },
+      }
+    );
+
+    return data?.multisigs || null;
   }
 }

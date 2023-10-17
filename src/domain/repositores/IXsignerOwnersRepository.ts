@@ -7,7 +7,7 @@ export interface MultisigData {
 }
 
 export interface MyQueryVariables {
-  address: string;
+  address: string | string[];
 }
 
 export interface MyQueryResponse {
@@ -16,4 +16,5 @@ export interface MyQueryResponse {
 
 export interface IXsignerOwnersRepository {
   getMultisigByAddress(address: string): Promise<MultisigData | null>;
+  getMultisigsByOwner(address: string): Promise<MultisigData[] | null>;
 }
