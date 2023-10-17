@@ -1,8 +1,6 @@
 import { useCallback, useState } from "react";
-import { ChainId } from "useink/dist/chains";
 
 import { useLocalDbContext } from "@/context/uselocalDbContext";
-import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { customReportError } from "@/utils/error";
 
 interface DeleteOptions {
@@ -24,7 +22,6 @@ export interface UseDeleteSignersAccount {
 export function useDeleteSignersAccount(): UseDeleteSignersAccount {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { network } = usePolkadotContext();
   const { signatoriesAccountRepository } = useLocalDbContext();
 
   const deleteAccount = useCallback(
@@ -33,10 +30,7 @@ export function useDeleteSignersAccount(): UseDeleteSignersAccount {
       const { address, options } = props;
 
       try {
-        await signatoriesAccountRepository?.deleteSignatoryAccount(
-          address,
-          network as ChainId
-        );
+        await signatoriesAccountRepository?.deleteSignatoryAccount(address);
         options?.onSuccess?.();
       } catch (err) {
         const errorFormatted = customReportError(err);
@@ -46,7 +40,7 @@ export function useDeleteSignersAccount(): UseDeleteSignersAccount {
         setIsLoading(false);
       }
     },
-    [network, signatoriesAccountRepository]
+    [signatoriesAccountRepository]
   );
 
   return { delete: deleteAccount, isLoading, error };
