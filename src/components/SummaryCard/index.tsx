@@ -1,4 +1,4 @@
-import { Box, CardHeader, Typography } from "@mui/material";
+import { Box, CardHeader, SxProps, Typography } from "@mui/material";
 
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import { SummaryCardStyled, TextSummary } from "./styled";
@@ -9,6 +9,7 @@ export interface SummaryCardProps {
   captionComponent?: React.ReactNode;
   isLoading?: boolean;
   widthSkeleton?: string;
+  styles?: SxProps;
 }
 
 export const SummaryCard = ({
@@ -17,6 +18,7 @@ export const SummaryCard = ({
   captionComponent,
   isLoading,
   widthSkeleton,
+  styles,
 }: SummaryCardProps) => {
   const _captionComponent = isLoading ? (
     <LoadingSkeleton count={2} width={widthSkeleton} />
@@ -25,7 +27,7 @@ export const SummaryCard = ({
   );
 
   return (
-    <SummaryCardStyled border={false}>
+    <SummaryCardStyled border={false} sx={styles}>
       {_captionComponent && !caption ? (
         _captionComponent
       ) : (

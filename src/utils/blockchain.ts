@@ -81,3 +81,18 @@ export const generateRandomWalletName = () => {
 
   return `${adjective}-${noun}-${uniqueNumber}`;
 };
+
+export const splitTokenAmount = (balance?: string) => {
+  if (!balance || balance === "0") {
+    return undefined;
+  }
+
+  const match = balance.match(/(\d+\.\d+)\s+([A-Za-z]+)/);
+
+  if (match) {
+    const [_, amount, tokenSymbol] = match;
+    return { amount, tokenSymbol };
+  }
+
+  return undefined;
+};

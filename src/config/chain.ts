@@ -56,9 +56,8 @@ const UNKNOWN_CHAIN = {
   },
 };
 
-export function getChain(chainId?: ChainId) {
-  if (!chainId) return UNKNOWN_CHAIN;
-  return (
-    CHAINS_ALLOWED.find((_chain) => _chain.id === chainId) ?? UNKNOWN_CHAIN
-  );
-}
+export const getChain = (chainId?: ChainId): ChainExtended => {
+  if (!chainId) return UNKNOWN_CHAIN as ChainExtended;
+  return (CHAINS_ALLOWED.find((_chain) => _chain.id === chainId) ??
+    UNKNOWN_CHAIN) as ChainExtended;
+};
