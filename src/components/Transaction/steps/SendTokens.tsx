@@ -32,11 +32,12 @@ export const SendTokens = (props: Props) => {
   const [tokenBalance, setTokenBalance] = useState<string>(
     balance?.freeBalance ?? ""
   );
-  const maxValueAmount = splitTokenAmount(balance?.freeBalance)?.amount ?? "";
+  const { amount = "", tokenSymbol = "" } = {
+    ...splitTokenAmount(balance?.freeBalance),
+  };
 
   const handleValueChange = (value: string) => {
-    const token = splitTokenAmount(balance?.freeBalance);
-    setField("amount", `${value} ${token?.tokenSymbol}`);
+    setField("amount", `${value} ${tokenSymbol}`);
   };
 
   useEffect(() => {
@@ -88,7 +89,7 @@ export const SendTokens = (props: Props) => {
       <Box display="flex" alignItems="center" gap={4}>
         <InputWithMax
           label="Amount *"
-          maxValue={maxValueAmount}
+          maxValue={amount}
           defaultValue="0"
           onValueChange={handleValueChange}
           error={!!errors[1]}
@@ -104,9 +105,7 @@ export const SendTokens = (props: Props) => {
             <Box display="flex" alignItems="center" gap={1}>
               <Avatar src={chain?.logo.src} alt={chain?.logo.alt} />
               <Box flexDirection="column">
-                <Typography variant="body1">
-                  {balance?.freeBalance?.split(" ")[1]}
-                </Typography>
+                <Typography variant="body1">{tokenSymbol}</Typography>
                 <Typography variant="body2">{balance?.freeBalance}</Typography>
               </Box>
             </Box>
