@@ -10,8 +10,8 @@ import Identicon from "@polkadot/react-identicon";
 import { useEffect, useState } from "react";
 
 import { ChainExtended } from "@/config/chain";
-import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useGetBalance } from "@/hooks/useGetBalance";
+import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { isValidAddress, splitTokenAmount } from "@/utils/blockchain";
 
 import InputWithMax from "../inputs/InputWithMax";
@@ -27,8 +27,9 @@ type Props = {
 
 export const SendTokens = (props: Props) => {
   const { setField, setErrors, to, errors, chain } = props;
-  const { accountConnected } = usePolkadotContext();
-  const { balance } = useGetBalance(accountConnected?.address);
+  const { xSignerSelected } = useGetXsignerSelected();
+  const { balance } = useGetBalance(xSignerSelected?.address);
+
   const [tokenBalance, setTokenBalance] = useState<string>(
     balance?.freeBalance ?? ""
   );

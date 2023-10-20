@@ -1,10 +1,16 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Button, CircularProgress } from "@mui/material";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { WeightV2 } from "useink/dist/core";
 
 import { ChainExtended, getChain } from "@/config/chain";
+import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
+import { useGetDryRun } from "@/hooks/useGetDryRun";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
+import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { splitTokenAmount } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
@@ -25,8 +31,14 @@ export const Transaction = () => {
   const [errors, setErrors] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const api = useNetworkApi();
+  const router = useRouter();
   const { addNotification } = useAppNotificationContext();
   const { accountConnected, network } = usePolkadotContext();
+  const { xSignerSelected } = useGetXsignerSelected();
+  const { multisigContractPromise } = useMultisigContractPromise(
+    xSignerSelected?.address
+  );
+  const dryRun = useGetDryRun(multisigContractPromise?.contract, "proposeTx");
 
   const isLastStep = currentStep === steps.length - 1;
   const Component = steps[currentStep].Component;
@@ -56,17 +68,54 @@ export const Transaction = () => {
         setIsLoading(true);
         const decimals = api.apiPromise?.registry.chainDecimals[0] ?? 18;
         const convertedValue = BigInt(amount * 10 ** decimals);
-        const transfer = api.apiPromise?.tx.balances.transfer(
-          txData.to,
-          convertedValue
+        const proposeTx = multisigContractPromise?.contract.tx.proposeTx;
+        const transferTx = multisigContractPromise?.contract.tx.transfer;
+        const selector = transferTx?.meta.selector;
+        const accountId = api.apiPromise
+          ?.createType("AccountId", txData.to)
+          .toU8a();
+        const balance = api.apiPromise
+          ?.createType("Balance", convertedValue)
+          .toU8a();
+
+        if (!accountId || !balance) return;
+        const input = new Uint8Array(accountId.length + balance.length);
+        input.set(accountId, 0);
+        input.set(balance, accountId.length);
+
+        const transferTxStruct = {
+          address: xSignerSelected?.address,
+          selector: selector,
+          input,
+          transferredValue: 0,
+          gasLimit: 0,
+          allowReentry: true,
+        };
+
+        const result = await dryRun.send([transferTxStruct]);
+        if (!result?.ok) {
+          throw new Error(
+            result?.error.toString() ?? "Error on executing the transaction."
+          );
+        }
+        const gasRequired = (result?.ok &&
+          result?.value.gasRequired) as WeightV2;
+
+        const tx = proposeTx?.(
+          {
+            gasLimit: gasRequired,
+          },
+          Object.values(transferTxStruct)
         );
-        await transfer?.signAndSend(accountConnected?.address, {
+        await tx?.signAndSend(accountConnected?.address, {
           signer: accountConnected?.signer,
         });
+
         addNotification({
           message: "Transaction successfully sent.",
           type: "success",
         });
+        router.replace(ROUTES.Assets);
       } catch (e) {
         const errorFormated = customReportError(e);
         addNotification({ message: errorFormated, type: "error" });
@@ -99,13 +148,14 @@ export const Transaction = () => {
             <Button
               onClick={() => setCurrentStep(currentStep - 1)}
               variant="outlined"
+              disabled={isLoading}
             >
               <ArrowBackIcon color="primary" />
               Back
             </Button>
           )}
           <Button
-            disabled={!!errors?.length}
+            disabled={!!errors?.length || isLoading}
             sx={{ width: 134 }}
             onClick={handleNext}
             variant="contained"
