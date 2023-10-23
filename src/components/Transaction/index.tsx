@@ -86,7 +86,7 @@ export const Transaction = () => {
         const transferTxStruct = {
           address: xSignerSelected?.address,
           selector: selector,
-          input,
+          input: Array.from(input),
           transferredValue: 0,
           gasLimit: 0,
           allowReentry: true,
@@ -107,12 +107,12 @@ export const Transaction = () => {
           },
           Object.values(transferTxStruct)
         );
-        await tx?.signAndSend(accountConnected?.address, {
+        const hash = await tx?.signAndSend(accountConnected?.address, {
           signer: accountConnected?.signer,
         });
 
         addNotification({
-          message: "Transaction successfully sent.",
+          message: `Transaction successfully sent. TxHash: ${hash?.toHuman()}`,
           type: "success",
         });
         router.replace(ROUTES.Assets);
