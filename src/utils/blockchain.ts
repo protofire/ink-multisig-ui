@@ -87,7 +87,7 @@ export const splitTokenAmount = (balance?: string) => {
     return undefined;
   }
 
-  const match = balance.match(/(\d+\.\d+)\s+([A-Za-z]+)/);
+  const match = balance.match(/(\d+(?:\.\d+)?)\s+([A-Za-z]+)/);
 
   if (match) {
     const [_, amount, tokenSymbol] = match;
