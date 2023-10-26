@@ -13,7 +13,7 @@ import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
-import { getChain } from "@/config/chain";
+import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
@@ -31,19 +31,18 @@ import { squidClient } from "./_app";
 type MultisigsDataFormatted = {
   name: string;
   address: string;
+  network?: ChainExtended;
 };
 
 const repository = new XsignerOwnersRepository(squidClient);
 
 export default function WelcomePage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [multisigs, setMultisigs] = useState<MultisigsDataFormatted[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { accountConnected, network } = usePolkadotContext();
   const { logo, name: networkName } = getChain(network);
-  const { data: signersAccount } = useListSignersAccount({
-    networkId: network,
-  });
+  const { data: signersAccount } = useListSignersAccount();
   const { save } = useAddSignersAccount();
   const { delete: deleteAccount } = useDeleteSignersAccount();
 
@@ -62,44 +61,55 @@ export default function WelcomePage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await repository.getMultisigsByOwner(
-          accountConnected?.address as string
-        );
+
         const alreadyExistsMultisigs =
           signersAccount?.map((acc) => ({
             address: acc.address,
             name: acc.name,
-          })) ?? ([] as MultisigsDataFormatted[]);
-        if (result) {
-          const filteredMultisigs = result.filter(
-            (multisig) =>
-              !alreadyExistsMultisigs
-                ?.map((acc) => acc.address)
-                .includes(multisig.addressSS58)
+            network: getChain(acc.networkId),
+          })) || [];
+        let allMultisigs: MultisigsDataFormatted[] = alreadyExistsMultisigs;
+
+        if (accountConnected?.address) {
+          const result = await repository.getMultisigsByOwner(
+            accountConnected.address
           );
-          const savePromises = filteredMultisigs.map((multisig) =>
-            save({
-              account: {
+          if (result) {
+            const filteredMultisigs = result.filter(
+              (multisig) =>
+                !alreadyExistsMultisigs
+                  .map((acc) => acc.address)
+                  .includes(multisig.addressSS58)
+            );
+
+            const savePromises = filteredMultisigs.map((multisig) =>
+              save({
+                account: {
+                  address: multisig.addressSS58,
+                  name: generateRandomWalletName(),
+                  networkId: network as ChainId,
+                  owners: multisig.owners.map((owner, index) => ({
+                    address: owner,
+                    name: `Signer ${index + 1}`,
+                  })) as ArrayOneOrMore<Owner>,
+                  threshold: multisig.threshold,
+                },
+              })
+            );
+
+            await Promise.all(savePromises);
+
+            allMultisigs = [
+              ...allMultisigs,
+              ...filteredMultisigs.map((multisig) => ({
                 address: multisig.addressSS58,
                 name: generateRandomWalletName(),
-                networkId: network as ChainId,
-                owners: multisig.owners.map((owner, index) => ({
-                  address: owner,
-                  name: `Signer ${index + 1}`,
-                })) as ArrayOneOrMore<Owner>,
-                threshold: multisig.threshold,
-              },
-            })
-          );
-
-          await Promise.all(savePromises);
-          const allMultisigs = [
-            ...alreadyExistsMultisigs,
-            ...filteredMultisigs,
-          ] as MultisigsDataFormatted[];
-
-          setMultisigs(allMultisigs);
+              })),
+            ];
+          }
         }
+
+        setMultisigs(allMultisigs);
       } catch (err) {
         setError(customReportError(err));
       } finally {
@@ -107,11 +117,10 @@ export default function WelcomePage() {
       }
     };
 
-    if (accountConnected?.address) {
-      fetchData();
-    }
+    fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountConnected?.address, network, save]);
+  }, [accountConnected?.address, network, save, signersAccount?.length]);
 
   const theme = useTheme();
   return (
@@ -232,10 +241,10 @@ export default function WelcomePage() {
                 <Box>
                   <NetworkBadge
                     showTooltip={false}
-                    name={networkName}
-                    logo={logo.src}
+                    name={multisig.network?.name || networkName}
+                    logo={multisig.network?.logo?.src || logo.src}
                     logoSize={{ width: 20, height: 20 }}
-                    description={logo.alt}
+                    description={multisig.network?.logo?.alt || logo.alt}
                   />
                 </Box>
                 <Box>
