@@ -3,7 +3,10 @@ import Dexie from "dexie";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 
 export class MyDatabase extends Dexie {
-  public signatoriesAccounts: Dexie.Table<SignatoriesAccount, string>;
+  public signatoriesAccounts: Dexie.Table<
+    SignatoriesAccount,
+    string | string[]
+  >;
 
   constructor() {
     super("MyDatabase");

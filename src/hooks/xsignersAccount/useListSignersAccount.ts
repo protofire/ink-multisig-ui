@@ -6,17 +6,17 @@ import { ChainId } from "@/services/useink/types";
 import { customReportError } from "@/utils/error";
 
 interface Props {
-  networkId: ChainId | undefined;
+  networkId?: ChainId | undefined;
 }
 
-export function useListSignersAccount({ networkId }: Props) {
+export function useListSignersAccount({ networkId }: Props = {}) {
   const [data, setData] = useState<SignatoriesAccount[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signatoriesAccountRepository } = useLocalDbContext();
 
   useEffect(() => {
-    if (!networkId || !signatoriesAccountRepository) return;
+    if (!signatoriesAccountRepository) return;
 
     const fetchData = async () => {
       setIsLoading(true);

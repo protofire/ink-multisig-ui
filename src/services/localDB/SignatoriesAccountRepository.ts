@@ -1,6 +1,6 @@
 import { ISignatoriesAccountRepository } from "@/domain/repositores/ISignatoriesAccoutRepository";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { Chain } from "@/services/useink/types";
+import { Chain, ChainId } from "@/services/useink/types";
 
 import { MyDatabase } from ".";
 
@@ -23,7 +23,7 @@ export class SignatoriesAccountDatabase
   }
 
   async addSignatoryAccount(account: SignatoriesAccount): Promise<string> {
-    return this.db.signatoriesAccounts.add(account);
+    return this.db.signatoriesAccounts.add(account) as Promise<string>;
   }
 
   async getSignatoryAccount(
@@ -40,8 +40,12 @@ export class SignatoriesAccountDatabase
     return this.db.signatoriesAccounts.update(account, changes);
   }
 
-  async deleteSignatoryAccount(address: string): Promise<void> {
-    return this.db.signatoriesAccounts.delete(address);
+  async deleteSignatoryAccount(
+    address: string,
+    networkId: ChainId
+  ): Promise<void> {
+    const deleteKey = [networkId as string, address];
+    return this.db.signatoriesAccounts.delete(deleteKey);
   }
 
   async findSignatoriesByOwner(
