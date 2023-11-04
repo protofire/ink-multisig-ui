@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 
 import CopyButton from "@/components/common/CopyButton";
 import { ROUTES } from "@/config/routes";
-import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useListSignersAccount } from "@/hooks/xsignersAccount";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
@@ -29,8 +28,7 @@ export function AccountSigner({
 }: Props) {
   const theme = useTheme();
   const router = useRouter();
-  const { network } = usePolkadotContext();
-  const { data } = useListSignersAccount({ networkId: network });
+  const { data } = useListSignersAccount();
   const { setXsigner } = useSetXsignerSelected();
 
   const handleMultisigRedirect = (address: string) => {

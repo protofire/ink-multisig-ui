@@ -1,7 +1,6 @@
 import { Avatar, SelectChangeEvent, Stack } from "@mui/material";
 
 import { ChainExtended, CHAINS_ALLOWED, getChain } from "@/config/chain";
-import { SetState } from "@/domain/utilityReactTypes";
 import { ChainId } from "@/services/useink/types";
 
 import { StyledMenuItem, StyledSelect } from "./styled";
@@ -11,7 +10,7 @@ export function NetworkSelect({
   onChange,
 }: {
   currentChain: string | undefined;
-  onChange: SetState<ChainId | undefined>;
+  onChange: (chainId: ChainId | undefined) => void;
 }) {
   const _handleChangeChain = (event: SelectChangeEvent<unknown>) => {
     const chainId = event.target.value as ChainId;

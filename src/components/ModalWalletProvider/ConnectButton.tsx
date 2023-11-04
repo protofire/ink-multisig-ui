@@ -1,10 +1,14 @@
+import { useRouter } from "next/router";
 import * as React from "react";
+import { ChainId } from "useink/dist/chains";
 
 import { StyledConnectButton } from "@/components/ModalWalletProvider/styled";
+import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
 import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
+import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
 import { AccountSelect } from "../AccountSelect";
 import { NetworkSelect } from "../NetworkSelect";
@@ -24,10 +28,20 @@ export const ConnectButton: React.FC = () => {
     setNetwork,
     network,
   } = usePolkadotContext();
+  const router = useRouter();
+  const { xSignerSelected } = useGetXsignerSelected();
 
   useEventListenerCallback(WalletConnectionEvents.onWalletConnection, () =>
     setDisplayModalWallet(true)
   );
+
+  const handleNetworkChange = (chainId: ChainId | undefined) => {
+    setNetwork(chainId);
+    if (!xSignerSelected) return;
+    if (chainId !== xSignerSelected.networkId) {
+      router.replace(ROUTES.Welcome);
+    }
+  };
 
   if (isConnected)
     return (
@@ -39,7 +53,7 @@ export const ConnectButton: React.FC = () => {
           disconnectWallet={disconnectWallet}
         />
 
-        <NetworkSelect currentChain={network} onChange={setNetwork} />
+        <NetworkSelect currentChain={network} onChange={handleNetworkChange} />
       </>
     );
 
