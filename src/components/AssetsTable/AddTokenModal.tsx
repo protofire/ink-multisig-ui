@@ -36,29 +36,18 @@ export default function AddTokenModal(props: Props) {
     error: decimalsError,
   } = useCall(address, "psp22Metadata::tokenDecimals");
 
-  /*
-  useEffect(() => {
-    if (!address) return;
-    if (nameError) {
-      console.log("ERROR 1", [errors[0], nameError, errors[2]]);
-      setErrors([errors[0], nameError, errors[2]]);
-    }
-    if (decimalsError) {
-      console.log("ERROR 2", [errors[0], errors[1], decimalsError]);
-      setErrors([errors[0], errors[1], decimalsError]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nameError, decimalsError, address]);
-  */
-
   useEffect(() => {
     if (!address) return;
     const isAddressValid = isValidAddress(address);
     if (!isAddressValid) {
       setErrors(["Invalid address.", errors[1], errors[2]]);
+      resetName();
+      resetDecimals();
     } else {
       setErrors([...errors.splice(1)]);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, errors]);
 
   const handleSend = () => {
@@ -139,9 +128,10 @@ export default function AddTokenModal(props: Props) {
               helperText={nameError}
               margin="normal"
               InputProps={{
-                endAdornment: address && !nameError && !getName?.value && (
-                  <CircularProgress size={20} />
-                ),
+                endAdornment: address &&
+                  !nameError &&
+                  !errors[0] &&
+                  !getName?.value && <CircularProgress size={20} />,
               }}
             />
             <TextField
@@ -154,6 +144,7 @@ export default function AddTokenModal(props: Props) {
               InputProps={{
                 endAdornment: address &&
                   !decimalsError &&
+                  !errors[0] &&
                   !getDecimals?.value && <CircularProgress size={20} />,
               }}
               margin="normal"
