@@ -9,8 +9,10 @@ import {
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";
+import { useEffect } from "react";
 
 import { useCall } from "@/hooks/useCall";
+import { isValidAddress } from "@/utils/blockchain";
 
 type Props = {
   open: boolean;
@@ -22,14 +24,31 @@ export default function AddTokenModal(props: Props) {
   const { open, handleOpen, handleNewToken } = props;
   const theme = useTheme();
   const [address, setAddress] = React.useState("");
-  const { data: getName, reset: resetName } = useCall(
-    address,
-    "psp22Metadata::tokenName"
-  );
-  const { data: getDecimals, reset: resetDecimals } = useCall(
-    address,
-    "psp22Metadata::tokenDecimals"
-  );
+  const [errors, setErrors] = React.useState<string[]>([]);
+  const {
+    data: getName,
+    reset: resetName,
+    error: nameError,
+  } = useCall(address, "psp22Metadata::tokenName");
+  const {
+    data: getDecimals,
+    reset: resetDecimals,
+    error: decimalsError,
+  } = useCall(address, "psp22Metadata::tokenDecimals");
+
+  useEffect(() => {
+    if (!address) return;
+    const isAddressValid = isValidAddress(address);
+    if (!isAddressValid) {
+      setErrors(["Invalid address.", errors[1], errors[2]]);
+      resetName();
+      resetDecimals();
+    } else {
+      setErrors([...errors.splice(1)]);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, errors]);
 
   const handleSend = () => {
     handleNewToken(address);
@@ -40,10 +59,12 @@ export default function AddTokenModal(props: Props) {
   const handleClose = () => {
     handleOpen(false);
     setAddress("");
+    setErrors([]);
   };
 
   const onOpen = () => {
     handleOpen(true);
+    setErrors([]);
     resetName();
     resetDecimals();
   };
@@ -94,6 +115,8 @@ export default function AddTokenModal(props: Props) {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               fullWidth
+              error={!!errors[0]}
+              helperText={errors[0]}
               margin="normal"
             />
             <TextField
@@ -101,11 +124,14 @@ export default function AddTokenModal(props: Props) {
               value={getName?.value || ""}
               InputLabelProps={{ shrink: !!getName?.ok }}
               fullWidth
+              error={!!nameError}
+              helperText={nameError}
               margin="normal"
               InputProps={{
-                endAdornment: address && !getName?.value && (
-                  <CircularProgress size={20} />
-                ),
+                endAdornment: address &&
+                  !nameError &&
+                  !errors[0] &&
+                  !getName?.value && <CircularProgress size={20} />,
               }}
             />
             <TextField
@@ -113,10 +139,13 @@ export default function AddTokenModal(props: Props) {
               InputLabelProps={{ shrink: !!getDecimals?.ok }}
               label="Decimals"
               fullWidth
+              error={!!decimalsError}
+              helperText={decimalsError}
               InputProps={{
-                endAdornment: address && !getDecimals?.value && (
-                  <CircularProgress size={20} />
-                ),
+                endAdornment: address &&
+                  !decimalsError &&
+                  !errors[0] &&
+                  !getDecimals?.value && <CircularProgress size={20} />,
               }}
               margin="normal"
             />
