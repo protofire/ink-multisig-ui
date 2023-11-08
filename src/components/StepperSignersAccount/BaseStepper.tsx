@@ -19,7 +19,7 @@ export type BaseStepperProps = {
   steps: StepProps;
   data: UseFormSignersAccountStateReturn;
   managerStep: ManagerActiveStep;
-  reset: () => void;
+  reset?: () => void;
 };
 
 function BaseStepper({
@@ -131,7 +131,7 @@ function BaseStepper({
               !hasExecutionErrors
             }
             onClick={() =>
-              !hasExecutionErrors ? handleRedirect(ROUTES.App) : reset()
+              !hasExecutionErrors ? handleRedirect(ROUTES.App) : reset?.()
             }
           >
             {!hasExecutionErrors
