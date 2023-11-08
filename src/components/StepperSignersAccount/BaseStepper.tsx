@@ -19,6 +19,7 @@ export type BaseStepperProps = {
   steps: StepProps;
   data: UseFormSignersAccountStateReturn;
   managerStep: ManagerActiveStep;
+  reset: () => void;
 };
 
 function BaseStepper({
@@ -27,6 +28,7 @@ function BaseStepper({
   steps,
   data,
   managerStep,
+  reset,
 }: BaseStepperProps) {
   const { activeStep, upCreationStep, downCreationStep } = managerStep;
   const router = useRouter();
@@ -116,14 +118,25 @@ function BaseStepper({
         </StepperFooter>
       );
     } else {
+      const hasExecutionErrors = !!data.errors[activeStep.execution].some(
+        (error: ValidationError) => !!error.error
+      );
+
       return (
         <StepperFooter mt={2}>
           <FooterButton
             variant="contained"
-            disabled={activeStep.execution < steps.execution.length - 1}
-            onClick={() => handleRedirect(ROUTES.App)}
+            disabled={
+              activeStep.execution < steps.execution.length - 1 &&
+              !hasExecutionErrors
+            }
+            onClick={() =>
+              !hasExecutionErrors ? handleRedirect(ROUTES.App) : reset()
+            }
           >
-            Start using your wallet
+            {!hasExecutionErrors
+              ? "Start using your wallet"
+              : "Try process again"}
           </FooterButton>
         </StepperFooter>
       );
