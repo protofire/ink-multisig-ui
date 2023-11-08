@@ -1,9 +1,10 @@
 import Image from "next/image";
 import * as React from "react";
 
+import { ChainColors, CHAINS_TOKENS } from "@/config/chain";
 import { TX_TYPE } from "@/config/images";
-import { Tx } from "@/domain/repositores/ITxQueueRepository";
-import { truncateAddress } from "@/utils/formatString";
+import { TxQueueType } from "@/domain/repositores/ITxQueueRepository";
+import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import {
   ListItemtyled,
@@ -13,45 +14,48 @@ import {
 } from "./styled";
 
 interface Props {
-  data: Tx;
-  threshold: number;
+  data: TxQueueType;
+  network: string;
 }
 
 const txType = {
-  EXECUTED_SUCCESS: {
-    img: TX_TYPE.SEND,
-    type: "Send",
-  },
-  EXECUTED_FAIL: {
+  Transaction: {
     img: TX_TYPE.RECEIVE,
     type: "Receive",
   },
-  PENDING: {
-    img: TX_TYPE.PENDING,
-    type: "Pending",
+  Transfer: {
+    img: TX_TYPE.SEND,
+    type: "Send",
   },
+  // EXECUTED_SUCCESS: {
+  //   img: TX_TYPE.SEND,
+  //   type: "Send",
+  // },
+  // EXECUTED_FAIL: {
+  //   img: TX_TYPE.RECEIVE,
+  //   type: "Receive",
+  // },
+  // Propose: {
+  //   img: TX_TYPE.PENDING,
+  //   type: "Pending",
+  // },
 };
 
-const formatDate = (inputDate: string) => {
-  const date = new Date(inputDate);
-  return date.toLocaleString("en-US", {
-    day: "numeric",
-    month: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
-};
+type dataType = keyof typeof txType;
 
-export const TxQueueWidgetItem = ({ data, threshold }: Props) => {
-  const type = data.status as keyof typeof txType;
-  const txData = txType[type];
+// TODO: Fix this type, find correct order, token how manage it?
+// TODO Convert balance value
+export const TxQueueWidgetItem = ({ data, network }: Props) => {
+  const txData = txType[data.__typename as dataType];
   const value = data.value;
-  const token = "ROC";
-  const aprovalCount = data.approvalCount;
-  const address = data.contractAddress;
-  const date = formatDate(data.lastUpdatedTimestamp as string);
-
+  const date = formatDate(data.creationTimestamp);
+  const from = data.from ?? data.contractAddress;
+  const token =
+    data.transferType === "NATIVE"
+      ? "ND"
+      : CHAINS_TOKENS[network as keyof ChainColors];
+  const approvalCount = data?.approvalCount || 0;
+  const threshold = data?.approvals?.length || 0;
   return (
     <ListItemtyled>
       <StyledBox>
@@ -65,12 +69,12 @@ export const TxQueueWidgetItem = ({ data, threshold }: Props) => {
         <StyledStack>
           <span>{txData.type}</span>
           <span>{date}</span>
-          <p>{truncateAddress(address, 12)}</p>
+          <p>{truncateAddress(from, 12)}</p>
         </StyledStack>
         <StyledValueBox>
           {txData?.type === "Send" ? "-" : "+"} {`${value} ${token}`}
           <span>
-            {aprovalCount}/{threshold}
+            {approvalCount}/{threshold}
           </span>
         </StyledValueBox>
       </StyledBox>

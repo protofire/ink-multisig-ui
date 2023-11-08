@@ -38,7 +38,7 @@ function a11yProps(index: number) {
   };
 }
 
-export default function AssetTabs(props: AssetTabsProps) {
+export default function TxTabs(props: AssetTabsProps) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {

@@ -47,6 +47,11 @@ export const CHAINS_COLORS: ChainColors = {
   [ShibuyaTestnet.id]: "#FF9F1C",
 };
 
+export const CHAINS_TOKENS: ChainColors = {
+  [RococoContractsTestnet.id]: "ROC",
+  [ShibuyaTestnet.id]: "SBY",
+};
+
 const UNKNOWN_CHAIN = {
   name: "UNKNOWN",
   id: "unknown-network",

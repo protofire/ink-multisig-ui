@@ -11,10 +11,13 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 
-import { truncateAddress } from "@/utils/formatString";
+import {
+  TransactionType,
+  TransferType,
+} from "@/domain/repositores/ITxQueueRepository";
+import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { TxDetails } from "./TxDetail";
-import { txType } from "./TxDetail/types";
 import TxStepper from "./TxStepper";
 
 const StyledGrid = styled(Grid)<GridProps>(() => ({
@@ -23,22 +26,21 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
   display: "flex",
 }));
 
-type Props = {
-  data: {
-    nonce: number;
-    status: string;
-    address: string;
-    value: number;
-    token: string;
-  };
-  txData: {
-    img: string;
-    type: string;
-  };
-  txType: txType;
+export type ExtendedDataType = (TransferType | TransactionType) & {
+  img: string;
+  type: string;
+  to: string;
+  txMsg: string;
+  txStateMsg: string;
 };
 
-export const TxDetailItem = ({ data, txData, txType }: Props) => {
+type Props = {
+  data: ExtendedDataType;
+  index: number;
+};
+
+export const TxDetailItem = ({ data, index }: Props) => {
+  const date = formatDate(data.creationTimestamp);
   return (
     <Accordion>
       <AccordionSummary
@@ -59,16 +61,11 @@ export const TxDetailItem = ({ data, txData, txType }: Props) => {
           container
         >
           <StyledGrid item xs={1} sm={1} md={1}>
-            <Typography>{data.nonce}</Typography>
+            {/* //TODO: txId is mising in  Transfer type*/}
+            <Typography>{index + 1}</Typography>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
-            <Image
-              src={txData.img}
-              priority
-              width={30}
-              height={30}
-              alt="test"
-            />
+            <Image src={data.img} priority width={30} height={30} alt="test" />
           </StyledGrid>
           <StyledGrid
             item
@@ -83,30 +80,33 @@ export const TxDetailItem = ({ data, txData, txType }: Props) => {
                 flexDirection: "column",
               }}
             >
-              <span>{txData.type}</span>
+              <span>{data.type}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                to: {truncateAddress(data.address, 14)}
+                {data.txMsg} : {truncateAddress(data.to, 9)}
               </span>
             </Box>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
             <Typography>
-              {`${data.status === "EXECUTED_SUCCESS" ? "" : "-"}  ${
-                data.value
-              } ${data.token}`}
+              {data.type === "Receive" ? "+" : "-"}
+              {data.value}
             </Typography>
           </StyledGrid>
           <StyledGrid item xs={2} sm={2} md={2}>
-            <Typography>7:20 PM</Typography>
+            <Typography>{date}</Typography>
           </StyledGrid>
           <StyledGrid item xs={3} sm={3} md={3}>
-            <Typography color={"#FF9C7D"}>Awaiting Confirmations</Typography>
+            <Typography
+              color={data.__typename === "Transaction" ? "#FF9C7D" : "#ADD500"}
+            >
+              {data.txStateMsg}
+            </Typography>
           </StyledGrid>
         </Grid>
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
-          <TxDetails type={txType}></TxDetails>
+          <TxDetails data={data} />
           <TxStepper></TxStepper>
         </Box>
       </AccordionDetails>
