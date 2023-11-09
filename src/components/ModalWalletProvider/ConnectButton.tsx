@@ -39,8 +39,8 @@ export const ConnectButton: React.FC = () => {
   const handleNetworkChange = (chainId: ChainId | undefined) => {
     setNetwork(chainId);
     if (
-      chainId !== xSignerSelected?.networkId ||
-      redirectRoutes.includes(router.pathname)
+      chainId !== xSignerSelected?.networkId &&
+      !redirectRoutes.includes(router.pathname)
     ) {
       router.replace(ROUTES.Welcome);
     }
