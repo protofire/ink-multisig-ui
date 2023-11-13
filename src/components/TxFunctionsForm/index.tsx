@@ -58,7 +58,6 @@ export function TxFunctionsForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission
   };
 
   const _onRemove = () => {
