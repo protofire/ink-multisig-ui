@@ -20,14 +20,13 @@ export function CreateNewAccount({ networkId }: CreateNewAccountProps) {
   const [isExecuting, setIsExecuting] = useState(false);
   const data = useFormSignersAccountState();
   const { save } = useAddSignersAccount();
-  const { signAndSend, txStatus, error } = useNewSignersAccount(save);
+  const { signAndSend, txStatus, error, reset } = useNewSignersAccount(save);
   const managerStep = useManagerActiveStep();
-  const { activeStep, upExecutionStep } = managerStep;
+  const { activeStep, upExecutionStep, resetSteps } = managerStep;
   const hasBeenCalled = useRef(false);
 
   useEffect(() => {
     if (!isExecuting || hasBeenCalled.current) return;
-
     signAndSend({
       owners: data.owners,
       threshold: data.threshold,
@@ -49,14 +48,34 @@ export function CreateNewAccount({ networkId }: CreateNewAccountProps) {
     }
   }, [activeStep.execution, txStatus, upExecutionStep]);
 
+  useEffect(() => {
+    if (error && activeStep.execution === 1) {
+      const errors = [...data.errors];
+      errors[activeStep.execution][0] = { error: true, message: error };
+      data.setErrors(errors);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeStep.execution, error]);
+
+  const handleReset = () => {
+    data.setErrors(
+      Array.from({ length: CREATION_STEPS.creation.length }, () => [])
+    );
+    reset();
+    resetSteps();
+    setIsExecuting(false);
+    hasBeenCalled.current = false;
+  };
+
   return (
     <>
-      {error && <ErrorMessage message={error} />}
+      {error && hasBeenCalled.current && <ErrorMessage message={error} />}
       <BaseStepper
         isExecuting={isExecuting}
         onCompleteCreation={() => setIsExecuting(true)}
         steps={CREATION_STEPS}
         data={data}
+        reset={handleReset}
         managerStep={managerStep}
       />
     </>
