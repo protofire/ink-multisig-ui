@@ -30,6 +30,7 @@ export const ConnectButton: React.FC = () => {
   } = usePolkadotContext();
   const router = useRouter();
   const { xSignerSelected } = useGetXsignerSelected();
+  const redirectRoutes = [ROUTES.New, ROUTES.Load] as string[];
 
   useEventListenerCallback(WalletConnectionEvents.onWalletConnection, () =>
     setDisplayModalWallet(true)
@@ -37,8 +38,10 @@ export const ConnectButton: React.FC = () => {
 
   const handleNetworkChange = (chainId: ChainId | undefined) => {
     setNetwork(chainId);
-    if (!xSignerSelected) return;
-    if (chainId !== xSignerSelected.networkId) {
+    if (
+      chainId !== xSignerSelected?.networkId &&
+      !redirectRoutes.includes(router.pathname)
+    ) {
       router.replace(ROUTES.Welcome);
     }
   };
