@@ -76,16 +76,17 @@ export default function SettingsPage() {
             threshold: result.threshold,
           } as SignatoriesAccount;
           setSelectedMultisig(multisig);
-          await setXsigner(multisig);
+          setXsigner(multisig);
+        } else {
+          setSelectedMultisig(xSignerSelected);
         }
       } catch {
         setSelectedMultisig(xSignerSelected);
       }
     };
 
-    if (xSignerSelected?.address) {
-      fetchData();
-    }
+    fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xSignerSelected?.address]);
 
