@@ -2,7 +2,6 @@ import "@/styles/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import "react-toastify/dist/ReactToastify.css";
 
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
@@ -16,6 +15,7 @@ import { AppNotificationsContextProvider } from "@/components/AppToastNotificati
 import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { CHAINS } from "@/config/chain";
+import { ApolloProviderConsumer } from "@/context/ApolloProviderConsumer";
 import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
@@ -31,11 +31,6 @@ Router.events.on("routeChangeError", () => {
 });
 Router.events.on("routeChangeComplete", () => {
   NProgress.done();
-});
-
-export const squidClient = new ApolloClient({
-  uri: "http://18.118.77.170:4350/graphql",
-  cache: new InMemoryCache(),
 });
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -61,16 +56,16 @@ export default function App(props: ExtendedProps) {
     Component.getLayout ?? ((page) => <AppLayout>{page}</AppLayout>);
 
   return (
-    <ApolloProvider client={squidClient}>
-      <CacheProvider value={emotionCache}>
-        <UseInkProvider
-          config={{
-            dappName: "XSigners Wallet",
-            chains: CHAINS,
-          }}
-        >
-          <PolkadotContextProvider>
-            <LocalDbProvider>
+    <CacheProvider value={emotionCache}>
+      <UseInkProvider
+        config={{
+          dappName: "XSigners Wallet",
+          chains: CHAINS,
+        }}
+      >
+        <PolkadotContextProvider>
+          <LocalDbProvider>
+            <ApolloProviderConsumer>
               <SettingsThemeConsumer>
                 {({ settings }) => {
                   return (
@@ -85,10 +80,10 @@ export default function App(props: ExtendedProps) {
                   );
                 }}
               </SettingsThemeConsumer>
-            </LocalDbProvider>
-          </PolkadotContextProvider>
-        </UseInkProvider>
-      </CacheProvider>
-    </ApolloProvider>
+            </ApolloProviderConsumer>
+          </LocalDbProvider>
+        </PolkadotContextProvider>
+      </UseInkProvider>
+    </CacheProvider>
   );
 }
