@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const { squidConfig } = require("./src/services/squid/squidConfig");
+const { config } = require("./src/services/squid/squidConfig");
 
 const nextConfig = {
   reactStrictMode: true,
@@ -16,7 +16,7 @@ const nextConfig = {
     return [
       {
         source: "/api/graphql/shibuya-testnet",
-        destination: squidConfig["shibuya-testnet"],
+        destination: config["shibuya-testnet"],
       },
     ];
   },
