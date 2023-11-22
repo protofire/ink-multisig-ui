@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const { squidConfig } = require("./src/config/squid.ts");
+const { squidConfig } = require("./src/services/squid/squidConfig");
 
 const nextConfig = {
   reactStrictMode: true,
