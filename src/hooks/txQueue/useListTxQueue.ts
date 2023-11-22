@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
+import { graphSquidClient } from "@/config/squid";
 import { TxQueueData } from "@/domain/repositores/ITxQueueRepository";
-import { squidClient } from "@/pages/_app";
 import { TxQueueRepository } from "@/services/squid/TxQueueRepository";
 import { customReportError } from "@/utils/error";
 
+const squidClient = graphSquidClient.getCurrentApolloClient();
 const repository = new TxQueueRepository(squidClient);
 
 export function useListTxQueue(address: string | undefined) {

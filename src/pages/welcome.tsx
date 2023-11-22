@@ -15,6 +15,7 @@ import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
+import { graphSquidClient } from "@/config/squid";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 import {
@@ -26,14 +27,13 @@ import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepositor
 import { generateRandomWalletName } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
-import { squidClient } from "./_app";
-
 type MultisigsDataFormatted = {
   name: string;
   address: string;
   network?: ChainExtended;
 };
 
+const squidClient = graphSquidClient.getCurrentApolloClient();
 const repository = new XsignerOwnersRepository(squidClient);
 
 export default function WelcomePage() {

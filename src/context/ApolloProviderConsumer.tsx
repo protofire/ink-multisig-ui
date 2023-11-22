@@ -1,25 +1,14 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { ReactNode, useMemo } from "react";
+import { ApolloProvider } from "@apollo/client";
+import { ReactNode } from "react";
 
-import { DEFAULT_CHAIN } from "@/config/chain";
-
-import { usePolkadotContext } from "./usePolkadotContext";
-
-const API_SQUID_URL = "/api/graphql/";
+import { graphSquidClient } from "@/config/squid";
 
 export const ApolloProviderConsumer = ({
   children,
 }: {
   children: ReactNode;
 }) => {
-  const { network = DEFAULT_CHAIN } = usePolkadotContext();
-  const squidClient = useMemo(
-    () =>
-      new ApolloClient({
-        uri: `${API_SQUID_URL}${network}`,
-        cache: new InMemoryCache(),
-      }),
-    [network]
-  );
+  const squidClient = graphSquidClient.getCurrentApolloClient();
+
   return <ApolloProvider client={squidClient}>{children}</ApolloProvider>;
 };

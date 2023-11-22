@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
+import { graphSquidClient } from "@/config/squid";
 import { MultisigData } from "@/domain/repositores/IXsignerOwnersRepository";
 import { Owner } from "@/domain/SignatoriesAccount";
-import { squidClient } from "@/pages/_app";
 import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 import { customReportError } from "@/utils/error";
 
@@ -18,6 +18,7 @@ type MultisigDataFormatted = Pick<MultisigData, "threshold"> & {
   address: string;
 };
 
+const squidClient = graphSquidClient.getCurrentApolloClient();
 const repository = new XsignerOwnersRepository(squidClient);
 
 export function useFindXsignerOwners({ address, walletName }: Props) {
