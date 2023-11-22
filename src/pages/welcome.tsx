@@ -15,7 +15,6 @@ import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
-import { graphSquidClient } from "@/config/squid";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 import {
@@ -23,6 +22,7 @@ import {
   useDeleteSignersAccount,
   useListSignersAccount,
 } from "@/hooks/xsignersAccount";
+import { graphSquidClient } from "@/services/squid/GraphClient";
 import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 import { generateRandomWalletName } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";

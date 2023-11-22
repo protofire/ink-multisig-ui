@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { graphSquidClient } from "@/config/squid";
 import { TxQueueData } from "@/domain/repositores/ITxQueueRepository";
+import { graphSquidClient } from "@/services/squid/GraphClient";
 import { TxQueueRepository } from "@/services/squid/TxQueueRepository";
 import { customReportError } from "@/utils/error";
 

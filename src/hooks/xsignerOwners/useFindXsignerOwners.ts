@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
-import { graphSquidClient } from "@/config/squid";
 import { MultisigData } from "@/domain/repositores/IXsignerOwnersRepository";
 import { Owner } from "@/domain/SignatoriesAccount";
+import { graphSquidClient } from "@/services/squid/GraphClient";
 import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 import { customReportError } from "@/utils/error";
 

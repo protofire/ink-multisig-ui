@@ -1,7 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import { ReactNode } from "react";
 
-import { graphSquidClient } from "@/config/squid";
+import { graphSquidClient } from "@/services/squid/GraphClient";
 
 export const ApolloProviderConsumer = ({
   children,
