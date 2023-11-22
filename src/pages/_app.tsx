@@ -15,7 +15,6 @@ import { AppNotificationsContextProvider } from "@/components/AppToastNotificati
 import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { CHAINS } from "@/config/chain";
-import { ApolloProviderConsumer } from "@/context/ApolloProviderConsumer";
 import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
@@ -65,22 +64,20 @@ export default function App(props: ExtendedProps) {
       >
         <PolkadotContextProvider>
           <LocalDbProvider>
-            <ApolloProviderConsumer>
-              <SettingsThemeConsumer>
-                {({ settings }) => {
-                  return (
-                    <ThemeCustomization settings={settings}>
-                      <AppNotificationsContextProvider>
-                        <WalletConnectionGuard walletRequired={walletRequired}>
-                          {getLayout(<Component {...pageProps} />)}
-                        </WalletConnectionGuard>
-                        <AppToastNotifications />
-                      </AppNotificationsContextProvider>
-                    </ThemeCustomization>
-                  );
-                }}
-              </SettingsThemeConsumer>
-            </ApolloProviderConsumer>
+            <SettingsThemeConsumer>
+              {({ settings }) => {
+                return (
+                  <ThemeCustomization settings={settings}>
+                    <AppNotificationsContextProvider>
+                      <WalletConnectionGuard walletRequired={walletRequired}>
+                        {getLayout(<Component {...pageProps} />)}
+                      </WalletConnectionGuard>
+                      <AppToastNotifications />
+                    </AppNotificationsContextProvider>
+                  </ThemeCustomization>
+                );
+              }}
+            </SettingsThemeConsumer>
           </LocalDbProvider>
         </PolkadotContextProvider>
       </UseInkProvider>

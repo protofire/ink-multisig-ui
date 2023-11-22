@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { TxQueueData } from "@/domain/repositores/ITxQueueRepository";
-import { graphSquidClient } from "@/services/squid/GraphClient";
-import { TxQueueRepository } from "@/services/squid/TxQueueRepository";
 import { customReportError } from "@/utils/error";
-
-const squidClient = graphSquidClient.getCurrentApolloClient();
-const repository = new TxQueueRepository(squidClient);
 
 export function useListTxQueue(address: string | undefined) {
   const [data, setData] = useState<TxQueueData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { txQueueRepository } = useLocalDbContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +16,7 @@ export function useListTxQueue(address: string | undefined) {
       setIsLoading(true);
       setError(null);
       try {
-        const result = await repository.getQueue(address);
+        const result = await txQueueRepository.getQueue(address);
         if (result) {
           setData(result);
         }
@@ -32,7 +29,7 @@ export function useListTxQueue(address: string | undefined) {
     };
 
     fetchData();
-  }, [address]);
+  }, [address, txQueueRepository]);
 
   return { data, isLoading, error };
 }

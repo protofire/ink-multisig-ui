@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
+import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { MultisigData } from "@/domain/repositores/IXsignerOwnersRepository";
 import { Owner } from "@/domain/SignatoriesAccount";
-import { graphSquidClient } from "@/services/squid/GraphClient";
-import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 import { customReportError } from "@/utils/error";
 
 interface Props {
@@ -18,19 +17,19 @@ type MultisigDataFormatted = Pick<MultisigData, "threshold"> & {
   address: string;
 };
 
-const squidClient = graphSquidClient.getCurrentApolloClient();
-const repository = new XsignerOwnersRepository(squidClient);
-
 export function useFindXsignerOwners({ address, walletName }: Props) {
   const [data, setData] = useState<MultisigDataFormatted | undefined>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { xsignerOwnersRepository } = useLocalDbContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await repository.getMultisigByAddress(address as string);
+        const result = await xsignerOwnersRepository.getMultisigByAddress(
+          address as string
+        );
         if (result) {
           setData({
             address: result.addressSS58,
@@ -52,7 +51,7 @@ export function useFindXsignerOwners({ address, walletName }: Props) {
     if (address) {
       fetchData();
     }
-  }, [address, walletName]);
+  }, [address, walletName, xsignerOwnersRepository]);
 
   return {
     data,

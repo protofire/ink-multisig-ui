@@ -15,6 +15,7 @@ import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
+import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 import {
@@ -22,8 +23,6 @@ import {
   useDeleteSignersAccount,
   useListSignersAccount,
 } from "@/hooks/xsignersAccount";
-import { graphSquidClient } from "@/services/squid/GraphClient";
-import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 import { generateRandomWalletName } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
@@ -32,9 +31,6 @@ type MultisigsDataFormatted = {
   address: string;
   network?: ChainExtended;
 };
-
-const squidClient = graphSquidClient.getCurrentApolloClient();
-const repository = new XsignerOwnersRepository(squidClient);
 
 export default function WelcomePage() {
   const [loading, setLoading] = useState(false);
@@ -45,6 +41,7 @@ export default function WelcomePage() {
   const { data: signersAccount } = useListSignersAccount();
   const { save } = useAddSignersAccount();
   const { delete: deleteAccount } = useDeleteSignersAccount();
+  const { xsignerOwnersRepository } = useLocalDbContext();
 
   const handleDeletedMultisig = async (multisig: MultisigsDataFormatted) => {
     try {
@@ -71,7 +68,7 @@ export default function WelcomePage() {
         let allMultisigs: MultisigsDataFormatted[] = alreadyExistsMultisigs;
 
         if (accountConnected?.address) {
-          const result = await repository.getMultisigsByOwner(
+          const result = await xsignerOwnersRepository.getMultisigsByOwner(
             accountConnected.address
           );
           if (result) {

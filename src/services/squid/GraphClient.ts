@@ -5,7 +5,6 @@ import {
 } from "@apollo/client";
 
 import { squidConfig } from "@/config/squid";
-import { networkRepository } from "@/context/uselocalDbContext";
 import { INetworkRepository } from "@/domain/repositores/INetworkRepository";
 import { ChainId } from "@/services/useink/types";
 
@@ -39,5 +38,3 @@ export class GraphClient {
     return this.getClient(chainSelected.id);
   }
 }
-
-export const graphSquidClient = new GraphClient(networkRepository);
