@@ -55,6 +55,8 @@ export default function WelcomePage() {
   };
 
   useEffect(() => {
+    setError(null);
+
     const fetchData = async () => {
       try {
         setLoading(true);
