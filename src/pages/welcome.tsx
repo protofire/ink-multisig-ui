@@ -212,48 +212,52 @@ export default function WelcomePage() {
           mt={3}
           width="100%"
           sx={{ backgroundColor: theme.palette.background.paper }}
-          p={4}
+          p={0}
           pt={0}
           pb={0}
         >
           {!loading ? (
             multisigs.map((multisig) => (
-              <Box
-                key={multisig.address}
-                display="flex"
-                gap={8}
-                alignItems="center"
-                justifyContent="space-around"
-                sx={{
-                  borderBottom: "1px solid #2F2F2F",
-                  borderTop: "1px solid #2F2F2F",
-                }}
-                p={1}
-                pl={2}
-              >
-                <Box width={300}>
-                  <AccountSigner
-                    name={multisig.name}
-                    address={multisig.address}
-                    truncateAmount={16}
-                  />
+              // eslint-disable-next-line react/jsx-key
+              <Link href={multisig.address} passHref>
+                <Box
+                  key={multisig.address}
+                  display="flex"
+                  gap={8}
+                  alignItems="center"
+                  justifyContent="space-around"
+                  sx={{
+                    borderBottom: "1px solid #2F2F2F",
+                    borderTop: "1px solid #2F2F2F",
+                    "&:hover": { backgroundColor: "#2F2F2F" },
+                  }}
+                  p={1}
+                  pl={0}
+                >
+                  <Box width={300}>
+                    <AccountSigner
+                      name={multisig.name}
+                      address={multisig.address}
+                      truncateAmount={16}
+                    />
+                  </Box>
+                  <Box>
+                    <NetworkBadge
+                      showTooltip={false}
+                      name={multisig.network?.name || networkName}
+                      logo={multisig.network?.logo?.src || logo.src}
+                      logoSize={{ width: 20, height: 20 }}
+                      description={multisig.network?.logo?.alt || logo.alt}
+                    />
+                  </Box>
+                  <Box>
+                    <DeleteOutlinedIcon
+                      onClick={() => handleDeletedMultisig(multisig)}
+                      sx={{ cursor: "pointer" }}
+                    />
+                  </Box>
                 </Box>
-                <Box>
-                  <NetworkBadge
-                    showTooltip={false}
-                    name={multisig.network?.name || networkName}
-                    logo={multisig.network?.logo?.src || logo.src}
-                    logoSize={{ width: 20, height: 20 }}
-                    description={multisig.network?.logo?.alt || logo.alt}
-                  />
-                </Box>
-                <Box>
-                  <DeleteOutlinedIcon
-                    onClick={() => handleDeletedMultisig(multisig)}
-                    sx={{ cursor: "pointer" }}
-                  />
-                </Box>
-              </Box>
+              </Link>
             ))
           ) : (
             <Box
