@@ -44,8 +44,7 @@ const PolkadotContext = createContext<PolkadotContextProps>({
 export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-
-const [networkId, setNetworkId] = useState<ChainId>(DEFAULT_CHAIN);
+  const [networkId, setNetworkId] = useState<ChainId>(DEFAULT_CHAIN);
   const [formattedAccounts, setFormattedAccounts] = useState<
     WalletAccount[] | undefined
   >([]);
@@ -79,6 +78,14 @@ const [networkId, setNetworkId] = useState<ChainId>(DEFAULT_CHAIN);
     [networkRepository]
   );
 
+  const setAccountConnected = (account: WalletAccount) => {
+    const formattedAccount = {
+      ...account,
+      address: formatAddressForNetwork(account.address, ""),
+    };
+    setAccount(formattedAccount);
+  };
+
   useEffect(() => {
     if (!accounts || !networkId) return;
 
@@ -86,22 +93,18 @@ const [networkId, setNetworkId] = useState<ChainId>(DEFAULT_CHAIN);
       ...account,
       address: formatAddressForNetwork(account.address, networkId),
     }));
-    // accounts.forEach((account) => {
-    //   account.address = formatAddressForNetwork(account.address, networkId);
-    // });
     setFormattedAccounts(formattedAccounts);
   }, [accounts, networkId]);
 
   useEffect(() => {
     if (!account || !networkId) return;
 
-    // const formattedAccount = {
-    //   ...account,
-    //   address: formatAddressForNetwork(account.address, networkId),
-    // };
+    const formattedAccount = {
+      ...account,
+      address: formatAddressForNetwork(account.address, networkId),
+    };
 
-    account.address = formatAddressForNetwork(account.address, networkId);
-    //setFormattedAccount(formattedAccount);
+    setFormattedAccount(formattedAccount);
   }, [account, networkId]);
 
   return (
@@ -110,12 +113,12 @@ const [networkId, setNetworkId] = useState<ChainId>(DEFAULT_CHAIN);
         network: networkId,
         setNetwork: setCurrentChain,
         accounts: formattedAccounts,
-        accountConnected: account,
+        accountConnected: formattedAccount,
         wallets: walletList,
         connectWallet: connect,
         disconnectWallet: disconnect,
         isConnected,
-        setAccount,
+        setAccount: setAccountConnected,
       }}
     >
       {children}
