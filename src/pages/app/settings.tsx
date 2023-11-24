@@ -76,7 +76,8 @@ export default function SettingsPage() {
             threshold: result.threshold,
           } as SignatoriesAccount;
           setSelectedMultisig(multisig);
-          setXsigner(multisig);
+          data.handleOwners(multisig.owners, 0);
+          await setXsigner(multisig);
         } else {
           setSelectedMultisig(xSignerSelected);
         }
