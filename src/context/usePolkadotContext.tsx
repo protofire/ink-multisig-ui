@@ -1,6 +1,7 @@
 import React, {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -9,13 +10,15 @@ import { useAllWallets, useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { DEFAULT_CHAIN } from "@/config/chain";
-import { SetState } from "@/domain/utilityReactTypes";
+import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
 import { Wallet, WalletAccount } from "@/services/useink/types";
 import { createNotImplementedWarning } from "@/utils/error";
 
+import { useLocalDbContext } from "./uselocalDbContext";
+
 interface PolkadotContextProps {
-  network: ChainId | undefined;
-  setNetwork: SetState<ChainId | undefined>;
+  network: ChainId;
+  setNetwork: (chain: ChainId) => void;
   accounts: WalletAccount[] | undefined;
   accountConnected: WalletAccount | undefined;
   wallets: Wallet[];
@@ -26,7 +29,7 @@ interface PolkadotContextProps {
 }
 
 const PolkadotContext = createContext<PolkadotContextProps>({
-  network: undefined,
+  network: DEFAULT_CHAIN,
   accounts: undefined,
   accountConnected: undefined,
   wallets: [],
@@ -40,23 +43,38 @@ const PolkadotContext = createContext<PolkadotContextProps>({
 export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const [networkId, setNetworkId] = useState<ChainId | undefined>();
+  const [networkId, setNetworkId] = useState<ChainId>(DEFAULT_CHAIN);
   const { accounts, account, connect, disconnect, isConnected, setAccount } =
     useWallet();
   const walletList = useAllWallets();
+  const { networkRepository } = useLocalDbContext();
+
+  const loadNetworkConnected = useCallback(() => {
+    const networkSelected = networkRepository.getNetworkSelected();
+    setNetworkId(networkSelected.id);
+  }, [networkRepository]);
 
   useEffect(() => {
-    if (networkId) return;
+    loadNetworkConnected();
+  }, [loadNetworkConnected]);
 
-    // set default chain according environment
-    setNetworkId(DEFAULT_CHAIN);
-  }, [networkId]);
+  const setCurrentChain = useCallback(
+    async (chainId: ChainId) => {
+      networkRepository.setNetworkSelected(chainId);
+      setNetworkId(chainId);
+
+      document.dispatchEvent(
+        new CustomEvent(WalletConnectionEvents.networkChanged)
+      );
+    },
+    [networkRepository]
+  );
 
   return (
     <PolkadotContext.Provider
       value={{
         network: networkId,
-        setNetwork: setNetworkId,
+        setNetwork: setCurrentChain,
         accounts,
         accountConnected: account,
         wallets: walletList,

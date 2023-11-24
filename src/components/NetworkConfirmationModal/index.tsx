@@ -23,7 +23,7 @@ export default function NetworkConfirmationModal() {
   };
 
   const handleConfirm = () => {
-    setNetwork(xSignerSelected?.networkId);
+    xSignerSelected && setNetwork(xSignerSelected.networkId);
     setOpen(false);
   };
 
