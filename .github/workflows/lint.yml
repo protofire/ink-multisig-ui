@@ -12,6 +12,10 @@ jobs:
         node-version: [18.x]
 
     steps:
+      - uses: actions/checkout@v2
+      - name: List files
+        run: ls -R
+
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.5.0
         with:

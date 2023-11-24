@@ -1,5 +1,6 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { hexToU8a, isHex } from "@polkadot/util";
+import * as ss58 from "@subsquid/ss58";
 import { createHash, randomBytes } from "crypto";
 
 export const isValidAddress = (address: string | undefined) => {
@@ -95,4 +96,20 @@ export const splitTokenAmount = (balance?: string) => {
   }
 
   return undefined;
+};
+
+const networkIdToPrefix: Record<string, number> = {
+  "shibuya-testnet": 5,
+  "rococo-contracts-testnet": 42,
+};
+
+export const formatAddressForNetwork = (address: string, networkId: string) => {
+  const rawAddress = ss58.decode(address).bytes;
+
+  const prefix =
+    networkIdToPrefix[networkId] !== undefined
+      ? networkIdToPrefix[networkId]
+      : 42;
+
+  return ss58.codec(prefix).encode(rawAddress);
 };

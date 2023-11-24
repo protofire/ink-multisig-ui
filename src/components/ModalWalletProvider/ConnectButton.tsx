@@ -37,6 +37,8 @@ export const ConnectButton: React.FC = () => {
   );
 
   const handleNetworkChange = (chainId: ChainId | undefined) => {
+    if (chainId === undefined) return;
+
     setNetwork(chainId);
     if (
       chainId !== xSignerSelected?.networkId &&

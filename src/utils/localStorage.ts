@@ -1,25 +1,39 @@
+const isString = (value: unknown) => typeof value === "string";
+
 export const getLocalStorageState = <T>(
   nameItem: string,
   defaultValue: T
 ): T | null => {
-  let state = null;
+  if (typeof window === "undefined") {
+    return defaultValue;
+  }
+
+  let state: T | null = null;
 
   try {
     const storedData: string | null = window.localStorage.getItem(nameItem);
-
-    if (storedData) {
-      state = { ...JSON.parse(storedData) };
-    } else {
+    if (!storedData) {
       state = defaultValue;
+    } else {
+      try {
+        state = JSON.parse(storedData as string);
+      } catch {
+        state = storedData as T;
+      }
     }
   } catch (err) {
     console.error(err);
-  } finally {
-    // eslint-disable-next-line no-unsafe-finally
-    return state;
+    state = defaultValue;
   }
+
+  return state;
 };
 
-export const setLocalStorageState = <T>(nameItem: string, value: T) => {
-  window.localStorage.setItem(nameItem, JSON.stringify(value));
+export const setLocalStorageState = <T extends string | object>(
+  nameItem: string,
+  value: T
+) => {
+  const _value = isString(value) ? (value as string) : JSON.stringify(value);
+
+  window.localStorage.setItem(nameItem, _value);
 };
