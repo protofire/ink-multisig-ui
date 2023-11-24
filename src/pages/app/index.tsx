@@ -41,7 +41,7 @@ export default function AppDashboard() {
           <Link href={ROUTES.Settings}>
             <SummaryCard
               captionTitle="Owners"
-              caption={xSignerSelected?.owners.length.toString()}
+              caption={xSignerSelected?.owners?.length?.toString()}
               isLoading={xSignerSelected ? false : true}
             />
           </Link>
