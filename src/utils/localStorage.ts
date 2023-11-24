@@ -12,11 +12,14 @@ export const getLocalStorageState = <T>(
 
   try {
     const storedData: string | null = window.localStorage.getItem(nameItem);
-
-    if (storedData) {
-      state = isString(storedData) ? storedData : { ...JSON.parse(storedData) };
-    } else {
+    if (!storedData) {
       state = defaultValue;
+    } else {
+      try {
+        state = JSON.parse(storedData as string);
+      } catch {
+        state = storedData as T;
+      }
     }
   } catch (err) {
     console.error(err);

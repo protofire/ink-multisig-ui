@@ -21,7 +21,7 @@ export function XsignerAccountInfoWidget() {
       name={name}
       address={address}
       threshold={xSignerSelected?.threshold}
-      ownersCount={xSignerSelected?.owners.length}
+      ownersCount={xSignerSelected?.owners?.length}
       xsigners={data}
     />
   );
