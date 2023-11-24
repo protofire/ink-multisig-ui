@@ -238,6 +238,7 @@ export default function WelcomePage() {
                       name={multisig.name}
                       address={multisig.address}
                       truncateAmount={16}
+                      showLink={false}
                     />
                   </Box>
                   <Box>
