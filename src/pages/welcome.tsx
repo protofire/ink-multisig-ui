@@ -4,6 +4,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { ChainId } from "useink/dist/chains";
 import { ArrayOneOrMore } from "useink/dist/core";
@@ -23,6 +24,7 @@ import {
   useDeleteSignersAccount,
   useListSignersAccount,
 } from "@/hooks/xsignersAccount";
+import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { generateRandomWalletName } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
@@ -42,6 +44,8 @@ export default function WelcomePage() {
   const { save } = useAddSignersAccount();
   const { delete: deleteAccount } = useDeleteSignersAccount();
   const { xsignerOwnersRepository } = useLocalDbContext();
+  const { setXsigner } = useSetXsignerSelected();
+  const router = useRouter();
 
   const handleDeletedMultisig = async (multisig: MultisigsDataFormatted) => {
     try {
@@ -52,6 +56,17 @@ export default function WelcomePage() {
     } catch (err) {
       setError(customReportError(err));
     }
+  };
+
+  const handleMultisigRedirect = (address: string) => {
+    const selectedMultisig = signersAccount?.find(
+      (multisig) => multisig.address === address
+    );
+    if (!selectedMultisig) {
+      return;
+    }
+    setXsigner(selectedMultisig);
+    router.replace(ROUTES.App);
   };
 
   useEffect(() => {
@@ -217,9 +232,9 @@ export default function WelcomePage() {
         >
           {!loading ? (
             multisigs.map((multisig) => (
-              // eslint-disable-next-line react/jsx-key
-              <Link href={multisig.address} passHref>
+              <>
                 <Box
+                  onClick={() => handleMultisigRedirect(multisig.address)}
                   key={multisig.address}
                   display="flex"
                   gap={8}
@@ -257,7 +272,7 @@ export default function WelcomePage() {
                     />
                   </Box>
                 </Box>
-              </Link>
+              </>
             ))
           ) : (
             <Box
