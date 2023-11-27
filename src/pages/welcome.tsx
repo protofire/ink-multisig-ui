@@ -18,7 +18,7 @@ import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { Owner } from "@/domain/SignatoriesAccount";
+import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   useAddSignersAccount,
   useDeleteSignersAccount,
@@ -31,6 +31,7 @@ import { customReportError } from "@/utils/error";
 type MultisigsDataFormatted = {
   name: string;
   address: string;
+  networkId?: ChainId;
   network?: ChainExtended;
 };
 
@@ -57,15 +58,14 @@ export default function WelcomePage() {
       setError(customReportError(err));
     }
   };
-
   const handleMultisigRedirect = (address: string) => {
-    const selectedMultisig = signersAccount?.find(
+    const selectedMultisig = multisigs?.find(
       (multisig) => multisig.address === address
     );
     if (!selectedMultisig) {
       return;
     }
-    setXsigner(selectedMultisig);
+    setXsigner(selectedMultisig as SignatoriesAccount);
     router.replace(ROUTES.App);
   };
 
@@ -81,6 +81,7 @@ export default function WelcomePage() {
             address: acc.address,
             name: acc.name,
             network: getChain(acc.networkId),
+            networkId: acc.networkId,
           })) || [];
         let allMultisigs: MultisigsDataFormatted[] = alreadyExistsMultisigs;
 
@@ -101,7 +102,7 @@ export default function WelcomePage() {
                 account: {
                   address: multisig.addressSS58,
                   name: generateRandomWalletName(),
-                  networkId: network as ChainId,
+                  networkId: network,
                   owners: multisig.owners.map((owner, index) => ({
                     address: owner,
                     name: `Signer ${index + 1}`,
@@ -118,6 +119,7 @@ export default function WelcomePage() {
               ...filteredMultisigs.map((multisig) => ({
                 address: multisig.addressSS58,
                 name: generateRandomWalletName(),
+                networkId: network,
               })),
             ];
           }
@@ -232,10 +234,10 @@ export default function WelcomePage() {
         >
           {!loading ? (
             multisigs.map((multisig) => (
-              <>
+              <Box key={multisig.address}>
+                <></>
                 <Box
                   onClick={() => handleMultisigRedirect(multisig.address)}
-                  key={multisig.address}
                   display="flex"
                   gap={8}
                   alignItems="center"
@@ -272,7 +274,7 @@ export default function WelcomePage() {
                     />
                   </Box>
                 </Box>
-              </>
+              </Box>
             ))
           ) : (
             <Box
