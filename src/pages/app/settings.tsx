@@ -12,6 +12,7 @@ import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner"
 import BaseStepper from "@/components/StepperSignersAccount/BaseStepper";
 import { StepProps } from "@/components/StepperSignersAccount/constants";
 import { useManagerActiveStep } from "@/components/StepperSignersAccount/useManagerActiveStep";
+import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
@@ -20,18 +21,14 @@ import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
-import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 import { customReportError } from "@/utils/error";
-
-import { squidClient } from "../_app";
-
-const repository = new XsignerOwnersRepository(squidClient);
 
 export default function SettingsPage() {
   const { xSignerSelected } = useGetXsignerSelected();
   const { multisigContractPromise } = useMultisigContractPromise(
     xSignerSelected?.address
   );
+  const { xsignerOwnersRepository } = useLocalDbContext();
   const { version: contractVersion } = (multisigContractPromise?.contract.abi
     .json?.contract as {
     version: string;
@@ -54,7 +51,7 @@ export default function SettingsPage() {
     const fetchData = async () => {
       if (!xSignerSelected?.address) return;
       try {
-        const result = await repository.getMultisigByAddress(
+        const result = await xsignerOwnersRepository.getMultisigByAddress(
           xSignerSelected.address as string
         );
         if (result) {
