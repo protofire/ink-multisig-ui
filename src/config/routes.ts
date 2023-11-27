@@ -10,6 +10,7 @@ export const ROUTES = {
   Settings: "/app/settings",
   Assets: "/app/assets",
   TxDetails: "/app/transaction-details",
+  TxAll: "/app/transactions",
   NewTx: "/app/new-transaction",
 } as const;
 

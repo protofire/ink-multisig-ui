@@ -14,7 +14,7 @@ export default function TxPage() {
       }}
     >
       <Typography mb={2} variant="h3" color="primary">
-        Transaction details
+        Transactions
       </Typography>
       <TxTable />
     </Box>
