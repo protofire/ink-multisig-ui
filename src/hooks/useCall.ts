@@ -17,6 +17,8 @@ const DEFAULT_RESPONSE = {
   value: undefined,
 };
 
+const MAX_WAIT_TIME = 2000;
+
 export function useCall(
   address: string,
   methodName: string,
@@ -38,6 +40,16 @@ export function useCall(
     setData(DEFAULT_RESPONSE);
     setError(undefined);
   };
+  useEffect(() => {
+    if (!address) return;
+    const timer = setTimeout(() => {
+      if (!data.ok) {
+        setError(`Cannot get ${methodName} data.`);
+      }
+    }, MAX_WAIT_TIME);
+
+    return () => clearTimeout(timer);
+  }, [address, data, methodName]);
 
   useEffect(() => {
     reset();
@@ -56,7 +68,6 @@ export function useCall(
             abiMessage.value.toU8a(args)
           );
           if (!raw) return;
-
           const decodedData = decodeCallResult(
             raw.result,
             abiMessage.value,

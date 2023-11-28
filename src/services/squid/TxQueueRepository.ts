@@ -1,4 +1,3 @@
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import gql from "graphql-tag";
 
 import {
@@ -7,6 +6,8 @@ import {
   MyQueryVariables,
   TxQueueType,
 } from "@/domain/repositores/ITxQueueRepository";
+
+import { GraphClient } from "./GraphClient";
 
 const FETCH_QUEUE = gql`
   query MyQuery {
@@ -65,15 +66,14 @@ const FETCH_QUEUE = gql`
 `;
 
 export class TxQueueRepository implements ITxQueueRepository {
-  constructor(private client: ApolloClient<NormalizedCacheObject>) {}
+  constructor(private client: GraphClient) {}
 
   async getQueue(address: string): Promise<TxQueueType[] | null> {
-    const { data } = await this.client.query<MyQueryResponse, MyQueryVariables>(
-      {
-        query: FETCH_QUEUE,
-        variables: { address },
-      }
-    );
+    const client = this.client.getCurrentApolloClient();
+    const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
+      query: FETCH_QUEUE,
+      variables: { address },
+    });
     return data?.txes || null;
   }
 }

@@ -2,6 +2,7 @@ import { Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
 import { AddressBookWidget } from "@/components/AddressBookWidget";
+import NetworkConfirmationModal from "@/components/NetworkConfirmationModal";
 import { SummaryCard } from "@/components/SummaryCard";
 import { XsignerBalanceText } from "@/components/SummaryCard/XsignerBalanceText";
 import { TxQueueWidget } from "@/components/TxQueueWidget";
@@ -18,6 +19,7 @@ export default function AppDashboard() {
 
   return (
     <>
+      <NetworkConfirmationModal />
       <Grid container spacing={3} mt={2}>
         <Grid item xs={12} sm={6} md={3}>
           <SummaryCard
@@ -39,7 +41,7 @@ export default function AppDashboard() {
           <Link href={ROUTES.Settings}>
             <SummaryCard
               captionTitle="Owners"
-              caption={xSignerSelected?.owners.length.toString()}
+              caption={xSignerSelected?.owners?.length?.toString()}
               isLoading={xSignerSelected ? false : true}
             />
           </Link>

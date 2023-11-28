@@ -71,5 +71,10 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
     [addNotification, newMultisigTx]
   );
 
-  return { signAndSend, error, txStatus: newMultisigTx.status };
+  return {
+    signAndSend,
+    error,
+    txStatus: newMultisigTx.status,
+    reset: newMultisigTx.resetState,
+  };
 }

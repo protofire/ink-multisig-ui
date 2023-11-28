@@ -15,6 +15,7 @@ export const DEFAULT_CHAIN: Chain["id"] = IS_DEVELOPMENT
   : "astar";
 
 export type ChainExtended = Chain & {
+  id: ChainId;
   logo: {
     src: string;
     alt: string;

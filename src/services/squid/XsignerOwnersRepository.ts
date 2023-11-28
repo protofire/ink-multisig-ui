@@ -1,4 +1,3 @@
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import gql from "graphql-tag";
 
 import {
@@ -7,6 +6,8 @@ import {
   MyQueryResponse,
   MyQueryVariables,
 } from "@/domain/repositores/IXsignerOwnersRepository";
+
+import { GraphClient } from "./GraphClient";
 
 const FETCH_MULTISIG = gql`
   query MyQuery($address: String!) {
@@ -31,28 +32,28 @@ const FETCH_MULTISIGS_BY_OWNER = gql`
 `;
 
 export class XsignerOwnersRepository implements IXsignerOwnersRepository {
-  constructor(private client: ApolloClient<NormalizedCacheObject>) {}
+  constructor(private client: GraphClient) {}
 
   async getMultisigByAddress(address: string): Promise<MultisigData | null> {
-    const { data } = await this.client.query<MyQueryResponse, MyQueryVariables>(
-      {
-        query: FETCH_MULTISIG,
-        variables: { address },
-      }
-    );
+    const client = this.client.getCurrentApolloClient();
+
+    const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
+      query: FETCH_MULTISIG,
+      variables: { address },
+    });
 
     return data?.multisigs[0] || null;
   }
 
   async getMultisigsByOwner(address: string): Promise<MultisigData[] | null> {
-    const { data } = await this.client.query<MyQueryResponse, MyQueryVariables>(
-      {
-        query: FETCH_MULTISIGS_BY_OWNER,
-        variables: {
-          address: [address],
-        },
-      }
-    );
+    const client = this.client.getCurrentApolloClient();
+
+    const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
+      query: FETCH_MULTISIGS_BY_OWNER,
+      variables: {
+        address: [address],
+      },
+    });
 
     return data?.multisigs || null;
   }

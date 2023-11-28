@@ -9,6 +9,7 @@ export interface ManagerActiveStep {
   downCreationStep: () => void;
   upExecutionStep: () => void;
   downExecutionStep: () => void;
+  resetSteps: () => void;
 }
 
 export function useManagerActiveStep(): ManagerActiveStep {
@@ -50,11 +51,16 @@ export function useManagerActiveStep(): ManagerActiveStep {
     [setActiveStep]
   );
 
+  const resetSteps = useCallback(() => {
+    setActiveStep({ creation: 0, execution: 0 });
+  }, [setActiveStep]);
+
   return {
     activeStep,
     upCreationStep,
     downCreationStep,
     upExecutionStep,
     downExecutionStep,
+    resetSteps,
   };
 }

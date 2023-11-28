@@ -60,14 +60,14 @@ export const TxQueueWidgetItem = ({ data, network }: Props) => {
     <ListItemtyled>
       <StyledBox>
         <Image
-          src={txData.img}
+          src={txData?.img}
           alt="Arrow receive"
           priority
           width={30}
           height={30}
         />
         <StyledStack>
-          <span>{txData.type}</span>
+          <span>{txData?.type}</span>
           <span>{date}</span>
           <p>{truncateAddress(from, 12)}</p>
         </StyledStack>

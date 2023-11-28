@@ -1,17 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { useLocalDbContext } from "@/context/uselocalDbContext";
 import {
   TransactionType,
   TransferType,
   TxQueueType,
 } from "@/domain/repositores/ITxQueueRepository";
-import { squidClient } from "@/pages/_app";
-import { TxQueueRepository } from "@/services/squid/TxQueueRepository";
 import { customReportError } from "@/utils/error";
 
 export type TxTypes = "transfer" | "transaction";
-
-const repository = new TxQueueRepository(squidClient);
 
 export function useListTxQueue(address: string | undefined) {
   const [data, setData] = useState<TxQueueType[] | null>(null);
@@ -22,6 +19,7 @@ export function useListTxQueue(address: string | undefined) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { txQueueRepository } = useLocalDbContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +27,7 @@ export function useListTxQueue(address: string | undefined) {
       setIsLoading(true);
       setError(null);
       try {
-        const result = await repository.getQueue(address);
+        const result = await txQueueRepository.getQueue(address);
         console.log("result", result);
 
         const transferData = result?.filter(
@@ -57,7 +55,7 @@ export function useListTxQueue(address: string | undefined) {
     fetchData().finally(() => {
       setIsLoading(false);
     });
-  }, [address]);
+  }, [address, txQueueRepository]);
 
   const listTxByType = useCallback(
     (key: TxTypes) => {
