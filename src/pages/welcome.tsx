@@ -4,6 +4,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { ChainId } from "useink/dist/chains";
 import { ArrayOneOrMore } from "useink/dist/core";
@@ -17,18 +18,20 @@ import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { Owner } from "@/domain/SignatoriesAccount";
+import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   useAddSignersAccount,
   useDeleteSignersAccount,
   useListSignersAccount,
 } from "@/hooks/xsignersAccount";
+import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { generateRandomWalletName } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
 type MultisigsDataFormatted = {
   name: string;
   address: string;
+  networkId?: ChainId;
   network?: ChainExtended;
 };
 
@@ -42,6 +45,8 @@ export default function WelcomePage() {
   const { save } = useAddSignersAccount();
   const { delete: deleteAccount } = useDeleteSignersAccount();
   const { xsignerOwnersRepository } = useLocalDbContext();
+  const { setXsigner } = useSetXsignerSelected();
+  const router = useRouter();
 
   const handleDeletedMultisig = async (multisig: MultisigsDataFormatted) => {
     try {
@@ -52,6 +57,16 @@ export default function WelcomePage() {
     } catch (err) {
       setError(customReportError(err));
     }
+  };
+  const handleMultisigRedirect = (address: string) => {
+    const selectedMultisig = multisigs?.find(
+      (multisig) => multisig.address === address
+    );
+    if (!selectedMultisig) {
+      return;
+    }
+    setXsigner(selectedMultisig as SignatoriesAccount);
+    router.replace(ROUTES.App);
   };
 
   useEffect(() => {
@@ -66,6 +81,7 @@ export default function WelcomePage() {
             address: acc.address,
             name: acc.name,
             network: getChain(acc.networkId),
+            networkId: acc.networkId,
           })) || [];
         let allMultisigs: MultisigsDataFormatted[] = alreadyExistsMultisigs;
 
@@ -86,7 +102,7 @@ export default function WelcomePage() {
                 account: {
                   address: multisig.addressSS58,
                   name: generateRandomWalletName(),
-                  networkId: network as ChainId,
+                  networkId: network,
                   owners: multisig.owners.map((owner, index) => ({
                     address: owner,
                     name: `Signer ${index + 1}`,
@@ -103,6 +119,7 @@ export default function WelcomePage() {
               ...filteredMultisigs.map((multisig) => ({
                 address: multisig.addressSS58,
                 name: generateRandomWalletName(),
+                networkId: network,
               })),
             ];
           }
@@ -211,46 +228,51 @@ export default function WelcomePage() {
           mt={3}
           width="100%"
           sx={{ backgroundColor: theme.palette.background.paper }}
-          p={4}
+          p={0}
           pt={0}
           pb={0}
         >
           {!loading ? (
             multisigs.map((multisig) => (
-              <Box
-                key={multisig.address}
-                display="flex"
-                gap={8}
-                alignItems="center"
-                justifyContent="space-around"
-                sx={{
-                  borderBottom: "1px solid #2F2F2F",
-                  borderTop: "1px solid #2F2F2F",
-                }}
-                p={1}
-                pl={2}
-              >
-                <Box width={300}>
-                  <AccountSigner
-                    name={multisig.name}
-                    address={multisig.address}
-                    truncateAmount={16}
-                  />
-                </Box>
-                <Box>
-                  <NetworkBadge
-                    showTooltip={false}
-                    name={multisig.network?.name || networkName}
-                    logo={multisig.network?.logo?.src || logo.src}
-                    logoSize={{ width: 20, height: 20 }}
-                    description={multisig.network?.logo?.alt || logo.alt}
-                  />
-                </Box>
-                <Box>
-                  <DeleteOutlinedIcon
-                    onClick={() => handleDeletedMultisig(multisig)}
-                    sx={{ cursor: "pointer" }}
-                  />
+              <Box key={multisig.address}>
+                <></>
+                <Box
+                  onClick={() => handleMultisigRedirect(multisig.address)}
+                  display="flex"
+                  gap={8}
+                  alignItems="center"
+                  justifyContent="space-around"
+                  sx={{
+                    borderBottom: "1px solid #2F2F2F",
+                    borderTop: "1px solid #2F2F2F",
+                    "&:hover": { backgroundColor: "#2F2F2F" },
+                  }}
+                  p={1}
+                  pl={0}
+                >
+                  <Box width={300}>
+                    <AccountSigner
+                      name={multisig.name}
+                      address={multisig.address}
+                      truncateAmount={16}
+                      showLink={false}
+                    />
+                  </Box>
+                  <Box>
+                    <NetworkBadge
+                      showTooltip={false}
+                      name={multisig.network?.name || networkName}
+                      logo={multisig.network?.logo?.src || logo.src}
+                      logoSize={{ width: 20, height: 20 }}
+                      description={multisig.network?.logo?.alt || logo.alt}
+                    />
+                  </Box>
+                  <Box>
+                    <DeleteOutlinedIcon
+                      onClick={() => handleDeletedMultisig(multisig)}
+                      sx={{ cursor: "pointer" }}
+                    />
+                  </Box>
                 </Box>
               </Box>
             ))
