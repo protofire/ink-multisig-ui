@@ -58,6 +58,11 @@ export default function ManageOwners({
     setOpen(false);
   };
 
+  const handleLocalDelete = (owner: Owner) => {
+    if (owners?.length === 1) return;
+    handleDeleteOwner(owner);
+  };
+
   const handleSave = async () => {
     if (!ownersList?.length || !selectedMultisig) return;
 
@@ -207,8 +212,12 @@ export default function ManageOwners({
                   />
                   {!isDeletedLoading ? (
                     <DeleteOutlinedIcon
-                      onClick={() => handleDeleteOwner(owner)}
-                      sx={{ cursor: "pointer" }}
+                      onClick={() => handleLocalDelete(owner)}
+                      sx={{
+                        cursor:
+                          owners?.length === 1 ? "not-allowed" : "pointer",
+                      }}
+                      color={owners?.length === 1 ? "disabled" : "inherit"}
                     />
                   ) : (
                     <CircularProgress color="secondary" size={20} />

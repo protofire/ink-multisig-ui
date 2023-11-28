@@ -99,6 +99,10 @@ export default function SettingsPage() {
   const handleCancel = () => {
     setSteps(null);
     managerStep.resetSteps();
+    if (selectedMultisig) {
+      data.handleOwners(selectedMultisig.owners, 0);
+      data.handleThreshold(selectedMultisig.threshold);
+    }
   };
 
   const handleConfirm = async () => {
