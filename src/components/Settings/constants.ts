@@ -2,6 +2,7 @@ import { StepProps } from "../StepperSignersAccount/constants";
 import { withCard } from "../StepperSignersAccount/steps";
 import OwnerStep from "./steps/OwnerStep";
 import ReviewStep from "./steps/ReviewStep";
+import ThresholdStep from "./steps/ThresholdStep";
 
 export const OWNER_STEPS: StepProps = {
   creation: [
@@ -27,7 +28,7 @@ export const THRESHOLD_STEPS: StepProps = {
       id: 0,
       name: "Create",
 
-      Component: withCard(OwnerStep, "Change threshold"),
+      Component: withCard(ThresholdStep, "Change threshold"),
     },
     {
       id: 1,

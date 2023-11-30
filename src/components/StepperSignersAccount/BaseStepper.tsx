@@ -1,5 +1,11 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Box, Step, Stepper, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Step,
+  Stepper,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 
@@ -19,7 +25,10 @@ export type BaseStepperProps = {
   steps: StepProps;
   data: UseFormSignersAccountStateReturn;
   managerStep: ManagerActiveStep;
+  customInitialRedirect?: () => void;
+  customFinalRedirect?: () => void;
   reset?: () => void;
+  isConfirmLoading?: boolean;
 };
 
 function BaseStepper({
@@ -29,6 +38,9 @@ function BaseStepper({
   data,
   managerStep,
   reset,
+  customInitialRedirect,
+  customFinalRedirect,
+  isConfirmLoading = false,
 }: BaseStepperProps) {
   const { activeStep, upCreationStep, downCreationStep } = managerStep;
   const router = useRouter();
@@ -47,7 +59,11 @@ function BaseStepper({
     if (isLastStep) {
       onCompleteCreation?.();
       if (!steps.execution.length) {
-        handleRedirect(ROUTES.App);
+        if (customFinalRedirect) {
+          customFinalRedirect();
+        } else {
+          handleRedirect(ROUTES.App);
+        }
       }
       return;
     } else {
@@ -58,7 +74,11 @@ function BaseStepper({
   const handleBack = () => {
     const isFirstStep = activeStep.creation === 0;
     if (isFirstStep) {
-      handleRedirect(ROUTES.Welcome);
+      if (customInitialRedirect) {
+        customInitialRedirect();
+      } else {
+        handleRedirect(ROUTES.Welcome);
+      }
     } else {
       downCreationStep();
     }
@@ -107,12 +127,15 @@ function BaseStepper({
               disabled={
                 !!data.errors[activeStep.creation].find(
                   (error: ValidationError) => !!error.error
-                )
+                ) || isConfirmLoading
               }
             >
               {activeStep.creation === steps.creation.length - 1
                 ? "Confirm"
                 : "Next"}
+              {isConfirmLoading && (
+                <CircularProgress color="secondary" size={20} />
+              )}
             </FooterButton>
           )}
         </StepperFooter>
