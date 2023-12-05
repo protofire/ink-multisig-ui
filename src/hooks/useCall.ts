@@ -22,6 +22,7 @@ const MAX_WAIT_TIME = 2000;
 export function useCall(
   address: string,
   methodName: string,
+  caller?: string,
   args: unknown[] = []
 ) {
   const { pSPContractPromise: contractPromise } =
@@ -60,7 +61,7 @@ export function useCall(
         if (!abiMessage.ok) return;
         try {
           const raw = await apiCaller.call<ContractExecResult>(
-            accountConnected?.address,
+            caller ?? accountConnected?.address,
             contract.address,
             BN_ZERO,
             null,
@@ -90,6 +91,7 @@ export function useCall(
     methodName,
     accountConnected?.address,
     address,
+    caller,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(args),
   ]);

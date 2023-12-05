@@ -1,12 +1,14 @@
 import React, { createContext, PropsWithChildren, useContext } from "react";
 
 import { IAddressBookRepository } from "@/domain/repositores/IAddressBookRepository";
+import { IAssetRepository } from "@/domain/repositores/IAssetRepository";
 import { INetworkRepository } from "@/domain/repositores/INetworkRepository";
 import { ITxQueueRepository } from "@/domain/repositores/ITxQueueRepository";
 import { IXsignerOwnersRepository } from "@/domain/repositores/IXsignerOwnersRepository";
 import { IXsignerSelectedRepository } from "@/domain/repositores/IXsignerSelectedRepository";
 import { MyDatabase } from "@/services/localDB";
 import { AddressBookRepository } from "@/services/localDB/AddressBookRepository";
+import { AssetRepository } from "@/services/localDB/AssetRepository";
 import { SignatoriesAccountDatabase } from "@/services/localDB/SignatoriesAccountRepository";
 import { XsignerSelectedRepository } from "@/services/localDB/XsignerSelectedRepository";
 import { LocalStorageNetworkRepository } from "@/services/LocalStorageNetworkRepository";
@@ -20,6 +22,7 @@ interface DbContext {
   xsignerSelectedRepository: IXsignerSelectedRepository;
   xsignerOwnersRepository: IXsignerOwnersRepository;
   addressBookRepository: IAddressBookRepository;
+  assetRepository: IAssetRepository;
   txQueueRepository: ITxQueueRepository;
 }
 
@@ -28,6 +31,7 @@ const signatoriesAccountRepository = new SignatoriesAccountDatabase(
 );
 const xsignerSelectedRepository = new XsignerSelectedRepository();
 const addressBookRepository = new AddressBookRepository();
+const assetRepository = new AssetRepository();
 const networkRepository = new LocalStorageNetworkRepository();
 const graphSquidClient = new GraphClient(networkRepository);
 const xsignerOwnersRepository = new XsignerOwnersRepository(graphSquidClient);
@@ -39,6 +43,7 @@ const DbContext = createContext<DbContext>({
   xsignerSelectedRepository,
   xsignerOwnersRepository,
   addressBookRepository,
+  assetRepository,
   txQueueRepository,
 });
 
@@ -51,6 +56,7 @@ export const LocalDbProvider: React.FC<PropsWithChildren> = ({ children }) => {
         xsignerSelectedRepository,
         xsignerOwnersRepository,
         addressBookRepository,
+        assetRepository,
         txQueueRepository,
       }}
     >
