@@ -7,9 +7,11 @@ import { Owner } from "@/domain/SignatoriesAccount";
 export default function RequiredConfirmations({
   owners,
   threshold,
+  handleAddThreshold,
 }: {
   owners?: ArrayOneOrMore<Owner>;
   threshold?: number;
+  handleAddThreshold: () => void;
 }) {
   return (
     <Box display="flex">
@@ -24,7 +26,11 @@ export default function RequiredConfirmations({
           <Typography variant="body1">
             {threshold ?? 0} out of {owners?.length ?? 0} owner(s).
           </Typography>
-          <Button sx={{ width: 134 }} variant="contained">
+          <Button
+            sx={{ width: 134 }}
+            onClick={handleAddThreshold}
+            variant="contained"
+          >
             Change
           </Button>
         </Box>

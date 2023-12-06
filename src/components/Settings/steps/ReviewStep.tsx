@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { ArrayOneOrMore } from "useink/dist/core";
 
 import NetworkBadge from "@/components/NetworkBadge";
@@ -11,9 +12,16 @@ import { getChain } from "@/config/chain";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner } from "@/domain/SignatoriesAccount";
 
-function ReviewStep({ owners }: { owners: ArrayOneOrMore<Owner> }) {
+function ReviewStep({
+  owners,
+  threshold,
+}: {
+  owners: ArrayOneOrMore<Owner>;
+  threshold: number;
+}) {
   const { network } = usePolkadotContext();
   const { logo, name: networkName } = getChain(network);
+  const theme = useTheme();
 
   return (
     <Box>
@@ -48,6 +56,14 @@ function ReviewStep({ owners }: { owners: ArrayOneOrMore<Owner> }) {
                   truncateAmount={12}
                 />
               ))}
+            </Typography>
+          </FlexCenterBox>
+          <FlexCenterBox>
+            <Typography variant="h6" width={200}>
+              Threshold
+            </Typography>
+            <Typography variant="body1" color={theme.palette.common.white}>
+              {threshold} out of {owners.length} owner(s)
             </Typography>
           </FlexCenterBox>
         </StyledBox>

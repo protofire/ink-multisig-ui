@@ -4,6 +4,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import {
   Box,
   Button,
+  CircularProgress,
   Divider,
   Modal,
   TextField,
@@ -24,10 +25,14 @@ export default function ManageOwners({
   owners,
   selectedMultisig,
   handleAddOwner,
+  handleDeleteOwner,
+  isDeletedLoading = false,
 }: {
   owners?: ArrayOneOrMore<Owner>;
   selectedMultisig?: SignatoriesAccount;
   handleAddOwner: () => void;
+  handleDeleteOwner: (owner: Owner) => void;
+  isDeletedLoading?: boolean;
 }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -51,6 +56,11 @@ export default function ManageOwners({
   const handleClose = () => {
     setCurrentOwner({} as Owner);
     setOpen(false);
+  };
+
+  const handleLocalDelete = (owner: Owner) => {
+    if (owners?.length === 1) return;
+    handleDeleteOwner(owner);
   };
 
   const handleSave = async () => {
@@ -182,25 +192,43 @@ export default function ManageOwners({
           {ownersList?.map((owner) => (
             <Box
               display="flex"
-              alignItems="center"
-              justifyContent="space-between"
+              flexDirection="column"
               key={owner?.address as string}
             >
-              <AccountSigner
-                name={owner?.name as string}
-                address={owner?.address as string}
-                truncateAmount={16}
-              />
-              <Box display="flex" gap={0.25}>
-                <CreateOutlinedIcon
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleEdit(owner)}
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <AccountSigner
+                  name={owner?.name as string}
+                  address={owner?.address as string}
+                  truncateAmount={16}
                 />
-                <DeleteOutlinedIcon sx={{ cursor: "pointer" }} />
+                <Box display="flex" gap={0.25}>
+                  <CreateOutlinedIcon
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => handleEdit(owner)}
+                  />
+                  {!isDeletedLoading ? (
+                    <DeleteOutlinedIcon
+                      onClick={() => handleLocalDelete(owner)}
+                      sx={{
+                        cursor:
+                          owners?.length === 1 ? "not-allowed" : "pointer",
+                      }}
+                      color={owners?.length === 1 ? "disabled" : "inherit"}
+                    />
+                  ) : (
+                    <CircularProgress color="secondary" size={20} />
+                  )}
+                </Box>
+              </Box>
+              <Box>
+                <Divider sx={{ margin: "0.5rem 0" }} />
               </Box>
             </Box>
           ))}
-          <Divider sx={{ marginTop: "1rem" }} />
         </Box>
         <Button
           variant="text"

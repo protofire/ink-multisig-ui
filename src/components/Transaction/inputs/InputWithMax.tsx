@@ -1,10 +1,11 @@
 // InputWithMax.tsx
 import { Button, TextField, TextFieldProps } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type InputWithMaxProps = {
   maxValue: string;
   defaultValue?: string;
+  value: string;
   onValueChange: (value: string) => void;
 } & Omit<TextFieldProps, "onChange" | "value">;
 
@@ -12,9 +13,15 @@ const InputWithMax: React.FC<InputWithMaxProps> = ({
   maxValue,
   onValueChange,
   defaultValue,
+  value,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState<string>(defaultValue ?? "");
+
+  useEffect(() => {
+    if (!value) return;
+    setInputValue(value);
+  }, [value]);
 
   const handleMaxClick = (): void => {
     setInputValue(maxValue);

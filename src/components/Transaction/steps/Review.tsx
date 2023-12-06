@@ -1,7 +1,10 @@
 import { Avatar, Box, Typography } from "@mui/material";
+import { ApiPromise } from "@polkadot/api";
 
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
-import { ChainExtended } from "@/config/chain";
+import { ChainExtended, getChain } from "@/config/chain";
+import { useNetworkApi } from "@/hooks/useNetworkApi";
+import { chainTokenSymbol } from "@/services/useink/substrate/tokenTypes";
 
 import { FlexCenterBox, StyledBox, TypographyBodyStyled } from "../styled";
 
@@ -16,6 +19,10 @@ type Props = {
 
 export const ReviewTokens = (props: Props) => {
   const { to, amount, chain } = props;
+  const { apiPromise: api } = useNetworkApi();
+  const symbol = chainTokenSymbol(api as ApiPromise);
+
+  const customToken = getChain();
 
   return (
     <Box display="flex" alignItems="center" flexDirection="column" gap={2}>
@@ -45,7 +52,14 @@ export const ReviewTokens = (props: Props) => {
               gap={1}
               component="div"
             >
-              <Avatar src={chain?.logo.src} alt={chain?.logo.alt} />
+              {symbol && amount.includes(symbol) ? (
+                <Avatar src={chain?.logo.src} alt={chain?.logo.alt} />
+              ) : (
+                <Avatar
+                  src={customToken?.logo.src}
+                  alt={customToken?.logo.alt}
+                />
+              )}
               <TypographyBodyStyled variant="body1">
                 {chain?.name}
               </TypographyBodyStyled>
