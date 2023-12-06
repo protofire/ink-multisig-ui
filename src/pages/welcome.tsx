@@ -1,6 +1,7 @@
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
@@ -221,9 +222,21 @@ export default function WelcomePage() {
           },
         }}
       >
-        <Typography variant="h3" color="white">
-          My XSigners accounts ({multisigs.length})
-        </Typography>
+        <Box display="flex" alignItems="center" gap={1.25}>
+          <Typography variant="h3" color="white">
+            My XSigners accounts ({multisigs.length})
+          </Typography>
+          <Typography variant="body1" component="p">
+            on
+          </Typography>
+          <NetworkBadge
+            showTooltip={false}
+            name={networkName}
+            logo={logo.src}
+            logoSize={{ width: 20, height: 20 }}
+            description={logo.alt}
+          />
+        </Box>
         <Box
           mt={3}
           width="100%"
@@ -235,7 +248,6 @@ export default function WelcomePage() {
           {!loading ? (
             multisigs.map((multisig) => (
               <Box key={multisig.address}>
-                <></>
                 <Box
                   onClick={() => handleMultisigRedirect(multisig.address)}
                   display="flex"
@@ -258,14 +270,17 @@ export default function WelcomePage() {
                       showLink={false}
                     />
                   </Box>
-                  <Box>
-                    <NetworkBadge
-                      showTooltip={false}
-                      name={multisig.network?.name || networkName}
-                      logo={multisig.network?.logo?.src || logo.src}
-                      logoSize={{ width: 20, height: 20 }}
-                      description={multisig.network?.logo?.alt || logo.alt}
+                  <Box display="flex" alignItems="center" gap={1.25}>
+                    <VisibilityOutlinedIcon
+                      sx={{ fontSize: "1.4rem", color: "#aaaaaa" }}
                     />
+                    <Typography
+                      variant="body1"
+                      component="p"
+                      sx={{ fontSize: "0.8rem", color: "#aaaaaa" }}
+                    >
+                      Read only
+                    </Typography>
                   </Box>
                   <Box>
                     <DeleteOutlinedIcon
