@@ -1,8 +1,14 @@
+import { HowToReg } from "@mui/icons-material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -22,7 +28,6 @@ import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   useAddSignersAccount,
-  useDeleteSignersAccount,
   useListSignersAccount,
 } from "@/hooks/xsignersAccount";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
@@ -44,21 +49,10 @@ export default function WelcomePage() {
   const { logo, name: networkName } = getChain(network);
   const { data: signersAccount } = useListSignersAccount();
   const { save } = useAddSignersAccount();
-  const { delete: deleteAccount } = useDeleteSignersAccount();
   const { xsignerOwnersRepository } = useLocalDbContext();
   const { setXsigner } = useSetXsignerSelected();
   const router = useRouter();
-
-  const handleDeletedMultisig = async (multisig: MultisigsDataFormatted) => {
-    try {
-      deleteAccount({ address: multisig.address });
-      setMultisigs((prev) =>
-        prev.filter((prevMultisig) => prevMultisig.address !== multisig.address)
-      );
-    } catch (err) {
-      setError(customReportError(err));
-    }
-  };
+  console.log(multisigs);
   const handleMultisigRedirect = (address: string) => {
     const selectedMultisig = multisigs?.find(
       (multisig) => multisig.address === address
@@ -270,22 +264,31 @@ export default function WelcomePage() {
                       showLink={false}
                     />
                   </Box>
-                  <Box display="flex" alignItems="center" gap={1.25}>
-                    <VisibilityOutlinedIcon
-                      sx={{ fontSize: "1.4rem", color: "#aaaaaa" }}
-                    />
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <HowToReg sx={{ fontSize: "1.4rem", color: "#97b42d" }} />
                     <Typography
                       variant="body1"
                       component="p"
-                      sx={{ fontSize: "0.8rem", color: "#aaaaaa" }}
+                      sx={{ fontSize: "0.8rem", color: "#97b42d" }}
                     >
-                      Read only
+                      Owner
                     </Typography>
                   </Box>
                   <Box>
-                    <DeleteOutlinedIcon
-                      onClick={() => handleDeletedMultisig(multisig)}
-                      sx={{ cursor: "pointer" }}
+                    <Tooltip title="Threshold" arrow>
+                      <Typography
+                        variant="body1"
+                        component="p"
+                        sx={{ fontSize: "0.8rem", color: "#aaaaaa" }}
+                      >
+                        2/3
+                        {/* {multisig.address} */}
+                      </Typography>
+                    </Tooltip>
+                  </Box>
+                  <Box>
+                    <ArrowForwardIosRoundedIcon
+                      sx={{ fontSize: "1.2rem", color: "#4d4d4d" }}
                     />
                   </Box>
                 </Box>
