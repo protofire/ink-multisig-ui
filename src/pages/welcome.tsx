@@ -246,13 +246,15 @@ export default function WelcomePage() {
                   </Box>
                   <Box display="flex" alignItems="center" gap={1}>
                     <HowToReg sx={{ fontSize: "1.4rem", color: "#97b42d" }} />
-                    <Typography
-                      variant="body1"
-                      component="p"
-                      sx={{ fontSize: "0.8rem", color: "#97b42d" }}
-                    >
-                      Owner
-                    </Typography>
+                    <Tooltip title="You are the owner of this account." arrow>
+                      <Typography
+                        variant="body1"
+                        component="p"
+                        sx={{ fontSize: "0.8rem", color: "#97b42d" }}
+                      >
+                        Owner
+                      </Typography>
+                    </Tooltip>
                   </Box>
                   <Box>
                     <Tooltip title="Threshold" arrow>
