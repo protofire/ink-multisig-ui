@@ -55,7 +55,6 @@ export default function SettingsPage() {
           xSignerSelected.address as string
         );
         if (result) {
-          console.log("result", result);
           const newOwners = result.owners
             .filter((address) => {
               return !xSignerSelected.owners?.find(
@@ -70,8 +69,6 @@ export default function SettingsPage() {
                 }`,
               };
             });
-          console.log("newOwners", newOwners);
-          console.log("xSignerSelected.owners", xSignerSelected.owners);
           const owners =
             newOwners.length > 0
               ? xSignerSelected.owners?.length > 0
@@ -89,8 +86,7 @@ export default function SettingsPage() {
         } else {
           setSelectedMultisig(xSignerSelected);
         }
-      } catch (e) {
-        console.log(e);
+      } catch {
         setSelectedMultisig(xSignerSelected);
       }
     };
