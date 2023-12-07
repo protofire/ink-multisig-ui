@@ -1,5 +1,4 @@
 import { HowToReg } from "@mui/icons-material";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import {
@@ -150,7 +149,7 @@ export default function WelcomePage() {
         <Typography variant="h1" color="white">
           Welcome to XSigners
         </Typography>
-        <Typography variant="h4" color="white">
+        <Typography variant="h5" color="grey">
           The most trusted decentralized multisig platform on Polkadot
           ecosystem.
         </Typography>
@@ -159,7 +158,7 @@ export default function WelcomePage() {
             display: "flex",
             justifyContent: "space-around",
             width: "80%",
-            mt: "5rem",
+            mt: "4rem",
             gap: "3rem",
           }}
         >
@@ -167,13 +166,14 @@ export default function WelcomePage() {
             sx={{
               display: "flex",
               flexDirection: "column",
-              gap: "1rem",
+              alignItems: "center",
+              gap: "0.5rem",
             }}
           >
             <Typography variant="h3" color="white">
               Create a new Multisig
             </Typography>
-            <Typography variant="body1" color="white">
+            <Typography variant="body1" color="grey">
               A new Account that is controlled by one or multiple owners.
             </Typography>
             <Link href={ROUTES.New} passHref>
@@ -183,26 +183,6 @@ export default function WelcomePage() {
               >
                 <AddCircleIcon />
                 Create new Account
-              </Button>
-            </Link>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-            }}
-          >
-            <Typography variant="h3" color="white">
-              Import existing Account
-            </Typography>
-            <Typography variant="body1" color="white">
-              Already have a XSigners Account? Add it via its address.
-            </Typography>
-            <Link href={ROUTES.Load} passHref>
-              <Button variant="outlined">
-                <AccountBalanceWalletIcon />
-                Import existing Account
               </Button>
             </Link>
           </Box>

@@ -37,7 +37,10 @@ export function ConnectWalletPage() {
       <MainContentCard
         stylesContainer={{
           alignItems: "center",
-          sx: { backgroundColor: theme.palette.background.paper },
+          sx: {
+            backgroundColor: theme.palette.background.paper,
+            padding: "2rem 1rem",
+          },
         }}
         title="Connect your Wallet"
         paragraph="To continue with the following actions you need to connect your wallet."
