@@ -10,7 +10,7 @@ import Identicon from "@polkadot/react-identicon";
 import { useCallback, useEffect, useState } from "react";
 
 import { ChainExtended, getChain } from "@/config/chain";
-import useFetchAssets from "@/hooks/assets/useFetchAssets";
+import useFetchAssets, { Asset } from "@/hooks/assets/useFetchAssets";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { isValidAddress, splitTokenAmount } from "@/utils/blockchain";
@@ -23,11 +23,12 @@ type Props = {
   errors: string[];
   amount: string;
   to: string;
+  token: string;
   chain: ChainExtended;
 };
 
 export const SendTokens = (props: Props) => {
-  const { setField, setErrors, to, errors, chain } = props;
+  const { setField, setErrors, to, errors, chain, token } = props;
   const { xSignerSelected } = useGetXsignerSelected();
   const { balance } = useGetBalance(xSignerSelected?.address);
   const { listAssetByType } = useFetchAssets("");
@@ -45,6 +46,13 @@ export const SendTokens = (props: Props) => {
   const [maxAmount, setMaxAmount] = useState<string | undefined>(amount);
   const [inputValue, setInputValue] = useState<string>("0");
 
+  const formatBalance = useCallback((asset: Asset) => {
+    if (asset) {
+      return `${(Number(asset.balance) / 10 ** asset.decimals).toFixed(2)}`;
+    }
+    return "";
+  }, []);
+
   useEffect(() => {
     if (tokenSelected.isNative) {
       setMaxAmount(amount);
@@ -52,9 +60,24 @@ export const SendTokens = (props: Props) => {
       const asset = assets.find(
         (asset) => asset.address === tokenSelected.address
       );
-      setMaxAmount(asset?.balance);
+      const formattedBalance = (
+        Number(asset?.balance) /
+        10 ** asset?.decimals
+      ).toFixed(2);
+      setMaxAmount(formattedBalance);
     }
   }, [amount, assets, tokenSelected]);
+
+  useEffect(() => {
+    const asset = assets.find((asset) => asset.address === token);
+    if (asset) {
+      setTokenSelected({
+        symbol: asset.name,
+        isNative: false,
+        address: asset.address,
+      });
+    }
+  }, [assets, token]);
 
   const handleValueChange = useCallback(
     (value: string) => {
@@ -64,8 +87,12 @@ export const SendTokens = (props: Props) => {
           tokenSelected.isNative ? tokenSymbol : tokenSelected?.symbol
         }`
       );
+      if (!tokenSelected.isNative) {
+        setField("token", tokenSelected.address ?? "");
+      }
       setInputValue(value);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setField, tokenSelected.isNative, tokenSelected?.symbol, tokenSymbol]
   );
 
@@ -159,7 +186,9 @@ export const SendTokens = (props: Props) => {
                 />
                 <Box flexDirection="column">
                   <Typography variant="body1">{asset.name}</Typography>
-                  <Typography variant="body2">{asset.balance}</Typography>
+                  <Typography variant="body2">
+                    {formatBalance(asset)}
+                  </Typography>
                 </Box>
               </Box>
             </MenuItem>

@@ -23,6 +23,7 @@ export type Asset = {
   address: string;
   name: string;
   balance: string;
+  decimals: number;
   networkId: ChainId;
 };
 
@@ -65,6 +66,10 @@ function useFetchAssets(address: string) {
   const { data: getName, error: nameError } = useCall(
     address,
     "psp22Metadata::tokenName"
+  );
+  const { data: getDecimals, error: decimalsError } = useCall(
+    address,
+    "psp22Metadata::tokenDecimals"
   );
   const { data: getBalance, error: balanceError } = useCall(
     address,
@@ -143,11 +148,12 @@ function useFetchAssets(address: string) {
       const existingAsset = assetRepository.getAssetByAddress(address);
       if (existingAsset) return;
       if (!checkIfExist(getName.value as string, getBalance.value as string)) {
-        if (getName.ok && getBalance.ok) {
+        if (getName.ok && getBalance.ok && getDecimals.ok) {
           const asset = {
             address,
             name: getName.value || "UNKNOWN",
             balance: getBalance.value || "0",
+            decimals: Number(getDecimals.value) || 18,
             networkId: xSignerSelected?.networkId as ChainId,
           } as Asset;
           setData((prevData) => ({
@@ -161,6 +167,8 @@ function useFetchAssets(address: string) {
             error = nameError;
           } else if (!getName.ok && balanceError) {
             error = balanceError;
+          } else if (!getDecimals.ok && decimalsError) {
+            error = decimalsError;
           }
           setError(error);
         }
@@ -175,7 +183,9 @@ function useFetchAssets(address: string) {
     assetRepository,
     balanceError,
     checkIfExist,
+    decimalsError,
     getBalance,
+    getDecimals,
     getName,
     nameError,
     xSignerSelected?.networkId,
