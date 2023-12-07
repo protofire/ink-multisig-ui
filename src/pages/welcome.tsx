@@ -32,21 +32,14 @@ import {
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { generateRandomWalletName } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
-import { formatThreshold } from "@/utils/formatString";
 
 type MultisigsDataFormatted = {
   name: string;
   address: string;
   networkId?: ChainId;
-  ownersCount: number | undefined;
   network?: ChainExtended;
 };
-
-type Props = Partial<SignatoriesAccount> & {
-  ownersCount: number | undefined;
-};
-
-export default function WelcomePage({ threshold, ownersCount }: Props) {
+export default function WelcomePage() {
   const [loading, setLoading] = useState(false);
   const [multisigs, setMultisigs] = useState<MultisigsDataFormatted[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +57,7 @@ export default function WelcomePage({ threshold, ownersCount }: Props) {
     if (!selectedMultisig) {
       return;
     }
-    setXsigner(selectedMultisig as unknown as SignatoriesAccount);
+    setXsigner(selectedMultisig as SignatoriesAccount);
     router.replace(ROUTES.App);
   };
 
@@ -137,6 +130,7 @@ export default function WelcomePage({ threshold, ownersCount }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountConnected?.address, network, save, signersAccount?.length]);
 
+  console.log(multisigs);
   const theme = useTheme();
   return (
     <Box>
@@ -268,7 +262,7 @@ export default function WelcomePage({ threshold, ownersCount }: Props) {
                         component="p"
                         sx={{ fontSize: "0.8rem", color: "#aaaaaa" }}
                       >
-                        {formatThreshold({ threshold, owners: ownersCount })}
+                        1/3
                       </Typography>
                     </Tooltip>
                   </Box>
