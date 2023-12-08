@@ -1,9 +1,5 @@
 import {
   Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
   FormControl,
   InputLabel,
   MenuItem,
@@ -75,72 +71,61 @@ export function TxFunctionsForm() {
   };
 
   return (
-    <Box display="flex" justifyContent="space-evenly" gap={2}>
-      <Card sx={{ padding: "0.5rem", width: "42rem" }}>
-        <CardHeader title="New Transaction" />
-        <Divider />
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              id="address"
-              label="Address contract"
-              value={address}
-              onChange={changeContractAddress}
-              fullWidth
+    <Box mt={3} display="flex" gap={1} flexDirection="column">
+      <form onSubmit={handleSubmit}>
+        <TextField
+          id="address"
+          label="Address contract"
+          value={address}
+          onChange={changeContractAddress}
+          fullWidth
+          autoFocus
+        />
+        <FormControl fullWidth={true} sx={{ marginBottom: 3, marginTop: 3 }}>
+          <DropzoneWrapper>
+            <InputFileDropzone
+              label="Drop ABI metadata file or click to select it"
+              accept={{ "application/json": [".json", ".contract"] }}
+              file={metadataFile}
+              onChange={onChange}
+              onRemove={_onRemove}
             />
-            <FormControl
-              fullWidth={true}
-              sx={{ marginBottom: 3, marginTop: 3 }}
+          </DropzoneWrapper>
+        </FormControl>
+        {contract && sortedAbiMessages && (
+          <FormControl fullWidth>
+            <InputLabel id="select-label">Select Message</InputLabel>
+            <Select
+              labelId="select-label"
+              id="select"
+              value={selectedMsgName || ""}
+              label="Select Message"
+              onChange={(e) => {
+                setSelectedMsgName(e.target.value);
+              }}
             >
-              <DropzoneWrapper>
-                <InputFileDropzone
-                  label="Drop ABI metadata file or click to select it"
-                  accept={{ "application/json": [".json", ".contract"] }}
-                  file={metadataFile}
-                  onChange={onChange}
-                  onRemove={_onRemove}
-                />
-              </DropzoneWrapper>
-            </FormControl>
-            {contract && sortedAbiMessages && (
-              <FormControl fullWidth>
-                <InputLabel id="select-label">Select Message</InputLabel>
-                <Select
-                  labelId="select-label"
-                  id="select"
-                  value={selectedMsgName || ""}
-                  label="Select Message"
-                  onChange={(e) => {
-                    setSelectedMsgName(e.target.value);
-                  }}
-                >
-                  {sortedAbiMessages.map((message) => {
-                    return (
-                      <MenuItem
-                        key={message.identifier}
-                        value={message.identifier}
-                      >
-                        <FunctionSignatureName
-                          abiMessage={message}
-                          registry={contract.abi.registry}
-                        />
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            )}
-            {argValues && contract?.abi.registry && (
-              <ArgumentsForm
-                argValues={argValues}
-                args={message?.args ?? []}
-                registry={contract?.abi.registry}
-                setArgValues={setArgValues}
-              />
-            )}
-          </form>
-        </CardContent>
-      </Card>
+              {sortedAbiMessages.map((message) => {
+                return (
+                  <MenuItem key={message.identifier} value={message.identifier}>
+                    <FunctionSignatureName
+                      abiMessage={message}
+                      registry={contract.abi.registry}
+                    />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        )}
+        {argValues && contract?.abi.registry && (
+          <ArgumentsForm
+            argValues={argValues}
+            args={message?.args ?? []}
+            registry={contract?.abi.registry}
+            setArgValues={setArgValues}
+          />
+        )}
+      </form>
       <TxExecution
         contractPromise={contract?.contractPromise}
         message={message}

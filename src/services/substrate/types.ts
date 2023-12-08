@@ -9,6 +9,18 @@ export type {
 } from "@polkadot/api-contract/types";
 export type { KeyringPair } from "@polkadot/keyring/types";
 export type {
+  Balance,
+  ChainType,
+  ContractExecResult,
+  ContractInstantiateResult,
+  ContractReturnFlags,
+  DispatchError,
+  EventRecord,
+  Hash,
+  Weight,
+  WeightV2,
+} from "@polkadot/types/interfaces";
+export type {
   AnyJson,
   Codec,
   Registry,
@@ -19,4 +31,4 @@ export type {
 // classes
 export { ApiPromise, SubmittableResult } from "@polkadot/api";
 export { Abi, BlueprintPromise, ContractPromise } from "@polkadot/api-contract";
-export { Bytes, Raw, TypeDefInfo } from "@polkadot/types";
+export { Bytes, Option, Raw, TypeDefInfo } from "@polkadot/types";

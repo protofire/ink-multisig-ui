@@ -31,7 +31,7 @@ export interface UseMetadata {
   onChange: (_file: File) => void;
 }
 
-const metadataManager = new MetadataManager();
+export const metadataManager = new MetadataManager();
 
 export function useParseMetadataField(
   initialValue?: Record<string, unknown>,

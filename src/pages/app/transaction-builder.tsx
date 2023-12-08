@@ -1,8 +1,12 @@
 import { Box, Typography } from "@mui/material";
 
-import { TxFunctionsForm } from "@/components/TxFunctionsForm";
+import { ConnectWalletSection } from "@/components/ConnectWalletSection";
+import { TxBuilderStepper } from "@/components/TxBuilderStepper";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
 
 export default function TxBuilderPage() {
+  const { accountConnected } = usePolkadotContext();
+
   return (
     <Box
       sx={{
@@ -16,7 +20,16 @@ export default function TxBuilderPage() {
       <Typography mb={4} variant="h3" color="primary">
         Transaction builder
       </Typography>
-      <TxFunctionsForm />;
+
+      {accountConnected ? (
+        <TxBuilderStepper />
+      ) : (
+        <ConnectWalletSection
+          text={
+            "You need to connect a wallet to interact with an external contract."
+          }
+        />
+      )}
     </Box>
   );
 }
