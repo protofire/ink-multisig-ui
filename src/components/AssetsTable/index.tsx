@@ -7,6 +7,7 @@ import useFetchAssets, {
   Asset,
   AssetType,
 } from "@/hooks/assets/useFetchAssets";
+import { balanceToFixed } from "@/utils/formatString";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
@@ -38,7 +39,7 @@ export default function AssetsTable() {
     return data.map((asset) => {
       return {
         ...asset,
-        balance: (Number(asset.balance) / 10 ** asset.decimals).toFixed(2),
+        balance: balanceToFixed(asset, 2),
       };
     });
   };

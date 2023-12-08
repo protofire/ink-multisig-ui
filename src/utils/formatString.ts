@@ -1,3 +1,5 @@
+import { Asset } from "@/hooks/assets/useFetchAssets";
+
 export const truncateAddress = (
   value: string | undefined,
   sideLength = 6
@@ -52,4 +54,19 @@ export const formatThreshold = ({
   owners: number | undefined;
 }) => {
   return `${threshold || "-"} / ${owners || "-"}`;
+};
+
+export const balanceToFixed = (
+  asset: Asset,
+  stringDecimals: number
+): string => {
+  const balance = asset.balance.replace(/,/g, "");
+  const transformedBalance = (
+    BigInt(balance) / BigInt(10 ** (asset.decimals - stringDecimals))
+  ).toString();
+  const strBalance =
+    transformedBalance.slice(0, transformedBalance.length - stringDecimals) +
+    "." +
+    transformedBalance.slice(transformedBalance.length - stringDecimals);
+  return strBalance;
 };
