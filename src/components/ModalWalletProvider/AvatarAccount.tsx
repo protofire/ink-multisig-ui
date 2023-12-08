@@ -1,5 +1,5 @@
-import { Identicon } from "@/components/Identicon";
+import Identicon from "@polkadot/react-identicon";
 
 export function AvatarAccount({ address }: { address: string }) {
-  return <Identicon theme="beachball" size={40} value={address} />;
+  return <Identicon theme="ethereum" size={40} value={address} />;
 }
