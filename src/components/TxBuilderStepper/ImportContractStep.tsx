@@ -8,10 +8,19 @@ import { useIsOnChain } from "@/hooks/validationForms/useIsOnChain";
 import { onlyAddress } from "@/utils/inputValidation";
 
 import { TextFieldWithLoading } from "../TextFieldWithLoading/TextFieldWithLoading";
+import { NextBackButtonStepper } from "./NextBackButtonStepper";
 import { useTxBuilderContext } from "./TxBuilderContext";
 
 export function ImportContractStep() {
-  const { metadataManager, inputFormManager } = useTxBuilderContext();
+  const { metadataManager, inputFormManager, managerStep } =
+    useTxBuilderContext();
+  const {
+    activeStep: { creation: activeStep },
+    downCreationStep: handleBack,
+    upCreationStep: handleNext,
+    stepsLength,
+  } = managerStep;
+
   const { metadataFile, onChange, onRemove, metadata } = metadataManager;
   const { register, errors, isLoading, values, setValue } = inputFormManager;
   const { isOnChain } = useIsOnChain();
@@ -25,29 +34,43 @@ export function ImportContractStep() {
   }, [metadata, setValue, values.metadataSource?.source.hash]);
 
   return (
-    <Box mt={3} display="flex" gap={1} flexDirection="column">
-      <TextFieldWithLoading
-        id="address"
-        label="Address contract"
-        {...register("address", [onlyAddress, isOnChain])}
-        fullWidth
-        autoFocus
-        error={Boolean(errors["address"])}
-        helperText={errors["address"] ? errors["address"] : ""}
-        loading={isLoading}
-      />
-      <FormControl fullWidth={true} sx={{ marginBottom: 3, marginTop: 3 }}>
-        <DropzoneWrapper>
-          <InputFileDropzone
-            label="Drop ABI metadata file or click to select it"
-            accept={{ "application/json": [".json", ".contract"] }}
-            file={metadataFile}
-            onChange={onChange}
-            onRemove={onRemove}
-            disabled={!values.address || Boolean(errors.address)}
-          />
-        </DropzoneWrapper>
-      </FormControl>
-    </Box>
+    <>
+      <Box mt={3} display="flex" gap={1} flexDirection="column">
+        <TextFieldWithLoading
+          id="address"
+          label="Address contract"
+          {...register("address", [onlyAddress, isOnChain])}
+          fullWidth
+          autoFocus
+          error={Boolean(errors["address"])}
+          helperText={errors["address"] ? errors["address"] : ""}
+          loading={isLoading}
+        />
+        <FormControl fullWidth={true} sx={{ marginBottom: 3, marginTop: 3 }}>
+          <DropzoneWrapper>
+            <InputFileDropzone
+              label="Drop ABI metadata file or click to select it"
+              accept={{ "application/json": [".json", ".contract"] }}
+              file={metadataFile}
+              onChange={onChange}
+              onRemove={onRemove}
+              disabled={!values.address || Boolean(errors.address)}
+            />
+          </DropzoneWrapper>
+        </FormControl>
+      </Box>
+      <Box p={5}>
+        <NextBackButtonStepper
+          activeStep={activeStep}
+          stepsLength={stepsLength}
+          handleBack={handleBack}
+          handleNext={handleNext}
+          hiddenBack={activeStep === 0 ? true : false}
+          nextButtonProps={{
+            disabled: !metadataManager.metadata.isValid,
+          }}
+        />
+      </Box>
+    </>
   );
 }

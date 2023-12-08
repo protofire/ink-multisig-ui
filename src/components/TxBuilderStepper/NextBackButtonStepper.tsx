@@ -8,13 +8,11 @@ import {
   StepperFooter,
 } from "@/components/StepperSignersAccount/styled";
 
-import { StepType } from "./BaseStepper";
-
 export type NextBackButtonStepperProps = {
   backLabel?: React.ReactNode;
   nextLabel?: React.ReactNode;
   activeStep: number;
-  steps: StepType[];
+  stepsLength: number;
   handleBack: () => void;
   handleNext?: () => void;
   isNextDisabled?: boolean;
@@ -45,14 +43,14 @@ export function NextBackButtonStepper({
     </>
   ),
   activeStep,
-  steps,
+  stepsLength,
   handleBack,
   handleNext,
   isNextDisabled,
   hiddenBack,
   nextButtonProps,
 }: NextBackButtonStepperProps) {
-  const _nextLabel = activeStep === steps.length - 1 ? "Confirm" : nextLabel;
+  const _nextLabel = activeStep === stepsLength - 1 ? "Confirm" : nextLabel;
 
   return (
     <StepperFooter mt={2}>
@@ -63,7 +61,7 @@ export function NextBackButtonStepper({
           <BoxStyled>{backLabel}</BoxStyled>
         </FooterButton>
       )}
-      {activeStep <= steps.length - 1 && (
+      {activeStep <= stepsLength - 1 && (
         <FooterButton
           width={134}
           variant="contained"

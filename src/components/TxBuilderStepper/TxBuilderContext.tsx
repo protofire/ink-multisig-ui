@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 
+import { ManagerActiveStep } from "@/components/StepperSignersAccount/useManagerActiveStep";
 import { AbiSource } from "@/domain";
 import { UseFormReturn } from "@/hooks/useForm";
 import { UseMetadata } from "@/hooks/useParseMetadataField";
@@ -12,6 +13,7 @@ export interface TxBuilderForm extends Record<string, unknown> {
 export interface TxBuilderContextData {
   metadataManager: UseMetadata;
   inputFormManager: UseFormReturn<TxBuilderForm>;
+  managerStep: ManagerActiveStep;
 }
 
 export const TxBuilderContext = createContext({} as TxBuilderContextData);

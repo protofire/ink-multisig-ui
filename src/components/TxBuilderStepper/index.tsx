@@ -40,7 +40,7 @@ const steps = [
 ];
 
 export function TxBuilderStepper() {
-  const managerStep = useManagerActiveStep();
+  const managerStep = useManagerActiveStep(steps.length);
   const metadataManager = useParseMetadataField();
   const inputFormManager = useForm<TxBuilderForm>({
     address: "",
@@ -60,18 +60,13 @@ export function TxBuilderStepper() {
       value={{
         metadataManager,
         inputFormManager,
+        managerStep,
       }}
     >
       <BaseStepper
         steps={builderSteps}
         managerStep={managerStep}
         onStepChange={handleStepChange}
-        footerProps={{
-          hiddenBack: managerStep.activeStep.creation === 0 ? true : false,
-          nextButtonProps: {
-            disabled: !metadataManager.metadata.isValid,
-          },
-        }}
       />
     </TxBuilderContext.Provider>
   );

@@ -1,7 +1,7 @@
 import { Box, FormHelperText, Stack, Typography } from "@mui/material";
 
-import { ArgumentsForm } from "@/components/TxFunctionsForm/ArgumentForm";
-import { useArgValues } from "@/components/TxFunctionsForm/useArgValues";
+import { ArgumentsForm } from "@/components/ArgumentForm/ArgumentForm";
+import { useArgValues } from "@/components/ArgumentForm/useArgValues";
 import {
   AbiMessage,
   ContractPromise,
@@ -23,12 +23,13 @@ export function WriteMethodsForm({
   substrateRegistry,
   contractPromise,
 }: Props) {
-  const { argValues, setArgValues, inputData } = useArgValues(
+  const { argValues, setArgValues, inputData, inputDataU8a } = useArgValues(
     abiMessage,
     substrateRegistry
   );
   const abiParams = abiMessage.args ?? [];
 
+  console.log("__u8a", inputDataU8a);
   const {
     outcome: outcomeDryRun = "",
     error: errorDryrun,

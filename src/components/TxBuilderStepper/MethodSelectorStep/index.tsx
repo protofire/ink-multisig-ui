@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 
+import { FunctionSignatureName } from "@/components/ArgumentForm/FunctionSignatureName";
 import CopyButton from "@/components/common/CopyButton";
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
-import { FunctionSignatureName } from "@/components/TxFunctionsForm/FunctionSignatureName";
 import { AbiSource } from "@/domain";
 import { useContractPromiseFromSource } from "@/hooks/useContractPromise";
 import { useNetworkApi } from "@/hooks/useNetworkApi";

@@ -6,6 +6,12 @@ import { AbiMessage, AbiParam, Registry } from "@/services/substrate/types";
 
 type Argument = Record<string, unknown>;
 
+interface UseArgValuesReturn {
+  argValues: Argument;
+  setArgValues: React.Dispatch<React.SetStateAction<Argument>>;
+  inputData: unknown[] | undefined;
+}
+
 function fromArgs(
   registry: Registry,
   accounts: Account[],
@@ -67,5 +73,10 @@ export function useArgValues(
     argsRef.current = message.args;
   }, [accounts, message, registry]);
 
-  return { argValues, setArgValues, inputData };
+  const inputDataU8a = useMemo(
+    () => inputData && message?.toU8a(inputData),
+    [inputData, message]
+  );
+
+  return { argValues, setArgValues, inputData, inputDataU8a };
 }

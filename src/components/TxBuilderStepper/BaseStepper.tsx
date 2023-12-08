@@ -4,10 +4,6 @@ import React from "react";
 
 import { StyledStepLabel } from "../StepperSignersAccount/styled";
 import { ManagerActiveStep } from "../StepperSignersAccount/useManagerActiveStep";
-import {
-  NextBackButtonStepper,
-  NextBackButtonStepperProps,
-} from "./NextBackButtonStepper";
 
 export type StepType = {
   id: number;
@@ -21,23 +17,16 @@ type BaseStepperProps = {
   onStepChange: (step: number) => void;
   boxStepperSx?: BoxProps;
   managerStep: ManagerActiveStep;
-  footer?: React.ReactNode;
-  footerProps?: Partial<NextBackButtonStepperProps>;
 };
 
 export const BaseStepper: React.FC<BaseStepperProps> = ({
   steps,
-  onStepChange,
   boxStepperSx,
   managerStep,
-  footer,
-  footerProps,
 }) => {
   const theme = useTheme();
   const {
     activeStep: { creation: activeStep },
-    downCreationStep: handleBack,
-    upCreationStep: handleNext,
   } = managerStep;
 
   return (
@@ -51,7 +40,7 @@ export const BaseStepper: React.FC<BaseStepperProps> = ({
       >
         <Stepper activeStep={activeStep} orientation="horizontal">
           {steps.map((step, index) => (
-            <Step key={index} onClick={() => onStepChange(index)}>
+            <Step key={index}>
               <StyledStepLabel
                 active={step.id === activeStep ? 1 : 0}
                 completed={step.id < activeStep ? 1 : 0}
@@ -70,7 +59,7 @@ export const BaseStepper: React.FC<BaseStepperProps> = ({
             )}
             {steps[activeStep].Component}
           </Box>
-          {footer || (
+          {/* {footer || (
             <Box p={5}>
               <NextBackButtonStepper
                 activeStep={activeStep}
@@ -80,7 +69,7 @@ export const BaseStepper: React.FC<BaseStepperProps> = ({
                 {...footerProps}
               />
             </Box>
-          )}
+          )} */}
         </Box>
       </Box>
     </Box>
