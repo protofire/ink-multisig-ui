@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { useGetDryRun } from "@/hooks/useGetDryRun";
+import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import {
   AbiMessage,
   ContractPromise,
@@ -31,7 +32,12 @@ export function useDryRunExecution({
   autoRun = false,
   substrateRegistry,
 }: UseDryRunExecutionProps): DryRunExecutionResult {
-  const dryRun = useGetDryRun(contractPromise, message.method);
+  const { xSignerSelected } = useGetXsignerSelected();
+  const dryRun = useGetDryRun(
+    contractPromise,
+    message.method,
+    xSignerSelected?.address || undefined
+  );
   const [outcome, setOutcome] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const memoizedParams = useMemo(() => params, [params]);
