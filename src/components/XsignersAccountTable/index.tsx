@@ -20,7 +20,7 @@ export type MultisigsDataFormatted = {
 };
 
 interface Props {
-  multisigs: Array<MultisigsDataFormatted>;
+  multisigs: Array<MultisigsDataFormatted> | null;
   onClick: (account: SignatoriesAccount) => Promise<void | SignatoriesAccount>;
   network: ChainId;
 }
@@ -43,6 +43,8 @@ export function XsignersAccountTable({
     setXsigner(selectedMultisig as SignatoriesAccount);
     router.replace(ROUTES.App);
   };
+
+  if (multisigs === null) return null;
 
   return (
     <MainContentCard
