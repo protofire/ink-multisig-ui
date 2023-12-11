@@ -12,7 +12,7 @@ export default function Document({ emotionStyleTags }: MyDocumentProps) {
           name="description"
           content="Ink Multisig UI is a user-friendly interface for interacting with a Multi-Signature smart contract in the Polkadot ecosystem."
         />
-        <link rel="shortcut icon" href="/Simplr.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         {/* Insertion point for client. This connects with createEmotionCache.ts */}
         <meta name="emotion-insertion-point" content="" />
         {emotionStyleTags}

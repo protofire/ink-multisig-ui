@@ -37,14 +37,14 @@ function WalletImportStep({
   const [tempAddress, setTempAddress] = useState(address);
   const { logo, name: networkName } = getChain(network);
 
-  useDebouncedEffect(
-    async () => {
+  useDebouncedEffect({
+    effect: async () => {
       if (!tempAddress) return;
       handleAddress(tempAddress, step);
     },
-    500, // 500ms delay
-    [tempAddress]
-  );
+    delay: 500, // 500ms delay
+    deps: [tempAddress],
+  });
 
   useEffect(() => {
     if (!isLoading && address) {

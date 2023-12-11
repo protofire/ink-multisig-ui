@@ -1,10 +1,11 @@
-import { Box, BoxProps } from "@mui/material";
+import { Box, BoxProps, SkeletonProps } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-export interface LoadingSkeletonProps {
+export interface LoadingSkeletonProps extends SkeletonProps {
   count?: number;
-  width?: string;
+  widthContainer?: string;
+  props?: SkeletonProps;
 }
 
 const BoxWrapper = styled(Box)<BoxProps>(() => {
@@ -16,7 +17,16 @@ const BoxWrapper = styled(Box)<BoxProps>(() => {
 export const LoadingSkeleton = ({
   count = 1,
   width = "80%",
+  props,
 }: LoadingSkeletonProps) => {
+  return (
+    <BoxWrapper width={width}>
+      <MySkeleton count={count} {...props} />
+    </BoxWrapper>
+  );
+};
+
+export function MySkeleton(props: SkeletonProps & { count?: number }) {
   const theme = useTheme();
 
   return (
@@ -24,9 +34,7 @@ export const LoadingSkeleton = ({
       baseColor={theme.palette.background.paper}
       highlightColor={theme.palette.primary.main}
     >
-      <BoxWrapper width={width}>
-        <Skeleton count={count} />
-      </BoxWrapper>
+      <Skeleton sx={{ bgcolor: "grey.100" }} {...props} />
     </SkeletonTheme>
   );
-};
+}

@@ -1,9 +1,13 @@
 import { Typography } from "@mui/material";
-import Box from "@mui/material/Box";
+import Box, { BoxProps } from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Image from "next/image";
 
-export const FallbackSpinner = (props: { text?: string }) => {
+interface Props extends BoxProps {
+  text?: string;
+}
+
+export const FallbackSpinner = (props: Props) => {
   const { text } = props;
 
   return (
@@ -16,7 +20,7 @@ export const FallbackSpinner = (props: { text?: string }) => {
         justifyContent: "center",
       }}
     >
-      <Image src="/Simplr.ico" alt="Multisig Logo" width={30} height={30} />
+      <Image src="/favicon.ico" alt="Multisig Logo" width={30} height={30} />
       <CircularProgress disableShrink sx={{ mt: 6 }} />
       {text ? (
         <Box

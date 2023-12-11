@@ -11,6 +11,7 @@ interface Props {
   file: File | undefined;
   onChange: (_file: File) => void;
   onRemove: () => void;
+  disabled?: boolean;
 }
 
 export const InputFileDropzone: React.FC<Props> = (props) => {
@@ -28,10 +29,19 @@ export const InputFileDropzone: React.FC<Props> = (props) => {
     multiple: false,
     accept,
     onDrop,
+    noClick: props.disabled,
+    noKeyboard: props.disabled,
   });
 
   return (
-    <Box {...getRootProps({ className: "dropzone" })}>
+    <Box
+      {...getRootProps({ className: "dropzone" })}
+      style={{
+        opacity: props.disabled ? 0.5 : 1,
+        cursor: props.disabled ? "not-allowed" : "pointer",
+        borderColor: props.disabled ? "#333333" : "white",
+      }}
+    >
       <input {...getInputProps()} />
 
       {file !== undefined ? (
