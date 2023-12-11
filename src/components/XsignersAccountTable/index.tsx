@@ -21,19 +21,15 @@ export type MultisigsDataFormatted = {
 };
 
 interface Props {
-  multisigs: Array<MultisigsDataFormatted> | null;
+  multisigs: Array<SignatoriesAccount> | null;
   onClick: (account: SignatoriesAccount) => Promise<void | SignatoriesAccount>;
   network: ChainId;
-  ownersCount?: number | undefined;
-  threshold?: number;
 }
 
 export function XsignersAccountTable({
   multisigs,
   onClick: setXsigner,
   network,
-  threshold,
-  ownersCount,
 }: Props) {
   const { logo, name: networkName } = getChain(network);
   const theme = useTheme();
@@ -134,7 +130,10 @@ export function XsignersAccountTable({
                     component="p"
                     sx={{ fontSize: "0.8rem", color: "#aaaaaa" }}
                   >
-                    {formatThreshold({ threshold, owners: ownersCount })}
+                    {formatThreshold({
+                      threshold: multisig.threshold,
+                      owners: multisig.owners.length,
+                    })}
                   </Typography>
                 </Tooltip>
               </Box>
