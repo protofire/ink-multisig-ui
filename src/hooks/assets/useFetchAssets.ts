@@ -156,7 +156,7 @@ function useFetchAssets(address: string) {
             address,
             name: getName.value || `UNKNOWN ASSET #${assets.length + 1}`,
             balance: getBalance.value || "0",
-            decimals: Number(getDecimals.value) || 18,
+            decimals: Number(getDecimals.value) || 0,
             networkId: xSignerSelected?.networkId as ChainId,
           } as Asset;
           setData((prevData) => ({
