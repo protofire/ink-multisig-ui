@@ -1,21 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { useLocalDbContext } from "@/context/uselocalDbContext";
-import {
-  TransactionType,
-  TransferType,
-  TxQueueType,
-} from "@/domain/repositores/ITxQueueRepository";
+import { TxType } from "@/domain/repositores/ITxQueueRepository";
 import { customReportError } from "@/utils/error";
 
-export type TxTypes = "transfer" | "transaction";
+export type TabTxTypes = "transfer" | "transaction";
 
 export function useListTxQueue(address: string | undefined) {
-  const [data, setData] = useState<TxQueueType[] | null>(null);
-  const [data2, setData2] = useState<{
-    transfer: TransferType[];
-    transaction: TransactionType[];
-  } | null>(null);
+  const [data, setData] = useState<TxType[] | null>(null);
+  const [data2, setData2] = useState<{ [name: string]: TxType[] | undefined }>({
+    transaction: undefined,
+    transfer: undefined,
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +26,9 @@ export function useListTxQueue(address: string | undefined) {
         const result = await txQueueRepository.getQueue(address);
         console.log("result", result);
 
+        // const txType = Object.groupBy(result, (type) => type.__typename);
+        // console.log("txType", txType);
+
         const transferData = result?.filter(
           (element) => element.__typename === "Transfer"
         );
@@ -40,8 +39,8 @@ export function useListTxQueue(address: string | undefined) {
         if (result) {
           setData(result);
           setData2({
-            transfer: transferData as TransferType[],
-            transaction: transactionData as TransactionType[],
+            transfer: transferData,
+            transaction: transactionData,
           });
         }
       } catch (err) {
@@ -58,7 +57,7 @@ export function useListTxQueue(address: string | undefined) {
   }, [address, txQueueRepository]);
 
   const listTxByType = useCallback(
-    (key: TxTypes) => {
+    (key: TabTxTypes) => {
       console.log(key);
       if (data2 == null) return;
       return data2[key];

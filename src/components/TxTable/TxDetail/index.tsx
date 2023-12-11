@@ -2,46 +2,36 @@ import ShareIcon from "@mui/icons-material/Share";
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 
-import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { openInNewTab } from "@/utils/browserMethods";
 
 import { AccountAvatar } from "../../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../../common/CopyButton";
 import OpenNewTabButton from "../../common/OpenNewTabButton";
 import { ExtendedDataType } from "../TxDetailItem";
+import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
-
-const txComponentType = (
-  data: ExtendedDataType,
-  address: string,
-  mockUrl: string
-) => {
-  const name = "ProtofireName";
-  return {
-    Send: {
-      component: (
-        <SendDetail
-          address={address}
-          name={name}
-          mockUrl={mockUrl}
-        ></SendDetail>
-      ),
-    },
-    Receive: {
-      component: <ReceivedDetail address={address}></ReceivedDetail>,
-    },
-  };
-};
 
 interface Props {
   data: ExtendedDataType;
 }
 
+export const TX_TYPE_OPTION = {
+  RECEIVE: "Receive",
+  SEND: "Send",
+  TRANSACTION: "Transaction",
+  TRANSFER: "Transfer",
+};
+
 export const TxDetails = ({ data }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
-  const { xSignerSelected } = useGetXsignerSelected();
-  const mockUrl = "https://polkadot.subscan.io/";
+
+  const TxComponentType = ({ data }: Props): JSX.Element => {
+    if (data.type !== TX_TYPE_OPTION.RECEIVE) {
+      return <SendDetail data={data}></SendDetail>;
+    }
+    return <ReceivedDetail data={data}></ReceivedDetail>;
+  };
 
   return (
     <Box
@@ -69,13 +59,13 @@ export const TxDetails = ({ data }: Props) => {
           }}
         >
           <AccountAvatar
-            address={xSignerSelected?.address as string}
-            name={xSignerSelected?.name}
+            address={data?.from as string}
+            name={""}
             truncateLenght={16}
           ></AccountAvatar>
           <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>
-            <CopyButton text={xSignerSelected?.address as string} />
-            <OpenNewTabButton text={mockUrl} />
+            <CopyButton text={data?.from as string} />
+            <OpenNewTabButton text={""} />
           </Box>
           <Box
             sx={{
@@ -93,35 +83,44 @@ export const TxDetails = ({ data }: Props) => {
                 cursor: "pointer",
               },
             }}
-            onClick={() => openInNewTab(xSignerSelected?.address as string)}
+            onClick={() => openInNewTab(data?.from as string)}
           >
             <ShareIcon></ShareIcon>
           </Box>
         </Box>
       </Box>
-      {/* <Box
+      <Box
         sx={{
           padding: "20px",
         }}
       >
-        {txComponentType[type].component}
-        {type !== NO_DETAILS_TYPE ? (
-          <Link
-            sx={{ fontWeight: "bold", marginTop: "22px" }}
-            href="#"
-            onClick={() => setShowAdvancedDetails(!showAdvancedDetails)}
-          >
-            {"Advanced Details"}
-          </Link>
+        {<TxComponentType data={data}></TxComponentType>}
+
+        {data.__typename === TX_TYPE_OPTION.TRANSACTION ? (
+          <>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: "bold",
+                marginTop: "22px",
+                cursor: "pointer",
+                color: "#ffe873",
+                textDecoration: "underline",
+              }}
+              onClick={() => setShowAdvancedDetails(!showAdvancedDetails)}
+            >
+              {"Advanced Details"}
+            </Typography>
+            {!showAdvancedDetails ? (
+              <AdvancedDetail data={data}></AdvancedDetail>
+            ) : (
+              <></>
+            )}
+          </>
         ) : (
           <></>
         )}
-        {showAdvancedDetails ? (
-          <AdvancedDetail data={undefined}></AdvancedDetail>
-        ) : (
-          <></>
-        )}
-      </Box> */}
+      </Box>
     </Box>
   );
 };

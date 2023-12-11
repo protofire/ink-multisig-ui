@@ -26,7 +26,8 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
   display: "flex",
 }));
 
-export type ExtendedDataType = (TransferType | TransactionType) & {
+export type ExtendedDataType = (TransferType & TransactionType) & {
+  state: string;
   img: string;
   type: string;
   to: string;
@@ -97,7 +98,7 @@ export const TxDetailItem = ({ data, index }: Props) => {
           </StyledGrid>
           <StyledGrid item xs={3} sm={3} md={3}>
             <Typography
-              color={data.__typename === "Transaction" ? "#FF9C7D" : "#ADD500"}
+              color={data.state === "Successfull" ? "#ADD500" : "#FF9C7D"}
             >
               {data.txStateMsg}
             </Typography>
@@ -107,7 +108,7 @@ export const TxDetailItem = ({ data, index }: Props) => {
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
           <TxDetails data={data} />
-          <TxStepper></TxStepper>
+          {data.type !== "Receive" ? <TxStepper data={data} /> : <></>}
         </Box>
       </AccordionDetails>
     </Accordion>

@@ -1,33 +1,13 @@
-// export interface TxQueueData {
-//   id: string;
-//   addressHex: string;
-//   addressSS58: string;
-//   transactions: Tx[];
-//   owners: string[];
-// }
-
-// export interface Tx {
-//   selector: string;
-//   args: string;
-//   contractAddress: string;
-//   proposer: string;
-//   rejectionCount: number;
-//   approvalCount: number;
-//   status: string;
-//   lastUpdatedTimestamp: string;
-//   value: number;
-// }
-
 export interface MyQueryVariables {
-  address: string;
+  address: string | string[];
 }
 
 export interface MyQueryResponse {
-  txes: TxQueueType[];
+  txes: TxType[];
 }
 
 export interface ITxQueueRepository {
-  getQueue(address: string): Promise<TxQueueType[] | null>;
+  getQueue(address: string): Promise<TxType[] | null>;
 }
 
 export interface TransferType {
@@ -44,8 +24,8 @@ export interface TransferType {
 }
 
 export interface TransactionType {
-  approvalCount?: number;
-  approvals?: { approver: string }[];
+  approvalCount: number;
+  approvals: { approver: string }[];
   args?: string;
   contractAddress: string;
   creationBlockNumber: number;
@@ -67,4 +47,4 @@ export interface TransactionType {
   __typename: string;
 }
 
-export type TxQueueType = TransactionType & TransferType;
+export type TxType = TransactionType & TransferType;

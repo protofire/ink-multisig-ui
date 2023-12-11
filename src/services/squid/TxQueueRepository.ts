@@ -4,19 +4,15 @@ import {
   ITxQueueRepository,
   MyQueryResponse,
   MyQueryVariables,
-  TxQueueType,
+  TxType,
 } from "@/domain/repositores/ITxQueueRepository";
 
 import { GraphClient } from "./GraphClient";
 
 const FETCH_QUEUE = gql`
-  query MyQuery {
+  query MyQuery($address: String!) {
     txes(
-      where: {
-        multisig: {
-          addressSS58_eq: "WVD2RehkWDtEovfmozEy9644WikGyJ7fFH7YUDSXgfBECXg"
-        }
-      }
+      where: { multisig: { addressSS58_eq: $address } }
       orderBy: creationTimestamp_ASC
     ) {
       ... on Transaction {
@@ -68,7 +64,7 @@ const FETCH_QUEUE = gql`
 export class TxQueueRepository implements ITxQueueRepository {
   constructor(private client: GraphClient) {}
 
-  async getQueue(address: string): Promise<TxQueueType[] | null> {
+  async getQueue(address: string): Promise<TxType[] | null> {
     const client = this.client.getCurrentApolloClient();
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_QUEUE,
