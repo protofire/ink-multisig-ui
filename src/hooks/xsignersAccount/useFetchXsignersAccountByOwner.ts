@@ -4,11 +4,12 @@ import { ChainId } from "useink/dist/chains";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { ArrayOneOrMore } from "@/domain/utilityTsTypes";
+import { customReportError } from "@/utils/error";
 
 interface UseMultisigsByOwnerReturn {
   multisigs: SignatoriesAccount[] | null;
   isLoading: boolean;
-  error: Error | null;
+  error: string | null;
 }
 
 interface Props {
@@ -22,7 +23,7 @@ export function useFetchXsignersAccountByOwner({
 }: Props): UseMultisigsByOwnerReturn {
   const [multisigs, setMultisigs] = useState<SignatoriesAccount[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { xsignerOwnersRepository, signatoriesAccountRepository } =
     useLocalDbContext();
 
@@ -79,7 +80,8 @@ export function useFetchXsignersAccountByOwner({
 
         setMultisigs(updatedMultisigs);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("An error occurred"));
+        const errorFormatted = customReportError(err);
+        setError(errorFormatted);
       } finally {
         setIsLoading(false);
       }
