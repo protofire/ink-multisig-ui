@@ -11,6 +11,7 @@ import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner"
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { formatThreshold } from "@/utils/formatString";
 
 export type MultisigsDataFormatted = {
   name: string;
@@ -23,12 +24,16 @@ interface Props {
   multisigs: Array<MultisigsDataFormatted> | null;
   onClick: (account: SignatoriesAccount) => Promise<void | SignatoriesAccount>;
   network: ChainId;
+  ownersCount?: number | undefined;
+  threshold?: number;
 }
 
 export function XsignersAccountTable({
   multisigs,
   onClick: setXsigner,
   network,
+  threshold,
+  ownersCount,
 }: Props) {
   const { logo, name: networkName } = getChain(network);
   const theme = useTheme();
@@ -129,7 +134,7 @@ export function XsignersAccountTable({
                     component="p"
                     sx={{ fontSize: "0.8rem", color: "#aaaaaa" }}
                   >
-                    1/3
+                    {formatThreshold({ threshold, owners: ownersCount })}
                   </Typography>
                 </Tooltip>
               </Box>

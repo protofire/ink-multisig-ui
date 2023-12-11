@@ -14,13 +14,7 @@ import { useFetchXsignersAccountByOwner } from "@/hooks/xsignersAccount/useFetch
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 
 export default function WelcomePage() {
-  // const [loading, setLoading] = useState(false);
-  // const [multisigs, setMultisigs] = useState<MultisigsDataFormatted[]>([]);
-  // const [error, setError] = useState<string | null>(null);
   const { accountConnected, network } = usePolkadotContext();
-  // const { data: signersAccount } = useListSignersAccount();
-  // const { save } = useAddSignersAccount();
-  // const { xsignerOwnersRepository } = useLocalDbContext();
   const { setXsigner } = useSetXsignerSelected();
   const theme = useTheme();
   const {
