@@ -67,7 +67,8 @@ export function ImportContractStep() {
           handleNext={handleNext}
           hiddenBack={activeStep === 0 ? true : false}
           nextButtonProps={{
-            disabled: !metadataManager.metadata.isValid,
+            disabled:
+              !metadataManager.metadata.isValid || Boolean(errors["address"]),
           }}
         />
       </Box>
