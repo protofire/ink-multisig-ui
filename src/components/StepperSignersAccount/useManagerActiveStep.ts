@@ -10,9 +10,10 @@ export interface ManagerActiveStep {
   upExecutionStep: () => void;
   downExecutionStep: () => void;
   resetSteps: () => void;
+  stepsLength: number;
 }
 
-export function useManagerActiveStep(): ManagerActiveStep {
+export function useManagerActiveStep(stepsLength = 0): ManagerActiveStep {
   const [activeStep, setActiveStep] = useState<{
     creation: number;
     execution: number;
@@ -62,5 +63,6 @@ export function useManagerActiveStep(): ManagerActiveStep {
     upExecutionStep,
     downExecutionStep,
     resetSteps,
+    stepsLength,
   };
 }

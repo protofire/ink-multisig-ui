@@ -1,9 +1,11 @@
 import { ContractPromise } from "@polkadot/api-contract";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useApi } from "useink";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { MetadataState } from "@/domain";
+import { AbiSource, MetadataState } from "@/domain";
+import { MetadataManager } from "@/services/substrate/MetadataManager";
+import { ApiPromise } from "@/services/substrate/types";
 
 export function useContractPromise(address: string, metadata: MetadataState) {
   const { network } = usePolkadotContext();
@@ -28,4 +30,24 @@ export function useContractPromise(address: string, metadata: MetadataState) {
     address: contract.address.toString(),
     contractPromise: contract,
   };
+}
+
+const metadataManager = new MetadataManager();
+
+export function useContractPromiseFromSource(
+  contractAddress: string,
+  abiSource: AbiSource,
+  apiPromise: ApiPromise | undefined
+) {
+  const derivedMetadata = useMemo(
+    () =>
+      metadataManager.deriveFromJson(
+        { isWasmRequired: false },
+        abiSource,
+        apiPromise
+      ),
+    [abiSource, apiPromise]
+  );
+
+  return useContractPromise(contractAddress, derivedMetadata);
 }
