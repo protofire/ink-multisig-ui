@@ -11,10 +11,8 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 
-import {
-  TransactionType,
-  TransferType,
-} from "@/domain/repositores/ITxQueueRepository";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { TxDetails } from "./TxDetail";
@@ -26,15 +24,6 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
   display: "flex",
 }));
 
-export type ExtendedDataType = (TransferType & TransactionType) & {
-  state: string;
-  img: string;
-  type: string;
-  to: string;
-  txMsg: string;
-  txStateMsg: string;
-};
-
 type Props = {
   data: ExtendedDataType;
   index: number;
@@ -42,6 +31,13 @@ type Props = {
 
 export const TxDetailItem = ({ data, index }: Props) => {
   const date = formatDate(data.creationTimestamp);
+
+  // This validate deposit from other account with native Token
+  const successReceiveTx =
+    data.__typename === TX_TYPE_OPTION.TRANSFER &&
+    data.type === TX_TYPE_OPTION.RECEIVE &&
+    data.transferType === TX_TYPE_OPTION.TOKEN.NATIVE;
+
   return (
     <Accordion>
       <AccordionSummary
@@ -83,23 +79,21 @@ export const TxDetailItem = ({ data, index }: Props) => {
             >
               <span>{data.type}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                {data.txMsg} : {truncateAddress(data.to, 9)}
+                {data.txMsg} : {truncateAddress(data.from, 9)}
               </span>
             </Box>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
             <Typography>
-              {data.type === "Receive" ? "+" : "-"}
-              {data.value}
+              {data.type === TX_TYPE_OPTION.RECEIVE ? "+" : "-"}
+              {data.value} {data.token}
             </Typography>
           </StyledGrid>
           <StyledGrid item xs={2} sm={2} md={2}>
             <Typography>{date}</Typography>
           </StyledGrid>
           <StyledGrid item xs={3} sm={3} md={3}>
-            <Typography
-              color={data.state === "Successfull" ? "#ADD500" : "#FF9C7D"}
-            >
+            <Typography color={successReceiveTx ? "#ADD500" : "#FF9C7D"}>
               {data.txStateMsg}
             </Typography>
           </StyledGrid>

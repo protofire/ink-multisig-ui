@@ -3,9 +3,9 @@ import { Box, Grid } from "@mui/material";
 import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
 import CopyButton from "@/components/common/CopyButton";
 import OpenNewTabButton from "@/components/common/OpenNewTabButton";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { formatDate } from "@/utils/formatString";
 
-import { ExtendedDataType } from "../TxDetailItem";
 import { CustomGridItem } from "./styled";
 
 export const SendDetail = ({ data }: { data: ExtendedDataType }) => {

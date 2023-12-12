@@ -2,12 +2,13 @@ import ShareIcon from "@mui/icons-material/Share";
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 import { openInNewTab } from "@/utils/browserMethods";
 
 import { AccountAvatar } from "../../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../../common/CopyButton";
 import OpenNewTabButton from "../../common/OpenNewTabButton";
-import { ExtendedDataType } from "../TxDetailItem";
 import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
@@ -15,13 +16,6 @@ import { SendDetail } from "./SendDetail";
 interface Props {
   data: ExtendedDataType;
 }
-
-export const TX_TYPE_OPTION = {
-  RECEIVE: "Receive",
-  SEND: "Send",
-  TRANSACTION: "Transaction",
-  TRANSFER: "Transfer",
-};
 
 export const TxDetails = ({ data }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);

@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
 
-import { ExtendedDataType } from "../TxDetailItem";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+
 import { CustomGridItem } from "./styled";
 
 type Props = { data: ExtendedDataType };

@@ -15,7 +15,7 @@ import { TxQueueWidgetItem } from "./TxQueueWidgetItem";
 export const TxQueueWidget = () => {
   const { xSignerSelected } = useGetXsignerSelected();
   const network = getChain(xSignerSelected?.networkId);
-  const { data } = useListTxQueue(xSignerSelected?.address);
+  const { data } = useListTxQueue(xSignerSelected?.address, network.id);
   const validator = !data || data.length === 0;
   return (
     <TxQueueWidgetStyled border={false}>
@@ -27,7 +27,7 @@ export const TxQueueWidget = () => {
         <>
           <StyledList>
             {data.map((tx, index) => (
-              <TxQueueWidgetItem data={tx} key={index} network={network.id} />
+              <TxQueueWidgetItem data={tx} key={index} />
             ))}
           </StyledList>
           <StyledButton> View All </StyledButton>

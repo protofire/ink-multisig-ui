@@ -1,12 +1,11 @@
 import { Grid } from "@mui/material";
 
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { formatDate } from "@/utils/formatString";
 
-import { ExtendedDataType } from "../TxDetailItem";
 import { CustomGridItem } from "./styled";
 
 export const ReceivedDetail = ({ data }: { data: ExtendedDataType }) => {
-  console.log("receiveDetail", data);
   const date = formatDate(data.creationTimestamp);
 
   return (

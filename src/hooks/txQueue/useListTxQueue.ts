@@ -1,16 +1,83 @@
 import { useCallback, useEffect, useState } from "react";
+import { ChainId } from "useink/dist/chains";
 
+import { getChain } from "@/config/chain";
+import { TX_TYPE_IMG } from "@/config/images";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
-import { TxType } from "@/domain/repositores/ITxQueueRepository";
+import {
+  ExtendedDataType,
+  TxType,
+} from "@/domain/repositores/ITxQueueRepository";
 import { customReportError } from "@/utils/error";
 
-export type TabTxTypes = "transfer" | "transaction";
+export type TabTxTypes = "queue" | "history";
 
-export function useListTxQueue(address: string | undefined) {
-  const [data, setData] = useState<TxType[] | null>(null);
-  const [data2, setData2] = useState<{ [name: string]: TxType[] | undefined }>({
-    transaction: undefined,
-    transfer: undefined,
+export const TX_TYPE_OPTION = {
+  RECEIVE: "Receive",
+  SEND: "Send",
+  TRANSACTION: "Transaction",
+  TRANSFER: "Transfer",
+  TOKEN: {
+    NATIVE: "NATIVE",
+  },
+  STATUS: {
+    PROPOSED: "PROPOSED",
+  },
+};
+
+const getTxType = (currentAccount: string, to: string) => {
+  const receive = {
+    img: TX_TYPE_IMG.RECEIVE,
+    type: "Receive",
+    txMsg: "from",
+  };
+  const send = {
+    img: TX_TYPE_IMG.SEND,
+    type: "Send",
+    txMsg: "to",
+  };
+  return currentAccount == to ? receive : send;
+};
+
+export const buildTxDetail = (
+  currentAccount: string,
+  token: string,
+  data: TxType
+): ExtendedDataType => {
+  let additionalInfo;
+  if (data.__typename === TX_TYPE_OPTION.TRANSACTION) {
+    // Send
+    const type = getTxType(currentAccount, data.proposer);
+    additionalInfo = {
+      ...type,
+      to: data.contractAddress,
+      txStateMsg: "Awaiting confirmations",
+    };
+  } else {
+    // Receive
+    const type = getTxType(currentAccount, data.to);
+    additionalInfo = {
+      ...type,
+      txStateMsg: "Success",
+    };
+  }
+
+  //TODO: Contract Interaction??
+  return {
+    ...additionalInfo,
+    ...data,
+    token,
+  } as ExtendedDataType;
+};
+
+export function useListTxQueue(address: string | undefined, network: ChainId) {
+  const [data, setData] = useState<ExtendedDataType[] | undefined>(undefined);
+  const chain = getChain(network);
+  const [dataType, setDataType] = useState<{
+    [name: string]: ExtendedDataType[] | undefined;
+  }>({
+    queue: undefined,
+    history: undefined,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -24,23 +91,24 @@ export function useListTxQueue(address: string | undefined) {
       setError(null);
       try {
         const result = await txQueueRepository.getQueue(address);
-        console.log("result", result);
-
-        // const txType = Object.groupBy(result, (type) => type.__typename);
-        // console.log("txType", txType);
-
-        const transferData = result?.filter(
-          (element) => element.__typename === "Transfer"
-        );
-        const transactionData = result?.filter(
-          (element) => element.__typename === "Transaction"
-        );
 
         if (result) {
-          setData(result);
-          setData2({
-            transfer: transferData,
-            transaction: transactionData,
+          const extendedResult = result.map((element) =>
+            buildTxDetail(address, chain.token, element)
+          );
+
+          const queue = extendedResult?.filter(
+            (element) => element.status === TX_TYPE_OPTION.STATUS.PROPOSED
+          );
+
+          const history = extendedResult?.filter(
+            (element) => element.status !== TX_TYPE_OPTION.STATUS.PROPOSED
+          );
+
+          setData(extendedResult);
+          setDataType({
+            queue: queue,
+            history: history,
           });
         }
       } catch (err) {
@@ -54,15 +122,14 @@ export function useListTxQueue(address: string | undefined) {
     fetchData().finally(() => {
       setIsLoading(false);
     });
-  }, [address, txQueueRepository]);
+  }, [address, txQueueRepository, chain.token]);
 
   const listTxByType = useCallback(
     (key: TabTxTypes) => {
-      console.log(key);
-      if (data2 == null) return;
-      return data2[key];
+      if (dataType == null) return;
+      return dataType[key];
     },
-    [data2]
+    [dataType]
   );
 
   return { data, listTxByType, isLoading, error };

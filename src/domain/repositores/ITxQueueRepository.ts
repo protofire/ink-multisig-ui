@@ -41,10 +41,20 @@ export interface TransactionType {
   rejectionCount: number;
   rejections: unknown;
   selector: string;
-  status: "PROPOSED";
+  status: string;
   txId: string;
   value: string;
   __typename: string;
 }
 
 export type TxType = TransactionType & TransferType;
+
+export type ExtendedDataType = TxType & {
+  state: string;
+  token: string;
+  img: string;
+  type: string;
+  to: string;
+  txMsg: string;
+  txStateMsg: string;
+};
