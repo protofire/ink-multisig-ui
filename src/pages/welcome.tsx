@@ -81,7 +81,7 @@ export default function WelcomePage() {
           </Box>
         </Box>
       </MainContentCard>
-      {!isLoadingMultisigs ? (
+      {!isLoadingMultisigs && accountConnected ? (
         <XsignersAccountTable
           network={network}
           onClick={setXsigner}
