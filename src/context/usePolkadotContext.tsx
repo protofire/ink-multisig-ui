@@ -66,26 +66,6 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
     loadNetworkConnected();
   }, [loadNetworkConnected]);
 
-  const setCurrentChain = useCallback(
-    async (chainId: ChainId) => {
-      networkRepository.setNetworkSelected(chainId);
-      setNetworkId(chainId);
-
-      document.dispatchEvent(
-        new CustomEvent(WalletConnectionEvents.networkChanged)
-      );
-    },
-    [networkRepository]
-  );
-
-  const setAccountConnected = (account: WalletAccount) => {
-    const formattedAccount = {
-      ...account,
-      address: formatAddressForNetwork(account.address, ""),
-    };
-    setAccount(formattedAccount);
-  };
-
   useEffect(() => {
     if (!accounts || !networkId) return;
 
@@ -107,6 +87,31 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
     setFormattedAccount(formattedAccount);
   }, [account, networkId]);
 
+  const setCurrentChain = useCallback(
+    async (chainId: ChainId) => {
+      networkRepository.setNetworkSelected(chainId);
+      setNetworkId(chainId);
+
+      document.dispatchEvent(
+        new CustomEvent(WalletConnectionEvents.networkChanged)
+      );
+    },
+    [networkRepository]
+  );
+
+  const setAccountConnected = (account: WalletAccount) => {
+    const formattedAccount = {
+      ...account,
+      address: formatAddressForNetwork(account.address, ""),
+    };
+    setAccount(formattedAccount);
+  };
+
+  const _disconnect = () => {
+    disconnect();
+    setFormattedAccount(undefined);
+  };
+
   return (
     <PolkadotContext.Provider
       value={{
@@ -116,7 +121,7 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
         accountConnected: formattedAccount,
         wallets: walletList,
         connectWallet: connect,
-        disconnectWallet: disconnect,
+        disconnectWallet: _disconnect,
         isConnected,
         setAccount: setAccountConnected,
       }}
