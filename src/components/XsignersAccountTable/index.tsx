@@ -24,6 +24,7 @@ export function XsignersAccountTable({
   multisigs,
   onClick: setXsigner,
   network,
+  accountConnected,
 }: Props) {
   const { logo, name: networkName } = getChain(network);
   const theme = useTheme();
@@ -39,7 +40,7 @@ export function XsignersAccountTable({
     router.replace(ROUTES.App);
   };
 
-  if (multisigs === null) return null;
+  if (multisigs === null || !accountConnected) return null;
 
   return (
     <MainContentCard
