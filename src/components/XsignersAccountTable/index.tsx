@@ -8,22 +8,16 @@ import { ChainId } from "useink/dist/chains";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
-import { ChainExtended, getChain } from "@/config/chain";
+import { getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { formatThreshold } from "@/utils/formatString";
-
-export type MultisigsDataFormatted = {
-  name: string;
-  address: string;
-  networkId?: ChainId;
-  network?: ChainExtended;
-};
 
 interface Props {
   multisigs: Array<SignatoriesAccount> | null;
   onClick: (account: SignatoriesAccount) => Promise<void | SignatoriesAccount>;
   network: ChainId;
+  accountConnected: string | undefined;
 }
 
 export function XsignersAccountTable({

@@ -81,11 +81,12 @@ export default function WelcomePage() {
           </Box>
         </Box>
       </MainContentCard>
-      {!isLoadingMultisigs && accountConnected ? (
+      {!isLoadingMultisigs ? (
         <XsignersAccountTable
           network={network}
           onClick={setXsigner}
           multisigs={multisigs}
+          accountConnected={accountConnected?.address}
         />
       ) : (
         <Box display="flex" alignItems="center" justifyContent="center" p={2}>
