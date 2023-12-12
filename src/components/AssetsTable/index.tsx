@@ -11,6 +11,7 @@ import AssetTabs from "./Tabs";
 
 const columns = [
   { id: "name", label: "ASSET" },
+  { id: "address", label: "ADDRESS" },
   { id: "balance", label: "BALANCE", align: "left" },
 ] as Column[];
 
