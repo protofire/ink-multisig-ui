@@ -37,4 +37,10 @@ export class GraphClient {
     const chainSelected = this.networkRepository.getNetworkSelected();
     return this.getClient(chainSelected.id);
   }
+
+  getCurrentNetwork(): ChainId {
+    const chainSelected = this.networkRepository.getNetworkSelected();
+
+    return chainSelected.id;
+  }
 }
