@@ -16,4 +16,7 @@ export interface ISignatoriesAccountRepository {
     networkId?: Chain["id"]
   ): Promise<SignatoriesAccount[]>;
   listXsignersAccount(networkId?: Chain["id"]): Promise<SignatoriesAccount[]>;
+  updateSignatoriesAccountsInBatch(
+    accounts: SignatoriesAccount[]
+  ): Promise<void>;
 }

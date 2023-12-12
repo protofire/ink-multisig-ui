@@ -6,8 +6,10 @@ import {
   MyQueryResponse,
   MyQueryVariables,
 } from "@/domain/repositores/IXsignerOwnersRepository";
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 
 import { GraphClient } from "./GraphClient";
+import { multisigRawToSignatoriesAccount } from "./transformers/toSignatoriesAccount";
 
 const FETCH_MULTISIG = gql`
   query MyQuery($address: String!) {
@@ -45,8 +47,11 @@ export class XsignerOwnersRepository implements IXsignerOwnersRepository {
     return data?.multisigs[0] || null;
   }
 
-  async getMultisigsByOwner(address: string): Promise<MultisigData[] | null> {
+  async getMultisigsByOwner(
+    address: string
+  ): Promise<SignatoriesAccount[] | null> {
     const client = this.client.getCurrentApolloClient();
+    const networkId = this.client.getCurrentNetwork();
 
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_MULTISIGS_BY_OWNER,
@@ -55,6 +60,10 @@ export class XsignerOwnersRepository implements IXsignerOwnersRepository {
       },
     });
 
-    return data?.multisigs || null;
+    if (!data?.multisigs) return null;
+
+    return data.multisigs.map((multisig) =>
+      multisigRawToSignatoriesAccount(multisig, networkId)
+    );
   }
 }
