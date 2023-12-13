@@ -8,18 +8,22 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { FunctionSignatureName } from "@/components/ArgumentForm/FunctionSignatureName";
+import { useArgValues } from "@/components/ArgumentForm/useArgValues";
 import CopyButton from "@/components/common/CopyButton";
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
+import { MonoTypography } from "@/components/MonoTypography";
 import { AbiSource } from "@/domain";
 import { useContractPromiseFromSource } from "@/hooks/useContractPromise";
+import { transformSelectChangeEvent } from "@/hooks/useForm/transformSelectChangeEvent";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { groupAndSortAbiMessages } from "@/services/substrate/utils";
 import { truncateAddress } from "@/utils/formatString";
+import { notEmpty } from "@/utils/inputValidation";
 
-import { MonoTypography } from "../../MonoTypography";
+import { NextBackButtonStepper } from "../NextBackButtonStepper";
 import { useTxBuilderContext } from "../TxBuilderContext";
 import { WriteMethodsForm } from "./WriteMethodsForm";
 
@@ -28,10 +32,19 @@ export const BoxRow = styled(Box)<BoxProps>(() => ({
 }));
 
 export function MethodSelectorStep() {
-  const { inputFormManager } = useTxBuilderContext();
-  const { address: contractAddress, metadataSource } = inputFormManager.values;
-  const [selectedMsgName, setSelectedMsgName] = useState<string | undefined>();
-  const { apiPromise, network } = useNetworkApi();
+  const { inputFormManager, managerStep } = useTxBuilderContext();
+  const {
+    address: contractAddress,
+    metadataSource,
+    selectedAbiIdentifier,
+  } = inputFormManager.values;
+  const {
+    activeStep: { creation: activeStep },
+    downCreationStep: handleBack,
+    upCreationStep: handleNext,
+    stepsLength,
+  } = managerStep;
+  const { apiPromise } = useNetworkApi();
   const contractPromise = useContractPromiseFromSource(
     contractAddress,
     metadataSource as AbiSource, // was previously validated
@@ -47,17 +60,22 @@ export function MethodSelectorStep() {
   const abiMessageSelected = useMemo(
     () =>
       sortedAbiMessages?.find(
-        (abiMessage) => abiMessage.identifier === selectedMsgName
+        (abiMessage) => abiMessage.identifier === selectedAbiIdentifier
       ),
-    [selectedMsgName, sortedAbiMessages]
+    [selectedAbiIdentifier, sortedAbiMessages]
   );
+  const { register, errors, isValid, touched, setValue } = inputFormManager;
+  const identifierAbiMessageInput = register("selectedAbiIdentifier", [
+    notEmpty,
+  ]);
+  const argValuesManager = useArgValues(abiMessageSelected, substrateRegistry);
 
   if (!contractPromise) {
     return (
       <FallbackSpinner
         sx={{
-          mt: "3rem",
           justifyContent: "start",
+          height: "auto",
         }}
         text="Getting the connected network API..."
       />
@@ -68,7 +86,6 @@ export function MethodSelectorStep() {
     return (
       <FallbackSpinner
         sx={{
-          mt: "3rem",
           justifyContent: "start",
         }}
         text="Getting the metadata interface (ABI) to interact with the Smart Contract"
@@ -101,12 +118,14 @@ export function MethodSelectorStep() {
           <Select
             labelId="select-label"
             id="select"
-            value={selectedMsgName || ""}
+            value={identifierAbiMessageInput.value || ""}
             label="Select Message"
             autoFocus
-            onChange={(e) => {
-              setSelectedMsgName(e.target.value);
-            }}
+            onChange={transformSelectChangeEvent(
+              identifierAbiMessageInput.onChange,
+              "selectedAbiIdentifier"
+            )}
+            error={Boolean(errors["selectedAbiIdentifier"])}
           >
             {sortedAbiMessages.map((message) => {
               return (
@@ -125,10 +144,26 @@ export function MethodSelectorStep() {
               abiMessage={abiMessageSelected}
               substrateRegistry={substrateRegistry}
               contractPromise={contractPromise.contractPromise}
+              argValuesManager={argValuesManager}
             />
           )}
         </FormControl>
       )}
+      <Box p={5}>
+        <NextBackButtonStepper
+          activeStep={activeStep}
+          stepsLength={stepsLength}
+          handleBack={handleBack}
+          handleNext={() => {
+            setValue("dataArgsU8a", argValuesManager.inputDataU8a);
+            handleNext();
+          }}
+          hiddenBack={activeStep === 0 ? true : false}
+          nextButtonProps={{
+            disabled: !isValid || !touched.selectedAbiIdentifier,
+          }}
+        />
+      </Box>
     </Box>
   );
 }

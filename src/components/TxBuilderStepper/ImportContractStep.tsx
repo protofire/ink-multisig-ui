@@ -3,11 +3,11 @@ import { useEffect } from "react";
 
 import { DropzoneWrapper } from "@/components/common/muiExtended/DropzoneWrapper";
 import { InputFileDropzone } from "@/components/InputFileDropzone";
+import { TextFieldWithLoading } from "@/components/TextFieldWithLoading/TextFieldWithLoading";
 import { isAbiSource } from "@/domain";
 import { useIsOnChain } from "@/hooks/validationForms/useIsOnChain";
 import { onlyAddress } from "@/utils/inputValidation";
 
-import { TextFieldWithLoading } from "../TextFieldWithLoading/TextFieldWithLoading";
 import { NextBackButtonStepper } from "./NextBackButtonStepper";
 import { useTxBuilderContext } from "./TxBuilderContext";
 
@@ -22,8 +22,14 @@ export function ImportContractStep() {
   } = managerStep;
 
   const { metadataFile, onChange, onRemove, metadata } = metadataManager;
-  const { register, errors, isLoading, values, setValue } = inputFormManager;
+  const { register, errors, isLoading, values, setValue, reset } =
+    inputFormManager;
   const { isOnChain } = useIsOnChain();
+
+  const _onRemove = () => {
+    onRemove();
+    reset({ address: values.address });
+  };
 
   useEffect(() => {
     if (!metadata.isValid || !isAbiSource(metadata.source)) return;
@@ -53,7 +59,7 @@ export function ImportContractStep() {
               accept={{ "application/json": [".json", ".contract"] }}
               file={metadataFile}
               onChange={onChange}
-              onRemove={onRemove}
+              onRemove={_onRemove}
               disabled={!values.address || Boolean(errors.address)}
             />
           </DropzoneWrapper>

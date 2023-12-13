@@ -14,7 +14,7 @@ export type NextBackButtonStepperProps = {
   activeStep: number;
   stepsLength: number;
   handleBack: () => void;
-  handleNext?: () => void;
+  handleNext?: (props?: unknown) => void;
   isNextDisabled?: boolean;
   //   isDoingNext?: boolean;
   nextButtonProps?: LoadingButtonProps & { disabled: boolean };
