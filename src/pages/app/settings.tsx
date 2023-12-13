@@ -55,21 +55,32 @@ export default function SettingsPage() {
           xSignerSelected.address as string
         );
         if (result) {
+          console.log("result", result);
           const newOwners = result.owners
             .filter((address) => {
-              return !xSignerSelected.owners.find(
+              return !xSignerSelected.owners?.find(
                 (owner) => owner.address === address
               );
             })
-            .map((address, index) => {
+            ?.map((address, index) => {
               return {
                 address: address,
-                name: `Signer ${xSignerSelected.owners.length + index + 1}`,
+                name: `Signer ${
+                  (xSignerSelected.owners?.length ?? 0) + index + 1
+                }`,
               };
             });
+          console.log("newOwners", newOwners);
+          console.log("xSignerSelected.owners", xSignerSelected.owners);
+          const owners =
+            newOwners.length > 0
+              ? xSignerSelected.owners?.length > 0
+                ? [...xSignerSelected.owners, ...newOwners]
+                : newOwners
+              : xSignerSelected.owners || [];
           const multisig = {
             ...xSignerSelected,
-            owners: [...xSignerSelected.owners, ...newOwners],
+            owners,
             threshold: result.threshold,
           } as SignatoriesAccount;
           setSelectedMultisig(multisig);
@@ -78,7 +89,8 @@ export default function SettingsPage() {
         } else {
           setSelectedMultisig(xSignerSelected);
         }
-      } catch {
+      } catch (e) {
+        console.log(e);
         setSelectedMultisig(xSignerSelected);
       }
     };
