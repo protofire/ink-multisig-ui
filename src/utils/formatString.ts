@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 export const truncateAddress = (
   value: string | undefined,
   sideLength = 6
@@ -52,4 +54,12 @@ export const formatThreshold = ({
   owners: number | undefined;
 }) => {
   return `${threshold || "-"} / ${owners || "-"}`;
+};
+
+export const balanceToFixed = (
+  tokenBalance: string,
+  tokenDecimals: number
+): string => {
+  const balance = tokenBalance.replace(/,/g, "");
+  return new BigNumber(balance).div(10 ** tokenDecimals).toFixed();
 };
