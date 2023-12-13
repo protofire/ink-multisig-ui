@@ -5,12 +5,11 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
   decodeCallResult,
-  toContractAbiMessage,
   toRegistryErrorDecoded,
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
 } from "useink/core";
-import { WeightV2 } from "useink/dist/core";
+import { ContractPromise, WeightV2 } from "useink/dist/core";
 
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
@@ -21,7 +20,11 @@ import { usePSPContractPromise } from "@/hooks/contractPromise/usePSPContractPro
 import { useGetDryRun } from "@/hooks/useGetDryRun";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
-import { splitTokenAmount } from "@/utils/blockchain";
+import {
+  getMessageInfo,
+  splitTokenAmount,
+  transformArgsToBytes,
+} from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
@@ -94,71 +97,59 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
           ? assetRepository.getAssetByAddress(txData.token)?.decimals
           : api.apiPromise?.registry.chainDecimals[0];
         const convertedValue = BigInt(amount * 10 ** (decimals ?? 18));
+        const args: unknown[] = [txData.to, convertedValue];
+        if (txData.token) {
+          args.push([]);
+        }
         const proposeTx = multisigContractPromise?.contract.tx.proposeTx;
 
-        const transferTx = txData.token
-          ? contract?.tx["psp22::transfer"]
-          : contract?.tx.transfer;
-        const selector = transferTx?.meta.selector;
-        const accountId = api.apiPromise
-          ?.createType("AccountId", txData.to)
-          .toU8a();
-        const balance = api.apiPromise
-          ?.createType("Balance", convertedValue)
-          .toU8a();
-        const data = api.apiPromise?.createType("Vec<u8>", []).toU8a();
-        const abiMessage = toContractAbiMessage(
-          pSPContractPromise?.contract,
-          "psp22::transfer"
+        const methodName = txData.token ? "psp22::transfer" : "transfer";
+        const input = transformArgsToBytes(
+          contract as ContractPromise,
+          methodName,
+          args
         );
+        const abiMessage = getMessageInfo(
+          contract as ContractPromise,
+          methodName
+        );
+        const selector = abiMessage?.selector;
 
-        if (!accountId || !balance || !data) return;
-        const extra = txData.token ? data.length : 0;
-        const input = new Uint8Array(accountId.length + balance.length + extra);
-        input.set(accountId, 0);
-        input.set(balance, accountId.length);
-        if (txData.token) {
-          input.set(data, balance.length);
-        }
         const transferTxStruct = {
           address: txData.token || xSignerSelected?.address,
-          selector: selector,
-          input: Array.from(input),
+          selector,
+          input,
           transferredValue: 0,
           gasLimit: 0,
           allowReentry: !txData.token,
         };
 
-        if (txData.token) {
-          const dryRunData = await pSPContractPromise?.contract.query[
-            "psp22::transfer"
-          ](
-            xSignerSelected?.address as string,
-            {
-              gasLimit: api.apiPromise?.registry.createType("WeightV2", {
-                refTime: MAX_CALL_WEIGHT,
-                proofSize: PROOFSIZE,
-              }) as WeightV2,
-            },
-            ...[txData.to, convertedValue, []]
-          );
-          const err = toRegistryErrorDecoded(
-            api.apiPromise?.registry,
-            dryRunData?.result
-          );
-          const decodedData = decodeCallResult(
-            dryRunData?.result,
-            abiMessage.value,
-            pSPContractPromise?.contract.abi.registry
-          );
+        const dryRunData = await contract?.query[methodName](
+          xSignerSelected?.address as string,
+          {
+            gasLimit: api.apiPromise?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+          },
+          ...args
+        );
+        const err = toRegistryErrorDecoded(
+          api.apiPromise?.registry,
+          dryRunData?.result
+        );
+        const decodedData = decodeCallResult(
+          dryRunData?.result,
+          abiMessage,
+          contract?.abi.registry
+        );
 
-          if (err) {
-            throw new Error(err.docs.join("\n"));
-          }
+        if (err) {
+          throw new Error(err.docs.join("\n"));
+        }
 
-          if (decodedData?.value.Err) {
-            throw new Error(`Error: ${decodedData?.value.Err}`);
-          }
+        if (decodedData?.value.Err) {
+          throw new Error(`Error: ${decodedData?.value.Err}`);
         }
 
         const result = await dryRun.send([transferTxStruct]);
