@@ -146,12 +146,15 @@ function useFetchAssets(address: string) {
         return;
       }
       const existingAsset = assetRepository.getAssetByAddress(address);
+      const assets =
+        assetRepository.getAssetList(xSignerSelected?.networkId as ChainId) ||
+        [];
       if (existingAsset) return;
       if (!checkIfExist(getName.value as string, getBalance.value as string)) {
         if (getName.ok && getBalance.ok && getDecimals.ok) {
           const asset = {
             address,
-            name: getName.value || "UNKNOWN",
+            name: getName.value || `UNKNOWN ASSET #${assets.length + 1}`,
             balance: getBalance.value || "0",
             decimals: Number(getDecimals.value) || 18,
             networkId: xSignerSelected?.networkId as ChainId,
