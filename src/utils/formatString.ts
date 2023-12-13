@@ -1,4 +1,4 @@
-import { Asset } from "@/hooks/assets/useFetchAssets";
+import BigNumber from "bignumber.js";
 
 export const truncateAddress = (
   value: string | undefined,
@@ -57,16 +57,9 @@ export const formatThreshold = ({
 };
 
 export const balanceToFixed = (
-  asset: Asset,
-  stringDecimals: number
+  tokenBalance: string,
+  tokenDecimals: number
 ): string => {
-  const balance = asset.balance.replace(/,/g, "");
-  const transformedBalance = (
-    BigInt(balance) / BigInt(10 ** (asset.decimals - stringDecimals))
-  ).toString();
-  const strBalance =
-    transformedBalance.slice(0, transformedBalance.length - stringDecimals) +
-    "." +
-    transformedBalance.slice(transformedBalance.length - stringDecimals);
-  return strBalance;
+  const balance = tokenBalance.replace(/,/g, "");
+  return new BigNumber(balance).div(10 ** tokenDecimals).toFixed();
 };

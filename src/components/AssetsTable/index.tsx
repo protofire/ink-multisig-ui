@@ -39,7 +39,7 @@ export default function AssetsTable() {
     return data.map((asset) => {
       return {
         ...asset,
-        balance: balanceToFixed(asset, 2),
+        balance: balanceToFixed(asset.balance, asset.decimals),
       };
     });
   };
