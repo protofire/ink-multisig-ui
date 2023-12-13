@@ -2,27 +2,24 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 import useFetchAssets, { AssetType } from "@/hooks/assets/useFetchAssets";
+import { truncateAddress } from "@/utils/formatString";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
 import CopyButton from "../common/CopyButton";
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
-import BasicTable, { Column as BaseColumn } from "../common/Table";
+import BasicTable, { Column } from "../common/Table";
 import AddTokenModal from "./AddTokenModal";
 import AssetTabs from "./Tabs";
-
-interface Column extends BaseColumn {
-  render?: (value: string) => React.ReactNode;
-}
 
 const columns: Column[] = [
   { id: "name", label: "ASSET" },
   {
     id: "address",
     label: "ADDRESS",
-    render: (value: string) => (
+    render: (value) => (
       <Box display="flex" alignItems="center">
-        <Box>{value}</Box>
-        <CopyButton text={value} />
+        <Box>{truncateAddress(value as string, 16)}</Box>
+        <CopyButton text={value as string} />
       </Box>
     ),
   },

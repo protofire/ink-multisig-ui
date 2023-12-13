@@ -13,7 +13,7 @@ export type Column = {
   id: string;
   label: string;
   align?: "left" | "right" | "center";
-  format?: (value: string | number) => string;
+  render?: (value: string | number) => React.ReactNode;
 };
 
 type Row = {
@@ -65,7 +65,7 @@ export default function GenericTable({ columns, rows }: GenericTableProps) {
                     key={column.id}
                     align={column.align || "left"}
                   >
-                    {column.format ? column.format(value) : String(value)}
+                    {column.render ? column.render(value) : String(value)}
                   </StyledTableCell>
                 );
               })}
