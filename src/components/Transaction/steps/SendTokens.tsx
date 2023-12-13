@@ -14,6 +14,7 @@ import useFetchAssets, { Asset } from "@/hooks/assets/useFetchAssets";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { isValidAddress, splitTokenAmount } from "@/utils/blockchain";
+import { balanceToFixed } from "@/utils/formatString";
 
 import InputWithMax from "../inputs/InputWithMax";
 
@@ -48,7 +49,7 @@ export const SendTokens = (props: Props) => {
 
   const formatBalance = useCallback((asset: Asset) => {
     if (asset) {
-      return `${(Number(asset.balance) / 10 ** asset.decimals).toFixed(2)}`;
+      return balanceToFixed(asset.balance, asset.decimals);
     }
     return "";
   }, []);
