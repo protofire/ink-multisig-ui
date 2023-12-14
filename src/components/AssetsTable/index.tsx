@@ -23,7 +23,7 @@ const columns: Column[] = [
     label: "ADDRESS",
     render: (value) => (
       <Box display="flex" alignItems="center">
-        <Box>{truncateAddress(value as string, 16)}</Box>
+        <Box>{truncateAddress(value as string, 8)}</Box>
         <CopyButton text={value as string} />
       </Box>
     ),
