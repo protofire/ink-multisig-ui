@@ -17,6 +17,11 @@ const DEFAULT_RESPONSE = {
   value: undefined,
 };
 
+const DEFAULT_METHOD_RESPONSES: { [key: string]: unknown } = {
+  "psp22Metadata::tokenName": "Unknown",
+  "psp22Metadata::tokenDecimals": "0",
+};
+
 const MAX_WAIT_TIME = 2000;
 
 export function useCall(
@@ -44,8 +49,12 @@ export function useCall(
   useEffect(() => {
     if (!address) return;
     const timer = setTimeout(() => {
-      if (!data.ok) {
+      if (!data.ok || (data.ok && data.value === undefined)) {
         setError(`Cannot get ${methodName} data.`);
+        setData({
+          ok: true,
+          value: DEFAULT_METHOD_RESPONSES[methodName],
+        });
       }
     }, MAX_WAIT_TIME);
 

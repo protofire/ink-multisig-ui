@@ -1,3 +1,5 @@
+import { AbiMessage } from "@/services/substrate/types";
+
 /**
  * Polkadot/Substrate uses a variety of numeric types in its API,
  * including signed and unsigned integers of various sizes (8, 16, 32, 64, 128 bits).
@@ -48,4 +50,27 @@ export function getMinMax(type: string): [bigint, bigint] {
         BigInt(Number.MAX_SAFE_INTEGER),
       ];
   }
+}
+
+export interface GroupedAbiMessages {
+  nonMutating: AbiMessage[];
+  mutating: AbiMessage[];
+}
+
+export function groupAndSortAbiMessages(
+  abiMessages: AbiMessage[] | undefined
+): { mutating: AbiMessage[]; nonMutating: AbiMessage[] } {
+  if (!abiMessages?.length) return { mutating: [], nonMutating: [] };
+
+  const mutating = abiMessages
+    .filter((message) => message.isMutating)
+    .sort((a, b) => a.method.localeCompare(b.method));
+  const nonMutating = abiMessages
+    .filter((message) => !message.isMutating)
+    .sort((a, b) => a.method.localeCompare(b.method));
+
+  return {
+    nonMutating,
+    mutating,
+  };
 }

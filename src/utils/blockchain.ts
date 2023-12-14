@@ -1,3 +1,5 @@
+import { ContractPromise } from "@polkadot/api-contract";
+import { AbiMessage } from "@polkadot/api-contract/types";
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { hexToU8a, isHex } from "@polkadot/util";
 import * as ss58 from "@subsquid/ss58";
@@ -112,4 +114,50 @@ export const formatAddressForNetwork = (address: string, networkId: string) => {
       : 42;
 
   return ss58.codec(prefix).encode(rawAddress);
+};
+
+export const transformArgsToBytes = (
+  contractPromise: ContractPromise,
+  methodName: string,
+  args: unknown[]
+): number[] => {
+  const messageInfo = contractPromise.abi.messages.find(
+    (m) => m.method === methodName
+  );
+
+  if (!messageInfo) {
+    throw new Error("Message not found");
+  }
+
+  if (args.length !== messageInfo.args.length) {
+    throw new Error("Invalid number of arguments");
+  }
+
+  const numbers: number[] = [];
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    const argInfo = messageInfo.args[i];
+
+    const convertedArg = contractPromise.api
+      .createType(argInfo.type.type, arg)
+      .toU8a();
+    // Log the index and the convertedArg
+    //console.log("arg", i, convertedArg);
+
+    // Append the convertedArg directly to the numbers array
+    for (const byte of convertedArg) {
+      numbers.push(byte);
+    }
+  }
+
+  return numbers;
+};
+
+export const getMessageInfo = (
+  contractPromise: ContractPromise,
+  methodName: string
+): AbiMessage | null => {
+  return (
+    contractPromise.abi.messages.find((m) => m.method === methodName) || null
+  );
 };

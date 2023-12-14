@@ -37,7 +37,7 @@ export class SignatoriesAccountDatabase
     account: SignatoriesAccount,
     changes: Partial<SignatoriesAccount>
   ): Promise<number> {
-    return this.db.signatoriesAccounts.update(account, changes);
+    return await this.db.signatoriesAccounts.update(account, changes);
   }
 
   async deleteSignatoryAccount(
@@ -65,6 +65,17 @@ export class SignatoriesAccountDatabase
           signatory.owners.map((owner) => owner.address).includes(walletAddress)
         )
         .toArray();
+    }
+  }
+
+  async updateSignatoriesAccountsInBatch(
+    accounts: SignatoriesAccount[]
+  ): Promise<void> {
+    try {
+      await this.db.signatoriesAccounts.bulkPut(accounts);
+      console.debug("Signatories accounts updated successfully");
+    } catch (error) {
+      console.error("Error updating signatories accounts:", error);
     }
   }
 }

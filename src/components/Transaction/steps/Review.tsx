@@ -21,7 +21,6 @@ export const ReviewTokens = (props: Props) => {
   const { to, amount, chain } = props;
   const { apiPromise: api } = useNetworkApi();
   const symbol = chainTokenSymbol(api as ApiPromise);
-
   const customToken = getChain();
 
   return (

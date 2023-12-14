@@ -1,3 +1,5 @@
+import { SignatoriesAccount } from "../SignatoriesAccount";
+
 export interface MultisigData {
   id: string;
   addressHex: string;
@@ -16,5 +18,5 @@ export interface MyQueryResponse {
 
 export interface IXsignerOwnersRepository {
   getMultisigByAddress(address: string): Promise<MultisigData | null>;
-  getMultisigsByOwner(address: string): Promise<MultisigData[] | null>;
+  getMultisigsByOwner(address: string): Promise<SignatoriesAccount[] | null>;
 }
