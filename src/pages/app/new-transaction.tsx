@@ -2,7 +2,8 @@ import { Toll } from "@mui/icons-material";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Box, Button, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import { SummaryCard } from "@/components/SummaryCard";
 import { Transaction } from "@/components/Transaction";
@@ -43,7 +44,16 @@ const CaptionComponent = ({
 
 export default function NewTransaction() {
   const theme = useTheme();
+  const router = useRouter();
   const [actionSelected, setActionSelected] = useState<string>("");
+  const { token } = router.query;
+
+  useEffect(() => {
+    if (token) {
+      setActionSelected("Send Tokens");
+    }
+  }, [token]);
+
   return (
     <Box
       sx={{
@@ -96,7 +106,7 @@ export default function NewTransaction() {
           </Box>
         </>
       )}
-      {actionSelected && <Transaction />}
+      {actionSelected && <Transaction pspToken={token as string} />}
     </Box>
   );
 }

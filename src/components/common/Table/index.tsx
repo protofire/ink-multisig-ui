@@ -1,3 +1,4 @@
+import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -23,10 +24,17 @@ type Row = {
 type GenericTableProps = {
   columns: Column[];
   rows: Row[];
+  action: (row: Row) => void;
 };
 
-export default function GenericTable({ columns, rows }: GenericTableProps) {
+export default function GenericTable({
+  columns,
+  rows,
+  action,
+}: GenericTableProps) {
   const theme = useTheme();
+
+  const enhancedColumns = [...columns, { id: "transfer", label: "" }];
 
   return (
     <TableContainer component={Paper}>
@@ -36,11 +44,14 @@ export default function GenericTable({ columns, rows }: GenericTableProps) {
       >
         <TableHead>
           <TableRow sx={{ borderBottom: "2px solid black" }}>
-            {columns.map((column) => (
+            {enhancedColumns.map((column) => (
               <StyledTableCell
                 key={column.id}
                 align={column.align || "left"}
-                sx={{ color: theme.palette.grey.A400 }}
+                sx={{
+                  color: theme.palette.grey.A400,
+                  width: column.id === "transfer" ? "100px" : "auto", // Narrower width for 'Actions' column
+                }}
               >
                 {column.label}
               </StyledTableCell>
@@ -58,16 +69,31 @@ export default function GenericTable({ columns, rows }: GenericTableProps) {
                 borderBottom: "2px solid black",
               }}
             >
-              {columns.map((column) => {
-                const value = row[column.id];
-                return (
-                  <StyledTableCell
-                    key={column.id}
-                    align={column.align || "left"}
-                  >
-                    {column.render ? column.render(value) : String(value)}
-                  </StyledTableCell>
-                );
+              {enhancedColumns.map((column) => {
+                if (column.id === "transfer") {
+                  return (
+                    <StyledTableCell key={column.id} sx={{ width: "100px" }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={row.balance <= "0"}
+                        onClick={() => action(row)}
+                      >
+                        Transfer
+                      </Button>
+                    </StyledTableCell>
+                  );
+                } else {
+                  const value = row[column.id];
+                  return (
+                    <StyledTableCell
+                      key={column.id}
+                      align={column.align || "left"}
+                    >
+                      {column.render ? column.render(value) : String(value)}
+                    </StyledTableCell>
+                  );
+                }
               })}
             </TableRow>
           ))}
