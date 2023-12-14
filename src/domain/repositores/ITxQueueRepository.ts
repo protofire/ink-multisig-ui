@@ -25,7 +25,7 @@ export interface TransferType {
 
 export interface TransactionType {
   approvalCount: number;
-  approvals: { approver: string }[];
+  approvals: { approver: string; __typename: string }[];
   args?: string;
   contractAddress: string;
   creationBlockNumber: number;
@@ -39,7 +39,7 @@ export interface TransactionType {
   proposalTxHash: string;
   proposer: string;
   rejectionCount: number;
-  rejections: unknown;
+  rejections: { rejected: string; __typename: string }[];
   selector: string;
   status: string;
   txId: string;
@@ -49,6 +49,12 @@ export interface TransactionType {
 
 export type TxType = TransactionType & TransferType;
 
+export type Order = {
+  address: string;
+  name: string;
+  status: string;
+};
+
 export type ExtendedDataType = TxType & {
   state: string;
   token: string;
@@ -57,4 +63,5 @@ export type ExtendedDataType = TxType & {
   to: string;
   txMsg: string;
   txStateMsg: string;
+  stepperData: Order[] | undefined;
 };
