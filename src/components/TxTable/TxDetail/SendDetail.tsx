@@ -22,7 +22,7 @@ export const SendDetail = ({ data }: { data: ExtendedDataType }) => {
         <Box sx={{ display: "flex" }}>
           <AccountAvatar
             address={data.proposer}
-            name={data.stepperData![0].name}
+            name={""}
             truncateLenght={8}
           ></AccountAvatar>
           <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>

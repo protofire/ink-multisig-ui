@@ -30,13 +30,14 @@ export const TX_TYPE_OPTION = {
   },
   STATUS: {
     PROPOSED: "PROPOSED",
+    EXECUTED_SUCCESS: "EXECUTED_SUCCESS",
     APPROVAL: "Approval",
   },
 };
 
 const FIXED_TOKEN_DECIMALS = 18;
 
-const getTxType = (currentAccount: string, to: string) => {
+const getTxInfo = (currentAccount: string, to: string) => {
   const receive = {
     img: TX_TYPE_IMG.RECEIVE,
     type: "Receive",
@@ -95,7 +96,7 @@ const buildTxDetail = (
   data: TxType,
   stepperData: Order[] | undefined,
   multisigContractPromise: ChainContract<ContractPromise>
-): ExtendedDataType => {
+): ExtendedDataType | null => {
   let additionalInfo;
   // Clean Value to display correct human value
   if (
@@ -108,15 +109,39 @@ const buildTxDetail = (
       data.args!
     );
     // Send
-    const type = getTxType(xsignerAddress, data.proposer);
+    const txInfo = getTxInfo(xsignerAddress, data.proposer);
     additionalInfo = {
-      ...type,
+      ...txInfo,
       to: decodedData[0],
       value: decodedData[1],
       txStateMsg: "Awaiting confirmations",
     };
+  }
+
+  if (
+    data.__typename === TX_TYPE_OPTION.TRANSACTION &&
+    data.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS
+  ) {
+    const decodedData = decodeCallArgs(
+      multisigContractPromise.contract,
+      methodName,
+      data.args!
+    );
+    // Send
+    const txInfo = getTxInfo(xsignerAddress, data.proposer);
+    additionalInfo = {
+      ...txInfo,
+      to: decodedData[0],
+      value: decodedData[1],
+      txStateMsg: "Success",
+    };
   } else if (data.__typename === TX_TYPE_OPTION.TRANSFER) {
-    // Receive
+    const txInfo = getTxInfo(xsignerAddress, data.to);
+
+    // Transfer Send
+    if (txInfo.type === TX_TYPE_OPTION.SEND) return null;
+
+    // Transfer Receive
     const value = balanceToFixed(
       data.value,
       Number.isNaN(parseInt(data.tokenDecimals))
@@ -124,9 +149,8 @@ const buildTxDetail = (
         : parseInt(data.tokenDecimals)
     );
 
-    const type = getTxType(xsignerAddress, data.to);
     additionalInfo = {
-      ...type,
+      ...txInfo,
       txStateMsg: "Success",
       value,
     };
@@ -143,14 +167,14 @@ export function useListTxQueue(
   xsignersAddress: string | undefined,
   network: ChainId
 ) {
-  const [data, setData] = useState<ExtendedDataType[] | undefined>(undefined);
+  const [data, setData] = useState<(ExtendedDataType | null)[]>([]);
   const chain = getChain(network);
   const { data: signers } = useListSignersAccount({ networkId: network });
   const { multisigContractPromise } =
     useMultisigContractPromise(xsignersAddress);
 
   const [dataType, setDataType] = useState<{
-    [name: string]: ExtendedDataType[] | undefined;
+    [name: string]: (ExtendedDataType | null)[] | undefined;
   }>({
     queue: undefined,
     history: undefined,
@@ -168,55 +192,57 @@ export function useListTxQueue(
       setError(null);
       try {
         const result = await txQueueRepository.getQueue(xsignersAddress);
-
         if (result) {
-          const extendedResult = result.map((element) => {
-            // List all owners from a xsignerAddress
-            const ownersData = signers
-              ?.find((element) => element.address === xsignersAddress)
-              ?.owners.map((element) => ({
-                address: formatAddressForNetwork(element.address, network),
-                name: element.name,
-                status: "Pending",
+          const extendedResult = result
+            .map((element) => {
+              // List all owners from a xsignerAddress
+              const ownersData = signers
+                ?.find((element) => element.address === xsignersAddress)
+                ?.owners.map((element) => ({
+                  address: formatAddressForNetwork(element.address, network),
+                  name: element.name,
+                  status: "Pending",
+                }));
+
+              // Clean Approvals data to follow the {address, status, name} format
+              const approvals = element.approvals?.map((element) => ({
+                address: element.approver,
+                status: element.__typename,
+                name: "",
               }));
 
-            // Clean Approvals data to follow the {address, status, name} format
-            const approvals = element.approvals?.map((element) => ({
-              address: element.approver,
-              status: element.__typename,
-              name: "",
-            }));
+              // Clean Rejections data to follow the {address, status, name} format
+              const rejections = element.rejections?.map((element) => ({
+                address: element.rejected,
+                status: element.__typename,
+                name: "",
+              }));
 
-            // Clean Rejections data to follow the {address, status, name} format
-            const rejections = element.rejections?.map((element) => ({
-              address: element.rejected,
-              status: element.__typename,
-              name: "",
-            }));
+              // Combine Approvals and Rejections using OwnersData as root
+              const stepperData = createTxOwnerStepper(
+                ownersData,
+                approvals,
+                rejections
+              );
 
-            // Combine Approvals and Rejections using OwnersData as root
-            const stepperData = createTxOwnerStepper(
-              ownersData,
-              approvals,
-              rejections
-            );
-
-            return buildTxDetail(
-              xsignersAddress,
-              chain.token,
-              element,
-              stepperData,
-              multisigContractPromise as ChainContract<ContractPromise>
-            );
-          });
+              // Build Transaction with missing attributes
+              return buildTxDetail(
+                xsignersAddress,
+                chain.token,
+                element,
+                stepperData,
+                multisigContractPromise as ChainContract<ContractPromise>
+              );
+            }) // Remove null elements
+            .filter((element) => element !== null);
 
           // Divide the results in Queue and History
           const queue = extendedResult?.filter(
-            (element) => element.status === TX_TYPE_OPTION.STATUS.PROPOSED
+            (element) => element!.status === TX_TYPE_OPTION.STATUS.PROPOSED
           );
 
           const history = extendedResult?.filter(
-            (element) => element.status !== TX_TYPE_OPTION.STATUS.PROPOSED
+            (element) => element!.status !== TX_TYPE_OPTION.STATUS.PROPOSED
           );
 
           setData(extendedResult);

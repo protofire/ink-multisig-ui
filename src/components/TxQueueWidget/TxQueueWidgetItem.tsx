@@ -16,8 +16,6 @@ interface Props {
   data: ExtendedDataType;
 }
 
-// TODO: Fix this type, find correct order, token how manage it?
-// TODO Convert balance value
 export const TxQueueWidgetItem = ({ data }: Props) => {
   const value = data.value;
   const date = formatDate(data.creationTimestamp);
