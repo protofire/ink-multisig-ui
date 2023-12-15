@@ -53,7 +53,7 @@ export function ProposeTxStep() {
           handleNext={handleNext}
           hiddenBack={activeStep === 0 ? true : false}
           nextButtonProps={{
-            disabled: false,
+            disabled: true,
           }}
         />
       </Box>
