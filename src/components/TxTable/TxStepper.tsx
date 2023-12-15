@@ -11,7 +11,8 @@ import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 
-import { TransactionType } from "@/domain/repositores/ITxQueueRepository";
+import { Order } from "@/domain/repositores/ITxQueueRepository";
+import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
@@ -71,10 +72,13 @@ function ColorlibStepIcon(props: StepIconProps) {
   );
 }
 
-export default function TxStepper({ data }: { data: TransactionType }) {
+export default function TxStepper({ data }: { data: Order[] | undefined }) {
+  console.log(data);
   const [showOwners, setShowOwners] = React.useState(true);
-  const approvalCount = data.approvalCount;
-  const approvalsLength = data.approvals.length;
+  const approvalCount = data?.filter(
+    (element) => element.status === TX_TYPE_OPTION.STATUS.APPROVAL
+  ).length;
+  const approvalsLength = data?.length;
 
   return (
     <Box
@@ -104,22 +108,28 @@ export default function TxStepper({ data }: { data: TransactionType }) {
               Confirmations{" "}
               <span
                 style={{ color: "#636669", marginLeft: "1rem" }}
-              >{`(${approvalsLength} / ${approvalCount})`}</span>
+              >{`(${approvalCount} / ${approvalsLength})`}</span>
             </Typography>{" "}
           </StepLabel>
         </Step>
         {showOwners ? (
-          data.approvals.map((approvals, index) => (
+          data?.map((element: Order, index: number) => (
             <Step key={index}>
-              <StepLabel StepIconComponent={() => CircleStepIcon(false)}>
+              <StepLabel
+                StepIconComponent={() =>
+                  CircleStepIcon(
+                    element.status === TX_TYPE_OPTION.STATUS.APPROVAL
+                  )
+                }
+              >
                 <Box sx={{ display: "flex" }}>
                   <AccountAvatar
-                    address={approvals.approver}
-                    // name={owner.name}
+                    address={element.address}
+                    name={element.name}
                     truncateLenght={4}
                   ></AccountAvatar>
                   <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>
-                    <CopyButton text={approvals.approver} />
+                    <CopyButton text={element.address} />
                     <OpenNewTabButton text={"mockURL"} />
                   </Box>
                 </Box>

@@ -31,7 +31,7 @@ type Props = {
 
 export const TxDetailItem = ({ data, index }: Props) => {
   const date = formatDate(data.creationTimestamp);
-
+  console.log("data", data);
   // This validate deposit from other account with native Token
   const successReceiveTx =
     data.__typename === TX_TYPE_OPTION.TRANSFER &&
@@ -79,14 +79,16 @@ export const TxDetailItem = ({ data, index }: Props) => {
             >
               <span>{data.type}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                {data.txMsg} : {truncateAddress(data.from, 9)}
+                {data.txMsg} : {truncateAddress(data.from ?? data.to, 9)}
               </span>
             </Box>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
             <Typography>
-              {data.type === TX_TYPE_OPTION.RECEIVE ? "+" : "-"}
-              {data.value} {data.token}
+              {data.type === TX_TYPE_OPTION.RECEIVE
+                ? `+ ${data.value} ${data.token}`
+                : ""}
+              {data.type === TX_TYPE_OPTION.SEND ? `- ${data.value}` : ""}
             </Typography>
           </StyledGrid>
           <StyledGrid item xs={2} sm={2} md={2}>
@@ -102,7 +104,11 @@ export const TxDetailItem = ({ data, index }: Props) => {
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
           <TxDetails data={data} />
-          {data.type !== "Receive" ? <TxStepper data={data} /> : <></>}
+          {data.type !== "Receive" ? (
+            <TxStepper data={data.stepperData} />
+          ) : (
+            <></>
+          )}
         </Box>
       </AccordionDetails>
     </Accordion>

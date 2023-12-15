@@ -1,4 +1,6 @@
+import { ContractPromise } from "@polkadot/api-contract";
 import { useCallback, useEffect, useState } from "react";
+import { ChainContract } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { getChain } from "@/config/chain";
@@ -9,9 +11,11 @@ import {
   Order,
   TxType,
 } from "@/domain/repositores/ITxQueueRepository";
+import { decodeCallArgs, formatAddressForNetwork } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 import { balanceToFixed } from "@/utils/formatString";
 
+import { useMultisigContractPromise } from "../contractPromise/useMultisigContractPromise";
 import { useListSignersAccount } from "../xsignersAccount";
 
 export type TabTxTypes = "queue" | "history";
@@ -26,6 +30,7 @@ export const TX_TYPE_OPTION = {
   },
   STATUS: {
     PROPOSED: "PROPOSED",
+    APPROVAL: "Approval",
   },
 };
 
@@ -82,45 +87,55 @@ const createTxOwnerStepper = (
   }, []);
 };
 
+const methodName = "transfer";
+
 const buildTxDetail = (
-  currentAccount: string,
+  xsignerAddress: string,
   token: string,
   data: TxType,
-  stepperData: Order[] | undefined
+  stepperData: Order[] | undefined,
+  multisigContractPromise: ChainContract<ContractPromise>
 ): ExtendedDataType => {
   let additionalInfo;
   // Clean Value to display correct human value
-  const value = balanceToFixed(
-    data.value,
-    Number.isNaN(parseInt(data.tokenDecimals))
-      ? FIXED_TOKEN_DECIMALS
-      : parseInt(data.tokenDecimals)
-  );
-
-  if (data.__typename === TX_TYPE_OPTION.TRANSACTION) {
+  if (
+    data.__typename === TX_TYPE_OPTION.TRANSACTION &&
+    data.status === TX_TYPE_OPTION.STATUS.PROPOSED
+  ) {
+    const decodedData = decodeCallArgs(
+      multisigContractPromise.contract,
+      methodName,
+      data.args!
+    );
     // Send
-    const type = getTxType(currentAccount, data.proposer);
+    const type = getTxType(xsignerAddress, data.proposer);
     additionalInfo = {
       ...type,
-      to: data.contractAddress,
+      to: decodedData[0],
+      value: decodedData[1],
       txStateMsg: "Awaiting confirmations",
     };
-  } else {
+  } else if (data.__typename === TX_TYPE_OPTION.TRANSFER) {
     // Receive
-    const type = getTxType(currentAccount, data.to);
+    const value = balanceToFixed(
+      data.value,
+      Number.isNaN(parseInt(data.tokenDecimals))
+        ? FIXED_TOKEN_DECIMALS
+        : parseInt(data.tokenDecimals)
+    );
+
+    const type = getTxType(xsignerAddress, data.to);
     additionalInfo = {
       ...type,
       txStateMsg: "Success",
+      value,
     };
   }
-
-  //TODO: Contract Interaction??
   return {
-    ...additionalInfo,
     ...data,
     stepperData,
-    value,
     token,
+    ...additionalInfo,
   } as ExtendedDataType;
 };
 
@@ -131,6 +146,8 @@ export function useListTxQueue(
   const [data, setData] = useState<ExtendedDataType[] | undefined>(undefined);
   const chain = getChain(network);
   const { data: signers } = useListSignersAccount({ networkId: network });
+  const { multisigContractPromise } =
+    useMultisigContractPromise(xsignersAddress);
 
   const [dataType, setDataType] = useState<{
     [name: string]: ExtendedDataType[] | undefined;
@@ -146,6 +163,7 @@ export function useListTxQueue(
   useEffect(() => {
     const fetchData = async () => {
       if (!xsignersAddress) return;
+      if (!multisigContractPromise) return;
       setIsLoading(true);
       setError(null);
       try {
@@ -157,7 +175,7 @@ export function useListTxQueue(
             const ownersData = signers
               ?.find((element) => element.address === xsignersAddress)
               ?.owners.map((element) => ({
-                address: element.address,
+                address: formatAddressForNetwork(element.address, network),
                 name: element.name,
                 status: "Pending",
               }));
@@ -187,7 +205,8 @@ export function useListTxQueue(
               xsignersAddress,
               chain.token,
               element,
-              stepperData
+              stepperData,
+              multisigContractPromise as ChainContract<ContractPromise>
             );
           });
 
@@ -217,7 +236,14 @@ export function useListTxQueue(
     fetchData().finally(() => {
       setIsLoading(false);
     });
-  }, [xsignersAddress, txQueueRepository, chain.token, signers]);
+  }, [
+    xsignersAddress,
+    txQueueRepository,
+    signers,
+    network,
+    chain.token,
+    multisigContractPromise,
+  ]);
 
   const listTxByType = useCallback(
     (key: TabTxTypes) => {
