@@ -9,8 +9,14 @@ import { TxQueueWidget } from "@/components/TxQueueWidget";
 import { ROUTES } from "@/config/routes";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
+import { formatThreshold } from "@/utils/formatString";
 
-export default function AppDashboard() {
+type Props = {
+  threshold: number | undefined;
+  ownersCount: number | undefined;
+};
+
+export default function AppDashboard({ threshold, ownersCount }: Props) {
   const { xSignerSelected } = useGetXsignerSelected();
 
   const { balance, isLoading: isLoadingBalance } = useGetBalance(
@@ -35,7 +41,11 @@ export default function AppDashboard() {
           <SummaryCard captionTitle="Tracked Tokens" caption="-" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <SummaryCard captionTitle="Tracked NFTs" caption="-" />
+          <SummaryCard
+            captionTitle="Threshold"
+            caption={formatThreshold({ threshold, owners: ownersCount })}
+            isLoading={xSignerSelected ? false : true}
+          />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Link href={ROUTES.Settings}>
