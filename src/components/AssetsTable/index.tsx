@@ -1,28 +1,39 @@
 import { Box } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { ROUTES } from "@/config/routes";
 import useFetchAssets, {
   Asset,
   AssetType,
 } from "@/hooks/assets/useFetchAssets";
-import { balanceToFixed } from "@/utils/formatString";
+import { balanceToFixed, truncateAddress } from "@/utils/formatString";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
+import CopyButton from "../common/CopyButton";
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import BasicTable, { Column } from "../common/Table";
 import AddTokenModal from "./AddTokenModal";
 import AssetTabs from "./Tabs";
 
-const columns = [
+const columns: Column[] = [
   { id: "name", label: "ASSET" },
+  {
+    id: "address",
+    label: "ADDRESS",
+    render: (value) => (
+      <Box display="flex" alignItems="center">
+        <Box>{truncateAddress(value as string, 8)}</Box>
+        <CopyButton text={value as string} />
+      </Box>
+    ),
+  },
   { id: "balance", label: "BALANCE", align: "left" },
-] as Column[];
+];
 
 const types: AssetType[] = ["token", "nft"];
 
-export default function AssetsTable() {
+const AssetsTable: React.FC = () => {
   const [type, setType] = useState(types[0]);
   const [open, setOpen] = useState(false);
   const [address, setAddress] = useState("");
@@ -66,7 +77,7 @@ export default function AssetsTable() {
           <AddTokenModal
             open={open}
             handleOpen={setOpen}
-            handleNewToken={(address: string) => setAddress(address)}
+            handleNewToken={(newAddress: string) => setAddress(newAddress)}
           />
         }
       >
@@ -84,4 +95,6 @@ export default function AssetsTable() {
       </AssetTabs>
     </Box>
   );
-}
+};
+
+export default AssetsTable;
