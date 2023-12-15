@@ -5,6 +5,7 @@ import * as React from "react";
 import { ChainColors, CHAINS_ALLOWED } from "@/config/chain";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useModalBehaviour } from "@/hooks/useModalBehaviour";
+import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
 import CopyButton from "../common/CopyButton";
@@ -29,7 +30,7 @@ export function XsignerAccountInfoUI({
   xsigners,
 }: Props) {
   const { isOpen, closeModal, openModal } = useModalBehaviour();
-
+  const { setXsigner } = useSetXsignerSelected();
   return (
     <AccountInfoWrapper networkcolor={networkColor}>
       <Box
@@ -92,6 +93,7 @@ export function XsignerAccountInfoUI({
               xsigners={xsigners}
               isOpen={isOpen}
               closeModal={closeModal}
+              onClick={setXsigner}
             />
           </Box>
         )}

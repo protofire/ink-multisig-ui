@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { useLocalDbContext } from "@/context/uselocalDbContext";
+import { XsignerAccountEvents } from "@/domain/events/XsignerAccountEvents";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { customReportError } from "@/utils/error";
 
@@ -23,6 +24,9 @@ export function useSetXsignerSelected(): UseSetXsignerSelectedReturn {
 
       try {
         xsignerSelectedRepository.saveAccount(account);
+        document.dispatchEvent(
+          new CustomEvent(XsignerAccountEvents.onChangeAccount)
+        );
         return account;
       } catch (err) {
         const errorFormated = customReportError(err);

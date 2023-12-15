@@ -7,8 +7,10 @@ import {
   Typography,
 } from "@mui/material";
 import Identicon from "@polkadot/react-identicon";
+import router from "next/router";
 import * as React from "react";
 
+import { ROUTES } from "@/config/routes";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { UseModalBehaviour } from "@/hooks/useModalBehaviour";
 import { formatThreshold, truncateAddress } from "@/utils/formatString";
@@ -17,9 +19,27 @@ import CopyButton from "../common/CopyButton";
 
 interface Props extends Partial<UseModalBehaviour> {
   xsigners: SignatoriesAccount[];
+  onClick: (account: SignatoriesAccount) => Promise<void | SignatoriesAccount>;
 }
 
-export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
+export function SelectXsignerItems({
+  isOpen,
+  closeModal,
+  xsigners,
+  onClick: setXsigner,
+}: Props) {
+  const handleMultisigRedirect = (address: string) => {
+    const selectedMultisig = xsigners?.find(
+      (xsigners) => xsigners.address === address
+    );
+    if (!selectedMultisig) {
+      return;
+    }
+    setXsigner(selectedMultisig as SignatoriesAccount);
+    router.replace(ROUTES.App);
+  };
+
+  if (xsigners === null) return null;
   return (
     <Menu
       id="basic-menu"
@@ -40,7 +60,13 @@ export function SelectXsignerItems({ isOpen, closeModal, xsigners }: Props) {
       }}
     >
       {xsigners.map((xsigner) => (
-        <MenuItem key={xsigner.address} onClick={closeModal}>
+        <MenuItem
+          key={xsigner.address}
+          onClick={() => {
+            handleMultisigRedirect(xsigner.address);
+            closeModal && closeModal();
+          }}
+        >
           <Box display="flex" alignItems="center" gap="0.5rem">
             <Box
               display="flex"
