@@ -160,7 +160,7 @@ export function useListTxQueue(
   const [error, setError] = useState<string | null>(null);
   const { txQueueRepository } = useLocalDbContext();
 
-  useEffect(() => {
+  const createTxList = useCallback(() => {
     const fetchData = async () => {
       if (!xsignersAddress) return;
       if (!multisigContractPromise) return;
@@ -237,13 +237,17 @@ export function useListTxQueue(
       setIsLoading(false);
     });
   }, [
-    xsignersAddress,
-    txQueueRepository,
-    signers,
-    network,
+    multisigContractPromise?.contract,
     chain.token,
-    multisigContractPromise,
+    network,
+    signers,
+    txQueueRepository,
+    xsignersAddress,
   ]);
+
+  useEffect(() => {
+    createTxList();
+  }, [createTxList]);
 
   const listTxByType = useCallback(
     (key: TabTxTypes) => {

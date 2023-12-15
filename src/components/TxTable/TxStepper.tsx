@@ -73,7 +73,6 @@ function ColorlibStepIcon(props: StepIconProps) {
 }
 
 export default function TxStepper({ data }: { data: Order[] | undefined }) {
-  console.log(data);
   const [showOwners, setShowOwners] = React.useState(true);
   const approvalCount = data?.filter(
     (element) => element.status === TX_TYPE_OPTION.STATUS.APPROVAL

@@ -31,7 +31,6 @@ type Props = {
 
 export const TxDetailItem = ({ data, index }: Props) => {
   const date = formatDate(data.creationTimestamp);
-  console.log("data", data);
   // This validate deposit from other account with native Token
   const successReceiveTx =
     data.__typename === TX_TYPE_OPTION.TRANSFER &&
