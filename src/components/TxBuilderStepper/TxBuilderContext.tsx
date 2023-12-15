@@ -12,7 +12,8 @@ export interface TxBuilderForm {
   address: string;
   metadataSource?: AbiSource;
   selectedAbiIdentifier: AbiMessage["identifier"] | undefined;
-  dataArgsU8a: UseArgValuesReturn["inputDataU8a"];
+  selectedAbiMessage: AbiMessage | undefined;
+  dataArgs: UseArgValuesReturn["inputData"];
 }
 
 export interface TxBuilderContextData {

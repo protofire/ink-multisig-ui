@@ -155,7 +155,8 @@ export function MethodSelectorStep() {
           stepsLength={stepsLength}
           handleBack={handleBack}
           handleNext={() => {
-            setValue("dataArgsU8a", argValuesManager.inputDataU8a);
+            setValue("dataArgs", argValuesManager.inputData);
+            setValue("selectedAbiMessage", abiMessageSelected);
             handleNext();
           }}
           hiddenBack={activeStep === 0 ? true : false}

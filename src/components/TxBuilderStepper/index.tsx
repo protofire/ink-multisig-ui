@@ -53,7 +53,8 @@ export function TxBuilderStepper() {
     address: "",
     metadataSource: undefined,
     selectedAbiIdentifier: undefined,
-    dataArgsU8a: undefined,
+    selectedAbiMessage: undefined,
+    dataArgs: undefined,
   });
 
   const builderSteps = transformSteps(steps);

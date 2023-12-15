@@ -16,6 +16,7 @@ interface UseDryRunExecutionProps {
   params: unknown[] | undefined;
   autoRun: boolean;
   substrateRegistry: Registry;
+  addressCaller?: string;
 }
 
 export interface DryRunExecutionResult {
@@ -31,12 +32,13 @@ export function useDryRunExecution({
   params,
   autoRun = false,
   substrateRegistry,
+  addressCaller,
 }: UseDryRunExecutionProps): DryRunExecutionResult {
   const { xSignerSelected } = useGetXsignerSelected();
   const dryRun = useGetDryRun(
     contractPromise,
     message.method,
-    xSignerSelected?.address || undefined
+    addressCaller ? addressCaller : xSignerSelected?.address || undefined
   );
   const [outcome, setOutcome] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
