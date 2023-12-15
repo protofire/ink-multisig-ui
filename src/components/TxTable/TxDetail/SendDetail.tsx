@@ -10,7 +10,6 @@ import { CustomGridItem } from "./styled";
 
 export const SendDetail = ({ data }: { data: ExtendedDataType }) => {
   const date = formatDate(data.creationTimestamp);
-
   return (
     <Grid container>
       <CustomGridItem colType="name">Created at:</CustomGridItem>
@@ -23,7 +22,7 @@ export const SendDetail = ({ data }: { data: ExtendedDataType }) => {
         <Box sx={{ display: "flex" }}>
           <AccountAvatar
             address={data.proposer}
-            name={""}
+            name={data.stepperData![0].name}
             truncateLenght={8}
           ></AccountAvatar>
           <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>

@@ -21,7 +21,7 @@ export const TxDetails = ({ data }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
 
   const TxComponentType = ({ data }: Props): JSX.Element => {
-    if (data.type !== TX_TYPE_OPTION.RECEIVE) {
+    if (data.type === "Send") {
       return <SendDetail data={data}></SendDetail>;
     }
     return <ReceivedDetail data={data}></ReceivedDetail>;
@@ -53,7 +53,7 @@ export const TxDetails = ({ data }: Props) => {
           }}
         >
           <AccountAvatar
-            address={data?.from as string}
+            address={data.from ?? data.to}
             name={""}
             truncateLenght={16}
           ></AccountAvatar>
