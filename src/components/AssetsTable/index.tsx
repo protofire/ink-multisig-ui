@@ -1,7 +1,13 @@
 import { Box } from "@mui/material";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import useFetchAssets, { AssetType } from "@/hooks/assets/useFetchAssets";
+import { ROUTES } from "@/config/routes";
+import useFetchAssets, {
+  Asset,
+  AssetType,
+} from "@/hooks/assets/useFetchAssets";
+import { balanceToFixed } from "@/utils/formatString";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
@@ -22,15 +28,33 @@ export default function AssetsTable() {
   const [address, setAddress] = useState("");
   const { listAssetByType, error, loading } = useFetchAssets(address);
   const { addNotification } = useAppNotificationContext();
+  const router = useRouter();
+
   useEffect(() => {
     if (!error) return;
     addNotification({ message: error, type: "error" });
   }, [addNotification, error]);
 
-  const tableData = listAssetByType(type);
+  const formatData = (data: Asset[]) => {
+    return data.map((asset) => {
+      return {
+        ...asset,
+        balance: balanceToFixed(asset.balance, asset.decimals),
+      };
+    });
+  };
+  const tableData = formatData(listAssetByType(type));
 
   const handleChange = (newValue: number) => {
     setType(types[newValue]);
+  };
+
+  const handleTransfer = (row: unknown) => {
+    const asset = row as Asset;
+    router.replace({
+      pathname: ROUTES.NewTx,
+      query: { token: asset.address },
+    });
   };
 
   return (
@@ -47,7 +71,11 @@ export default function AssetsTable() {
         }
       >
         {!loading ? (
-          <BasicTable columns={columns} rows={tableData} />
+          <BasicTable
+            columns={columns}
+            rows={tableData}
+            action={handleTransfer}
+          />
         ) : (
           <Box mt={2}>
             <LoadingSkeleton count={10} />
