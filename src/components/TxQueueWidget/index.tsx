@@ -27,7 +27,7 @@ export const TxQueueWidget = () => {
         <>
           <StyledList>
             {data.map((tx, index) => (
-              <TxQueueWidgetItem data={tx} key={index} />
+              <TxQueueWidgetItem data={tx!} key={index} />
             ))}
           </StyledList>
           <StyledButton> View All </StyledButton>

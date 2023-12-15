@@ -30,8 +30,8 @@ export default function TxTable() {
               return (
                 <>
                   <TxDetailItem
-                    key={data.id}
-                    data={data}
+                    key={data!.id}
+                    data={data!}
                     index={index}
                   ></TxDetailItem>
                 </>
