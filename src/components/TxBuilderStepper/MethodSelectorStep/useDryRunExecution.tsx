@@ -12,9 +12,9 @@ import { getDecodedOutput } from "@/services/substrate/utils/contractExecResult"
 
 interface UseDryRunExecutionProps {
   contractPromise: ContractPromise;
-  message: AbiMessage;
+  message: AbiMessage | undefined;
   params: unknown[] | undefined;
-  autoRun: boolean;
+  autoRun?: boolean;
   substrateRegistry: Registry;
   addressCaller?: string;
 }
@@ -37,7 +37,7 @@ export function useDryRunExecution({
   const { xSignerSelected } = useGetXsignerSelected();
   const dryRun = useGetDryRun(
     contractPromise,
-    message.method,
+    message?.method || "",
     addressCaller ? addressCaller : xSignerSelected?.address || undefined
   );
   const [outcome, setOutcome] = useState<string | undefined>();
@@ -50,14 +50,17 @@ export function useDryRunExecution({
 
     const result = await dryRun.send(memoizedParams);
     if (result?.ok) {
-      const { decodedOutput, isError } = getDecodedOutput(
-        {
-          debugMessage: result.value.raw.debugMessage,
-          result: result.value.raw.result,
-        },
-        message,
-        substrateRegistry
-      );
+      const { decodedOutput, isError } =
+        (message &&
+          getDecodedOutput(
+            {
+              debugMessage: result.value.raw.debugMessage,
+              result: result.value.raw.result,
+            },
+            message,
+            substrateRegistry
+          )) ||
+        {};
       if (isError) {
         setOutcome("Transaction will be reverted");
         setError(decodedOutput);
@@ -68,7 +71,8 @@ export function useDryRunExecution({
       setError("Transaction will be reverted");
       setOutcome("Transaction will be reverted");
     }
-  }, [dryRun, memoizedParams, message, substrateRegistry]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dryRun, message, substrateRegistry]);
 
   useDebouncedEffect({
     effect: executeDryRun,
