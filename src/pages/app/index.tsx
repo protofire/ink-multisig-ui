@@ -9,14 +9,8 @@ import { TxQueueWidget } from "@/components/TxQueueWidget";
 import { ROUTES } from "@/config/routes";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
-import { formatThreshold } from "@/utils/formatString";
 
-type Props = {
-  threshold: number | undefined;
-  ownersCount: number | undefined;
-};
-
-export default function AppDashboard({ threshold, ownersCount }: Props) {
+export default function AppDashboard() {
   const { xSignerSelected } = useGetXsignerSelected();
 
   const { balance, isLoading: isLoadingBalance } = useGetBalance(
@@ -42,8 +36,8 @@ export default function AppDashboard({ threshold, ownersCount }: Props) {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <SummaryCard
-            captionTitle="Threshold"
-            caption={formatThreshold({ threshold, owners: ownersCount })}
+            captionTitle="Confirmations required"
+            caption={xSignerSelected?.threshold?.toString()}
             isLoading={xSignerSelected ? false : true}
           />
         </Grid>
