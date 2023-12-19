@@ -1,5 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Transaction } from "@/domain/Transaction";
@@ -8,7 +8,6 @@ import { getMessageInfo } from "@/utils/blockchain";
 
 import { DryRunMessage } from "../MethodSelectorStep/DryRunMessage";
 import { useDryRunExecution } from "../MethodSelectorStep/useDryRunExecution";
-import { useContractTx } from "./useContractTx";
 
 interface Props {
   contractMultisigPromise: ContractPromise;
@@ -24,6 +23,7 @@ export function DryRunMultisigWidget({
     () => [transferTxStruct],
     [transferTxStruct]
   );
+  const [txHash, setTxHash] = useState<any>();
 
   // const transferTxStruct = useMemo(
   //   () => [
@@ -52,14 +52,22 @@ export function DryRunMultisigWidget({
     autoRun: true,
   });
 
-  const {
-    signAndSend,
-    tx,
-    outcome: outcomeTx,
-  } = useContractTx({
-    contractPromise: contractMultisigPromise,
-    abiMessage: proposeTxAbiMessage,
-  });
+  // const {
+  //   signAndSend,
+  //   tx,
+  //   outcome: outcomeTx,
+  // } = useContractTx({
+  //   contractPromise: contractMultisigPromise,
+  //   abiMessage: proposeTxAbiMessage,
+  // });
+
+  const proposeTx = contractMultisigPromise.tx.proposeTx;
+  const tx = proposeTx?.(
+    {
+      gasLimit: gasRequired,
+    },
+    Object.values(_transferTxStruct[0])
+  );
 
   //   const dryRun = useGetDryRun(
   //     contractMultisigPromise,
@@ -76,15 +84,19 @@ export function DryRunMultisigWidget({
       <DryRunMessage outcome={outcome} error={error} isRunning={isRunning} />
       <Typography>Status:</Typography>
       <Button
-        onClick={() => {
-          signAndSend(_transferTxStruct, {
-            gasLimit: gasRequired,
+        onClick={async () => {
+          if (!accountConnected) return;
+
+          const hash = await tx?.signAndSend(accountConnected?.address, {
+            signer: accountConnected?.signer,
           });
+
+          hash && setTxHash(hash.toHuman());
         }}
       >
         Execute
       </Button>
-      <Typography>{outcomeTx}</Typography>
+      <Typography>{txHash}</Typography>
     </>
   );
 }

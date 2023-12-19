@@ -22,20 +22,6 @@ export function ProposeTxStep() {
     xSignerSelected?.address
   );
 
-  // const dryRun = useGetDryRun(multisigContractPromise?.contract, "proposeTx");
-
-  // const {
-  //   outcome: outcomeDryRun = "",
-  //   error: errorDryrun,
-  //   isRunning: isDryRunning,
-  // } = useDryRunExecution({
-  //   contractPromise: multisigContractPromise?.contract,
-  //   message: selectedAbiMessage,
-  //   params,
-  //   substrateRegistry: multisigContractPromise?.contract.registry,
-  //   autoRun: true,
-  // });
-
   if (!transferTxStruct)
     return (
       <ErrorMessage
