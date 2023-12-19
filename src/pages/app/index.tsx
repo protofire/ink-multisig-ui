@@ -35,7 +35,11 @@ export default function AppDashboard() {
           <SummaryCard captionTitle="Tracked Tokens" caption="-" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <SummaryCard captionTitle="Tracked NFTs" caption="-" />
+          <SummaryCard
+            captionTitle="Confirmations required"
+            caption={xSignerSelected?.threshold?.toString()}
+            isLoading={xSignerSelected ? false : true}
+          />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Link href={ROUTES.Settings}>

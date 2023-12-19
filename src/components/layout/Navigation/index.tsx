@@ -64,7 +64,7 @@ const Navigation = ({ currentPath }: { currentPath: string }) => {
           onClick={() => router.replace(ROUTES.NewTx)}
           color="primary"
           variant="contained"
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", margin: "0.2rem 0.8rem" }}
         >
           New transaction
         </Button>
