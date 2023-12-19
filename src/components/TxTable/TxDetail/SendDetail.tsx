@@ -25,7 +25,7 @@ export const SendDetail = ({ data }: { data: ExtendedDataType }) => {
             name={""}
             truncateLenght={8}
           ></AccountAvatar>
-          <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>
+          <Box sx={{ marginTop: "4px", marginLeft: "8px" }}>
             <CopyButton text={data.proposer} />
             <OpenNewTabButton text={data.proposer} />
           </Box>
