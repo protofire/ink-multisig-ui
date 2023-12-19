@@ -71,7 +71,7 @@ const AssetsTable: React.FC = () => {
   return (
     <Box sx={{ width: "100%" }}>
       <AssetTabs
-        options={["Tokens", "NFTs"]}
+        options={["Tokens"]}
         onChange={handleChange}
         rightComponent={
           <AddTokenModal
