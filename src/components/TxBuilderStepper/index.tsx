@@ -55,6 +55,7 @@ export function TxBuilderStepper() {
     selectedAbiIdentifier: undefined,
     selectedAbiMessage: undefined,
     dataArgs: undefined,
+    transferTxStruct: undefined,
   });
 
   const builderSteps = transformSteps(steps);

@@ -9,7 +9,11 @@ import {
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { AbiMessage, ContractPromise } from "@/services/substrate/types";
+import {
+  AbiMessage,
+  ContractOptions,
+  ContractPromise,
+} from "@/services/substrate/types";
 import { getOutcomeText } from "@/services/substrate/utils/contractExecResult";
 import { getErrorMessage } from "@/utils/error";
 
@@ -61,7 +65,7 @@ export function useContractTx({
   );
 
   const _signAndSend = useCallback(
-    (inputData: unknown[] | undefined) => {
+    (inputData: unknown[] | undefined, o?: Partial<ContractOptions>) => {
       setOutcome("");
       setError(undefined);
       tx.resetState();

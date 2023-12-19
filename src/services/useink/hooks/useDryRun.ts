@@ -99,7 +99,7 @@ export function useDryRun<T>(
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [account, chainContract?.contract, abiMessage]
+    [account, chainContract?.contract, abiMessage, customCaller]
   );
 
   return {

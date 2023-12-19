@@ -20,6 +20,7 @@ import { useContractPromiseFromSource } from "@/hooks/useContractPromise";
 import { transformSelectChangeEvent } from "@/hooks/useForm/transformSelectChangeEvent";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { groupAndSortAbiMessages } from "@/services/substrate/utils";
+import { transformArgsToBytes } from "@/utils/blockchain";
 import { truncateAddress } from "@/utils/formatString";
 import { notEmpty } from "@/utils/inputValidation";
 
@@ -93,6 +94,33 @@ export function MethodSelectorStep() {
     );
   }
 
+  const _handleNext = () => {
+    setValue("dataArgs", argValuesManager.inputData);
+    setValue("selectedAbiMessage", abiMessageSelected);
+    const u8 = argValuesManager.inputData
+      ? abiMessageSelected?.toU8a(argValuesManager.inputData)
+      : argValuesManager.inputData;
+    const input =
+      abiMessageSelected &&
+      argValuesManager.inputData &&
+      transformArgsToBytes(
+        contractPromise.contractPromise,
+        abiMessageSelected.method,
+        argValuesManager.inputData
+      );
+
+    abiMessageSelected &&
+      setValue("transferTxStruct", {
+        address: inputFormManager.values.address,
+        selector: abiMessageSelected.selector,
+        input: input || [],
+        transferredValue: 0,
+        gasLimit: 0,
+        allowReentry: true,
+      });
+    handleNext();
+  };
+
   return (
     <Box mt={3} display="flex" gap={1} flexDirection="column">
       <BoxRow
@@ -154,11 +182,7 @@ export function MethodSelectorStep() {
           activeStep={activeStep}
           stepsLength={stepsLength}
           handleBack={handleBack}
-          handleNext={() => {
-            setValue("dataArgs", argValuesManager.inputData);
-            setValue("selectedAbiMessage", abiMessageSelected);
-            handleNext();
-          }}
+          handleNext={_handleNext}
           hiddenBack={activeStep === 0 ? true : false}
           nextButtonProps={{
             disabled: !isValid || !touched.selectedAbiIdentifier,

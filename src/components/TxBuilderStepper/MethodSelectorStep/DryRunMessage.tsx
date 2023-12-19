@@ -7,7 +7,7 @@ import { MySkeleton } from "@/components/common/LoadingSkeleton";
 
 import { DryRunExecutionResult } from "./useDryRunExecution";
 
-type Props = Omit<DryRunExecutionResult, "executeDryRun">;
+type Props = Omit<DryRunExecutionResult, "executeDryRun" | "gasRequired">;
 
 export function DryRunMessage({ error, outcome, isRunning }: Props) {
   const isError = error !== undefined;

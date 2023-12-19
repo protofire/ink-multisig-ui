@@ -7,6 +7,7 @@ import {
   AbiMessage,
   ContractPromise,
   Registry,
+  WeightV2,
 } from "@/services/substrate/types";
 import { getDecodedOutput } from "@/services/substrate/utils/contractExecResult";
 
@@ -24,6 +25,7 @@ export interface DryRunExecutionResult {
   error: string | undefined;
   isRunning: boolean;
   executeDryRun: () => void;
+  gasRequired: WeightV2 | undefined;
 }
 
 export function useDryRunExecution({
@@ -43,6 +45,7 @@ export function useDryRunExecution({
   const [outcome, setOutcome] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const memoizedParams = useMemo(() => params, [params]);
+  const [gasRequired, setGasRequired] = useState<WeightV2>();
 
   const executeDryRun = useCallback(async () => {
     setOutcome(undefined);
@@ -50,6 +53,7 @@ export function useDryRunExecution({
 
     const result = await dryRun.send(memoizedParams);
     if (result?.ok) {
+      setGasRequired(result.value.gasRequired);
       const { decodedOutput, isError } =
         (message &&
           getDecodedOutput(
@@ -86,5 +90,6 @@ export function useDryRunExecution({
     error,
     isRunning: dryRun.isSubmitting,
     executeDryRun,
+    gasRequired,
   };
 }

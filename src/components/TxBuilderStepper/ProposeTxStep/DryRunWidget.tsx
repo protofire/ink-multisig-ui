@@ -1,9 +1,9 @@
 import { Button, Typography } from "@mui/material";
 import { useMemo } from "react";
 
-import { UseArgValuesReturn } from "@/components/ArgumentForm/useArgValues";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { AbiMessage, ContractPromise } from "@/services/substrate/types";
+import { Transaction } from "@/domain/Transaction";
+import { ContractPromise } from "@/services/substrate/types";
 import { getMessageInfo } from "@/utils/blockchain";
 
 import { DryRunMessage } from "../MethodSelectorStep/DryRunMessage";
@@ -12,51 +12,46 @@ import { useContractTx } from "./useContractTx";
 
 interface Props {
   contractMultisigPromise: ContractPromise;
-  message: AbiMessage;
-  params: UseArgValuesReturn["inputData"];
+  transferTxStruct: Transaction;
 }
 
 export function DryRunMultisigWidget({
   contractMultisigPromise,
-  message,
-  params,
+  transferTxStruct,
 }: Props) {
   const { accountConnected } = usePolkadotContext();
-  const transferTxStruct = useMemo(
-    () => [
-      {
-        address: contractMultisigPromise.address,
-        selector: message.selector,
-        input: params,
-        transferredValue: 0,
-        gasLimit: 0,
-        allowReentry: true,
-      },
-    ],
-    [contractMultisigPromise.address, message.selector, params]
+  const _transferTxStruct = useMemo(
+    () => [transferTxStruct],
+    [transferTxStruct]
   );
+
+  // const transferTxStruct = useMemo(
+  //   () => [
+  //     {
+  //       address: selectedContractAddress,
+  //       selector: message.selector,
+  //       input: params,
+  //       transferredValue: 0,
+  //       gasLimit: 0,
+  //       allowReentry: true,
+  //     },
+  //   ],
+  //   [message, params, selectedContractAddress]
+  // );
+
   const proposeTxAbiMessage = getMessageInfo(
     contractMultisigPromise,
     "proposeTx"
   );
-  const { outcome, error, isRunning } = useDryRunExecution({
+  const { outcome, error, isRunning, gasRequired } = useDryRunExecution({
     contractPromise: contractMultisigPromise,
     message: proposeTxAbiMessage || undefined,
-    params: transferTxStruct,
+    params: _transferTxStruct,
     substrateRegistry: contractMultisigPromise.registry,
     addressCaller: accountConnected?.address,
     autoRun: true,
   });
-  //   const proposeTx = contractMultisigPromise?.tx.proposeTx;
-  //   const {
-  //     caller,
-  //     outcome: outcomeTx,
-  //     error: errorTx,
-  //   } = useContractCaller({
-  //     contractPromise: contractMultisigPromise,
-  //     abiMessage: proposeTxAbiMessage || undefined,
-  //     substrateRegistry: contractMultisigPromise.registry,
-  //   });
+
   const {
     signAndSend,
     tx,
@@ -72,6 +67,7 @@ export function DryRunMultisigWidget({
   //     accountConnected?.address
   //   );
 
+  console.log("DryRun", outcome, error);
   console.log("__outcomeTx", tx);
 
   return (
@@ -79,7 +75,13 @@ export function DryRunMultisigWidget({
       <Typography>Propose Transaction Dry run outcome:</Typography>
       <DryRunMessage outcome={outcome} error={error} isRunning={isRunning} />
       <Typography>Status:</Typography>
-      <Button onClick={() => signAndSend(transferTxStruct, { gasLimit: 0 })}>
+      <Button
+        onClick={() => {
+          signAndSend(_transferTxStruct, {
+            gasLimit: gasRequired,
+          });
+        }}
+      >
         Execute
       </Button>
       <Typography>{outcomeTx}</Typography>

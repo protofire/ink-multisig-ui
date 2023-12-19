@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 
+import ErrorMessage from "@/components/common/ErrorMessage";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
@@ -9,7 +10,7 @@ import { DryRunMultisigWidget } from "./DryRunWidget";
 
 export function ProposeTxStep() {
   const { inputFormManager, managerStep } = useTxBuilderContext();
-  const { selectedAbiMessage, dataArgs: params } = inputFormManager.values;
+  const { selectedAbiMessage, transferTxStruct } = inputFormManager.values;
   const {
     activeStep: { creation: activeStep },
     downCreationStep: handleBack,
@@ -20,6 +21,7 @@ export function ProposeTxStep() {
   const { multisigContractPromise } = useMultisigContractPromise(
     xSignerSelected?.address
   );
+
   // const dryRun = useGetDryRun(multisigContractPromise?.contract, "proposeTx");
 
   // const {
@@ -34,15 +36,19 @@ export function ProposeTxStep() {
   //   autoRun: true,
   // });
 
-  console.log("__inputFormManager", inputFormManager.values.dataArgs);
+  if (!transferTxStruct)
+    return (
+      <ErrorMessage
+        message={"Message has not been set successfully, please return."}
+      />
+    );
 
   return (
     <Box mt={3} display="flex" gap={1} flexDirection="column">
       {multisigContractPromise && selectedAbiMessage && (
         <DryRunMultisigWidget
           contractMultisigPromise={multisigContractPromise.contract}
-          message={selectedAbiMessage}
-          params={params}
+          transferTxStruct={transferTxStruct}
         />
       )}
       <Box p={5}>
