@@ -97,9 +97,6 @@ export function MethodSelectorStep() {
   const _handleNext = () => {
     setValue("dataArgs", argValuesManager.inputData);
     setValue("selectedAbiMessage", abiMessageSelected);
-    const u8 = argValuesManager.inputData
-      ? abiMessageSelected?.toU8a(argValuesManager.inputData)
-      : argValuesManager.inputData;
     const input =
       abiMessageSelected &&
       argValuesManager.inputData &&

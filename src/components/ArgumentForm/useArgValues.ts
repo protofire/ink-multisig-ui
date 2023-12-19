@@ -10,7 +10,6 @@ export interface UseArgValuesReturn {
   argValues: Argument;
   setArgValues: React.Dispatch<React.SetStateAction<Argument>>;
   inputData: unknown[] | undefined;
-  inputDataU8a: Uint8Array | undefined;
 }
 
 function fromArgs(
@@ -74,10 +73,5 @@ export function useArgValues(
     argsRef.current = message.args;
   }, [accounts, message, registry]);
 
-  const inputDataU8a = useMemo(
-    () => inputData && message?.toU8a(inputData),
-    [inputData, message]
-  );
-
-  return { argValues, setArgValues, inputData, inputDataU8a };
+  return { argValues, setArgValues, inputData };
 }

@@ -14,6 +14,7 @@ const CopyButton = ({
   children,
   initialToolTipText = "Copy to clipboard",
   onCopy,
+  disabled,
 }: {
   text: string;
   className?: string;
@@ -21,6 +22,7 @@ const CopyButton = ({
   initialToolTipText?: string;
   ariaLabel?: string;
   onCopy?: () => void;
+  disabled?: boolean;
 }): ReactElement => {
   const [tooltipText, setTooltipText] = useState(initialToolTipText);
   const [isCopyEnabled, setIsCopyEnabled] = useState(true);
@@ -61,7 +63,7 @@ const CopyButton = ({
         onClick={handleCopy}
         size="small"
         className={className}
-        disabled={!isCopyEnabled}
+        disabled={!isCopyEnabled || disabled}
       >
         {children ?? (
           <SvgIcon

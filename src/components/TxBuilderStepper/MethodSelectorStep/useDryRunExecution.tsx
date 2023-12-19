@@ -81,7 +81,7 @@ export function useDryRunExecution({
   useDebouncedEffect({
     effect: executeDryRun,
     delay: 100,
-    deps: [message, memoizedParams],
+    deps: [message, memoizedParams, addressCaller],
     autoRun: autoRun,
   });
 

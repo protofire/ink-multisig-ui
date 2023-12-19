@@ -9,11 +9,7 @@ import {
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import {
-  AbiMessage,
-  ContractOptions,
-  ContractPromise,
-} from "@/services/substrate/types";
+import { AbiMessage, ContractPromise } from "@/services/substrate/types";
 import { getOutcomeText } from "@/services/substrate/utils/contractExecResult";
 import { getErrorMessage } from "@/utils/error";
 
@@ -28,8 +24,8 @@ type Event = {
 } & EventPayload;
 
 interface Props {
-  contractPromise: ContractPromise;
-  abiMessage: AbiMessage | null;
+  contractPromise: ContractPromise | undefined;
+  abiMessage: AbiMessage | null | undefined;
   onCallback?: () => void;
 }
 
@@ -53,19 +49,22 @@ export function useContractTx({
   const { addNotification } = useAppNotificationContext();
 
   const callContractArgs = useMemo(() => {
-    return { chainContract: { contract, chainId }, method };
+    return {
+      chainContract: contract ? { contract, chainId } : undefined,
+      method,
+    };
   }, [chainId, contract, method]);
 
   const tx = useTx(callContractArgs.chainContract, callContractArgs.method);
 
   useEventSubscription(callContractArgs.chainContract);
   const { events } = useEvents(
-    callContractArgs.chainContract.contract.address,
+    callContractArgs.chainContract?.contract.address || undefined,
     [callContractArgs.method]
   );
 
   const _signAndSend = useCallback(
-    (inputData: unknown[] | undefined, o?: Partial<ContractOptions>) => {
+    (inputData: unknown[] | undefined) => {
       setOutcome("");
       setError(undefined);
       tx.resetState();

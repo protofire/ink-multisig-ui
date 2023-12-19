@@ -1,3 +1,4 @@
+import BN from "bn.js";
 import JSON5 from "json5";
 
 import {
@@ -91,4 +92,11 @@ export function getDecodedOutput(
     decodedOutput,
     isError,
   };
+}
+
+export function replacerArgs(key: string, value: unknown) {
+  if (value instanceof BN) {
+    return value.toString();
+  }
+  return value;
 }

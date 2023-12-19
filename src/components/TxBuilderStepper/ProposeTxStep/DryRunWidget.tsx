@@ -1,10 +1,9 @@
-import { Button, Typography } from "@mui/material";
-import { useMemo, useState } from "react";
+import { Typography } from "@mui/material";
+import { useEffect, useMemo } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Transaction } from "@/domain/Transaction";
-import { ContractPromise } from "@/services/substrate/types";
-import { getMessageInfo } from "@/utils/blockchain";
+import { AbiMessage, ContractPromise } from "@/services/substrate/types";
 
 import { DryRunMessage } from "../MethodSelectorStep/DryRunMessage";
 import { useDryRunExecution } from "../MethodSelectorStep/useDryRunExecution";
@@ -12,38 +11,24 @@ import { useDryRunExecution } from "../MethodSelectorStep/useDryRunExecution";
 interface Props {
   contractMultisigPromise: ContractPromise;
   transferTxStruct: Transaction;
+  proposeTxAbiMessage: AbiMessage;
+  setDryRunResult: (result: boolean) => void;
+  txStatus?: string;
 }
 
 export function DryRunMultisigWidget({
   contractMultisigPromise,
   transferTxStruct,
+  setDryRunResult,
+  proposeTxAbiMessage,
 }: Props) {
   const { accountConnected } = usePolkadotContext();
   const _transferTxStruct = useMemo(
     () => [transferTxStruct],
     [transferTxStruct]
   );
-  const [txHash, setTxHash] = useState<any>();
 
-  // const transferTxStruct = useMemo(
-  //   () => [
-  //     {
-  //       address: selectedContractAddress,
-  //       selector: message.selector,
-  //       input: params,
-  //       transferredValue: 0,
-  //       gasLimit: 0,
-  //       allowReentry: true,
-  //     },
-  //   ],
-  //   [message, params, selectedContractAddress]
-  // );
-
-  const proposeTxAbiMessage = getMessageInfo(
-    contractMultisigPromise,
-    "proposeTx"
-  );
-  const { outcome, error, isRunning, gasRequired } = useDryRunExecution({
+  const { outcome, error, isRunning } = useDryRunExecution({
     contractPromise: contractMultisigPromise,
     message: proposeTxAbiMessage || undefined,
     params: _transferTxStruct,
@@ -52,51 +37,21 @@ export function DryRunMultisigWidget({
     autoRun: true,
   });
 
-  // const {
-  //   signAndSend,
-  //   tx,
-  //   outcome: outcomeTx,
-  // } = useContractTx({
-  //   contractPromise: contractMultisigPromise,
-  //   abiMessage: proposeTxAbiMessage,
-  // });
+  useEffect(() => {
+    if (error !== undefined || isRunning) {
+      setDryRunResult(false);
+      return;
+    }
 
-  const proposeTx = contractMultisigPromise.tx.proposeTx;
-  const tx = proposeTx?.(
-    {
-      gasLimit: gasRequired,
-    },
-    Object.values(_transferTxStruct[0])
-  );
-
-  //   const dryRun = useGetDryRun(
-  //     contractMultisigPromise,
-  //     "proposeTx",
-  //     accountConnected?.address
-  //   );
-
-  console.log("DryRun", outcome, error);
-  console.log("__outcomeTx", tx);
+    setDryRunResult(true);
+  }, [outcome, error, isRunning, setDryRunResult]);
 
   return (
     <>
-      <Typography>Propose Transaction Dry run outcome:</Typography>
+      <Typography variant="body1">
+        Propose Transaction Dry run outcome:
+      </Typography>
       <DryRunMessage outcome={outcome} error={error} isRunning={isRunning} />
-      <Typography>Status:</Typography>
-      <Button
-        onClick={async () => {
-          if (!accountConnected) return;
-
-          const hash = await tx?.signAndSend(accountConnected?.address, {
-            signer: accountConnected?.signer,
-          });
-
-          hash && setTxHash(hash.toHuman());
-        }}
-      >
-        Execute
-      </Button>
-      <Typography>{txHash}</Typography>
     </>
   );
 }
