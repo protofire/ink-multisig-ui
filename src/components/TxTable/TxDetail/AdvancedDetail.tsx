@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 
@@ -14,12 +14,12 @@ export const AdvancedDetail = ({ data }: Props) => {
 
   return (
     <Grid container>
-      {Object.entries(DATA).map(([key, value]) => {
+      {Object.entries(DATA).map(([name, value], index) => {
         return (
-          <>
-            <CustomGridItem colType="name">{key}</CustomGridItem>
+          <Box sx={{ width: "100%", display: "flex" }} key={index}>
+            <CustomGridItem colType="name">{name}</CustomGridItem>
             <CustomGridItem colType="value">{value}</CustomGridItem>
-          </>
+          </Box>
         );
       })}
     </Grid>

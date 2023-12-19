@@ -29,11 +29,7 @@ export default function TxTable() {
             {tableData.map((data, index) => {
               return (
                 <>
-                  <TxDetailItem
-                    key={data!.id}
-                    data={data!}
-                    index={index}
-                  ></TxDetailItem>
+                  <TxDetailItem data={data!} index={index}></TxDetailItem>
                 </>
               );
             })}

@@ -15,7 +15,8 @@ import { TxQueueWidgetItem } from "./TxQueueWidgetItem";
 export const TxQueueWidget = () => {
   const { xSignerSelected } = useGetXsignerSelected();
   const network = getChain(xSignerSelected?.networkId);
-  const { data } = useListTxQueue(xSignerSelected?.address, network.id);
+  const { listTxByType } = useListTxQueue(xSignerSelected?.address, network.id);
+  const data = listTxByType("queue");
   const validator = !data || data.length === 0;
   return (
     <TxQueueWidgetStyled border={false}>

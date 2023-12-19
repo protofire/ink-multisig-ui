@@ -97,6 +97,7 @@ export const TxDetails = ({ data }: Props) => {
               sx={{
                 fontWeight: "bold",
                 marginTop: "22px",
+                marginBottom: "22px",
                 cursor: "pointer",
                 color: "#ffe873",
                 textDecoration: "underline",

@@ -38,8 +38,10 @@ export const TxQueueWidgetItem = ({ data }: Props) => {
           <p>{truncateAddress(from, 12)}</p>
         </StyledStack>
         <StyledValueBox>
-          {data.type === TX_TYPE_OPTION.SEND ? "-" : "+"}{" "}
-          {`${value} ${data.token}`}
+          {data.type === TX_TYPE_OPTION.RECEIVE
+            ? `+ ${value} ${data.token}`
+            : ""}
+          {data.type === TX_TYPE_OPTION.SEND ? `- ${value}` : ""}
           <span>
             {approvalCount}/{threshold}
           </span>
