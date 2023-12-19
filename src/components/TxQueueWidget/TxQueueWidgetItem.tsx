@@ -24,19 +24,21 @@ export const TxQueueWidgetItem = ({ data }: Props) => {
   const threshold = data.approvals?.length || 0;
   return (
     <ListItemtyled>
-      <StyledBox>
-        <Image
-          src={data.img}
-          alt="Arrow receive"
-          priority
-          width={30}
-          height={30}
-        />
-        <StyledStack>
-          <span>{data.type}</span>
-          <span>{date}</span>
-          <p>{truncateAddress(from, 12)}</p>
-        </StyledStack>
+      <StyledBox sx={{ width: "100%" }}>
+        <StyledBox>
+          <Image
+            src={data.img}
+            alt="Arrow receive"
+            priority
+            width={30}
+            height={30}
+          />
+          <StyledStack>
+            <span>{data.type}</span>
+            <span>{date}</span>
+            <p>{truncateAddress(from, 12)}</p>
+          </StyledStack>
+        </StyledBox>
         <StyledValueBox>
           {data.type === TX_TYPE_OPTION.RECEIVE
             ? `+ ${value} ${data.token}`

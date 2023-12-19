@@ -20,14 +20,13 @@ export const TxQueueWidgetStyled = styled(WidgetCard)<WidgetCardProps>(() => ({
 
 export const StyledBox = styled(Box)<BoxProps>(() => ({
   display: "flex",
-  maxWidth: "600px",
-  margin: "0 auto",
   alignItems: "center",
+  justifyContent: "space-between",
 }));
 
 export const StyledStack = styled(Box)<BoxProps>(() => ({
   minWidth: "220px",
-  marginLeft: "1.5rem",
+  marginLeft: "1rem",
 
   "& span": {
     fontSize: "0.875rem",
@@ -74,7 +73,7 @@ export const NoItems = styled(ListItem)<ListItemProps>(() => ({
 
 export const StyledValueBox = styled(Box)<BoxProps>(() => ({
   fontWeight: "bold",
-
+  display: "flex",
   "& span": {
     marginLeft: "1.5rem",
     fontSize: "0.9rem",
