@@ -28,9 +28,9 @@ export default function TxTable() {
           <>
             {tableData.map((data, index) => {
               return (
-                <>
+                <Box key={index}>
                   <TxDetailItem data={data!} index={index}></TxDetailItem>
-                </>
+                </Box>
               );
             })}
           </>

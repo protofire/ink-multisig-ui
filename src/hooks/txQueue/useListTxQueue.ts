@@ -6,17 +6,17 @@ import { ChainId } from "useink/dist/chains";
 import { getChain } from "@/config/chain";
 import { TX_TYPE_IMG } from "@/config/images";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
+import { TransactionEvents } from "@/domain/events/TransactionEvents";
 import {
   ExtendedDataType,
   Order,
   TxType,
 } from "@/domain/repositores/ITxQueueRepository";
+import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
+import { useListSignersAccount } from "@/hooks/xsignersAccount";
 import { decodeCallArgs, formatAddressForNetwork } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 import { balanceToFixed } from "@/utils/formatString";
-
-import { useMultisigContractPromise } from "../contractPromise/useMultisigContractPromise";
-import { useListSignersAccount } from "../xsignersAccount";
 
 export type TabTxTypes = "queue" | "history";
 
@@ -98,7 +98,6 @@ const buildTxDetail = (
   multisigContractPromise: ChainContract<ContractPromise>
 ): ExtendedDataType | null => {
   let additionalInfo;
-  // Clean Value to display correct human value
   if (
     data.__typename === TX_TYPE_OPTION.TRANSACTION &&
     data.status === TX_TYPE_OPTION.STATUS.PROPOSED
@@ -142,6 +141,7 @@ const buildTxDetail = (
     if (txInfo.type === TX_TYPE_OPTION.SEND) return null;
 
     // Transfer Receive
+    // Clean Value to display correct human value
     const value = balanceToFixed(
       data.value,
       Number.isNaN(parseInt(data.tokenDecimals))
@@ -183,6 +183,23 @@ export function useListTxQueue(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { txQueueRepository } = useLocalDbContext();
+
+  // useEventListenerCallback([TransactionEvents.transactionSent], () => {
+  //   console.log("entre Aca");
+  //   // createTxList();
+  // });
+
+  useEffect(() => {
+    document.addEventListener(TransactionEvents.transactionSent, () => {
+      console.log("entre Aca");
+    });
+
+    return () => {
+      document.removeEventListener(TransactionEvents.transactionSent, () => {
+        console.log("entre Aca");
+      });
+    };
+  }, []);
 
   const createTxList = useCallback(() => {
     const fetchData = async () => {
