@@ -17,7 +17,7 @@ export interface MyQueryResponse {
 }
 
 export interface RawExternalTransactionData {
-  txHash: string;
+  id: string;
   methodName: string;
   args: string;
   creationTimestamp: Date;
