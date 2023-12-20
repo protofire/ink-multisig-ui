@@ -35,6 +35,7 @@ export const SendTokens = (props: Props) => {
   const { listAssetByType } = useFetchAssets("");
   const assets = listAssetByType("token");
   const customToken = getChain();
+  const initialErrorValue = "-";
   const { amount, tokenSymbol = "" } = {
     ...splitTokenAmount(balance?.freeBalance),
   };
@@ -47,6 +48,25 @@ export const SendTokens = (props: Props) => {
   const [maxAmount, setMaxAmount] = useState<string | undefined>(amount);
   const [inputValue, setInputValue] = useState<string>("0");
   const isInputDirty = useRef(false);
+
+  const validateAddress = (address: string) => {
+    let newErrors = [initialErrorValue];
+    if (!isInputDirty.current) {
+      setErrors(newErrors);
+      return newErrors;
+    }
+
+    if (!address) {
+      newErrors = ["Recipient address is required.", ...errors.splice(1)];
+    } else if (!isValidAddress(address)) {
+      newErrors = ["Invalid address.", ...errors.splice(1)];
+    } else {
+      newErrors = [""];
+    }
+
+    setErrors(newErrors);
+    return newErrors;
+  };
 
   const formatBalance = useCallback((asset: Asset) => {
     if (asset) {
@@ -80,11 +100,14 @@ export const SendTokens = (props: Props) => {
 
   const handleValueChange = useCallback(
     (value: string, error: string) => {
+      isInputDirty.current = true;
+      const newErrors = validateAddress(to);
+
       if (error) {
-        setErrors(["", error]);
+        setErrors([newErrors[0], error]);
         return;
       } else {
-        setErrors([]);
+        setErrors([newErrors[0]]);
       }
       setField(
         "amount",
@@ -98,21 +121,11 @@ export const SendTokens = (props: Props) => {
       setInputValue(value);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [setField, tokenSelected.isNative, tokenSelected?.symbol, tokenSymbol]
+    [setField, tokenSelected.isNative, tokenSelected?.symbol, tokenSymbol, to]
   );
 
   useEffect(() => {
-    if (!isInputDirty.current) {
-      setErrors([""]);
-      return;
-    }
-    if (!to) {
-      setErrors(["Recipient address is required.", ...errors.splice(1)]);
-    } else if (!isValidAddress(to)) {
-      setErrors(["Invalid address.", ...errors.splice(1)]);
-    } else {
-      setErrors([...errors.splice(1)]);
-    }
+    validateAddress(to);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [to, setErrors, isInputDirty.current]);
 
@@ -128,14 +141,14 @@ export const SendTokens = (props: Props) => {
         label={!to ? "Recipient Address *" : "Sending to"}
         value={to}
         onChange={(e) => {
-          setField("to", e.target.value);
           isInputDirty.current = true;
+          setField("to", e.target.value);
         }}
         autoFocus
         fullWidth
         margin="normal"
-        error={!!errors[0]}
-        helperText={errors[0]}
+        error={!!errors[0] && errors[0] !== initialErrorValue}
+        helperText={errors[0] !== initialErrorValue && errors[0]}
         InputProps={{
           startAdornment: (
             <Avatar>
