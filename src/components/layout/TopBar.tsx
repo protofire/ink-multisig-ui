@@ -11,7 +11,7 @@ export function TopBar({
   buttonActionComponent?: React.ReactNode;
 }) {
   return (
-    <AppBar elevation={0} position="static">
+    <AppBar elevation={0} position="fixed">
       <Toolbar>
         <Stack direction="row" gap={1} sx={{ flexGrow: 1 }}>
           <Link href={ROUTES.Home} passHref>
