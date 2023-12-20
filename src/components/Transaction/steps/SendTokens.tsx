@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import Identicon from "@polkadot/react-identicon";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ChainExtended, getChain } from "@/config/chain";
 import useFetchAssets, { Asset } from "@/hooks/assets/useFetchAssets";
@@ -46,6 +46,7 @@ export const SendTokens = (props: Props) => {
   }>({ symbol: tokenSymbol, isNative: true, address: "native" });
   const [maxAmount, setMaxAmount] = useState<string | undefined>(amount);
   const [inputValue, setInputValue] = useState<string>("0");
+  const isInputDirty = useRef(false);
 
   const formatBalance = useCallback((asset: Asset) => {
     if (asset) {
@@ -61,10 +62,7 @@ export const SendTokens = (props: Props) => {
       const asset = assets.find(
         (asset) => asset.address === tokenSelected.address
       );
-      const formattedBalance = (
-        Number(asset?.balance) /
-        10 ** asset?.decimals
-      ).toFixed(2);
+      const formattedBalance = balanceToFixed(asset?.balance, asset?.decimals);
       setMaxAmount(formattedBalance);
     }
   }, [amount, assets, tokenSelected]);
@@ -81,7 +79,13 @@ export const SendTokens = (props: Props) => {
   }, [assets, token]);
 
   const handleValueChange = useCallback(
-    (value: string) => {
+    (value: string, error: string) => {
+      if (error) {
+        setErrors(["", error]);
+        return;
+      } else {
+        setErrors([]);
+      }
       setField(
         "amount",
         `${value} ${
@@ -98,6 +102,10 @@ export const SendTokens = (props: Props) => {
   );
 
   useEffect(() => {
+    if (!isInputDirty.current) {
+      setErrors([""]);
+      return;
+    }
     if (!to) {
       setErrors(["Recipient address is required.", ...errors.splice(1)]);
     } else if (!isValidAddress(to)) {
@@ -106,7 +114,7 @@ export const SendTokens = (props: Props) => {
       setErrors([...errors.splice(1)]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [to, setErrors]);
+  }, [to, setErrors, isInputDirty.current]);
 
   return (
     <Box
@@ -119,7 +127,10 @@ export const SendTokens = (props: Props) => {
       <TextField
         label={!to ? "Recipient Address *" : "Sending to"}
         value={to}
-        onChange={(e) => setField("to", e.target.value)}
+        onChange={(e) => {
+          setField("to", e.target.value);
+          isInputDirty.current = true;
+        }}
         autoFocus
         fullWidth
         margin="normal"
