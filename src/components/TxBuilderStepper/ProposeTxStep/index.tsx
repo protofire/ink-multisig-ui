@@ -32,7 +32,7 @@ const TextFieldMemoized: React.FC<TextFieldWithLoadingProps> = React.memo(
 
 export function ProposeTxStep() {
   const { inputFormManager, managerStep } = useTxBuilderContext();
-  const { transferTxStruct } = inputFormManager.values;
+  const { transferTxStruct, selectedAbiIdentifier } = inputFormManager.values;
   const {
     activeStep: { creation: activeStep },
     downCreationStep: handleBack,
@@ -70,10 +70,12 @@ export function ProposeTxStep() {
       <GridTxInformation
         contractAddress={inputFormManager.values.address}
         args={stringify(
-          inputFormManager.values.dataArgs?.map((value, index) =>
-            replacerArgs(index.toString(), value)
+          inputFormManager.values.dataArgs?.map(
+            (value, index) => replacerArgs(index.toString(), value),
+            0
           )
         )}
+        methodName={selectedAbiIdentifier}
       />
       {multisigContractPromise &&
         proposeTxAbiMessage &&

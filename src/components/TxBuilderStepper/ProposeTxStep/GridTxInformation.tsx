@@ -2,6 +2,7 @@ import { Box, BoxProps, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { MonoTypography } from "@/components/MonoTypography";
+import { emptyAsDash } from "@/utils/formatString";
 
 export const BoxGridStyled = styled(Box)<BoxProps>(({ theme }) => ({
   display: "grid",
@@ -22,9 +23,14 @@ export const BoxRow = styled(Box)<BoxProps>(() => ({
 interface Props {
   contractAddress: string;
   args: string;
+  methodName: string | undefined;
 }
 
-export function GridTxInformation({ contractAddress, args }: Props) {
+export function GridTxInformation({
+  contractAddress,
+  args,
+  methodName,
+}: Props) {
   return (
     <BoxGridStyled>
       <BoxRow>
@@ -32,6 +38,14 @@ export function GridTxInformation({ contractAddress, args }: Props) {
           To Address
         </Typography>
         <MonoTypography variant="body1">{contractAddress}</MonoTypography>
+      </BoxRow>
+      <BoxRow>
+        <Typography variant="caption" fontWeight="500">
+          Method
+        </Typography>
+        <MonoTypography variant="body1">
+          {emptyAsDash(methodName)}
+        </MonoTypography>
       </BoxRow>
       <BoxRow>
         <Typography variant="caption" fontWeight="500">

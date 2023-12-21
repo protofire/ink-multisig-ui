@@ -26,8 +26,8 @@ function getReturnTypeName(type: TypeDef | null | undefined): string {
   return type?.lookupName || type?.type || "";
 }
 
-export function stringify(obj: unknown): string {
-  return JSON5.stringify(obj, null, 2);
+export function stringify(obj: unknown, space?: 2): string {
+  return JSON5.stringify(obj, null, space);
 }
 
 function decodeReturnValue(

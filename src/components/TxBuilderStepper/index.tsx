@@ -41,7 +41,7 @@ const steps = [
   {
     id: 2,
     name: "Propose transaction",
-    label: "The previously established message will be proposed",
+    label: "Message to be proposed.",
     Component: ProposeTxStep,
   },
 ];

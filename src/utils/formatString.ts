@@ -63,3 +63,7 @@ export const balanceToFixed = (
   const balance = tokenBalance.replace(/,/g, "");
   return new BigNumber(balance).div(10 ** tokenDecimals).toFixed();
 };
+
+export function emptyAsDash(value: string | undefined): string {
+  return value ? value : "-";
+}
