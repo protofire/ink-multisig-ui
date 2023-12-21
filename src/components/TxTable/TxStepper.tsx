@@ -10,13 +10,14 @@ import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { ChainId } from "useink/dist/chains";
 
 import { Order } from "@/domain/repositores/ITxQueueRepository";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
-import OpenNewTabButton from "../common/OpenNewTabButton";
+import { ExplorerLink } from "../ExplorerLink";
 
 const CircleStepIconRoot = styled("div")(() => ({
   marginLeft: "7px",
@@ -72,7 +73,13 @@ function ColorlibStepIcon(props: StepIconProps) {
   );
 }
 
-export default function TxStepper({ data }: { data: Order[] | undefined }) {
+export default function TxStepper({
+  data,
+  network,
+}: {
+  data: Order[] | undefined;
+  network: ChainId;
+}) {
   const [showOwners, setShowOwners] = React.useState(true);
   const approvalCount = data?.filter(
     (element) => element.status === TX_TYPE_OPTION.STATUS.APPROVAL
@@ -127,9 +134,20 @@ export default function TxStepper({ data }: { data: Order[] | undefined }) {
                     name={element.name}
                     truncateLenght={4}
                   ></AccountAvatar>
-                  <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>
+                  <Box
+                    sx={{
+                      marginTop: "20px",
+                      marginLeft: "15px",
+                      display: "flex",
+                    }}
+                  >
                     <CopyButton text={element.address} />
-                    <OpenNewTabButton text={"mockURL"} />
+                    <ExplorerLink
+                      blockchain={network}
+                      path="account"
+                      txHash={element.address}
+                      sx={{ color: "" }}
+                    />
                   </Box>
                 </Box>
               </StepLabel>

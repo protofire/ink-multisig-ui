@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import { ChainId } from "useink/dist/chains";
 
 import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
@@ -27,9 +28,10 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 type Props = {
   data: ExtendedDataType;
   index: number;
+  network: ChainId;
 };
 
-export const TxDetailItem = ({ data, index }: Props) => {
+export const TxDetailItem = ({ data, index, network }: Props) => {
   const date = formatDate(data.creationTimestamp);
   const successTx =
     data.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS ||
@@ -97,9 +99,9 @@ export const TxDetailItem = ({ data, index }: Props) => {
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
-          <TxDetails data={data} />
-          {data.type !== "Receive" ? (
-            <TxStepper data={data.stepperData} />
+          <TxDetails data={data} network={network} />
+          {data.type !== TX_TYPE_OPTION.RECEIVE ? (
+            <TxStepper data={data.stepperData} network={network} />
           ) : (
             <></>
           )}

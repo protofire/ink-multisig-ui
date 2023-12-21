@@ -1,30 +1,31 @@
 import ShareIcon from "@mui/icons-material/Share";
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
+import { ChainId } from "useink/dist/chains";
 
+import { ExplorerLink } from "@/components/ExplorerLink";
 import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 import { openInNewTab } from "@/utils/browserMethods";
 
 import { AccountAvatar } from "../../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../../common/CopyButton";
-import OpenNewTabButton from "../../common/OpenNewTabButton";
 import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
 
 interface Props {
   data: ExtendedDataType;
+  network: ChainId;
 }
 
-export const TxDetails = ({ data }: Props) => {
+export const TxDetails = ({ data, network }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
-
   const TxComponentType = ({ data }: Props): JSX.Element => {
-    if (data.type === "Send") {
-      return <SendDetail data={data}></SendDetail>;
+    if (data.type === TX_TYPE_OPTION.SEND) {
+      return <SendDetail data={data} network={network}></SendDetail>;
     }
-    return <ReceivedDetail data={data}></ReceivedDetail>;
+    return <ReceivedDetail data={data} network={network}></ReceivedDetail>;
   };
 
   return (
@@ -40,9 +41,11 @@ export const TxDetails = ({ data }: Props) => {
           borderBottom: "3px solid #120D0E",
         }}
       >
-        <Typography color="white">
+        <Typography color="white" mb={1}>
           {data.type}{" "}
-          <span style={{ fontWeight: "bold" }}>{`${data.value}`}</span>{" "}
+          <span
+            style={{ fontWeight: "bold" }}
+          >{`${data.value} ${data.token}`}</span>{" "}
           {data.txMsg}
         </Typography>
 
@@ -57,9 +60,14 @@ export const TxDetails = ({ data }: Props) => {
             name={""}
             truncateLenght={16}
           ></AccountAvatar>
-          <Box sx={{ marginTop: "4px", marginLeft: "15px" }}>
+          <Box sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}>
             <CopyButton text={data?.from ?? data.to} />
-            <OpenNewTabButton text={""} />
+            <ExplorerLink
+              blockchain={network}
+              path="account"
+              txHash={data.from ?? data.to}
+              sx={{ color: "" }}
+            />
           </Box>
           <Box
             sx={{
@@ -88,7 +96,7 @@ export const TxDetails = ({ data }: Props) => {
           padding: "20px",
         }}
       >
-        {<TxComponentType data={data}></TxComponentType>}
+        {<TxComponentType data={data} network={network}></TxComponentType>}
 
         {data.__typename === TX_TYPE_OPTION.TRANSACTION ? (
           <>

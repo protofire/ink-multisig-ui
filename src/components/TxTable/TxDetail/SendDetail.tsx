@@ -1,14 +1,21 @@
 import { Box, Grid } from "@mui/material";
+import { ChainId } from "useink/dist/chains";
 
 import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
 import CopyButton from "@/components/common/CopyButton";
-import OpenNewTabButton from "@/components/common/OpenNewTabButton";
+import { ExplorerLink } from "@/components/ExplorerLink";
 import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { formatDate } from "@/utils/formatString";
 
 import { CustomGridItem } from "./styled";
 
-export const SendDetail = ({ data }: { data: ExtendedDataType }) => {
+export const SendDetail = ({
+  data,
+  network,
+}: {
+  data: ExtendedDataType;
+  network: ChainId;
+}) => {
   const date = formatDate(data.creationTimestamp);
   return (
     <Grid container>
@@ -25,9 +32,14 @@ export const SendDetail = ({ data }: { data: ExtendedDataType }) => {
             name={""}
             truncateLenght={8}
           ></AccountAvatar>
-          <Box sx={{ marginTop: "4px", marginLeft: "8px" }}>
+          <Box sx={{ marginTop: "4px", marginLeft: "8px", display: "flex" }}>
             <CopyButton text={data.proposer} />
-            <OpenNewTabButton text={data.proposer} />
+            <ExplorerLink
+              blockchain={network}
+              path="account"
+              txHash={data.proposer}
+              sx={{ color: "" }}
+            />
           </Box>
         </Box>
       </CustomGridItem>

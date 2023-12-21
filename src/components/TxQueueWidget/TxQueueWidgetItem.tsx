@@ -17,7 +17,6 @@ interface Props {
 }
 
 export const TxQueueWidgetItem = ({ data }: Props) => {
-  const value = data.value;
   const date = formatDate(data.creationTimestamp);
   const from = data.from ?? data.contractAddress;
   const approvalCount = data.approvalCount || 0;
