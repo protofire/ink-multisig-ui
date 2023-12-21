@@ -1,4 +1,3 @@
-import ShareIcon from "@mui/icons-material/Share";
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { ChainId } from "useink/dist/chains";
@@ -6,7 +5,6 @@ import { ChainId } from "useink/dist/chains";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
-import { openInNewTab } from "@/utils/browserMethods";
 
 import { AccountAvatar } from "../../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../../common/CopyButton";
@@ -69,7 +67,7 @@ export const TxDetails = ({ data, network }: Props) => {
               sx={{ color: "" }}
             />
           </Box>
-          <Box
+          {/* <Box
             sx={{
               position: "absolute",
               right: "20px",
@@ -88,7 +86,7 @@ export const TxDetails = ({ data, network }: Props) => {
             onClick={() => openInNewTab(data?.from as string)}
           >
             <ShareIcon></ShareIcon>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
       <Box
