@@ -40,10 +40,8 @@ export const TxQueueWidgetItem = ({ data }: Props) => {
           </StyledStack>
         </StyledBox>
         <StyledValueBox>
-          {data.type === TX_TYPE_OPTION.RECEIVE
-            ? `+ ${value} ${data.token}`
-            : ""}
-          {data.type === TX_TYPE_OPTION.SEND ? `- ${value}` : ""}
+          {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
+          {`${data.value} ${data.token}`}
           <span>
             {approvalCount}/{threshold}
           </span>

@@ -16,7 +16,7 @@ import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigC
 import { useListSignersAccount } from "@/hooks/xsignersAccount";
 import { decodeCallArgs, formatAddressForNetwork } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
-import { balanceToFixed } from "@/utils/formatString";
+import { balanceToFixed, parseNativeBalance } from "@/utils/formatString";
 
 export type TabTxTypes = "queue" | "history";
 
@@ -107,12 +107,15 @@ const buildTxDetail = (
       methodName,
       data.args!
     );
+
+    const parseValue = parseNativeBalance(decodedData[1]);
+
     // Send
     const txInfo = getTxInfo(xsignerAddress, data.proposer);
     additionalInfo = {
       ...txInfo,
       to: decodedData[0],
-      value: decodedData[1],
+      value: parseValue,
       txStateMsg: "Awaiting confirmations",
     };
   }
@@ -126,12 +129,15 @@ const buildTxDetail = (
       methodName,
       data.args!
     );
+
+    const parseValue = parseNativeBalance(decodedData[1]);
+
     // Send
     const txInfo = getTxInfo(xsignerAddress, data.proposer);
     additionalInfo = {
       ...txInfo,
       to: decodedData[0],
-      value: decodedData[1],
+      value: parseValue,
       txStateMsg: "Success",
     };
   } else if (data.__typename === TX_TYPE_OPTION.TRANSFER) {

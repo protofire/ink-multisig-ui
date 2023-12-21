@@ -86,7 +86,7 @@ export function parseNativeBalance(input: string) {
   const unit = match[2].toLowerCase();
 
   switch (unit) {
-    case "μsby":
+    case "µsby":
       return value.div(new BigNumber(1e6)).toFixed();
     case "msby":
       return value.div(new BigNumber(1e3)).toFixed();

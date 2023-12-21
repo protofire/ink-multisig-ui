@@ -81,10 +81,8 @@ export const TxDetailItem = ({ data, index }: Props) => {
           </StyledGrid>
           <StyledGrid item xs={2} sm={2} md={2}>
             <Typography>
-              {data.type === TX_TYPE_OPTION.RECEIVE
-                ? `+ ${data.value} ${data.token}`
-                : ""}
-              {data.type === TX_TYPE_OPTION.SEND ? `- ${data.value}` : ""}
+              {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
+              {`${data.value} ${data.token}`}
             </Typography>
           </StyledGrid>
           <StyledGrid item xs={3} sm={3} md={3}>

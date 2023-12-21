@@ -58,7 +58,7 @@ export const TxDetails = ({ data }: Props) => {
             truncateLenght={16}
           ></AccountAvatar>
           <Box sx={{ marginTop: "4px", marginLeft: "15px" }}>
-            <CopyButton text={data?.from as string} />
+            <CopyButton text={data?.from ?? data.to} />
             <OpenNewTabButton text={""} />
           </Box>
           <Box
