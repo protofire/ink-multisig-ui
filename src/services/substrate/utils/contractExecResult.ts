@@ -1,3 +1,4 @@
+import BN from "bn.js";
 import JSON5 from "json5";
 
 import {
@@ -25,8 +26,8 @@ function getReturnTypeName(type: TypeDef | null | undefined): string {
   return type?.lookupName || type?.type || "";
 }
 
-export function stringify(obj: unknown): string {
-  return JSON5.stringify(obj, null, 2);
+export function stringify(obj: unknown, space?: 2): string {
+  return JSON5.stringify(obj, null, space);
 }
 
 function decodeReturnValue(
@@ -91,4 +92,11 @@ export function getDecodedOutput(
     decodedOutput,
     isError,
   };
+}
+
+export function replacerArgs(key: string, value: unknown) {
+  if (value instanceof BN) {
+    return value.toString();
+  }
+  return value;
 }

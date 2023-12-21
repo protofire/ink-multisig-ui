@@ -6,7 +6,7 @@ import { AbiMessage, AbiParam, Registry } from "@/services/substrate/types";
 
 type Argument = Record<string, unknown>;
 
-interface UseArgValuesReturn {
+export interface UseArgValuesReturn {
   argValues: Argument;
   setArgValues: React.Dispatch<React.SetStateAction<Argument>>;
   inputData: unknown[] | undefined;
@@ -45,7 +45,7 @@ export function transformUserInput(
 export function useArgValues(
   message: AbiMessage | undefined,
   registry: Registry | undefined
-) {
+): UseArgValuesReturn {
   const { accounts } = usePolkadotContext();
   const [argValues, setArgValues] = useState<Argument>({});
   const argsRef = useRef(message?.args ?? []);
@@ -73,10 +73,5 @@ export function useArgValues(
     argsRef.current = message.args;
   }, [accounts, message, registry]);
 
-  const inputDataU8a = useMemo(
-    () => inputData && message?.toU8a(inputData),
-    [inputData, message]
-  );
-
-  return { argValues, setArgValues, inputData, inputDataU8a };
+  return { argValues, setArgValues, inputData };
 }

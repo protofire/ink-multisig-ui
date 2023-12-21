@@ -8,7 +8,7 @@ interface Props extends BoxProps {
 }
 
 export const FallbackSpinner = (props: Props) => {
-  const { text } = props;
+  const { text, sx } = props;
 
   return (
     <Box
@@ -18,6 +18,7 @@ export const FallbackSpinner = (props: Props) => {
         alignItems: "center",
         flexDirection: "column",
         justifyContent: "center",
+        ...sx,
       }}
     >
       <Image src="/favicon.ico" alt="Multisig Logo" width={30} height={30} />

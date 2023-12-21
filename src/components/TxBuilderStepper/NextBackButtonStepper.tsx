@@ -2,7 +2,10 @@ import { East as EastIcon, West as WestIcon } from "@mui/icons-material";
 import { Box, BoxProps } from "@mui/material";
 import { styled } from "@mui/system";
 
-import { LoadingButtonProps } from "@/components/common/LoadingButton";
+import {
+  LoadingButton,
+  LoadingButtonProps,
+} from "@/components/common/LoadingButton";
 import {
   FooterButton,
   StepperFooter,
@@ -14,7 +17,7 @@ export type NextBackButtonStepperProps = {
   activeStep: number;
   stepsLength: number;
   handleBack: () => void;
-  handleNext?: () => void;
+  handleNext?: (props?: unknown) => void;
   isNextDisabled?: boolean;
   //   isDoingNext?: boolean;
   nextButtonProps?: LoadingButtonProps & { disabled: boolean };
@@ -50,7 +53,10 @@ export function NextBackButtonStepper({
   hiddenBack,
   nextButtonProps,
 }: NextBackButtonStepperProps) {
-  const _nextLabel = activeStep === stepsLength - 1 ? "Confirm" : nextLabel;
+  const _nextLabel =
+    activeStep === stepsLength - 1 && nextLabel === "next"
+      ? "Confirm"
+      : nextLabel;
 
   return (
     <StepperFooter mt={2}>
@@ -62,15 +68,15 @@ export function NextBackButtonStepper({
         </FooterButton>
       )}
       {activeStep <= stepsLength - 1 && (
-        <FooterButton
-          width={134}
+        <LoadingButton
           variant="contained"
           onClick={handleNext}
           disabled={isNextDisabled}
+          sx={{ minWidth: "8rem" }}
           {...nextButtonProps}
         >
           <BoxStyled>{_nextLabel}</BoxStyled>
-        </FooterButton>
+        </LoadingButton>
       )}
     </StepperFooter>
   );

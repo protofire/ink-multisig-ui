@@ -25,15 +25,15 @@ export interface UseFormReturn<T> {
   };
   handleSubmit: (callback: (values: T) => void) => (e: React.FormEvent) => void;
   errors: Record<keyof T, string | null>;
+  touched: Record<keyof T, boolean>;
   values: T;
   setValue: <K extends keyof T>(name: K, value: T[K]) => Promise<void>;
   isValid: boolean;
   isLoading: boolean;
+  reset: (exceptions?: Partial<T>) => void;
 }
 
-export function useForm<T extends Record<string, unknown>>(
-  initialValues: T
-): UseFormReturn<T> {
+export function useForm<T extends object>(initialValues: T): UseFormReturn<T> {
   const [formState, setFormState] = useState<FormState<T>>({
     values: initialValues,
     errors: {} as Record<keyof T, string | null>,
@@ -61,6 +61,18 @@ export function useForm<T extends Record<string, unknown>>(
     }
     setFormState((prevState) => ({ ...prevState, isLoading: false }));
     return null;
+  };
+
+  const reset = (exceptions?: Partial<T>) => {
+    setFormState({
+      values: {
+        ...initialValues,
+        ...exceptions,
+      },
+      errors: {} as Record<keyof T, string | null>,
+      touched: {} as Record<keyof T, boolean>,
+      isLoading: false,
+    });
   };
 
   const isValid = useMemo(() => {
@@ -136,8 +148,10 @@ export function useForm<T extends Record<string, unknown>>(
     handleSubmit,
     errors: formState.errors,
     values: formState.values,
+    touched: formState.touched,
     setValue,
     isValid,
     isLoading: formState.isLoading,
+    reset,
   };
 }

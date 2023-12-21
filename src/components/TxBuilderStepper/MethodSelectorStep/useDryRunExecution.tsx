@@ -7,15 +7,17 @@ import {
   AbiMessage,
   ContractPromise,
   Registry,
+  WeightV2,
 } from "@/services/substrate/types";
 import { getDecodedOutput } from "@/services/substrate/utils/contractExecResult";
 
 interface UseDryRunExecutionProps {
   contractPromise: ContractPromise;
-  message: AbiMessage;
+  message: AbiMessage | undefined;
   params: unknown[] | undefined;
-  autoRun: boolean;
+  autoRun?: boolean;
   substrateRegistry: Registry;
+  addressCaller?: string;
 }
 
 export interface DryRunExecutionResult {
@@ -23,6 +25,7 @@ export interface DryRunExecutionResult {
   error: string | undefined;
   isRunning: boolean;
   executeDryRun: () => void;
+  gasRequired: WeightV2 | undefined;
 }
 
 export function useDryRunExecution({
@@ -31,16 +34,18 @@ export function useDryRunExecution({
   params,
   autoRun = false,
   substrateRegistry,
+  addressCaller,
 }: UseDryRunExecutionProps): DryRunExecutionResult {
   const { xSignerSelected } = useGetXsignerSelected();
   const dryRun = useGetDryRun(
     contractPromise,
-    message.method,
-    xSignerSelected?.address || undefined
+    message?.method || "",
+    addressCaller ? addressCaller : xSignerSelected?.address || undefined
   );
   const [outcome, setOutcome] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const memoizedParams = useMemo(() => params, [params]);
+  const [gasRequired, setGasRequired] = useState<WeightV2>();
 
   const executeDryRun = useCallback(async () => {
     setOutcome(undefined);
@@ -48,14 +53,18 @@ export function useDryRunExecution({
 
     const result = await dryRun.send(memoizedParams);
     if (result?.ok) {
-      const { decodedOutput, isError } = getDecodedOutput(
-        {
-          debugMessage: result.value.raw.debugMessage,
-          result: result.value.raw.result,
-        },
-        message,
-        substrateRegistry
-      );
+      setGasRequired(result.value.gasRequired);
+      const { decodedOutput, isError } =
+        (message &&
+          getDecodedOutput(
+            {
+              debugMessage: result.value.raw.debugMessage,
+              result: result.value.raw.result,
+            },
+            message,
+            substrateRegistry
+          )) ||
+        {};
       if (isError) {
         setOutcome("Transaction will be reverted");
         setError(decodedOutput);
@@ -66,12 +75,13 @@ export function useDryRunExecution({
       setError("Transaction will be reverted");
       setOutcome("Transaction will be reverted");
     }
-  }, [dryRun, memoizedParams, message, substrateRegistry]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dryRun, message, substrateRegistry]);
 
   useDebouncedEffect({
     effect: executeDryRun,
     delay: 100,
-    deps: [message, memoizedParams],
+    deps: [message, memoizedParams, addressCaller],
     autoRun: autoRun,
   });
 
@@ -80,5 +90,6 @@ export function useDryRunExecution({
     error,
     isRunning: dryRun.isSubmitting,
     executeDryRun,
+    gasRequired,
   };
 }
