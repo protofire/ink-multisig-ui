@@ -3,12 +3,16 @@ import { styled } from "@mui/material/styles";
 
 import { MonoTypography } from "@/components/MonoTypography";
 
-export const BoxGridStyled = styled(Box)<BoxProps>(() => ({
+export const BoxGridStyled = styled(Box)<BoxProps>(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr",
-  gridTemplateRows: "repeat(3, 1fr)",
+  gridTemplateRows: "repeat(2, 0.5fr)",
   gap: "1rem",
   marginTop: "1rem",
+  border: "1px solid",
+  borderColor: theme.palette.grey[600],
+  padding: "1rem",
+  borderRadius: "1rem",
 }));
 
 export const BoxRow = styled(Box)<BoxProps>(() => ({
