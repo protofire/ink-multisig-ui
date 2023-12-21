@@ -21,12 +21,12 @@ export function useTxDispatchNotification({
     }
     if (idToast && tx.status === "None") {
       // TODO, check this case
-      // toast.update(idToast, {
-      //   render: `The ${msgPrefix} was cancelled`,
-      //   type: "info",
-      //   isLoading: false,
-      //   autoClose: 500,
-      // });
+      toast.update(idToast, {
+        render: `The ${msgPrefix} was gone`,
+        type: "info",
+        isLoading: false,
+        autoClose: 500,
+      });
       setIdToast(0);
     }
     if (idToast && tx.status === "Broadcast") {
