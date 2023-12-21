@@ -74,3 +74,25 @@ export const formatDate = (inputDate: string) => {
     minute: "numeric",
   });
 };
+
+export function parseNativeBalance(input: string) {
+  const match = input.match(/^([\d.]+)\s*([mμn]?SBY)$/i);
+
+  if (!match) {
+    throw new Error("Invalid input format");
+  }
+
+  const value = new BigNumber(match[1]);
+  const unit = match[2].toLowerCase();
+
+  switch (unit) {
+    case "μsby":
+      return value.div(new BigNumber(1e6)).toFixed();
+    case "msby":
+      return value.div(new BigNumber(1e3)).toFixed();
+    case "sby":
+      return value.toFixed();
+    default:
+      throw new Error("Invalid unit");
+  }
+}
