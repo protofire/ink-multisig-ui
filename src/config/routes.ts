@@ -16,3 +16,7 @@ export const ROUTES = {
 export type RouteValue = (typeof ROUTES)[keyof typeof ROUTES];
 
 export const routeValues: RouteValue[] = Object.values(ROUTES);
+
+export const API_PATHS = {
+  insertTxData: "/transaction-metadata",
+};
