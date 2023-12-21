@@ -14,7 +14,6 @@ export type StepType = {
 
 type BaseStepperProps = {
   steps: StepType[];
-  onStepChange: (step: number) => void;
   boxStepperSx?: BoxProps;
   managerStep: ManagerActiveStep;
 };
@@ -59,17 +58,6 @@ export const BaseStepper: React.FC<BaseStepperProps> = ({
             )}
             {steps[activeStep].Component}
           </Box>
-          {/* {footer || (
-            <Box p={5}>
-              <NextBackButtonStepper
-                activeStep={activeStep}
-                steps={steps}
-                handleBack={handleBack}
-                handleNext={handleNext}
-                {...footerProps}
-              />
-            </Box>
-          )} */}
         </Box>
       </Box>
     </Box>

@@ -20,8 +20,9 @@ export function useTxDispatchNotification({
       setIdToast(id);
     }
     if (idToast && tx.status === "None") {
+      // TODO, check this case
       toast.update(idToast, {
-        render: `The ${msgPrefix} was cancelled`,
+        render: `The ${msgPrefix} was gone`,
         type: "info",
         isLoading: false,
         autoClose: 500,
@@ -40,7 +41,6 @@ export function useTxDispatchNotification({
         render: `The ${msgPrefix} was proccessed`,
         type: "info",
         isLoading: false,
-        autoClose: 1000,
       });
       setIdToast(0);
     }

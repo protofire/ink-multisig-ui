@@ -6,7 +6,7 @@ import * as React from "react";
 export interface LoadingButtonProps
   extends Pick<
     ButtonProps,
-    "ref" | "onClick" | "variant" | "size" | "children" | "sx"
+    "ref" | "onClick" | "variant" | "size" | "children" | "sx" | "fullWidth"
   > {
   isLoading?: boolean;
 }
@@ -18,9 +18,9 @@ export const LoadingButton: React.FC<LoadingButtonProps> = React.forwardRef<
   return (
     <Button
       ref={ref}
-      {...props}
       disabled={isLoading}
       sx={{ position: "relative" }}
+      {...props}
     >
       <Box
         sx={{

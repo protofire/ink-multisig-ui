@@ -16,6 +16,14 @@ export interface MyQueryResponse {
   multisigs: MultisigData[];
 }
 
+export interface RawExternalTransactionData {
+  id: string;
+  methodName: string;
+  args: string;
+  creationTimestamp: Date;
+  inUse: boolean;
+}
+
 export interface IXsignerOwnersRepository {
   getMultisigByAddress(address: string): Promise<MultisigData | null>;
   getMultisigsByOwner(address: string): Promise<SignatoriesAccount[] | null>;

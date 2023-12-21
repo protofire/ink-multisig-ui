@@ -96,3 +96,7 @@ export function parseNativeBalance(input: string) {
       throw new Error("Invalid unit");
   }
 }
+
+export function emptyAsDash(value: string | undefined): string {
+  return value ? value : "-";
+}

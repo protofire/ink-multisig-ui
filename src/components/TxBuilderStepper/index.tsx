@@ -7,6 +7,7 @@ import { useManagerActiveStep } from "../StepperSignersAccount/useManagerActiveS
 import { BaseStepper, StepType } from "./BaseStepper";
 import { ImportContractStep } from "./ImportContractStep";
 import { MethodSelectorStep } from "./MethodSelectorStep";
+import { ProposeTxStep } from "./ProposeTxStep";
 import { TxBuilderContext, TxBuilderForm } from "./TxBuilderContext";
 
 const transformSteps = (
@@ -37,6 +38,12 @@ const steps = [
     label: "Set the transaction Information.",
     Component: MethodSelectorStep,
   },
+  {
+    id: 2,
+    name: "Propose transaction",
+    label: "Message to be proposed.",
+    Component: ProposeTxStep,
+  },
 ];
 
 export function TxBuilderStepper() {
@@ -45,13 +52,11 @@ export function TxBuilderStepper() {
   const inputFormManager = useForm<TxBuilderForm>({
     address: "",
     metadataSource: undefined,
+    selectedAbiIdentifier: undefined,
+    selectedAbiMessage: undefined,
+    dataArgs: undefined,
+    transferTxStruct: undefined,
   });
-
-  const handleStepChange = (newStep: number) => {
-    // Aquí puedes agregar lógica para cambiar de paso
-    // Por ejemplo, basado en el estado de la transacción o validaciones
-    console.log("__newStep", newStep);
-  };
 
   const builderSteps = transformSteps(steps);
 
@@ -63,11 +68,7 @@ export function TxBuilderStepper() {
         managerStep,
       }}
     >
-      <BaseStepper
-        steps={builderSteps}
-        managerStep={managerStep}
-        onStepChange={handleStepChange}
-      />
+      <BaseStepper steps={builderSteps} managerStep={managerStep} />
     </TxBuilderContext.Provider>
   );
 }

@@ -1,13 +1,14 @@
 import { Box, FormHelperText, Stack, Typography } from "@mui/material";
 
 import { ArgumentsForm } from "@/components/ArgumentForm/ArgumentForm";
-import { useArgValues } from "@/components/ArgumentForm/useArgValues";
+import { UseArgValuesReturn } from "@/components/ArgumentForm/useArgValues";
 import {
   AbiMessage,
   ContractPromise,
   Registry,
 } from "@/services/substrate/types";
 
+import { useTxBuilderContext } from "../TxBuilderContext";
 import { DryRunMessage } from "./DryRunMessage";
 import { MethodDocumentation } from "./MethodDocumentation";
 import { useDryRunExecution } from "./useDryRunExecution";
@@ -16,20 +17,20 @@ interface Props {
   abiMessage: AbiMessage;
   substrateRegistry: Registry;
   contractPromise: ContractPromise;
+  argValuesManager: UseArgValuesReturn;
 }
 
 export function WriteMethodsForm({
   abiMessage,
   substrateRegistry,
   contractPromise,
+  argValuesManager,
 }: Props) {
-  const { argValues, setArgValues, inputData, inputDataU8a } = useArgValues(
-    abiMessage,
-    substrateRegistry
-  );
+  const { inputData, argValues, setArgValues } = argValuesManager;
+  const { inputFormManager } = useTxBuilderContext();
+  const { setValue } = inputFormManager;
   const abiParams = abiMessage.args ?? [];
 
-  console.log("__u8a", inputDataU8a);
   const {
     outcome: outcomeDryRun = "",
     error: errorDryrun,
@@ -43,48 +44,54 @@ export function WriteMethodsForm({
   });
 
   return (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="flex-start"
-      paddingTop={2}
-    >
-      <Box minWidth="50%">
-        <>
+    <>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        paddingTop={2}
+      >
+        <Box minWidth="50%">
+          <>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              {abiParams.length > 0 && (
+                <Typography variant="caption" fontWeight="500">
+                  Message to send:
+                </Typography>
+              )}
+              <DryRunMessage
+                error={errorDryrun}
+                outcome={outcomeDryRun}
+                isRunning={isDryRunning}
+              />
+            </Box>
+            <ArgumentsForm
+              argValues={argValues}
+              args={abiParams}
+              registry={substrateRegistry}
+              setArgValues={setArgValues}
+            />
+          </>
           <Box
             display="flex"
             justifyContent="space-between"
             alignItems="center"
           >
-            {abiParams.length > 0 && (
-              <Typography variant="caption" fontWeight="500">
-                Message to send:
-              </Typography>
+            {errorDryrun && (
+              <FormHelperText error id={`error-${abiMessage.method}`}>
+                {errorDryrun}
+              </FormHelperText>
             )}
-            <DryRunMessage
-              error={errorDryrun}
-              outcome={outcomeDryRun}
-              isRunning={isDryRunning}
-            />
           </Box>
-          <ArgumentsForm
-            argValues={argValues}
-            args={abiParams}
-            registry={substrateRegistry}
-            setArgValues={setArgValues}
-          />
-        </>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          {errorDryrun && (
-            <FormHelperText error id={`error-${abiMessage.method}`}>
-              {errorDryrun}
-            </FormHelperText>
-          )}
         </Box>
-      </Box>
-      <Box sx={{ maxWidth: "45%", minWidth: "40%" }}>
-        <MethodDocumentation abiMessage={abiMessage} />
-      </Box>
-    </Stack>
+        <Box sx={{ maxWidth: "45%", minWidth: "40%" }}>
+          <MethodDocumentation abiMessage={abiMessage} />
+        </Box>
+      </Stack>
+    </>
   );
 }
