@@ -6,7 +6,7 @@ import { MonoTypography } from "@/components/MonoTypography";
 export const BoxGridStyled = styled(Box)<BoxProps>(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr",
-  gridTemplateRows: "repeat(2, 0.5fr)",
+  gridTemplateRows: "repeat(3, 0.5fr)",
   gap: "1rem",
   marginTop: "1rem",
   border: "1px solid",
