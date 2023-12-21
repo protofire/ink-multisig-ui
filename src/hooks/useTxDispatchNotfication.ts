@@ -19,6 +19,16 @@ export function useTxDispatchNotification({
       const id = toast.loading(`${msgPrefix} waiting for signature...`);
       setIdToast(id);
     }
+    if (idToast && tx.status === "None") {
+      // TODO, check this case
+      // toast.update(idToast, {
+      //   render: `The ${msgPrefix} was cancelled`,
+      //   type: "info",
+      //   isLoading: false,
+      //   autoClose: 500,
+      // });
+      setIdToast(0);
+    }
     if (idToast && tx.status === "Broadcast") {
       toast.update(idToast, {
         render: `The ${msgPrefix} will be proccessed in a block`,
