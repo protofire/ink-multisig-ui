@@ -46,6 +46,7 @@ export function useContractTx({
 }: Props): UseContractTxReturn {
   const { network: chainId } = usePolkadotContext();
   const [outcome, setOutcome] = useState<string>("");
+  const [onTxHashExecuted, setOnTxHashExecuted] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const { method } = abiMessage || { method: "" };
   const { addNotification } = useAppNotificationContext();
@@ -72,7 +73,8 @@ export function useContractTx({
       tx.resetState();
       tx.signAndSend(inputData, undefined, (_result, _api, _error) => {
         const txHash = getOutcomeText(_result?.txHash.toHuman());
-        if (txHash) {
+        if (txHash && !onTxHashExecuted) {
+          setOnTxHashExecuted(true);
           onTxHash?.(txHash);
         }
 
@@ -89,7 +91,7 @@ export function useContractTx({
         }
       });
     },
-    [addNotification, onCallback, onTxHash, tx]
+    [addNotification, onCallback, onTxHash, onTxHashExecuted, tx]
   );
 
   return { tx, outcome, error, events, signAndSend: _signAndSend };
