@@ -47,21 +47,22 @@ export const SendTokens = (props: Props) => {
   }>({ symbol: tokenSymbol, isNative: true, address: "native" });
   const [maxAmount, setMaxAmount] = useState<string | undefined>(amount);
   const [inputValue, setInputValue] = useState<string>("0");
-  const isInputDirty = useRef(false);
+  const isInputDirty = useRef({ address: false, amount: false });
 
-  const validateAddress = (address: string) => {
-    let newErrors = [initialErrorValue];
-    if (!isInputDirty.current) {
+  const validateInput = (value: string, error = "-") => {
+    let newErrors = [initialErrorValue, error];
+
+    if (!isInputDirty.current.address) {
       setErrors(newErrors);
       return newErrors;
     }
 
-    if (!address) {
-      newErrors = ["Recipient address is required.", ...errors.splice(1)];
-    } else if (!isValidAddress(address)) {
-      newErrors = ["Invalid address.", ...errors.splice(1)];
+    if (!value) {
+      newErrors = ["Recipient address is required.", error];
+    } else if (!isValidAddress(value)) {
+      newErrors = ["Invalid address.", error];
     } else {
-      newErrors = [""];
+      newErrors = ["", error];
     }
 
     setErrors(newErrors);
@@ -100,21 +101,14 @@ export const SendTokens = (props: Props) => {
 
   const handleValueChange = useCallback(
     (value: string, error: string) => {
-      isInputDirty.current = true;
-      const newErrors = validateAddress(to);
-
-      if (error) {
-        setErrors([newErrors[0], error]);
-        return;
-      } else {
-        setErrors([newErrors[0]]);
-      }
+      validateInput(to, error);
       setField(
         "amount",
         `${value} ${
           tokenSelected.isNative ? tokenSymbol : tokenSelected?.symbol
         }`
       );
+      isInputDirty.current.amount = true;
       if (!tokenSelected.isNative) {
         setField("token", tokenSelected.address ?? "");
       }
@@ -125,7 +119,7 @@ export const SendTokens = (props: Props) => {
   );
 
   useEffect(() => {
-    validateAddress(to);
+    validateInput(to, errors[1]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [to, setErrors, isInputDirty.current]);
 
@@ -141,7 +135,7 @@ export const SendTokens = (props: Props) => {
         label={!to ? "Recipient Address *" : "Sending to"}
         value={to}
         onChange={(e) => {
-          isInputDirty.current = true;
+          isInputDirty.current.address = true;
           setField("to", e.target.value);
         }}
         autoFocus
@@ -164,8 +158,8 @@ export const SendTokens = (props: Props) => {
           maxValue={maxAmount || ""}
           defaultValue="0"
           onValueChange={handleValueChange}
-          error={!!errors[1]}
-          helperText={errors[1]}
+          error={!!errors[1] && errors[1] !== initialErrorValue}
+          helperText={errors[1] !== initialErrorValue && errors[1]}
         />
         <Select
           label=""
@@ -175,6 +169,7 @@ export const SendTokens = (props: Props) => {
               (asset) => asset.address === event.target.value
             );
             setInputValue("0");
+            isInputDirty.current.amount = false;
             if (selectedAsset) {
               setTokenSelected({
                 symbol: selectedAsset.name,

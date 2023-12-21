@@ -31,6 +31,11 @@ const InputWithMax: React.FC<InputWithMaxProps> = ({
     if (Number(value) > Number(maxValue) || Number(value) < 0 || !value) {
       error = "Invalid amount";
     }
+
+    if (Number(value) === 0) {
+      error = "Amount must be greater than 0";
+    }
+
     return error;
   };
 
