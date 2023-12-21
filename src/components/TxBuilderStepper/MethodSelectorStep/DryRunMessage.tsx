@@ -11,7 +11,7 @@ type Props = Omit<DryRunExecutionResult, "executeDryRun" | "gasRequired">;
 
 export function DryRunMessage({ error, outcome, isRunning }: Props) {
   const isError = error !== undefined;
-  const color = isError ? "red" : "green";
+  const color = isError ? "#ff4d4f" : "#52c41a";
   const theme = useTheme();
 
   if (!isError && !outcome && !isRunning) {
@@ -22,8 +22,8 @@ export function DryRunMessage({ error, outcome, isRunning }: Props) {
     return (
       <MySkeleton
         variant="text"
-        height={30}
-        width={190}
+        height={20}
+        width={220}
         sx={{ bgcolor: alpha(theme.palette.primary.main, 0.2) }}
       />
     );
@@ -32,7 +32,7 @@ export function DryRunMessage({ error, outcome, isRunning }: Props) {
   return (
     <Stack direction="row" gap={1}>
       <InfoIcon fontSize="small" color={isError ? "error" : "success"} />
-      <Typography variant="caption" color={color}>
+      <Typography variant="body1" color={color}>
         {outcome}
       </Typography>
     </Stack>
