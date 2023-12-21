@@ -48,7 +48,7 @@ export function DryRunMultisigWidget({
 
   return (
     <>
-      <Typography variant="body1">
+      <Typography variant="body1" mt={2}>
         Propose Transaction Dry run outcome:
       </Typography>
       <DryRunMessage outcome={outcome} error={error} isRunning={isRunning} />
