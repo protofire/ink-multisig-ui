@@ -1,17 +1,23 @@
 import { Pool, QueryResult } from "pg";
 
+import {
+  NEXT_DB_HOST,
+  NEXT_DB_NAME,
+  NEXT_DB_PASS,
+  NEXT_DB_PORT,
+  NEXT_DB_USER,
+} from "@/config/squid";
+
 export class Database {
   private pool: Pool;
 
   constructor() {
     this.pool = new Pool({
-      user: process.env.NEXT_DB_USER || "appuser",
-      password: process.env.NEXT_DB_PASS || "appuser",
-      host: process.env.NEXT_DB_HOST || "localhost",
-      port: process.env.NEXT_DB_PORT
-        ? parseInt(process.env.NEXT_DB_PORT)
-        : 23798,
-      database: process.env.NEXT_DB_NAME || "squid",
+      user: NEXT_DB_USER,
+      password: NEXT_DB_PASS,
+      host: NEXT_DB_HOST,
+      port: NEXT_DB_PORT,
+      database: NEXT_DB_NAME,
     });
   }
 
