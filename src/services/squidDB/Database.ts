@@ -8,17 +8,20 @@ import {
   NEXT_DB_USER,
 } from "@/config/squid";
 
+const config = {
+  user: NEXT_DB_USER,
+  password: NEXT_DB_PASS,
+  host: NEXT_DB_HOST,
+  port: NEXT_DB_PORT,
+  database: NEXT_DB_NAME,
+};
+
 export class Database {
   private pool: Pool;
 
   constructor() {
-    this.pool = new Pool({
-      user: NEXT_DB_USER,
-      password: NEXT_DB_PASS,
-      host: NEXT_DB_HOST,
-      port: NEXT_DB_PORT,
-      database: NEXT_DB_NAME,
-    });
+    console.log("__confDB", config);
+    this.pool = new Pool(config);
   }
 
   async query(text: string, values: unknown[]): Promise<QueryResult> {
