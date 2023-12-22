@@ -20,7 +20,6 @@ export class Database {
   private pool: Pool;
 
   constructor() {
-    console.log("__confDB", config);
     this.pool = new Pool(config);
   }
 
