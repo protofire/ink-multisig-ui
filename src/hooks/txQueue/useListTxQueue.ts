@@ -18,6 +18,8 @@ import { decodeCallArgs, formatAddressForNetwork } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 import { balanceToFixed, parseNativeBalance } from "@/utils/formatString";
 
+import { useEventListenerCallback } from "../useEventListenerCallback";
+
 export type TabTxTypes = "queue" | "history";
 
 export const TX_TYPE_OPTION = {
@@ -89,6 +91,7 @@ const createTxOwnerStepper = (
 };
 
 const methodName = "transfer";
+const methodSelector = "0x1f154c5b"; // Transfer
 
 const buildTxDetail = (
   xsignerAddress: string,
@@ -98,10 +101,10 @@ const buildTxDetail = (
   multisigContractPromise: ChainContract<ContractPromise>
 ): ExtendedDataType | null => {
   let additionalInfo;
-  if (
-    data.__typename === TX_TYPE_OPTION.TRANSACTION &&
-    data.status === TX_TYPE_OPTION.STATUS.PROPOSED
-  ) {
+  let txStateMsg = "Success";
+
+  if (data.__typename === TX_TYPE_OPTION.TRANSACTION) {
+    if (data.selector === methodSelector) return null;
     const decodedData = decodeCallArgs(
       multisigContractPromise.contract,
       methodName,
@@ -109,44 +112,25 @@ const buildTxDetail = (
     );
 
     const parseValue = parseNativeBalance(decodedData[1]);
-
-    // Send
     const txInfo = getTxInfo(xsignerAddress, data.proposer);
+    if (data.status === TX_TYPE_OPTION.STATUS.PROPOSED) {
+      txStateMsg = "Awaiting confirmations";
+    }
+
     additionalInfo = {
       ...txInfo,
+      txStateMsg,
       to: decodedData[0],
       value: parseValue,
-      txStateMsg: "Awaiting confirmations",
     };
   }
 
-  if (
-    data.__typename === TX_TYPE_OPTION.TRANSACTION &&
-    data.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS
-  ) {
-    const decodedData = decodeCallArgs(
-      multisigContractPromise.contract,
-      methodName,
-      data.args!
-    );
-
-    const parseValue = parseNativeBalance(decodedData[1]);
-
-    // Send
-    const txInfo = getTxInfo(xsignerAddress, data.proposer);
-    additionalInfo = {
-      ...txInfo,
-      to: decodedData[0],
-      value: parseValue,
-      txStateMsg: "Success",
-    };
-  } else if (data.__typename === TX_TYPE_OPTION.TRANSFER) {
+  if (data.__typename === TX_TYPE_OPTION.TRANSFER) {
     const txInfo = getTxInfo(xsignerAddress, data.to);
 
-    // Transfer Send
+    // Omit the Send Transfer type
     if (txInfo.type === TX_TYPE_OPTION.SEND) return null;
 
-    // Transfer Receive
     // Clean Value to display correct human value
     const value = balanceToFixed(
       data.value,
@@ -157,7 +141,7 @@ const buildTxDetail = (
 
     additionalInfo = {
       ...txInfo,
-      txStateMsg: "Success",
+      txStateMsg,
       value,
     };
   }
@@ -190,22 +174,9 @@ export function useListTxQueue(
   const [error, setError] = useState<string | null>(null);
   const { txQueueRepository } = useLocalDbContext();
 
-  // useEventListenerCallback([TransactionEvents.transactionSent], () => {
-  //   console.log("entre Aca");
-  //   // createTxList();
-  // });
-
-  useEffect(() => {
-    document.addEventListener(TransactionEvents.transactionSent, () => {
-      console.log("entre Aca");
-    });
-
-    return () => {
-      document.removeEventListener(TransactionEvents.transactionSent, () => {
-        console.log("entre Aca");
-      });
-    };
-  }, []);
+  useEventListenerCallback([TransactionEvents.transactionSent], () => {
+    // createTxList();
+  });
 
   const createTxList = useCallback(() => {
     const fetchData = async () => {

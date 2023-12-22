@@ -76,7 +76,7 @@ export const formatDate = (inputDate: string) => {
 };
 
 export function parseNativeBalance(input: string) {
-  const match = input.match(/^([\d.]+)\s*([mμn]?SBY)$/i);
+  const match = input.match(/^([\d.]+)\s*([afpnμmc]?SBY)$/i);
 
   if (!match) {
     throw new Error("Invalid input format");
@@ -86,10 +86,20 @@ export function parseNativeBalance(input: string) {
   const unit = match[2].toLowerCase();
 
   switch (unit) {
-    case "µsby":
+    case "asby": // atto
+      return value.div(new BigNumber(1e18)).toFixed();
+    case "fsby": // femto
+      return value.div(new BigNumber(1e15)).toFixed();
+    case "psby": // pico
+      return value.div(new BigNumber(1e12)).toFixed();
+    case "nsby": // nano
+      return value.div(new BigNumber(1e9)).toFixed();
+    case "µsby": // micro
       return value.div(new BigNumber(1e6)).toFixed();
-    case "msby":
+    case "msby": // mili
       return value.div(new BigNumber(1e3)).toFixed();
+    case "csby": // centi
+      return value.div(new BigNumber(1e2)).toFixed();
     case "sby":
       return value.toFixed();
     default:
