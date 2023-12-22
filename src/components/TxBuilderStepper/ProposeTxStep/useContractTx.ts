@@ -65,7 +65,7 @@ export function useContractTx({
     [callContractArgs.method]
   );
 
-  const _signAndSend = useCallback(
+  const signAndSend = useCallback(
     (inputData: unknown[] | undefined) => {
       setOutcome("");
       setError(undefined);
@@ -94,5 +94,5 @@ export function useContractTx({
     [addNotification, onCallback, onTxHash, tx]
   );
 
-  return { tx, outcome, error, events, signAndSend: _signAndSend };
+  return { tx, outcome, error, events, signAndSend };
 }

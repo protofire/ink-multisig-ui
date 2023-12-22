@@ -86,15 +86,6 @@ export function ProposeTxStep() {
   const { ref: refButton, recentlyClicked } = useRecentlyClicked(2000);
   const isLoading = recentlyClicked || shouldDisable(tx);
 
-  const _signAndSend = (args: unknown[]) => {
-    signAndSend(args);
-  };
-
-  const _signAndSend = (args?: unknown[]) => {
-    console.log("__createTxMetadata");
-    // signAndSend(args);
-  };
-
   if (!transferTxStruct)
     return (
       <ErrorMessage
@@ -155,7 +146,7 @@ export function ProposeTxStep() {
           activeStep={activeStep}
           stepsLength={stepsLength}
           handleBack={handleBack}
-          handleNext={() => _signAndSend([Object.values(transferTxStruct)])}
+          handleNext={() => signAndSend([Object.values(transferTxStruct)])}
           hiddenBack={activeStep === 0 ? true : false}
           nextButtonProps={{
             ref: refButton,
