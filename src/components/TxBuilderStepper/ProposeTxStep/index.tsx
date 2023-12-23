@@ -1,10 +1,12 @@
 import { Box, Typography } from "@mui/material";
-import React, { useCallback, useMemo, useState } from "react";
+import router from "next/router";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import CopyButton from "@/components/common/CopyButton";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TextFieldWithLoadingProps } from "@/components/TextFieldWithLoading/TextFieldWithLoading";
+import { ROUTES } from "@/config/routes";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { sringArgsToContractParam } from "@/hooks/externalTxData/stringArgsToContractParam";
 import { useCreateExternalTxData } from "@/hooks/externalTxData/useCreateExternalTxData";
@@ -33,7 +35,13 @@ const TextFieldMemoized: React.FC<TextFieldWithLoadingProps> = React.memo(
 
 export function ProposeTxStep() {
   const { inputFormManager, managerStep } = useTxBuilderContext();
+  const [dryRunSuccessfully, setDryRunSuccessfully] = useState(false);
+  const lastTxRegistered = useRef<string | undefined>();
   const { createTxData } = useCreateExternalTxData();
+  const { xSignerSelected } = useGetXsignerSelected();
+  const { multisigContractPromise } = useMultisigContractPromise(
+    xSignerSelected?.address
+  );
   const { transferTxStruct, selectedAbiIdentifier, selectedAbiMessage } =
     inputFormManager.values;
   const {
@@ -41,11 +49,6 @@ export function ProposeTxStep() {
     downCreationStep: handleBack,
     stepsLength,
   } = managerStep;
-  const { xSignerSelected } = useGetXsignerSelected();
-  const { multisigContractPromise } = useMultisigContractPromise(
-    xSignerSelected?.address
-  );
-  const [dryRunSuccessfully, setDryRunSuccessfully] = useState(false);
   const proposeTxAbiMessage =
     multisigContractPromise &&
     getMessageInfo(multisigContractPromise?.contract, "proposeTx");
@@ -61,7 +64,7 @@ export function ProposeTxStep() {
   );
   const _createTxData = useCallback(
     (txHash: string) => {
-      if (!selectedAbiMessage) return;
+      if (!selectedAbiMessage || lastTxRegistered.current === txHash) return;
 
       createTxData({
         txHash,
@@ -71,6 +74,7 @@ export function ProposeTxStep() {
         ),
         methodName: selectedAbiMessage.identifier,
       });
+      lastTxRegistered.current = txHash;
     },
     [createTxData, formattedParams, selectedAbiMessage]
   );
@@ -146,14 +150,18 @@ export function ProposeTxStep() {
           activeStep={activeStep}
           stepsLength={stepsLength}
           handleBack={handleBack}
-          handleNext={() => signAndSend([Object.values(transferTxStruct)])}
+          handleNext={() => {
+            outcomeTx
+              ? router.replace(ROUTES.TxDetails)
+              : signAndSend([Object.values(transferTxStruct)]);
+          }}
           hiddenBack={activeStep === 0 ? true : false}
           nextButtonProps={{
             ref: refButton,
             disabled: !dryRunSuccessfully || isLoading,
             isLoading,
           }}
-          nextLabel="Sign"
+          nextLabel={outcomeTx ? "Go to Transactions" : "Sign"}
         />
       </Box>
     </Box>

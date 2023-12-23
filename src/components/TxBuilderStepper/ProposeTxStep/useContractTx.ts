@@ -72,10 +72,8 @@ export function useContractTx({
       tx.resetState();
       tx.signAndSend(inputData, undefined, (_result, _api, _error) => {
         const txHash = getOutcomeText(_result?.txHash.toHuman());
-        let onTxHashExecuted = false;
 
-        if (txHash && !onTxHashExecuted) {
-          onTxHashExecuted = true;
+        if (txHash) {
           onTxHash?.(txHash);
         }
         if (_error) {
