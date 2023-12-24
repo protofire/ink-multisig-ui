@@ -215,7 +215,7 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
             </Button>
           )}
           <Button
-            disabled={!!errors?.length || isLoading}
+            disabled={!!errors.filter(Boolean)?.length || isLoading}
             sx={{ width: 134 }}
             onClick={handleNext}
             variant="contained"
