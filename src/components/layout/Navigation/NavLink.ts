@@ -49,7 +49,7 @@ export const MENU_ITEMS: NavLink[] = [
     id: "transactions",
     title: "Transactions",
     type: "item",
-    url: ROUTES.AllTx,
+    url: ROUTES.Transactions,
     icon: icons.ImportExport,
     target: true,
   },

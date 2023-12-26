@@ -35,7 +35,7 @@ export const TxQueueWidget = () => {
               <TxQueueWidgetItem data={tx!} key={index} owners={owners} />
             ))}
           </StyledList>
-          <StyledButton LinkComponent={() => <Link href={ROUTES.TxDetails} />}>
+          <StyledButton LinkComponent={Link} href={ROUTES.Transactions}>
             View All
           </StyledButton>
         </>

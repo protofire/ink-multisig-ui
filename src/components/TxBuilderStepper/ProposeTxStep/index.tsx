@@ -152,7 +152,7 @@ export function ProposeTxStep() {
           handleBack={handleBack}
           handleNext={() => {
             outcomeTx
-              ? router.replace(ROUTES.TxDetails)
+              ? router.replace(ROUTES.Transactions)
               : signAndSend([Object.values(transferTxStruct)]);
           }}
           hiddenBack={activeStep === 0 ? true : false}
