@@ -18,6 +18,8 @@ export const TxQueueWidget = () => {
   const { listTxByType } = useListTxQueue(xSignerSelected?.address, network.id);
   const data = listTxByType("queue");
   const validator = !data || data.length === 0;
+  const owners = xSignerSelected?.owners.length || 0;
+
   return (
     <TxQueueWidgetStyled border={false}>
       {validator ? (
@@ -28,7 +30,7 @@ export const TxQueueWidget = () => {
         <>
           <StyledList>
             {data.map((tx, index) => (
-              <TxQueueWidgetItem data={tx!} key={index} />
+              <TxQueueWidgetItem data={tx!} key={index} owners={owners} />
             ))}
           </StyledList>
           <StyledButton> View All </StyledButton>

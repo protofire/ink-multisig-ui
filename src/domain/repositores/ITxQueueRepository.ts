@@ -3,11 +3,11 @@ export interface MyQueryVariables {
 }
 
 export interface MyQueryResponse {
-  transactions: TransactionType[];
+  transactions: TxType[];
 }
 
 export interface ITxQueueRepository {
-  getQueue(address: string): Promise<TransactionType[] | null>;
+  getQueue(address: string): Promise<TxType[] | null>;
 }
 
 export interface TransferType {

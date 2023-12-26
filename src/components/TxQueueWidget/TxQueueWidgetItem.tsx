@@ -14,13 +14,14 @@ import {
 
 interface Props {
   data: ExtendedDataType;
+  owners: number;
 }
 
-export const TxQueueWidgetItem = ({ data }: Props) => {
+export const TxQueueWidgetItem = ({ data, owners }: Props) => {
   const date = formatDate(data.creationTimestamp);
   const from = data.from ?? data.contractAddress;
   const approvalCount = data.approvalCount || 0;
-  const threshold = data.approvals?.length || 0;
+
   return (
     <ListItemtyled>
       <StyledBox sx={{ width: "100%" }}>
@@ -42,7 +43,7 @@ export const TxQueueWidgetItem = ({ data }: Props) => {
           {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
           {`${data.value} ${data.token}`}
           <span>
-            {approvalCount}/{threshold}
+            {approvalCount}/{owners}
           </span>
         </StyledValueBox>
       </StyledBox>

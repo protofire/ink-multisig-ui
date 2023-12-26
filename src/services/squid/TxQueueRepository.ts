@@ -4,7 +4,7 @@ import {
   ITxQueueRepository,
   MyQueryResponse,
   MyQueryVariables,
-  TransactionType,
+  TxType,
 } from "@/domain/repositores/ITxQueueRepository";
 
 import { GraphClient } from "./GraphClient";
@@ -57,7 +57,7 @@ const FETCH_QUEUE = gql`
 export class TxQueueRepository implements ITxQueueRepository {
   constructor(private client: GraphClient) {}
 
-  async getQueue(address: string): Promise<TransactionType[] | null> {
+  async getQueue(address: string): Promise<TxType[] | null> {
     const client = this.client.getCurrentApolloClient();
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_QUEUE,
