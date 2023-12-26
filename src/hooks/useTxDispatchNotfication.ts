@@ -41,6 +41,7 @@ export function useTxDispatchNotification({
         render: `The ${msgPrefix} was proccessed`,
         type: "info",
         isLoading: false,
+        autoClose: 1000,
       });
       setIdToast(0);
     }

@@ -1,13 +1,16 @@
 import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import router from "next/router";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import CopyButton from "@/components/common/CopyButton";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TextFieldWithLoadingProps } from "@/components/TextFieldWithLoading/TextFieldWithLoading";
+import { ROUTES } from "@/config/routes";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
+import { sringArgsToContractParam } from "@/hooks/externalTxData/stringArgsToContractParam";
+import { useCreateExternalTxData } from "@/hooks/externalTxData/useCreateExternalTxData";
 import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
-import { useTxDispatchNotification } from "@/hooks/useTxDispatchNotfication";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import {
   replacerArgs,
@@ -32,20 +35,49 @@ const TextFieldMemoized: React.FC<TextFieldWithLoadingProps> = React.memo(
 
 export function ProposeTxStep() {
   const { inputFormManager, managerStep } = useTxBuilderContext();
-  const { transferTxStruct, selectedAbiIdentifier } = inputFormManager.values;
+  const [dryRunSuccessfully, setDryRunSuccessfully] = useState(false);
+  const lastTxRegistered = useRef<string | undefined>();
+  const { createTxData } = useCreateExternalTxData();
+  const { xSignerSelected } = useGetXsignerSelected();
+  const { multisigContractPromise } = useMultisigContractPromise(
+    xSignerSelected?.address
+  );
+  const { transferTxStruct, selectedAbiIdentifier, selectedAbiMessage } =
+    inputFormManager.values;
   const {
     activeStep: { creation: activeStep },
     downCreationStep: handleBack,
     stepsLength,
   } = managerStep;
-  const { xSignerSelected } = useGetXsignerSelected();
-  const { multisigContractPromise } = useMultisigContractPromise(
-    xSignerSelected?.address
-  );
-  const [dryRunSuccessfully, setDryRunSuccessfully] = useState(false);
   const proposeTxAbiMessage =
     multisigContractPromise &&
     getMessageInfo(multisigContractPromise?.contract, "proposeTx");
+  const formattedParams = useMemo(
+    () =>
+      stringify(
+        inputFormManager.values.dataArgs?.map(
+          (value, index) => replacerArgs(index.toString(), value),
+          0
+        )
+      ),
+    [inputFormManager.values.dataArgs]
+  );
+  const _createTxData = useCallback(
+    (txHash: string) => {
+      if (!selectedAbiMessage || lastTxRegistered.current === txHash) return;
+
+      createTxData({
+        txHash,
+        args: sringArgsToContractParam(
+          selectedAbiMessage.args,
+          formattedParams
+        ),
+        methodName: selectedAbiMessage.identifier,
+      });
+      lastTxRegistered.current = txHash;
+    },
+    [createTxData, formattedParams, selectedAbiMessage]
+  );
   const {
     signAndSend,
     tx,
@@ -53,10 +85,10 @@ export function ProposeTxStep() {
   } = useContractTx({
     contractPromise: multisigContractPromise?.contract,
     abiMessage: proposeTxAbiMessage,
+    onTxHash: _createTxData,
   });
   const { ref: refButton, recentlyClicked } = useRecentlyClicked(2000);
   const isLoading = recentlyClicked || shouldDisable(tx);
-  useTxDispatchNotification({ tx });
 
   if (!transferTxStruct)
     return (
@@ -69,12 +101,7 @@ export function ProposeTxStep() {
     <Box mt={3} display="flex" gap={1} flexDirection="column">
       <GridTxInformation
         contractAddress={inputFormManager.values.address}
-        args={stringify(
-          inputFormManager.values.dataArgs?.map(
-            (value, index) => replacerArgs(index.toString(), value),
-            0
-          )
-        )}
+        args={formattedParams}
         methodName={selectedAbiIdentifier}
       />
       {multisigContractPromise &&
@@ -123,14 +150,18 @@ export function ProposeTxStep() {
           activeStep={activeStep}
           stepsLength={stepsLength}
           handleBack={handleBack}
-          handleNext={() => signAndSend([Object.values(transferTxStruct)])}
+          handleNext={() => {
+            outcomeTx
+              ? router.replace(ROUTES.TxDetails)
+              : signAndSend([Object.values(transferTxStruct)]);
+          }}
           hiddenBack={activeStep === 0 ? true : false}
           nextButtonProps={{
             ref: refButton,
             disabled: !dryRunSuccessfully || isLoading,
             isLoading,
           }}
-          nextLabel="Sign"
+          nextLabel={outcomeTx ? "Go to Transactions" : "Sign"}
         />
       </Box>
     </Box>
