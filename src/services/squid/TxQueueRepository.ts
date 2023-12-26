@@ -4,59 +4,52 @@ import {
   ITxQueueRepository,
   MyQueryResponse,
   MyQueryVariables,
-  TxType,
+  TransactionType,
 } from "@/domain/repositores/ITxQueueRepository";
 
 import { GraphClient } from "./GraphClient";
 
 const FETCH_QUEUE = gql`
-  query MyQuery($address: String!) {
-    txes(
-      where: { multisig: { addressSS58_eq: $address } }
-      orderBy: creationTimestamp_ASC
+  query TxQueue($address: String!) {
+    transactions(
+      where: { multisig: { addressSS58_eq: $address }, status_eq: PROPOSED }
     ) {
-      ... on Transaction {
-        __typename
+      approvalCount
+      approvals {
+        approvalBlockNumber
+        approvalTimestamp
+        approver
         id
-        txId
-        proposer
-        proposalTxHash
-        executionTxHash
-        contractAddress
+      }
+      args
+      contractAddress
+      creationBlockNumber
+      creationTimestamp
+      error
+      executionTxHash
+      externalTransactionData {
         args
-        selector
-        value
-        status
-        error
-        approvalCount
-        rejectionCount
-        approvals {
-          approver
-        }
-        rejections {
-          rejector
-        }
         creationTimestamp
-        creationBlockNumber
-        lastUpdatedTimestamp
-        lastUpdatedBlockNumber
-        externalTransactionData {
-          args
-          methodName
-        }
-      }
-      ... on Transfer {
-        __typename
         id
-        from
-        to
-        transferType
-        value
-        tokenAddress
-        tokenDecimals
-        creationTimestamp
-        creationBlockNumber
+        inUse
+        methodName
       }
+      id
+      lastUpdatedBlockNumber
+      lastUpdatedTimestamp
+      proposalTxHash
+      proposer
+      rejectionCount
+      rejections {
+        id
+        rejectionBlockNumber
+        rejectionTimestamp
+        rejector
+      }
+      selector
+      status
+      txId
+      value
     }
   }
 `;
@@ -64,12 +57,12 @@ const FETCH_QUEUE = gql`
 export class TxQueueRepository implements ITxQueueRepository {
   constructor(private client: GraphClient) {}
 
-  async getQueue(address: string): Promise<TxType[] | null> {
+  async getQueue(address: string): Promise<TransactionType[] | null> {
     const client = this.client.getCurrentApolloClient();
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_QUEUE,
       variables: { address },
     });
-    return data?.txes || null;
+    return data?.transactions || null;
   }
 }
