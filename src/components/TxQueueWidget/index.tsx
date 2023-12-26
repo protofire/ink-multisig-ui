@@ -1,6 +1,8 @@
+import Link from "next/link";
 import * as React from "react";
 
 import { getChain } from "@/config/chain";
+import { ROUTES } from "@/config/routes";
 import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
@@ -33,7 +35,9 @@ export const TxQueueWidget = () => {
               <TxQueueWidgetItem data={tx!} key={index} owners={owners} />
             ))}
           </StyledList>
-          <StyledButton> View All </StyledButton>
+          <StyledButton LinkComponent={() => <Link href={ROUTES.TxDetails} />}>
+            View All
+          </StyledButton>
         </>
       )}
     </TxQueueWidgetStyled>
