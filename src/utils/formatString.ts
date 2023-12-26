@@ -110,3 +110,23 @@ export function parseNativeBalance(input: string) {
 export function emptyAsDash(value: string | undefined): string {
   return value ? value : "-";
 }
+
+export const hexStringToAscii = (hexString: string): string => {
+  // Remove "0x" prefix if present
+  if (hexString.startsWith("0x")) {
+    hexString = hexString.slice(2);
+  }
+
+  // Ensure the hex string has an even number of characters
+  if (hexString.length % 2 !== 0) {
+    throw new Error("Hex string must have an even number of characters");
+  }
+
+  // Convert the hex string to a Buffer
+  const buffer = Buffer.from(hexString, "hex");
+
+  // Convert the Buffer to a string using UTF-8 encoding
+  const asciiString = buffer.toString("utf8");
+
+  return asciiString;
+};

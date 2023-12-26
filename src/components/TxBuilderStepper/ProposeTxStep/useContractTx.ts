@@ -27,6 +27,7 @@ interface Props {
   contractPromise: ContractPromise | undefined;
   abiMessage: AbiMessage | null | undefined;
   onCallback?: () => void;
+  onTxHash?: (txHash: string) => void;
 }
 
 interface UseContractTxReturn {
@@ -41,6 +42,7 @@ export function useContractTx({
   contractPromise: contract,
   abiMessage,
   onCallback,
+  onTxHash,
 }: Props): UseContractTxReturn {
   const { network: chainId } = usePolkadotContext();
   const [outcome, setOutcome] = useState<string>("");
@@ -63,12 +65,17 @@ export function useContractTx({
     [callContractArgs.method]
   );
 
-  const _signAndSend = useCallback(
+  const signAndSend = useCallback(
     (inputData: unknown[] | undefined) => {
       setOutcome("");
       setError(undefined);
       tx.resetState();
       tx.signAndSend(inputData, undefined, (_result, _api, _error) => {
+        const txHash = getOutcomeText(_result?.txHash.toHuman());
+
+        if (txHash) {
+          onTxHash?.(txHash);
+        }
         if (_error) {
           const errorFormated = getErrorMessage(_error);
           setError(errorFormated);
@@ -82,8 +89,8 @@ export function useContractTx({
         }
       });
     },
-    [addNotification, onCallback, tx]
+    [addNotification, onCallback, onTxHash, tx]
   );
 
-  return { tx, outcome, error, events, signAndSend: _signAndSend };
+  return { tx, outcome, error, events, signAndSend };
 }
