@@ -1,3 +1,5 @@
+import { RawExternalTransactionData } from "./IXsignerOwnersRepository";
+
 export interface MyQueryVariables {
   address: string | string[];
 }
@@ -23,23 +25,23 @@ export interface TransferType {
   __typename: string;
 }
 
-export interface TransactionType {
+export interface RawTransactionProposed {
   approvalCount: number;
-  approvals: { approver: string; __typename: string }[];
-  args?: string;
+  approvals: { approver: string; approvalTimestamp: string }[];
+  args: string;
   contractAddress: string;
   creationBlockNumber: number;
   creationTimestamp: string;
   error?: string;
   executionTxHash?: string;
-  externalTransactionData?: string;
+  externalTransactionData: RawExternalTransactionData | null;
   id: string;
   lastUpdatedBlockNumber: number;
   lastUpdatedTimestamp: string;
   proposalTxHash: string;
   proposer: string;
   rejectionCount: number;
-  rejections: { rejected: string; __typename: string }[];
+  rejections: { rejected: string; rejectionTimestamp: string }[];
   selector: string;
   status: string;
   txId: string;
@@ -47,7 +49,7 @@ export interface TransactionType {
   __typename: string;
 }
 
-export type TxType = TransactionType & TransferType;
+export type TxType = RawTransactionProposed & TransferType;
 
 export type Order = {
   address: string;
