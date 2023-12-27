@@ -64,7 +64,7 @@ export const balanceToFixed = (
   return new BigNumber(balance).div(10 ** tokenDecimals).toFixed();
 };
 
-export const formatDate = (inputDate: string) => {
+export const formatDate = (inputDate: Date) => {
   const date = new Date(inputDate);
   return date.toLocaleString("en-US", {
     day: "numeric",

@@ -1,3 +1,4 @@
+import { TransactionProposed } from "../TransactionProposed";
 import { RawExternalTransactionData } from "./IXsignerOwnersRepository";
 
 export interface MyQueryVariables {
@@ -5,11 +6,11 @@ export interface MyQueryVariables {
 }
 
 export interface MyQueryResponse {
-  transactions: TxType[];
+  transactions: RawTransactionProposed[];
 }
 
 export interface ITxQueueRepository {
-  getQueue(address: string): Promise<TxType[] | null>;
+  getQueue(address: string): Promise<TransactionProposed[] | null>;
 }
 
 export interface TransferType {

@@ -4,10 +4,11 @@ import {
   ITxQueueRepository,
   MyQueryResponse,
   MyQueryVariables,
-  TxType,
 } from "@/domain/repositores/ITxQueueRepository";
+import { TransactionProposed } from "@/domain/TransactionProposed";
 
 import { GraphClient } from "./GraphClient";
+import { rawToTransactionProposed } from "./transformers/toTransactionProposed";
 
 const FETCH_QUEUE = gql`
   query TxQueue($address: String!) {
@@ -57,12 +58,14 @@ const FETCH_QUEUE = gql`
 export class TxQueueRepository implements ITxQueueRepository {
   constructor(private client: GraphClient) {}
 
-  async getQueue(address: string): Promise<TxType[] | null> {
+  async getQueue(address: string): Promise<TransactionProposed[] | null> {
     const client = this.client.getCurrentApolloClient();
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_QUEUE,
       variables: { address },
     });
-    return data?.transactions || null;
+    return data?.transactions.map((transactions) =>
+      rawToTransactionProposed(transactions)
+    );
   }
 }

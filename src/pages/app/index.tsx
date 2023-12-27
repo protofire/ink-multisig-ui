@@ -2,6 +2,7 @@ import { Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
 import { AddressBookWidget } from "@/components/AddressBookWidget";
+import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 import NetworkConfirmationModal from "@/components/NetworkConfirmationModal";
 import { SummaryCard } from "@/components/SummaryCard";
 import { XsignerBalanceText } from "@/components/SummaryCard/XsignerBalanceText";
@@ -16,6 +17,10 @@ export default function AppDashboard() {
   const { balance, isLoading: isLoadingBalance } = useGetBalance(
     xSignerSelected?.address
   );
+
+  if (!xSignerSelected) {
+    return <FallbackSpinner />;
+  }
 
   return (
     <>
@@ -75,7 +80,7 @@ export default function AppDashboard() {
         </Grid>
 
         <Grid item xs={12} sm={12} md={6}>
-          <TxQueueWidget />
+          <TxQueueWidget xsignerAccount={xSignerSelected} />
         </Grid>
       </Grid>
     </>

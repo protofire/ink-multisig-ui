@@ -1,10 +1,11 @@
 import Link from "next/link";
 import * as React from "react";
 
+import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
-import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
 import {
   NoItems,
@@ -14,19 +15,27 @@ import {
 } from "./styled";
 import { TxQueueWidgetItem } from "./TxQueueWidgetItem";
 
-export const TxQueueWidget = () => {
-  const { xSignerSelected } = useGetXsignerSelected();
-  const network = getChain(xSignerSelected?.networkId);
-  const { listTxByType } = useListTxQueue(xSignerSelected?.address, network.id);
-  const data = listTxByType("queue");
+interface Props {
+  xsignerAccount: SignatoriesAccount;
+}
+
+export const TxQueueWidget = ({ xsignerAccount }: Props) => {
+  const network = getChain(xsignerAccount.networkId);
+  const { data, error, isLoading } = useListTxQueue(xsignerAccount, network.id);
   const validator = !data || data.length === 0;
-  const owners = xSignerSelected?.owners.length || 0;
+  const owners = xsignerAccount.owners.length;
 
   return (
     <TxQueueWidgetStyled border={false}>
       {validator ? (
         <StyledList>
-          <NoItems>There are no transactions in this account</NoItems>
+          <NoItems>
+            {isLoading || data === undefined ? (
+              <LoadingSkeleton count={1} />
+            ) : (
+              error || "There are no transactions in this account"
+            )}
+          </NoItems>
         </StyledList>
       ) : (
         <>

@@ -2,8 +2,8 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { TabTxTypes, useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
-import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import TxTabs from "./Tabs";
@@ -11,11 +11,14 @@ import { TxDetailItem } from "./TxDetailItem";
 
 const types = ["queue", "history"];
 
-export default function TxTable() {
+interface Props {
+  xsignerAccount: SignatoriesAccount;
+}
+
+export default function TxTable({ xsignerAccount }: Props) {
   const [type, setType] = useState(types[0]);
-  const { xSignerSelected } = useGetXsignerSelected();
   const { network } = usePolkadotContext();
-  const { listTxByType } = useListTxQueue(xSignerSelected?.address, network);
+  const { listTxByType } = useListTxQueue(xsignerAccount, network);
   const handleChange = (newValue: number) => {
     setType(types[newValue]);
   };

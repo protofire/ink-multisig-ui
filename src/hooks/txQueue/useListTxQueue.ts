@@ -12,13 +12,15 @@ import {
   Order,
   TxType,
 } from "@/domain/repositores/ITxQueueRepository";
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
-import { useListSignersAccount } from "@/hooks/xsignersAccount";
-import { decodeCallArgs, formatAddressForNetwork } from "@/utils/blockchain";
+import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
+import { decodeCallArgs } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 import { balanceToFixed, parseNativeBalance } from "@/utils/formatString";
 
-import { useEventListenerCallback } from "../useEventListenerCallback";
+import { toTxProposedItemUi } from "./toTxProposedItemUi";
 
 export type TabTxTypes = "queue" | "history";
 
@@ -154,15 +156,19 @@ const buildTxDetail = (
 };
 
 export function useListTxQueue(
-  xsignersAddress: string | undefined,
+  xsignerAccount: SignatoriesAccount,
   network: ChainId
 ) {
-  const [data, setData] = useState<(ExtendedDataType | null)[]>([]);
+  const [data, setData] = useState<TransactionProposedItemUi[] | undefined>(
+    undefined
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const chain = getChain(network);
-  const { data: signers } = useListSignersAccount({ networkId: network });
+  const { owners, address: xsignerAddress } = xsignerAccount;
+  const { txQueueRepository } = useLocalDbContext();
   const { multisigContractPromise } =
-    useMultisigContractPromise(xsignersAddress);
-
+    useMultisigContractPromise(xsignerAddress);
   const [dataType, setDataType] = useState<{
     [name: string]: (ExtendedDataType | null)[] | undefined;
   }>({
@@ -170,100 +176,119 @@ export function useListTxQueue(
     history: undefined,
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { txQueueRepository } = useLocalDbContext();
-
   useEventListenerCallback([TransactionEvents.transactionSent], () => {
     // createTxList();
   });
 
-  const createTxList = useCallback(() => {
-    const fetchData = async () => {
-      if (!xsignersAddress) return;
-      if (!multisigContractPromise) return;
-      setIsLoading(true);
-      setError(null);
-      try {
-        const result = await txQueueRepository.getQueue(xsignersAddress);
-        if (result) {
-          const extendedResult = result
-            .map((element) => {
-              // List all owners from a xsignerAddress
-              const ownersData = signers
-                ?.find((element) => element.address === xsignersAddress)
-                ?.owners.map((element) => ({
-                  address: formatAddressForNetwork(element.address, network),
-                  name: element.name,
-                  status: "Pending",
-                }));
+  // const createTxList = useCallback(() => {
+  //   const fetchData = async () => {
+  //     if (!xsignersAddress) return;
+  //     if (!multisigContractPromise) return;
+  //     setIsLoading(true);
+  //     setError(null);
+  //     try {
+  //       const result = await txQueueRepository.getQueue(xsignersAddress);
+  //       if (result) {
+  //         const extendedResult = result
+  //           .map((element) => {
+  //             // List all owners from a xsignerAddress
+  //             const ownersData = signers
+  //               ?.find((element) => element.address === xsignersAddress)
+  //               ?.owners.map((element) => ({
+  //                 address: formatAddressForNetwork(element.address, network),
+  //                 name: element.name,
+  //                 status: "Pending",
+  //               }));
 
-              // Clean Approvals data to follow the {address, status, name} format
-              const approvals = element.approvals?.map((element) => ({
-                address: element.approver,
-                status: element.__typename,
-                name: "",
-              }));
+  //             // Clean Approvals data to follow the {address, status, name} format
+  //             const approvals = element.approvals?.map((element) => ({
+  //               address: element.approver,
+  //               status: element.__typename,
+  //               name: "",
+  //             }));
 
-              // Clean Rejections data to follow the {address, status, name} format
-              const rejections = element.rejections?.map((element) => ({
-                address: element.rejected,
-                status: element.__typename,
-                name: "",
-              }));
+  //             // Clean Rejections data to follow the {address, status, name} format
+  //             const rejections = element.rejections?.map((element) => ({
+  //               address: element.rejected,
+  //               status: element.__typename,
+  //               name: "",
+  //             }));
 
-              // Combine Approvals and Rejections using OwnersData as root
-              const stepperData = createTxOwnerStepper(
-                ownersData,
-                approvals,
-                rejections
-              );
+  //             // Combine Approvals and Rejections using OwnersData as root
+  //             const stepperData = createTxOwnerStepper(
+  //               ownersData,
+  //               approvals,
+  //               rejections
+  //             );
 
-              // Build Transaction with missing attributes
-              return buildTxDetail(
-                xsignersAddress,
-                chain.token,
-                element,
-                stepperData,
-                multisigContractPromise as ChainContract<ContractPromise>
-              );
-            }) // Remove null elements
-            .filter((element) => element !== null);
+  //             // Build Transaction with missing attributes
+  //             return buildTxDetail(
+  //               xsignersAddress,
+  //               chain.token,
+  //               element,
+  //               stepperData,
+  //               multisigContractPromise as ChainContract<ContractPromise>
+  //             );
+  //           }) // Remove null elements
+  //           .filter((element) => element !== null);
 
-          // Divide the results in Queue and History
-          const queue = extendedResult?.filter(
-            (element) => element!.status === TX_TYPE_OPTION.STATUS.PROPOSED
-          );
+  //         // Divide the results in Queue and History
+  //         const queue = extendedResult?.filter(
+  //           (element) => element!.status === TX_TYPE_OPTION.STATUS.PROPOSED
+  //         );
 
-          const history = extendedResult?.filter(
-            (element) => element!.status !== TX_TYPE_OPTION.STATUS.PROPOSED
-          );
+  //         const history = extendedResult?.filter(
+  //           (element) => element!.status !== TX_TYPE_OPTION.STATUS.PROPOSED
+  //         );
 
-          setData(extendedResult);
-          setDataType({
-            queue: queue,
-            history: history,
-          });
-        }
-      } catch (err) {
-        const errorFormated = customReportError(err);
-        setError(errorFormated);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //         setData(extendedResult);
+  //         setDataType({
+  //           queue: queue,
+  //           history: history,
+  //         });
+  //       }
+  //     } catch (err) {
+  //       customReportError(err);
+  //       setError("An error has ocurred");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    fetchData().finally(() => {
+  //   fetchData().finally(() => {
+  //     setIsLoading(false);
+  //   });
+  // }, [
+  //   multisigContractPromise?.contract,
+  //   chain.token,
+  //   network,
+  //   signers,
+  //   txQueueRepository,
+  //   xsignersAddress,
+  // ]);
+
+  const createTxList = useCallback(async () => {
+    // if (!multisigContractPromise) return;
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await txQueueRepository.getQueue(xsignerAddress);
+
+      if (!result) throw Error("Query failure");
+
+      const extendedResult = result.map((txProposed) =>
+        toTxProposedItemUi(txProposed, network, owners)
+      );
+
+      setData(extendedResult);
+    } catch (err) {
+      customReportError(err);
+      setError("An error has ocurred");
+    } finally {
       setIsLoading(false);
-    });
-  }, [
-    multisigContractPromise?.contract,
-    chain.token,
-    network,
-    signers,
-    txQueueRepository,
-    xsignersAddress,
-  ]);
+    }
+  }, [network, owners, txQueueRepository, xsignerAddress]);
 
   useEffect(() => {
     createTxList();

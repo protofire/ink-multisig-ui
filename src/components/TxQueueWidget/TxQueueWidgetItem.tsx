@@ -1,7 +1,7 @@
 import Image from "next/image";
 import * as React from "react";
 
-import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
@@ -13,7 +13,7 @@ import {
 } from "./styled";
 
 interface Props {
-  data: ExtendedDataType;
+  data: TransactionProposedItemUi;
   owners: number;
 }
 
