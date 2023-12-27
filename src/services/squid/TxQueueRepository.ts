@@ -14,6 +14,7 @@ const FETCH_QUEUE = gql`
   query TxQueue($address: String!) {
     transactions(
       where: { multisig: { addressSS58_eq: $address }, status_eq: PROPOSED }
+      orderBy: creationTimestamp_DESC
     ) {
       approvalCount
       approvals {

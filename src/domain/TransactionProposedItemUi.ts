@@ -10,8 +10,10 @@ export type OwnersWithAction = {
   rejectors: OwnerWithAction[];
 };
 
+type CustomTx = string;
+
 export type TransactionDisplayInfo = {
-  type: "Receive" | "Send" | undefined;
+  type: "Receive" | "Send" | CustomTx | undefined;
   img: string;
   txMsg: "from" | "to" | undefined;
   valueAmount: string;

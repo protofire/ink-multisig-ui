@@ -3,6 +3,7 @@ import { ChainId } from "useink/dist/chains";
 
 import { getChain } from "@/config/chain";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { TransactionEvents } from "@/domain/events/TransactionEvents";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
@@ -46,6 +47,7 @@ export function useListTxQueue(
   const { owners, address: xsignerAddress } = xsignerAccount;
   const { txQueueRepository } = useLocalDbContext();
   const { apiPromise } = useNetworkApi();
+  const { decimals } = usePolkadotContext();
 
   useEventListenerCallback([TransactionEvents.transactionSent], () => {
     // createTxList();
@@ -71,7 +73,7 @@ export function useListTxQueue(
           apiPromise,
           txProposed,
           multisigAddress: xsignerAddress,
-          nativeTokenSymbol: chain.token,
+          nativeToken: { ...chain, decimals },
         });
 
         extendedResult[index] = {

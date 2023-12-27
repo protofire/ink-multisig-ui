@@ -46,7 +46,9 @@ export const TxQueueWidgetItem = ({ data, owners }: Props) => {
           <StyledStack>
             <span>{type}</span>
             <span>{date}</span>
-            <p>to: {truncateAddress(to, 12)}</p>
+            <p>
+              {data.txMsg} {truncateAddress(to, 12)}
+            </p>
           </StyledStack>
         </StyledBox>
         <StyledValueBox>

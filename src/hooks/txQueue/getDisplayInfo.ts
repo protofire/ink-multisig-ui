@@ -5,6 +5,7 @@ import {
 } from "useink/core";
 import { MultisigSdk, Psp22Sdk } from "xsigners-sdk-test";
 
+import { ChainExtended } from "@/config/chain";
 import { TX_TYPE_IMG } from "@/config/images";
 import { TransactionProposed } from "@/domain/TransactionProposed";
 import { TransactionDisplayInfo } from "@/domain/TransactionProposedItemUi";
@@ -19,7 +20,7 @@ interface Props {
   multisigAddress: string;
   apiPromise: ApiPromise;
   txProposed: TransactionProposed;
-  nativeTokenSymbol: string;
+  nativeToken: ChainExtended & { decimals: number };
 }
 
 type ResponseCall = { ok?: boolean; value: { decoded: string } };
@@ -34,15 +35,16 @@ export const getDisplayInfo = async ({
   multisigAddress,
   apiPromise,
   txProposed,
-  nativeTokenSymbol,
+  nativeToken,
 }: Props): Promise<TransactionDisplayInfo> => {
   const displayInfo: TransactionDisplayInfo = {
-    img: TX_TYPE_IMG.SEND,
+    img: TX_TYPE_IMG.CONTRACT,
     type: "Send",
     txMsg: "to",
     valueAmount: "",
     to: "",
   };
+
   let contractPromise = new ContractPromise(
     apiPromise,
     MultisigSdk.contractMetadata().ContractAbi,
@@ -59,10 +61,11 @@ export const getDisplayInfo = async ({
       txProposed.args as string // always will be string in native transfer
     );
 
-    displayInfo["valueAmount"] = `${parseNativeBalance(
-      decodedData[1]
-    )} ${nativeTokenSymbol}`;
+    displayInfo["valueAmount"] = `${parseNativeBalance(decodedData[1])} ${
+      nativeToken.token
+    }`;
     displayInfo["to"] = decodedData[0];
+    displayInfo["img"] = TX_TYPE_IMG.SEND;
   } else if (txProposed.selector === PSP22_TRANSFER_METHOD_SELECTOR) {
     contractPromise = new ContractPromise(
       apiPromise,
@@ -99,6 +102,15 @@ export const getDisplayInfo = async ({
         )} ${tokenSymbol}`
       : "";
     displayInfo["to"] = decodedData[0];
+    displayInfo["img"] = TX_TYPE_IMG.SEND;
+  } else {
+    displayInfo["to"] = txProposed.contractAddress;
+
+    displayInfo["valueAmount"] = `${balanceToFixed(
+      txProposed.value,
+      nativeToken.decimals
+    )} ${nativeToken.token}`;
+    displayInfo["type"] = txProposed.methodName || txProposed.selector;
   }
 
   return displayInfo;

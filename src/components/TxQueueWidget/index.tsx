@@ -40,7 +40,7 @@ export const TxQueueWidget = ({ xsignerAccount }: Props) => {
       ) : (
         <>
           <StyledList>
-            {data.map((tx, index) => (
+            {data.map((tx) => (
               <TxQueueWidgetItem data={tx} key={tx.txId} owners={owners} />
             ))}
           </StyledList>

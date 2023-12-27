@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useAllWallets, useWallet } from "useink";
+import { useAllWallets, useChainDecimals, useWallet } from "useink";
 import { ChainId } from "useink/dist/chains";
 
 import { DEFAULT_CHAIN } from "@/config/chain";
@@ -19,6 +19,7 @@ import { useLocalDbContext } from "./uselocalDbContext";
 
 interface PolkadotContextProps {
   network: ChainId;
+  decimals: number;
   setNetwork: (chain: ChainId) => void;
   accounts: WalletAccount[] | undefined;
   accountConnected: WalletAccount | undefined;
@@ -32,6 +33,7 @@ interface PolkadotContextProps {
 const PolkadotContext = createContext<PolkadotContextProps>({
   network: DEFAULT_CHAIN,
   accounts: undefined,
+  decimals: 0,
   accountConnected: undefined,
   wallets: [],
   isConnected: false,
@@ -51,10 +53,10 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
   const [formattedAccount, setFormattedAccount] = useState<
     WalletAccount | undefined
   >();
-
   const { accounts, account, connect, disconnect, isConnected, setAccount } =
     useWallet();
   const walletList = useAllWallets();
+  const decimals = useChainDecimals(networkId) || 0;
   const { networkRepository } = useLocalDbContext();
 
   const loadNetworkConnected = useCallback(() => {
@@ -117,6 +119,7 @@ export const PolkadotContextProvider: React.FC<PropsWithChildren> = ({
       value={{
         network: networkId,
         setNetwork: setCurrentChain,
+        decimals,
         accounts: formattedAccounts,
         accountConnected: formattedAccount,
         wallets: walletList,
