@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
-import TxTable from "@/components/TxTable";
+import { TxTable } from "@/components/TxTable";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
 export default function TxPage() {
