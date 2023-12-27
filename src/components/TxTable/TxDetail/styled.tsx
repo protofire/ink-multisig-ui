@@ -28,7 +28,19 @@ export const CustomGridItem: React.FC<
   const type = defaultWidth[colType];
   const TypographyComponent = {
     name: <Typography color="#837376">{children}</Typography>,
-    value: <Typography>{children}</Typography>,
+    value: (
+      <Typography
+        sx={{
+          minWidth: 0,
+          minHeight: 0,
+          wordWrap: "break-word",
+          wordBreak: "break-all",
+          maxWidth: "100%",
+        }}
+      >
+        {children}
+      </Typography>
+    ),
   };
   const _children =
     typeof children === "string" ? TypographyComponent[colType] : children;

@@ -4,28 +4,54 @@ import {
   ITxQueueRepository,
   MyQueryResponse,
   MyQueryVariables,
-  TxQueueData,
 } from "@/domain/repositores/ITxQueueRepository";
+import { TransactionProposed } from "@/domain/TransactionProposed";
 
 import { GraphClient } from "./GraphClient";
+import { rawToTransactionProposed } from "./transformers/toTransactionProposed";
 
 const FETCH_QUEUE = gql`
-  query MyQuery($address: String!) {
-    multisigs(where: { addressSS58_eq: $address }) {
-      addressSS58
-      transactions(orderBy: txId_ASC) {
-        selector
-        args
-        contractAddress
-        proposer
-        rejectionCount
-        approvalCount
-        status
-        lastUpdatedTimestamp
-        value
+  query TxQueue($address: String!) {
+    transactions(
+      where: { multisig: { addressSS58_eq: $address }, status_eq: PROPOSED }
+      orderBy: creationTimestamp_DESC
+    ) {
+      approvalCount
+      approvals {
+        approvalBlockNumber
+        approvalTimestamp
+        approver
+        id
       }
-      addressHex
-      owners
+      args
+      contractAddress
+      creationBlockNumber
+      creationTimestamp
+      error
+      executionTxHash
+      externalTransactionData {
+        args
+        creationTimestamp
+        id
+        inUse
+        methodName
+      }
+      id
+      lastUpdatedBlockNumber
+      lastUpdatedTimestamp
+      proposalTxHash
+      proposer
+      rejectionCount
+      rejections {
+        id
+        rejectionBlockNumber
+        rejectionTimestamp
+        rejector
+      }
+      selector
+      status
+      txId
+      value
     }
   }
 `;
@@ -33,13 +59,14 @@ const FETCH_QUEUE = gql`
 export class TxQueueRepository implements ITxQueueRepository {
   constructor(private client: GraphClient) {}
 
-  async getQueue(address: string): Promise<TxQueueData | null> {
+  async getQueue(address: string): Promise<TransactionProposed[] | null> {
     const client = this.client.getCurrentApolloClient();
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_QUEUE,
       variables: { address },
     });
-
-    return data?.multisigs[0] || null;
+    return data?.transactions.map((transactions) =>
+      rawToTransactionProposed(transactions)
+    );
   }
 }

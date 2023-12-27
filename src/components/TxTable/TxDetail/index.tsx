@@ -1,46 +1,31 @@
-import ShareIcon from "@mui/icons-material/Share";
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
+import { ChainId } from "useink/dist/chains";
 
-import { openInNewTab } from "@/utils/browserMethods";
+import { ExplorerLink } from "@/components/ExplorerLink";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 
 import { AccountAvatar } from "../../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../../common/CopyButton";
-import OpenNewTabButton from "../../common/OpenNewTabButton";
 import { AdvancedDetail } from "./AdvancedDetail";
-import { ContractDetail } from "./ContractDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
-import { txType } from "./types";
 
-// TODO:
-// Remove this mock variable, replace with true value
-const mockUrl = "https://polkadot.subscan.io/";
-const name = "ProtoFireName";
-const address = "5CPYTLM8r7fAChtqKWY4SQndKRZXUG9wm6VKnpBLqLjutyNw";
-const value = 20;
-const token = "ROC";
-const NO_DETAILS_TYPE = "CONTRACT";
+interface Props {
+  data: ExtendedDataType;
+  network: ChainId;
+}
 
-const txComponentType = {
-  EXECUTED_SUCCESS: {
-    component: (
-      <SendDetail address={address} name={name} mockUrl={mockUrl}></SendDetail>
-    ),
-  },
-  EXECUTED_FAIL: {
-    component: <ReceivedDetail address={address}></ReceivedDetail>,
-  },
-  PENDING: {
-    component: <></>,
-  },
-  CONTRACT: {
-    component: <ContractDetail data={undefined}></ContractDetail>,
-  },
-};
-
-export const TxDetails = ({ type }: { type: txType }) => {
+export const TxDetails = ({ data, network }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+  const TxComponentType = ({ data }: Props): JSX.Element => {
+    if (data.type === TX_TYPE_OPTION.SEND) {
+      return <SendDetail data={data} network={network}></SendDetail>;
+    }
+    return <ReceivedDetail data={data} network={network}></ReceivedDetail>;
+  };
+
   return (
     <Box
       sx={{
@@ -54,9 +39,17 @@ export const TxDetails = ({ type }: { type: txType }) => {
           borderBottom: "3px solid #120D0E",
         }}
       >
-        <Typography color="white">
-          Send <span style={{ fontWeight: "bold" }}>{`${value} ${token}`}</span>{" "}
-          to:
+        {/* <Typography color="white" mb={1}>
+          {data.type}{" "}
+          <span
+            style={{ fontWeight: "bold" }}
+          >{`${data.valueAmount} ${data.token}`}</span>{" "}
+          {data.txMsg}
+        </Typography> */}
+        <Typography color="white" mb={1}>
+          {data.type}{" "}
+          <span style={{ fontWeight: "bold" }}>{`${data.valueAmount}`}</span>{" "}
+          {data.txMsg}
         </Typography>
 
         <Box
@@ -66,15 +59,20 @@ export const TxDetails = ({ type }: { type: txType }) => {
           }}
         >
           <AccountAvatar
-            address={address}
-            name={name}
+            address={data.from ?? data.to}
+            name={""}
             truncateLenght={16}
           ></AccountAvatar>
-          <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>
-            <CopyButton text={address} />
-            <OpenNewTabButton text={mockUrl} />
+          <Box sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}>
+            <CopyButton text={data?.from ?? data.to} />
+            <ExplorerLink
+              blockchain={network}
+              path="account"
+              txHash={data.from ?? data.to}
+              sx={{ color: "" }}
+            />
           </Box>
-          <Box
+          {/* <Box
             sx={{
               position: "absolute",
               right: "20px",
@@ -90,10 +88,10 @@ export const TxDetails = ({ type }: { type: txType }) => {
                 cursor: "pointer",
               },
             }}
-            onClick={() => openInNewTab(address)}
+            onClick={() => openInNewTab(data?.from as string)}
           >
             <ShareIcon></ShareIcon>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
       <Box
@@ -101,20 +99,30 @@ export const TxDetails = ({ type }: { type: txType }) => {
           padding: "20px",
         }}
       >
-        {txComponentType[type].component}
-        {type !== NO_DETAILS_TYPE ? (
-          <Link
-            sx={{ fontWeight: "bold", marginTop: "22px" }}
-            href="#"
-            onClick={() => setShowAdvancedDetails(!showAdvancedDetails)}
-          >
-            {"Advanced Details"}
-          </Link>
-        ) : (
-          <></>
-        )}
-        {showAdvancedDetails ? (
-          <AdvancedDetail data={undefined}></AdvancedDetail>
+        {<TxComponentType data={data} network={network}></TxComponentType>}
+
+        {data.__typename === TX_TYPE_OPTION.TRANSACTION ? (
+          <>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: "bold",
+                marginTop: "22px",
+                marginBottom: "22px",
+                cursor: "pointer",
+                color: "#ffe873",
+                textDecoration: "underline",
+              }}
+              onClick={() => setShowAdvancedDetails(!showAdvancedDetails)}
+            >
+              {"Advanced Details"}
+            </Typography>
+            {!showAdvancedDetails ? (
+              <AdvancedDetail data={data}></AdvancedDetail>
+            ) : (
+              <></>
+            )}
+          </>
         ) : (
           <></>
         )}

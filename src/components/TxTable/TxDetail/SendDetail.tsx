@@ -1,42 +1,50 @@
 import { Box, Grid } from "@mui/material";
+import { ChainId } from "useink/dist/chains";
 
 import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
 import CopyButton from "@/components/common/CopyButton";
-import OpenNewTabButton from "@/components/common/OpenNewTabButton";
+import { ExplorerLink } from "@/components/ExplorerLink";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { formatDate } from "@/utils/formatString";
 
 import { CustomGridItem } from "./styled";
 
-type Props = {
-  address: string;
-  name: string;
-  mockUrl: string;
-};
-
-export const SendDetail = (data: Props) => {
-  const { address, name, mockUrl } = data;
+export const SendDetail = ({
+  data,
+  network,
+}: {
+  data: ExtendedDataType;
+  network: ChainId;
+}) => {
+  const date = formatDate(data.creationTimestamp);
   return (
     <Grid container>
       <CustomGridItem colType="name">Created at:</CustomGridItem>
-      <CustomGridItem colType="value">
-        Sep 10, 2023 - 12:53:00 PM
-      </CustomGridItem>
+      <CustomGridItem colType="value">{date}</CustomGridItem>
       <CustomGridItem colType="name">Created by:</CustomGridItem>
       <CustomGridItem
         colType="value"
         sx={{ margin: "22px 0px", display: "flex" }}
       >
-        <AccountAvatar
-          address={address}
-          name={name}
-          truncateLenght={8}
-        ></AccountAvatar>
-        <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>
-          <CopyButton text={address} />
-          <OpenNewTabButton text={mockUrl} />
+        <Box sx={{ display: "flex" }}>
+          <AccountAvatar
+            address={data.proposer}
+            name={""}
+            truncateLenght={8}
+          ></AccountAvatar>
+          <Box sx={{ marginTop: "4px", marginLeft: "8px", display: "flex" }}>
+            <CopyButton text={data.proposer} />
+            <ExplorerLink
+              blockchain={network}
+              path="account"
+              txHash={data.proposer}
+              sx={{ color: "" }}
+            />
+          </Box>
         </Box>
       </CustomGridItem>
       <CustomGridItem colType="name">Transaction hash:</CustomGridItem>
-      <CustomGridItem colType="value">BFGSBWmxadVYDrEG7zHIJ</CustomGridItem>
+      <CustomGridItem colType="value">{data.id}</CustomGridItem>
     </Grid>
   );
 };

@@ -1,55 +1,27 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
-import { DEFAULT_COL_WIDTH } from "./styled";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 
-type Props = { data: undefined };
+import { CustomGridItem } from "./styled";
 
-const advancedDetails = [
-  {
-    name: "Operation:",
-    value: "0(call)",
-  },
-  {
-    name: "safeTxGas:",
-    value: "59786",
-  },
-  {
-    name: "baseGas:",
-    value: "0",
-  },
-  {
-    name: "gasPrice:",
-    value: "0",
-  },
-  {
-    name: "gasToken:",
-    value: "0x0000...0000",
-  },
-  {
-    name: "refundReceiver:",
-    value: "0x0000...0000",
-  },
-  {
-    name: "Signature 1:",
-    value: "65 bytes",
-  },
-  {
-    name: "Raw data:",
-    value: "68 bytes",
-  },
-];
+type Props = { data: ExtendedDataType };
 
-export const AdvancedDetail = (data: Props) => (
-  <Grid container>
-    {advancedDetails.map((detail) => (
-      <>
-        <Grid item {...DEFAULT_COL_WIDTH.name}>
-          <Typography color="#837376">{detail.name}</Typography>
-        </Grid>
-        <Grid item {...DEFAULT_COL_WIDTH.value}>
-          <Typography>{detail.value}</Typography>
-        </Grid>
-      </>
-    ))}
-  </Grid>
-);
+export const AdvancedDetail = ({ data }: Props) => {
+  const DATA = {
+    Method: data.selector,
+    Args: data.args,
+  };
+
+  return (
+    <Grid container>
+      {Object.entries(DATA).map(([name, value], index) => {
+        return (
+          <Box sx={{ width: "100%", display: "flex" }} key={index}>
+            <CustomGridItem colType="name">{name}</CustomGridItem>
+            <CustomGridItem colType="value">{value}</CustomGridItem>
+          </Box>
+        );
+      })}
+    </Grid>
+  );
+};

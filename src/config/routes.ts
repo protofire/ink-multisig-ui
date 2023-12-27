@@ -9,7 +9,7 @@ export const ROUTES = {
   TxBuilder: "/app/transaction-builder",
   Settings: "/app/settings",
   Assets: "/app/assets",
-  TxDetails: "/app/transaction-details",
+  Transactions: "/app/transactions",
   NewTx: "/app/new-transaction",
 } as const;
 

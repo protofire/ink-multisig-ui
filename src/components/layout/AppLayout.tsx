@@ -15,7 +15,7 @@ import { VerticalMenuBar } from "./VerticalMenuBar";
 const ContentWrapper = styled(Box)<BoxProps & { drawerwidth: number }>(
   ({ theme, drawerwidth }) => ({
     width: "100%",
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(10),
     paddingLeft: theme.spacing(scalePixels(drawerwidth) + 4),
     paddingRight: theme.spacing(4),
     [theme.breakpoints.up("xl")]: {

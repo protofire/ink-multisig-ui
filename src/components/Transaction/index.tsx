@@ -12,9 +12,9 @@ import {
 import { ContractPromise, WeightV2 } from "useink/dist/core";
 
 import { ChainExtended, getChain } from "@/config/chain";
-import { ROUTES } from "@/config/routes";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { TransactionEvents } from "@/domain/events/TransactionEvents";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { usePSPContractPromise } from "@/hooks/contractPromise/usePSPContractPromise";
 import { useGetDryRun } from "@/hooks/useGetDryRun";
@@ -175,12 +175,20 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
           message: `Transaction successfully sent. TxHash: ${hash?.toHuman()}`,
           type: "success",
         });
-        router.replace(ROUTES.Assets);
+        document.dispatchEvent(
+          new CustomEvent(TransactionEvents.transactionSent)
+        );
+        // router.replace(ROUTES.AllTx);
       } catch (e) {
         const errorFormated = customReportError(e);
         addNotification({ message: errorFormated, type: "error" });
       } finally {
         setIsLoading(false);
+
+        // EMIT EVENT
+        // document.dispatchEvent(
+        //   new CustomEvent(TransactionEvents.transactionSent)
+        // );
       }
     } else {
       setCurrentStep(currentStep + 1);

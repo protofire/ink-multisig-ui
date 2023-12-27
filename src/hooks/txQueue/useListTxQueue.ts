@@ -1,35 +1,118 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { ChainId } from "useink/dist/chains";
 
+import { getChain } from "@/config/chain";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
-import { TxQueueData } from "@/domain/repositores/ITxQueueRepository";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { TransactionEvents } from "@/domain/events/TransactionEvents";
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import {
+  emptyDisplayInfo,
+  TransactionProposedItemUi,
+} from "@/domain/TransactionProposedItemUi";
+import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { customReportError } from "@/utils/error";
 
-export function useListTxQueue(address: string | undefined) {
-  const [data, setData] = useState<TxQueueData | null>(null);
+import { useNetworkApi } from "../useNetworkApi";
+import { getDisplayInfo } from "./getDisplayInfo";
+import { mapOwnersToActions } from "./mapOwnersToActions";
+
+export type TabTxTypes = "queue" | "history";
+
+export const TX_OWNER_STATUS_TYPE = {
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+  PENDING: "Pending",
+};
+
+export const TX_TYPE_OPTION = {
+  RECEIVE: "Receive",
+  SEND: "Send",
+  TRANSACTION: "Transaction",
+  TRANSFER: "Transfer",
+  TOKEN: {
+    NATIVE: "NATIVE",
+  },
+  STATUS: {
+    PROPOSED: "PROPOSED",
+    EXECUTED_SUCCESS: "EXECUTED_SUCCESS",
+  },
+};
+
+export function useListTxQueue(
+  xsignerAccount: SignatoriesAccount,
+  network: ChainId
+) {
+  const [data, setData] = useState<TransactionProposedItemUi[] | undefined>(
+    undefined
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const chain = getChain(network);
+  const { owners, address: xsignerAddress } = xsignerAccount;
   const { txQueueRepository } = useLocalDbContext();
+  const { apiPromise } = useNetworkApi();
+  const { decimals } = usePolkadotContext();
+
+  useEventListenerCallback([TransactionEvents.transactionSent], () => {
+    // createTxList();
+  });
+
+  const createTxList = useCallback(async () => {
+    if (!apiPromise) return;
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await txQueueRepository.getQueue(xsignerAddress);
+
+      if (!result) throw Error("Query failure");
+
+      const extendedResult: TransactionProposedItemUi[] = result.map((tx) => ({
+        ...tx,
+        ...emptyDisplayInfo,
+        ownersAction: [],
+      }));
+      result.forEach(async (txProposed, index) => {
+        const displayInfo = await getDisplayInfo({
+          apiPromise,
+          txProposed,
+          multisigAddress: xsignerAddress,
+          nativeToken: { ...chain, decimals },
+        });
+
+        extendedResult[index] = {
+          ...txProposed,
+          ownersAction: mapOwnersToActions({
+            owners,
+            approvals: txProposed.approvals,
+            rejectors: txProposed.rejections,
+            network,
+          }),
+          ...displayInfo,
+        };
+      });
+
+      setData(extendedResult);
+    } catch (err) {
+      customReportError(err);
+      setError("An error has ocurred");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    apiPromise,
+    chain,
+    decimals,
+    network,
+    owners,
+    txQueueRepository,
+    xsignerAddress,
+  ]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!address) return;
-      setIsLoading(true);
-      setError(null);
-      try {
-        const result = await txQueueRepository.getQueue(address);
-        if (result) {
-          setData(result);
-        }
-      } catch (err) {
-        const errorFormated = customReportError(err);
-        setError(errorFormated);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [address, txQueueRepository]);
+    createTxList();
+  }, [createTxList]);
 
   return { data, isLoading, error };
 }

@@ -1,31 +1,27 @@
 import { Grid } from "@mui/material";
+import { ChainId } from "useink/dist/chains";
 
-import { truncateAddress } from "@/utils/formatString";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { formatDate } from "@/utils/formatString";
 
 import { CustomGridItem } from "./styled";
 
-type ReceivedDetailProps = { address: string };
-
-export const ReceivedDetail = (data: ReceivedDetailProps) => {
-  const { address } = data;
-  const dumpData = {
-    txHash: truncateAddress(address, 16),
-    safeTxHahs: 15,
-    created: "Sep 10, 2023 - 12:53:00 PM",
-    executed: "Sep 10, 2023 - 12:53:00 PM",
-  };
+export const ReceivedDetail = ({
+  data,
+  network,
+}: {
+  data: ExtendedDataType;
+  network: ChainId;
+}) => {
+  const date = formatDate(data.creationTimestamp);
 
   return (
     <>
       <Grid container>
         <CustomGridItem colType="name">Transaction hash</CustomGridItem>
-        <CustomGridItem colType="value">{dumpData.txHash}</CustomGridItem>
-        <CustomGridItem colType="name">safeTxHash:</CustomGridItem>
-        <CustomGridItem colType="value">{dumpData.safeTxHahs}</CustomGridItem>
+        <CustomGridItem colType="value">{data.id}</CustomGridItem>
         <CustomGridItem colType="name">Created:</CustomGridItem>
-        <CustomGridItem colType="value">{dumpData.created}</CustomGridItem>
-        <CustomGridItem colType="name">Executed:</CustomGridItem>
-        <CustomGridItem colType="value">{dumpData.executed}</CustomGridItem>
+        <CustomGridItem colType="value">{date}</CustomGridItem>
       </Grid>
     </>
   );

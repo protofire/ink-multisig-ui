@@ -10,11 +10,14 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import { ChainId } from "useink/dist/chains";
 
-import { truncateAddress } from "@/utils/formatString";
+import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
+import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
+import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { TxDetails } from "./TxDetail";
-import { txType } from "./TxDetail/types";
 import TxStepper from "./TxStepper";
 
 const StyledGrid = styled(Grid)<GridProps>(() => ({
@@ -24,21 +27,23 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 }));
 
 type Props = {
-  data: {
-    nonce: number;
-    status: string;
-    address: string;
-    value: number;
-    token: string;
-  };
-  txData: {
-    img: string;
-    type: string;
-  };
-  txType: txType;
+  data: TransactionProposedItemUi;
+  index: number;
+  network: ChainId;
 };
 
-export const TxDetailItem = ({ data, txData, txType }: Props) => {
+export const TxDetailItem = ({ data, index, network }: Props) => {
+  const date = formatDate(data.creationTimestamp);
+
+  const txStateMsg =
+    data.status === TX_TYPE_OPTION.STATUS.PROPOSED
+      ? "Awaiting Confirmations"
+      : "Success";
+
+  const successTx =
+    data.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS ||
+    data.type === TX_TYPE_OPTION.RECEIVE;
+
   return (
     <Accordion>
       <AccordionSummary
@@ -59,22 +64,16 @@ export const TxDetailItem = ({ data, txData, txType }: Props) => {
           container
         >
           <StyledGrid item xs={1} sm={1} md={1}>
-            <Typography>{data.nonce}</Typography>
+            <Typography>{index + 1}</Typography>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
-            <Image
-              src={txData.img}
-              priority
-              width={30}
-              height={30}
-              alt="test"
-            />
+            <Image src={data.img} priority width={30} height={30} alt="test" />
           </StyledGrid>
           <StyledGrid
             item
-            xs={4}
-            sm={4}
-            md={4}
+            xs={3}
+            sm={3}
+            md={3}
             style={{ justifyContent: "left" }}
           >
             <Box
@@ -83,31 +82,43 @@ export const TxDetailItem = ({ data, txData, txType }: Props) => {
                 flexDirection: "column",
               }}
             >
-              <span>{txData.type}</span>
+              <span>{data.type}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                to: {truncateAddress(data.address, 14)}
+                {data.txMsg} : {truncateAddress(data.from ?? data.to, 9)}
               </span>
             </Box>
           </StyledGrid>
-          <StyledGrid item xs={1} sm={1} md={1}>
+          <StyledGrid item xs={2} sm={2} md={2}>
             <Typography>
-              {`${data.status === "EXECUTED_SUCCESS" ? "" : "-"}  ${
-                data.value
-              } ${data.token}`}
+              {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
+              {`${data.valueAmount}`}
             </Typography>
           </StyledGrid>
-          <StyledGrid item xs={2} sm={2} md={2}>
-            <Typography>7:20 PM</Typography>
-          </StyledGrid>
           <StyledGrid item xs={3} sm={3} md={3}>
-            <Typography color={"#FF9C7D"}>Awaiting Confirmations</Typography>
+            <Typography>{date}</Typography>
+          </StyledGrid>
+          <StyledGrid item xs={2} sm={2} md={2}>
+            <Typography color={successTx ? "#ADD500" : "#FF9C7D"}>
+              {txStateMsg}
+            </Typography>
           </StyledGrid>
         </Grid>
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
-          <TxDetails type={txType}></TxDetails>
-          <TxStepper></TxStepper>
+          <TxDetails
+            data={data as unknown as ExtendedDataType}
+            network={network}
+          />
+          {data.type !== TX_TYPE_OPTION.RECEIVE ? (
+            <TxStepper
+              approvalCount={data.approvalCount}
+              owners={data.ownersAction}
+              network={network}
+            />
+          ) : (
+            <></>
+          )}
         </Box>
       </AccordionDetails>
     </Accordion>

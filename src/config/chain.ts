@@ -16,6 +16,7 @@ export const DEFAULT_CHAIN: Chain["id"] = IS_DEVELOPMENT
 
 export type ChainExtended = Chain & {
   id: ChainId;
+  token: string;
   logo: {
     src: string;
     alt: string;
@@ -29,9 +30,15 @@ export const CHAINS: ArrayOneOrMore<Chain> = [
   // ShidenKusama,
 ];
 
+export const CHAINS_TOKENS = {
+  [RococoContractsTestnet.id]: "ROC",
+  [ShibuyaTestnet.id]: "SBY",
+};
+
 export const CHAINS_ALLOWED: ChainExtended[] = CHAINS.map((chain) => {
   return {
     ...chain,
+    token: CHAINS_TOKENS[chain.id as keyof typeof CHAINS_TOKENS],
     logo: {
       src: `${CHAINS_IMG_PATH}${chain.id ? chain.id : "custom"}.png`,
       alt: `${chain.name} img`,

@@ -1,31 +1,72 @@
-export interface TxQueueData {
-  id: string;
-  addressHex: string;
-  addressSS58: string;
-  transactions: Tx[];
-  owners: string[];
-}
-
-export interface Tx {
-  selector: string;
-  args: string;
-  contractAddress: string;
-  proposer: string;
-  rejectionCount: number;
-  approvalCount: number;
-  status: string;
-  lastUpdatedTimestamp: string;
-  value: number;
-}
+import { TransactionProposed } from "../TransactionProposed";
+import { OwnerWithAction } from "../TransactionProposedItemUi";
+import { RawExternalTransactionData } from "./IXsignerOwnersRepository";
 
 export interface MyQueryVariables {
-  address: string;
+  address: string | string[];
 }
 
 export interface MyQueryResponse {
-  multisigs: TxQueueData[];
+  transactions: RawTransactionProposed[];
 }
 
 export interface ITxQueueRepository {
-  getQueue(address: string): Promise<TxQueueData | null>;
+  getQueue(address: string): Promise<TransactionProposed[] | null>;
 }
+
+export interface TransferType {
+  creationBlockNumber: number;
+  creationTimestamp: string;
+  from: string;
+  id: string;
+  to: string;
+  tokenAddress: string;
+  tokenDecimals: string;
+  transferType: string;
+  value: string;
+  __typename: string;
+}
+
+export interface RawTransactionProposed {
+  approvalCount: number;
+  approvals: { approver: string; approvalTimestamp: string }[];
+  args: string;
+  contractAddress: string;
+  creationBlockNumber: number;
+  creationTimestamp: Date;
+  error?: string;
+  executionTxHash?: string;
+  externalTransactionData: RawExternalTransactionData | null;
+  id: string;
+  lastUpdatedBlockNumber: number;
+  lastUpdatedTimestamp: string;
+  proposalTxHash: string;
+  proposer: string;
+  rejectionCount: number;
+  rejections: { rejected: string; rejectionTimestamp: string }[];
+  selector: string;
+  status: string;
+  txId: string;
+  value: string;
+  __typename: string;
+}
+
+export type TxType = RawTransactionProposed & TransferType;
+
+export type Order = {
+  address: string;
+  name: string;
+  status: string;
+};
+
+export type ExtendedDataType = TxType & {
+  state: string;
+  token: string;
+  img: string;
+  type: string;
+  to: string;
+  txMsg: string;
+  txStateMsg: string;
+  valueAmount: string;
+  ownersAction: OwnerWithAction[] | undefined;
+};

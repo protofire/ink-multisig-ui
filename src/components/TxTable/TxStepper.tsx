@@ -10,10 +10,14 @@ import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { ChainId } from "useink/dist/chains";
+
+import { Order } from "@/domain/repositores/ITxQueueRepository";
+import { TX_OWNER_STATUS_TYPE } from "@/hooks/txQueue/useListTxQueue";
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
-import OpenNewTabButton from "../common/OpenNewTabButton";
+import { ExplorerLink } from "../ExplorerLink";
 
 const CircleStepIconRoot = styled("div")(() => ({
   marginLeft: "7px",
@@ -69,26 +73,17 @@ function ColorlibStepIcon(props: StepIconProps) {
   );
 }
 
-const owners = [
-  {
-    name: "Henry P",
-    address: "5CPYTLM8r7fAChtqKWY4SQndKRZXUG9wm6VKnpBLqLjutyNw",
-    isSigned: true,
-  },
-  {
-    name: "Henry P",
-    address: "5FpWVjTfDzqwzzc6kPZzHQFEsfikd8JCVnEUkBcXkQKWYw8B",
-    isSigned: false,
-  },
-  {
-    name: "Henry P",
-    address: "5FWbLCgqF3VHhGPJjnTp3RwB8yW3Zf4wcLv1NMqLEEJaaMNS",
-    isSigned: false,
-  },
-];
-
-export default function TxStepper() {
+export default function TxStepper({
+  approvalCount,
+  owners,
+  network,
+}: {
+  approvalCount: number;
+  owners: Order[] | undefined;
+  network: ChainId;
+}) {
   const [showOwners, setShowOwners] = React.useState(true);
+  const approvalsLength = owners?.length;
 
   return (
     <Box
@@ -116,25 +111,42 @@ export default function TxStepper() {
           >
             <Typography>
               Confirmations{" "}
-              <span style={{ color: "#636669" }}>{`(4 of 4)`}</span>
+              <span
+                style={{ color: "#636669", marginLeft: "1rem" }}
+              >{`(${approvalCount} / ${approvalsLength})`}</span>
             </Typography>{" "}
           </StepLabel>
         </Step>
         {showOwners ? (
-          owners.map((owner, index) => (
+          owners?.map((element: Order, index: number) => (
             <Step key={index}>
               <StepLabel
-                StepIconComponent={() => CircleStepIcon(owner.isSigned)}
+                StepIconComponent={() =>
+                  CircleStepIcon(
+                    element.status === TX_OWNER_STATUS_TYPE.APPROVED
+                  )
+                }
               >
                 <Box sx={{ display: "flex" }}>
                   <AccountAvatar
-                    address={owner.address}
-                    name={owner.name}
+                    address={element.address}
+                    name={element.name}
                     truncateLenght={4}
                   ></AccountAvatar>
-                  <Box sx={{ marginTop: "20px", marginLeft: "15px" }}>
-                    <CopyButton text={owner.address} />
-                    <OpenNewTabButton text={"mockURL"} />
+                  <Box
+                    sx={{
+                      marginTop: "20px",
+                      marginLeft: "15px",
+                      display: "flex",
+                    }}
+                  >
+                    <CopyButton text={element.address} />
+                    <ExplorerLink
+                      blockchain={network}
+                      path="account"
+                      txHash={element.address}
+                      sx={{ color: "" }}
+                    />
                   </Box>
                 </Box>
               </StepLabel>

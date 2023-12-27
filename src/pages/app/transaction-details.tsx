@@ -1,8 +1,11 @@
 import { Box, Typography } from "@mui/material";
 
-import TxTable from "@/components/TxTable";
+import { TxDetailItem } from "@/components/TxTable/TxDetailItem";
+import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
+import { useNetworkApi } from "@/hooks/useNetworkApi";
 
-export default function TxPage() {
+export default function TxDetail() {
+  const { network } = useNetworkApi();
   return (
     <Box
       sx={{
@@ -14,9 +17,13 @@ export default function TxPage() {
       }}
     >
       <Typography mb={2} variant="h3" color="primary">
-        Transactions
+        Transaction details
       </Typography>
-      <TxTable />
+      <TxDetailItem
+        data={{} as TransactionProposedItemUi}
+        index={0}
+        network={network}
+      ></TxDetailItem>
     </Box>
   );
 }

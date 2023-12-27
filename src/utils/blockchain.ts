@@ -4,6 +4,11 @@ import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { hexToU8a, isHex } from "@polkadot/util";
 import * as ss58 from "@subsquid/ss58";
 import { createHash, randomBytes } from "crypto";
+import {
+  toContractAbiMessage,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+} from "useink/core";
 
 export const isValidAddress = (address: string | undefined) => {
   try {
@@ -160,4 +165,23 @@ export const getMessageInfo = (
   return (
     contractPromise.abi.messages.find((m) => m.method === methodName) || null
   );
+};
+
+export const decodeCallArgs = (
+  contractPromise: ContractPromise,
+  methodName: string,
+  callData: string
+) => {
+  const abiMessage = toContractAbiMessage(contractPromise, methodName);
+  if (!abiMessage.ok) {
+    throw new Error("Cannot build abi message. " + abiMessage.error);
+  }
+  callData = callData.replace("0x", "");
+  const dataAU8array = new Uint8Array(callData.length / 2);
+  for (let i = 0; i < callData.length; i += 2) {
+    dataAU8array[i / 2] = parseInt(callData.substr(i, 2), 16);
+  }
+  const decodedData = abiMessage.value.fromU8a(dataAU8array);
+  const data = decodedData.args.map((arg: any) => arg.toHuman());
+  return data;
 };
