@@ -14,6 +14,7 @@ export type TransactionDisplayInfo = {
   type: "Receive" | "Send";
   img: string;
   txMsg: "from" | "to";
+  valueAmount: string;
 };
 
 export interface TransactionProposedItemUi

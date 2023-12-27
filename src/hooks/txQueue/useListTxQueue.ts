@@ -20,7 +20,9 @@ import { decodeCallArgs } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 import { balanceToFixed, parseNativeBalance } from "@/utils/formatString";
 
-import { toTxProposedItemUi } from "./toTxProposedItemUi";
+import { usePSPContractPromise } from "../contractPromise/usePSPContractPromise";
+import { getDisplayInfo } from "./getDisplayInfo";
+import { mapOwnersToActions } from "./mapOwnersToActions";
 
 export type TabTxTypes = "queue" | "history";
 
@@ -169,6 +171,8 @@ export function useListTxQueue(
   const { txQueueRepository } = useLocalDbContext();
   const { multisigContractPromise } =
     useMultisigContractPromise(xsignerAddress);
+  const { pSPContractPromise } = usePSPContractPromise("");
+
   const [dataType, setDataType] = useState<{
     [name: string]: (ExtendedDataType | null)[] | undefined;
   }>({
@@ -180,95 +184,8 @@ export function useListTxQueue(
     // createTxList();
   });
 
-  // const createTxList = useCallback(() => {
-  //   const fetchData = async () => {
-  //     if (!xsignersAddress) return;
-  //     if (!multisigContractPromise) return;
-  //     setIsLoading(true);
-  //     setError(null);
-  //     try {
-  //       const result = await txQueueRepository.getQueue(xsignersAddress);
-  //       if (result) {
-  //         const extendedResult = result
-  //           .map((element) => {
-  //             // List all owners from a xsignerAddress
-  //             const ownersData = signers
-  //               ?.find((element) => element.address === xsignersAddress)
-  //               ?.owners.map((element) => ({
-  //                 address: formatAddressForNetwork(element.address, network),
-  //                 name: element.name,
-  //                 status: "Pending",
-  //               }));
-
-  //             // Clean Approvals data to follow the {address, status, name} format
-  //             const approvals = element.approvals?.map((element) => ({
-  //               address: element.approver,
-  //               status: element.__typename,
-  //               name: "",
-  //             }));
-
-  //             // Clean Rejections data to follow the {address, status, name} format
-  //             const rejections = element.rejections?.map((element) => ({
-  //               address: element.rejected,
-  //               status: element.__typename,
-  //               name: "",
-  //             }));
-
-  //             // Combine Approvals and Rejections using OwnersData as root
-  //             const stepperData = createTxOwnerStepper(
-  //               ownersData,
-  //               approvals,
-  //               rejections
-  //             );
-
-  //             // Build Transaction with missing attributes
-  //             return buildTxDetail(
-  //               xsignersAddress,
-  //               chain.token,
-  //               element,
-  //               stepperData,
-  //               multisigContractPromise as ChainContract<ContractPromise>
-  //             );
-  //           }) // Remove null elements
-  //           .filter((element) => element !== null);
-
-  //         // Divide the results in Queue and History
-  //         const queue = extendedResult?.filter(
-  //           (element) => element!.status === TX_TYPE_OPTION.STATUS.PROPOSED
-  //         );
-
-  //         const history = extendedResult?.filter(
-  //           (element) => element!.status !== TX_TYPE_OPTION.STATUS.PROPOSED
-  //         );
-
-  //         setData(extendedResult);
-  //         setDataType({
-  //           queue: queue,
-  //           history: history,
-  //         });
-  //       }
-  //     } catch (err) {
-  //       customReportError(err);
-  //       setError("An error has ocurred");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchData().finally(() => {
-  //     setIsLoading(false);
-  //   });
-  // }, [
-  //   multisigContractPromise?.contract,
-  //   chain.token,
-  //   network,
-  //   signers,
-  //   txQueueRepository,
-  //   xsignersAddress,
-  // ]);
-
   const createTxList = useCallback(async () => {
-    // if (!multisigContractPromise) return;
+    if (!multisigContractPromise || !pSPContractPromise) return;
     setIsLoading(true);
     setError(null);
 
@@ -277,9 +194,22 @@ export function useListTxQueue(
 
       if (!result) throw Error("Query failure");
 
-      const extendedResult = result.map((txProposed) =>
-        toTxProposedItemUi(txProposed, network, owners)
-      );
+      const extendedResult = result.map((txProposed) => ({
+        ...txProposed,
+        ownersAction: mapOwnersToActions({
+          owners,
+          approvals: txProposed.approvals,
+          rejectors: txProposed.rejections,
+          network,
+        }),
+        ...getDisplayInfo({
+          multisigContractPromise: multisigContractPromise.contract,
+          pspContractPromise: pSPContractPromise.contract,
+          txProposed,
+          multisigAddress: xsignerAddress,
+          nativeTokenSymbol: chain.token,
+        }),
+      }));
 
       setData(extendedResult);
     } catch (err) {
@@ -288,7 +218,14 @@ export function useListTxQueue(
     } finally {
       setIsLoading(false);
     }
-  }, [network, owners, txQueueRepository, xsignerAddress]);
+  }, [
+    multisigContractPromise,
+    network,
+    owners,
+    pSPContractPromise,
+    txQueueRepository,
+    xsignerAddress,
+  ]);
 
   useEffect(() => {
     createTxList();

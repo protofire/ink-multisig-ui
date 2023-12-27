@@ -19,8 +19,8 @@ interface Props {
 
 export const TxQueueWidgetItem = ({ data, owners }: Props) => {
   const date = formatDate(data.creationTimestamp);
-  const from = data.from ?? data.contractAddress;
-  const approvalCount = data.approvalCount || 0;
+  const from = data.contractAddress;
+  const approvalCount = data.approvalCount;
 
   return (
     <ListItemtyled>
@@ -41,7 +41,7 @@ export const TxQueueWidgetItem = ({ data, owners }: Props) => {
         </StyledBox>
         <StyledValueBox>
           {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
-          {`${data.value} ${data.token}`}
+          {`${data.valueAmount}`}
           <span>
             {approvalCount}/{owners}
           </span>
