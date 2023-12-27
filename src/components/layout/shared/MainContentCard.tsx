@@ -20,7 +20,8 @@ export const MainContentCard: React.FC<MyCardProps> = ({
     <BoxContentCentered
       sx={{
         maxWidth: "100%",
-        margin: { xs: 1, sm: 2, md: 3, lg: 4, xl: 7 },
+        margin: { xs: 1, sm: 2, md: 3, lg: 4, xl: 10 },
+        marginTop: { xs: 8, sm: 10, md: 10, lg: 12, xl: 20 },
         ...sx,
       }}
     >

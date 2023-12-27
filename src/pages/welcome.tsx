@@ -34,7 +34,6 @@ export default function WelcomePage() {
           alignItems: "center",
           sx: {
             backgroundColor: theme.palette.background.paper,
-            margin: { xs: 1, sm: 2, md: 3, lg: 3, xl: 3 },
             padding: { xs: 1, sm: 2, md: 3, lg: 3, xl: 3 },
           },
         }}
