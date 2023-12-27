@@ -19,6 +19,12 @@ import { mapOwnersToActions } from "./mapOwnersToActions";
 
 export type TabTxTypes = "queue" | "history";
 
+export const TX_OWNER_STATUS_TYPE = {
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+  PENDING: "Pending",
+};
+
 export const TX_TYPE_OPTION = {
   RECEIVE: "Receive",
   SEND: "Send",
@@ -30,7 +36,6 @@ export const TX_TYPE_OPTION = {
   STATUS: {
     PROPOSED: "PROPOSED",
     EXECUTED_SUCCESS: "EXECUTED_SUCCESS",
-    APPROVAL: "Approval",
   },
 };
 

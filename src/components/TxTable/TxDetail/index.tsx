@@ -39,11 +39,16 @@ export const TxDetails = ({ data, network }: Props) => {
           borderBottom: "3px solid #120D0E",
         }}
       >
-        <Typography color="white" mb={1}>
+        {/* <Typography color="white" mb={1}>
           {data.type}{" "}
           <span
             style={{ fontWeight: "bold" }}
-          >{`${data.value} ${data.token}`}</span>{" "}
+          >{`${data.valueAmount} ${data.token}`}</span>{" "}
+          {data.txMsg}
+        </Typography> */}
+        <Typography color="white" mb={1}>
+          {data.type}{" "}
+          <span style={{ fontWeight: "bold" }}>{`${data.valueAmount}`}</span>{" "}
           {data.txMsg}
         </Typography>
 

@@ -13,6 +13,7 @@ import Image from "next/image";
 import { ChainId } from "useink/dist/chains";
 
 import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
@@ -26,13 +27,19 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 }));
 
 type Props = {
-  data: ExtendedDataType;
+  data: TransactionProposedItemUi;
   index: number;
   network: ChainId;
 };
 
 export const TxDetailItem = ({ data, index, network }: Props) => {
   const date = formatDate(data.creationTimestamp);
+
+  const txStateMsg =
+    data.status === TX_TYPE_OPTION.STATUS.PROPOSED
+      ? "Awaiting Confirmations"
+      : "Success";
+
   const successTx =
     data.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS ||
     data.type === TX_TYPE_OPTION.RECEIVE;
@@ -84,7 +91,7 @@ export const TxDetailItem = ({ data, index, network }: Props) => {
           <StyledGrid item xs={2} sm={2} md={2}>
             <Typography>
               {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
-              {`${data.value} ${data.token}`}
+              {`${data.valueAmount}`}
             </Typography>
           </StyledGrid>
           <StyledGrid item xs={3} sm={3} md={3}>
@@ -92,16 +99,23 @@ export const TxDetailItem = ({ data, index, network }: Props) => {
           </StyledGrid>
           <StyledGrid item xs={2} sm={2} md={2}>
             <Typography color={successTx ? "#ADD500" : "#FF9C7D"}>
-              {data.txStateMsg}
+              {txStateMsg}
             </Typography>
           </StyledGrid>
         </Grid>
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
-          <TxDetails data={data} network={network} />
+          <TxDetails
+            data={data as unknown as ExtendedDataType}
+            network={network}
+          />
           {data.type !== TX_TYPE_OPTION.RECEIVE ? (
-            <TxStepper data={data.stepperData} network={network} />
+            <TxStepper
+              approvalCount={data.approvalCount}
+              owners={data.ownersAction}
+              network={network}
+            />
           ) : (
             <></>
           )}

@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
 import { TxDetailItem } from "@/components/TxTable/TxDetailItem";
-import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 
 export default function TxDetail() {
@@ -20,7 +20,7 @@ export default function TxDetail() {
         Transaction details
       </Typography>
       <TxDetailItem
-        data={{} as ExtendedDataType}
+        data={{} as TransactionProposedItemUi}
         index={0}
         network={network}
       ></TxDetailItem>

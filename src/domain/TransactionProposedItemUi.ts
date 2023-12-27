@@ -13,7 +13,8 @@ export type TransactionDisplayInfo = {
   img: string;
   txMsg: "from" | "to" | undefined;
   valueAmount: string;
-  to: string;
+  to: string | undefined;
+  from: string | undefined;
 };
 
 export interface TransactionProposedItemUi
@@ -27,5 +28,6 @@ export const emptyDisplayInfo: TransactionDisplayInfo = {
   type: undefined,
   txMsg: undefined,
   valueAmount: "",
-  to: "",
+  to: undefined,
+  from: undefined,
 };

@@ -13,7 +13,7 @@ import * as React from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { Order } from "@/domain/repositores/ITxQueueRepository";
-import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
+import { TX_OWNER_STATUS_TYPE } from "@/hooks/txQueue/useListTxQueue";
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
@@ -74,17 +74,16 @@ function ColorlibStepIcon(props: StepIconProps) {
 }
 
 export default function TxStepper({
-  data,
+  approvalCount,
+  owners,
   network,
 }: {
-  data: Order[] | undefined;
+  approvalCount: number;
+  owners: Order[] | undefined;
   network: ChainId;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
-  const approvalCount = data?.filter(
-    (element) => element.status === TX_TYPE_OPTION.STATUS.APPROVAL
-  ).length;
-  const approvalsLength = data?.length;
+  const approvalsLength = owners?.length;
 
   return (
     <Box
@@ -119,12 +118,12 @@ export default function TxStepper({
           </StepLabel>
         </Step>
         {showOwners ? (
-          data?.map((element: Order, index: number) => (
+          owners?.map((element: Order, index: number) => (
             <Step key={index}>
               <StepLabel
                 StepIconComponent={() =>
                   CircleStepIcon(
-                    element.status === TX_TYPE_OPTION.STATUS.APPROVAL
+                    element.status === TX_OWNER_STATUS_TYPE.APPROVED
                   )
                 }
               >

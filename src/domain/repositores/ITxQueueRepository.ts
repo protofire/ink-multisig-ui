@@ -1,4 +1,5 @@
 import { TransactionProposed } from "../TransactionProposed";
+import { OwnerWithAction } from "../TransactionProposedItemUi";
 import { RawExternalTransactionData } from "./IXsignerOwnersRepository";
 
 export interface MyQueryVariables {
@@ -32,7 +33,7 @@ export interface RawTransactionProposed {
   args: string;
   contractAddress: string;
   creationBlockNumber: number;
-  creationTimestamp: string;
+  creationTimestamp: Date;
   error?: string;
   executionTxHash?: string;
   externalTransactionData: RawExternalTransactionData | null;
@@ -66,5 +67,6 @@ export type ExtendedDataType = TxType & {
   to: string;
   txMsg: string;
   txStateMsg: string;
-  stepperData: Order[] | undefined;
+  valueAmount: string;
+  ownersAction: OwnerWithAction[] | undefined;
 };

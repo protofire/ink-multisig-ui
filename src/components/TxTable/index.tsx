@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { TabTxTypes, useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
+import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
 
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import TxTabs from "./Tabs";
@@ -18,18 +18,18 @@ interface Props {
 export default function TxTable({ xsignerAccount }: Props) {
   const [type, setType] = useState(types[0]);
   const { network } = usePolkadotContext();
-  const { listTxByType } = useListTxQueue(xsignerAccount, network);
+  const { data } = useListTxQueue(xsignerAccount, network);
   const handleChange = (newValue: number) => {
     setType(types[newValue]);
   };
 
-  const tableData = listTxByType(type as TabTxTypes);
+  // const tableData = listTxByType(type as TabTxTypes);
   return (
     <Box sx={{ width: "100%" }}>
       <TxTabs options={["Queue", "History"]} onChange={handleChange}>
-        {tableData !== undefined ? (
+        {data !== undefined ? (
           <>
-            {tableData.map((data, index) => {
+            {data.map((data, index) => {
               return (
                 <Box key={index}>
                   <TxDetailItem

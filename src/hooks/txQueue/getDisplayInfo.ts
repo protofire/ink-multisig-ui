@@ -42,7 +42,8 @@ export const getDisplayInfo = async ({
     type: "Send",
     txMsg: "to",
     valueAmount: "",
-    to: "",
+    to: undefined,
+    from: undefined,
   };
 
   let contractPromise = new ContractPromise(
