@@ -1,15 +1,19 @@
 import { Box, Grid } from "@mui/material";
 
-import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
+import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 
 import { CustomGridItem } from "./styled";
 
-type Props = { data: ExtendedDataType };
+type Props = { data: TransactionProposedItemUi };
 
 export const AdvancedDetail = ({ data }: Props) => {
   const DATA = {
     Method: data.selector,
-    Args: data.args,
+    Name: data.methodName ?? "-",
+    "Raw args": data.args ?? "-",
+    Value: data.value,
+    "Creation block #": data.creationBlockNumber,
+    "Last update block #": data.lastUpdatedBlockNumber,
   };
 
   return (
@@ -17,8 +21,8 @@ export const AdvancedDetail = ({ data }: Props) => {
       {Object.entries(DATA).map(([name, value], index) => {
         return (
           <Box sx={{ width: "100%", display: "flex" }} key={index}>
-            <CustomGridItem colType="name">{name}</CustomGridItem>
-            <CustomGridItem colType="value">{value}</CustomGridItem>
+            <CustomGridItem colType="name">{`${name}:`}</CustomGridItem>
+            <CustomGridItem colType="value">{value as string}</CustomGridItem>
           </Box>
         );
       })}
