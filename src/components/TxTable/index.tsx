@@ -23,7 +23,6 @@ export default function TxTable({ xsignerAccount }: Props) {
     setType(types[newValue]);
   };
 
-  // const tableData = listTxByType(type as TabTxTypes);
   return (
     <Box sx={{ width: "100%" }}>
       <TxTabs options={["Queue", "History"]} onChange={handleChange}>
