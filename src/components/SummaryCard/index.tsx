@@ -39,7 +39,10 @@ export const SummaryCard = ({
         <CardHeader
           sx={{ paddingBottom: 0 }}
           title={
-            <Typography variant="h4" color="white">
+            <Typography
+              sx={{ typography: { lg: "h5", xl: "h4" } }}
+              color="white"
+            >
               {captionTitle}
             </Typography>
           }
