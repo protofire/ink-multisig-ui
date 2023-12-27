@@ -2,13 +2,9 @@ import { Owner } from "./SignatoriesAccount";
 import { TransactionProposed } from "./TransactionProposed";
 
 export interface OwnerWithAction extends Owner {
-  actionTimestamp: Date;
+  actionTimestamp: Date | null;
+  status: "Pending" | "Approved" | "Rejected";
 }
-
-export type OwnersWithAction = {
-  approvers: OwnerWithAction[];
-  rejectors: OwnerWithAction[];
-};
 
 type CustomTx = string;
 
@@ -23,7 +19,7 @@ export type TransactionDisplayInfo = {
 export interface TransactionProposedItemUi
   extends TransactionProposed,
     TransactionDisplayInfo {
-  ownersAction: OwnersWithAction;
+  ownersAction: OwnerWithAction[];
 }
 
 export const emptyDisplayInfo: TransactionDisplayInfo = {

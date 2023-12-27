@@ -1,9 +1,6 @@
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { Approval, Rejection } from "@/domain/TransactionProposed";
-import {
-  OwnersWithAction,
-  OwnerWithAction,
-} from "@/domain/TransactionProposedItemUi";
+import { OwnerWithAction } from "@/domain/TransactionProposedItemUi";
 import { ChainId } from "@/services/useink/types";
 import { formatAddressForNetwork } from "@/utils/blockchain";
 
@@ -19,35 +16,38 @@ export function mapOwnersToActions({
   approvals,
   rejectors,
   network,
-}: Props): OwnersWithAction {
-  const approvers: OwnerWithAction[] = [];
-  const rejectorsList: OwnerWithAction[] = [];
+}: Props): OwnerWithAction[] {
+  const _owners: OwnerWithAction[] = owners.map((owner) => ({
+    ...owner,
+    status: "Pending",
+    actionTimestamp: null,
+  }));
 
-  owners.forEach((owner) => {
+  _owners.forEach((owner, index) => {
     const _ownerAddress = formatAddressForNetwork(owner.address, network);
 
     const approval = approvals.find(
       (approval) => approval.approver === _ownerAddress
     );
     if (approval) {
-      approvers.push({
-        address: approval.approver,
-        name: owner.name,
+      _owners[index] = {
+        ..._owners[index],
+        status: "Approved",
         actionTimestamp: approval.approvalTimestamp,
-      });
+      };
     }
 
     const rejection = rejectors.find(
       (rejection) => rejection.rejector === _ownerAddress
     );
     if (rejection) {
-      rejectorsList.push({
-        address: rejection.rejector,
-        name: owner.name,
+      _owners[index] = {
+        ..._owners[index],
+        status: "Rejected",
         actionTimestamp: rejection.rejectionTimestamp,
-      });
+      };
     }
   });
 
-  return { approvers, rejectors: rejectorsList };
+  return _owners;
 }
