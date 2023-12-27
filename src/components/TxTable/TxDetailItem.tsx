@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { ChainId } from "useink/dist/chains";
 
+import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
@@ -27,29 +28,46 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 }));
 
 type Props = {
-  data: TransactionProposedItemUi;
+  txData: TransactionProposedItemUi;
   index: number;
   network: ChainId;
 };
 
-export const TxDetailItem = ({ data, index, network }: Props) => {
-  const date = formatDate(data.creationTimestamp);
+export const TxDetailItem = ({ txData, index, network }: Props) => {
+  const date = formatDate(txData.creationTimestamp);
 
   const txStateMsg =
-    data.status === TX_TYPE_OPTION.STATUS.PROPOSED
+    txData.status === TX_TYPE_OPTION.STATUS.PROPOSED
       ? "Awaiting Confirmations"
       : "Success";
 
   const successTx =
-    data.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS ||
-    data.type === TX_TYPE_OPTION.RECEIVE;
+    txData.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS ||
+    txData.type === TX_TYPE_OPTION.RECEIVE;
+
+  if (!txData.type) {
+    return (
+      <Accordion>
+        <Grid
+          sx={{
+            "&.MuiGrid-root": {
+              padding: "1.3rem",
+            },
+          }}
+          container
+        >
+          <LoadingSkeleton />
+        </Grid>
+      </Accordion>
+    );
+  }
 
   return (
     <Accordion>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
+        aria-controls={`${txData.id}-content`}
+        id={`${txData.id}-header`}
       >
         <Grid
           sx={{
@@ -67,7 +85,13 @@ export const TxDetailItem = ({ data, index, network }: Props) => {
             <Typography>{index + 1}</Typography>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
-            <Image src={data.img} priority width={30} height={30} alt="test" />
+            <Image
+              src={txData.img}
+              priority
+              width={30}
+              height={30}
+              alt="test"
+            />
           </StyledGrid>
           <StyledGrid
             item
@@ -82,16 +106,16 @@ export const TxDetailItem = ({ data, index, network }: Props) => {
                 flexDirection: "column",
               }}
             >
-              <span>{data.type}</span>
+              <span>{txData.type}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                {data.txMsg} : {truncateAddress(data.from ?? data.to, 9)}
+                {txData.txMsg} : {truncateAddress(txData.from ?? txData.to, 9)}
               </span>
             </Box>
           </StyledGrid>
           <StyledGrid item xs={2} sm={2} md={2}>
             <Typography>
-              {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
-              {`${data.valueAmount}`}
+              {txData.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
+              {`${txData.valueAmount}`}
             </Typography>
           </StyledGrid>
           <StyledGrid item xs={3} sm={3} md={3}>
@@ -107,13 +131,13 @@ export const TxDetailItem = ({ data, index, network }: Props) => {
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
           <TxDetails
-            data={data as unknown as ExtendedDataType}
+            data={txData as unknown as ExtendedDataType}
             network={network}
           />
-          {data.type !== TX_TYPE_OPTION.RECEIVE ? (
+          {txData.type !== TX_TYPE_OPTION.RECEIVE ? (
             <TxStepper
-              approvalCount={data.approvalCount}
-              owners={data.ownersAction}
+              approvalCount={txData.approvalCount}
+              owners={txData.ownersAction}
               network={network}
             />
           ) : (
