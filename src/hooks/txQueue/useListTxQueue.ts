@@ -66,7 +66,7 @@ export function useListTxQueue(
       const extendedResult: TransactionProposedItemUi[] = result.map((tx) => ({
         ...tx,
         ...emptyDisplayInfo,
-        ownersAction: { approvers: [], rejectors: [] },
+        ownersAction: [],
       }));
       result.forEach(async (txProposed, index) => {
         const displayInfo = await getDisplayInfo({
@@ -97,7 +97,8 @@ export function useListTxQueue(
     }
   }, [
     apiPromise,
-    chain.token,
+    chain,
+    decimals,
     network,
     owners,
     txQueueRepository,
