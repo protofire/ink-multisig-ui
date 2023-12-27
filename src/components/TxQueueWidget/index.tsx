@@ -41,7 +41,7 @@ export const TxQueueWidget = ({ xsignerAccount }: Props) => {
         <>
           <StyledList>
             {data.map((tx, index) => (
-              <TxQueueWidgetItem data={tx!} key={index} owners={owners} />
+              <TxQueueWidgetItem data={tx} key={tx.txId} owners={owners} />
             ))}
           </StyledList>
           <StyledButton LinkComponent={Link} href={ROUTES.Transactions}>

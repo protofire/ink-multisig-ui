@@ -5,6 +5,7 @@ import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
+import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import {
   ListItemtyled,
   StyledBox,
@@ -19,28 +20,37 @@ interface Props {
 
 export const TxQueueWidgetItem = ({ data, owners }: Props) => {
   const date = formatDate(data.creationTimestamp);
-  const from = data.contractAddress;
-  const approvalCount = data.approvalCount;
+  const { to, approvalCount, type, img } = data;
+
+  if (!data.type) {
+    return (
+      <ListItemtyled>
+        <StyledBox sx={{ width: "100%", minHeight: "2.8rem" }}>
+          <LoadingSkeleton />
+        </StyledBox>
+      </ListItemtyled>
+    );
+  }
 
   return (
     <ListItemtyled>
       <StyledBox sx={{ width: "100%" }}>
         <StyledBox>
           <Image
-            src={data.img}
+            src={img}
             alt="Arrow receive"
             priority
             width={30}
             height={30}
           />
           <StyledStack>
-            <span>{data.type}</span>
+            <span>{type}</span>
             <span>{date}</span>
-            <p>{truncateAddress(from, 12)}</p>
+            <p>to: {truncateAddress(to, 12)}</p>
           </StyledStack>
         </StyledBox>
         <StyledValueBox>
-          {data.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
+          {type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
           {`${data.valueAmount}`}
           <span>
             {approvalCount}/{owners}

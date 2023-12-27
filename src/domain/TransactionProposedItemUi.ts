@@ -11,10 +11,11 @@ export type OwnersWithAction = {
 };
 
 export type TransactionDisplayInfo = {
-  type: "Receive" | "Send";
+  type: "Receive" | "Send" | undefined;
   img: string;
-  txMsg: "from" | "to";
+  txMsg: "from" | "to" | undefined;
   valueAmount: string;
+  to: string;
 };
 
 export interface TransactionProposedItemUi
@@ -22,3 +23,11 @@ export interface TransactionProposedItemUi
     TransactionDisplayInfo {
   ownersAction: OwnersWithAction;
 }
+
+export const emptyDisplayInfo: TransactionDisplayInfo = {
+  img: "",
+  type: undefined,
+  txMsg: undefined,
+  valueAmount: "",
+  to: "",
+};
