@@ -54,7 +54,8 @@ export function rawToTransactionProposed(
   return {
     approvalCount: rawTransaction.approvalCount,
     approvals: createApprovals(rawTransaction.approvals),
-    args: args ?? rawArgs,
+    args,
+    rawArgs,
     contractAddress: rawTransaction.contractAddress,
     creationBlockNumber: rawTransaction.creationBlockNumber,
     creationTimestamp: new Date(rawTransaction.creationTimestamp),

@@ -2,12 +2,12 @@ import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
+import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
+import CopyButton from "@/components/common/CopyButton";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 
-import { AccountAvatar } from "../../AddressAccountSelect/AccountAvatar";
-import CopyButton from "../../common/CopyButton";
 import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
@@ -31,11 +31,7 @@ export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
         position: "relative",
       }}
     >
-      <AccountAvatar
-        address={address!}
-        name={name}
-        truncateLenght={16}
-      ></AccountAvatar>
+      <AccountAvatar address={address!} name={name} truncateLenght={16} />
       <Box sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}>
         <CopyButton text={address!} />
         <ExplorerLink
@@ -53,9 +49,9 @@ export const TxDetails = ({ data, network }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
   const TxComponentType = ({ data }: Props): JSX.Element => {
     if (data.type === TX_TYPE_OPTION.RECEIVE) {
-      return <ReceivedDetail data={data}></ReceivedDetail>;
+      return <ReceivedDetail data={data} />;
     }
-    return <SendDetail data={data} network={network}></SendDetail>;
+    return <SendDetail data={data} network={network} />;
   };
 
   return (
@@ -97,10 +93,13 @@ export const TxDetails = ({ data, network }: Props) => {
             )}
           </>
         ) : (
-          <></>
+          <Typography color="white" mb={1}>
+            Contract interaction with{" "}
+            <span style={{ fontWeight: "bold" }}>{data.type}</span>
+          </Typography>
         )}
         <Box mt={4}>
-          {<TxComponentType data={data} network={network}></TxComponentType>}
+          <TxComponentType data={data} network={network} />
           {data.selector ? (
             <>
               <Typography
@@ -117,15 +116,9 @@ export const TxDetails = ({ data, network }: Props) => {
               >
                 {"Advanced Details"}
               </Typography>
-              {!showAdvancedDetails ? (
-                <AdvancedDetail data={data}></AdvancedDetail>
-              ) : (
-                <></>
-              )}
+              {!showAdvancedDetails ? <AdvancedDetail data={data} /> : null}
             </>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </Box>
       </Box>
     </Box>
