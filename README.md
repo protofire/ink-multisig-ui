@@ -18,9 +18,18 @@ To run this project, you will need:
 
 ### 🚀 Run App
 
+### Docker
+
+- Run the app with `docker-compose --env-file .docker/squid/.env_squid up`
+
+> To stop the app, run `docker-compose down`
+
+### Local Stack
+
 - Run the app with `yarn dev`
 
 ### 🎨 Run Storybook
+
 - Run storybook system design with `yarn storybook`
 
 ## 🧹 Linting

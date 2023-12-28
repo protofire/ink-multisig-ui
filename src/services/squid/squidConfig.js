@@ -1,3 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require("dotenv").config();
+
+const SHIBUYA_GQL_ENDPOINT = process.env.NEXT_SHIBUYA_GQL_ENDPOINT;
 module.exports.config = {
-  "shibuya-testnet": "http://18.118.77.170:4350/graphql",
+  "shibuya-testnet": SHIBUYA_GQL_ENDPOINT,
 };
