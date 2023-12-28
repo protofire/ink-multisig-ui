@@ -11,21 +11,39 @@ To run this project, you will need:
 
 ## Getting Started
 
-### 🛠️ Installation
-
-1. Clone the repository
-2. Install the dependencies with `yarn`
-
 ### 🚀 Run App
 
-### Docker
+- Clone the repository
 
-- Run the app with `docker-compose --env-file .docker/squid/.env_squid up`
+### Docker Setup
 
-> To stop the app, run `docker-compose down`
+To run the web app along with the Squid node, follow these steps:
+
+- Execute the following command to instantiate all necessary components. Note that it is crucial to wait for the Squid node to be fully synchronized before proceeding and using the app.
+
+  ```bash
+  docker-compose --env-file .docker/squid/.env_squid up
+  ```
+
+- If you prefer running the app without a local Squid node, you can do the following:
+
+  1. Open the .docker/web/.env_web file.
+  2. Modify the NEXT_SHIBUYA_GQL_ENDPOINT variable to point to the provided test node.
+  3. Run the app using the command:
+
+  ```bash
+  docker-compose up --no-deps web
+  ```
+
+> To stop the application, use the following command:
+
+```bash
+docker-compose down
+```
 
 ### Local Stack
 
+- Install the dependencies with `yarn`
 - Run the app with `yarn dev`
 
 ### 🎨 Run Storybook
