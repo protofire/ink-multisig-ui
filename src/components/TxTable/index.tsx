@@ -3,11 +3,11 @@ import { useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
+import { capitalizeFirstLetter } from "@/utils/formatString";
 
-import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import TxTabs from "./Tabs";
-import { TxDetailItem } from "./TxDetailItem";
+import { TransactionHistory } from "./TransactionsHistory";
+import { TransactionQueueDetail } from "./TransactionsQueueDetail";
 
 const types = ["queue", "history"];
 
@@ -15,36 +15,30 @@ interface Props {
   xsignerAccount: SignatoriesAccount;
 }
 
-export default function TxTable({ xsignerAccount }: Props) {
+export function TxTable({ xsignerAccount }: Props) {
   const [type, setType] = useState(types[0]);
   const { network } = usePolkadotContext();
-  const { data } = useListTxQueue(xsignerAccount, network);
+
   const handleChange = (newValue: number) => {
     setType(types[newValue]);
   };
 
-  // const tableData = listTxByType(type as TabTxTypes);
   return (
     <Box sx={{ width: "100%" }}>
-      <TxTabs options={["Queue", "History"]} onChange={handleChange}>
-        {data !== undefined ? (
-          <>
-            {data.map((data, index) => {
-              return (
-                <Box key={index}>
-                  <TxDetailItem
-                    data={data!}
-                    network={network}
-                    index={index}
-                  ></TxDetailItem>
-                </Box>
-              );
-            })}
-          </>
+      <TxTabs
+        options={types.map((t) => capitalizeFirstLetter(t))}
+        onChange={handleChange}
+      >
+        {type === "queue" ? (
+          <TransactionQueueDetail
+            xsignerAccount={xsignerAccount}
+            network={network}
+          />
         ) : (
-          <Box mt={2}>
-            <LoadingSkeleton count={10} />
-          </Box>
+          <TransactionHistory
+            xsignerAccount={xsignerAccount}
+            network={network}
+          />
         )}
       </TxTabs>
     </Box>

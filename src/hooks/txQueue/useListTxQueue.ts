@@ -73,6 +73,8 @@ export function useListTxQueue(
         ...emptyDisplayInfo,
         ownersAction: [],
       }));
+      setData(extendedResult);
+
       result.forEach(async (txProposed, index) => {
         const displayInfo = await getDisplayInfo({
           apiPromise,
@@ -91,9 +93,25 @@ export function useListTxQueue(
           }),
           ...displayInfo,
         };
-      });
 
-      setData(extendedResult);
+        setData((prev) => {
+          if (!prev) return;
+
+          const _newState = [...prev];
+          _newState[index] = {
+            ...txProposed,
+            ownersAction: mapOwnersToActions({
+              owners,
+              approvals: txProposed.approvals,
+              rejectors: txProposed.rejections,
+              network,
+            }),
+            ...displayInfo,
+          };
+
+          return _newState;
+        });
+      });
     } catch (err) {
       customReportError(err);
       setError("An error has ocurred");

@@ -11,7 +11,7 @@ export interface Rejection {
 }
 
 export interface Arguments {
-  args: string | ContractParam[] | null;
+  args: ContractParam[] | null;
 }
 
 export interface TransactionProposed extends Arguments {
@@ -34,4 +34,5 @@ export interface TransactionProposed extends Arguments {
   status: string;
   txId: string;
   value: string;
+  rawArgs: string | null;
 }

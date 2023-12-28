@@ -59,7 +59,7 @@ export const getDisplayInfo = async ({
     const decodedData = decodeCallArgs(
       contractPromise,
       "transfer",
-      txProposed.args as string // always will be string in native transfer
+      txProposed.rawArgs as string // always will be string in native transfer
     );
 
     displayInfo["valueAmount"] = `${parseNativeBalance(decodedData[1])} ${
@@ -78,7 +78,7 @@ export const getDisplayInfo = async ({
     const decodedData = decodeCallArgs(
       contractPromise,
       "psp22::transfer",
-      txProposed.args as string // always will be string in transfer UI
+      txProposed.rawArgs as string // always will be string in transfer UI
     );
 
     tokenDecimals = getValueResponse(

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start": "next start",
     "storybook:build": "yarn build-storybook -c .storybook -o storybook-static",
     "lint": "next lint",
     "ts:check": "tsc --noEmit",
