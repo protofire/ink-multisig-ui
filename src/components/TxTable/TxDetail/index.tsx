@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { ExplorerLink } from "@/components/ExplorerLink";
-import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 
@@ -14,9 +13,41 @@ import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
 
 interface Props {
-  data: ExtendedDataType;
+  data: TransactionProposedItemUi;
   network: ChainId;
 }
+
+interface TxInfoType {
+  address: string | undefined;
+  name: string;
+  network: ChainId;
+}
+
+export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        position: "relative",
+      }}
+    >
+      <AccountAvatar
+        address={address!}
+        name={name}
+        truncateLenght={16}
+      ></AccountAvatar>
+      <Box sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}>
+        <CopyButton text={address!} />
+        <ExplorerLink
+          blockchain={network}
+          path="account"
+          txHash={address}
+          sx={{ color: "" }}
+        />
+      </Box>
+    </Box>
+  );
+};
 
 export const TxDetails = ({ data, network }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
@@ -35,49 +66,41 @@ export const TxDetails = ({ data, network }: Props) => {
       }}
     >
       <Box p={4}>
-        {data.type === TX_TYPE_OPTION.SEND ? (
+        {data.type !== TX_TYPE_OPTION.RECEIVE ? (
           <>
-            <Typography color="white" mb={1}>
-              {data.type}{" "}
-              <span
-                style={{ fontWeight: "bold" }}
-              >{`${data.valueAmount}`}</span>{" "}
-              {data.txMsg}
-            </Typography>
-
-            <Box
-              sx={{
-                display: "flex",
-                position: "relative",
-              }}
-            >
-              <AccountAvatar
-                address={data.from ?? data.to}
-                name={""}
-                truncateLenght={16}
-              ></AccountAvatar>
-              <Box
-                sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}
-              >
-                <CopyButton text={data?.from ?? data.to} />
-                <ExplorerLink
-                  blockchain={network}
-                  path="account"
-                  txHash={data.from ?? data.to}
-                  sx={{ color: "" }}
+            {data.type === TX_TYPE_OPTION.SEND ? (
+              <>
+                <Typography color="white" mb={1}>
+                  {data.type}{" "}
+                  <span
+                    style={{ fontWeight: "bold" }}
+                  >{`${data.valueAmount}`}</span>{" "}
+                  {data.txMsg}
+                </Typography>
+                <AccountExplorer
+                  address={data.to}
+                  name={""}
+                  network={network}
                 />
-              </Box>
-            </Box>
+              </>
+            ) : (
+              <>
+                <Typography color="white" mb={1}>
+                  Contract interaction with{" "}
+                </Typography>
+                <AccountExplorer
+                  address={data.contractAddress}
+                  name=""
+                  network={network}
+                />
+              </>
+            )}
           </>
         ) : (
-          <Typography color="white" mb={1}>
-            Contract interaction with{" "}
-            <span style={{ fontWeight: "bold" }}>{data.type}</span>
-          </Typography>
+          <></>
         )}
         <Box mt={4}>
           {<TxComponentType data={data} network={network}></TxComponentType>}
-
           {data.selector ? (
             <>
               <Typography
@@ -95,9 +118,7 @@ export const TxDetails = ({ data, network }: Props) => {
                 {"Advanced Details"}
               </Typography>
               {!showAdvancedDetails ? (
-                <AdvancedDetail
-                  data={data as unknown as TransactionProposedItemUi}
-                ></AdvancedDetail>
+                <AdvancedDetail data={data}></AdvancedDetail>
               ) : (
                 <></>
               )}

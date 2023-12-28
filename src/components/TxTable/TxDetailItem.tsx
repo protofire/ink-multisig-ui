@@ -13,7 +13,6 @@ import Image from "next/image";
 import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
-import { ExtendedDataType } from "@/domain/repositores/ITxQueueRepository";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
 import { formatDate, truncateAddress } from "@/utils/formatString";
@@ -130,10 +129,7 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
-          <TxDetails
-            data={txData as unknown as ExtendedDataType}
-            network={network}
-          />
+          <TxDetails data={txData} network={network} />
           {txData.type !== TX_TYPE_OPTION.RECEIVE ? (
             <TxStepper
               approvalCount={txData.approvalCount}

@@ -29,7 +29,8 @@ export const TransactionQueueDetail: React.FC<Props> = ({
 
   return (
     <>
-      {data.map((txData, index) => {
+      {data.map((txData) => {
+        const index = Number(txData.txId);
         return (
           <TxDetailItem
             key={txData.id}
