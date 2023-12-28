@@ -17,6 +17,34 @@ interface Props {
   network: ChainId;
 }
 
+interface TxInfoType {
+  address: string | undefined;
+  name: string;
+  network: ChainId;
+}
+
+export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        position: "relative",
+      }}
+    >
+      <AccountAvatar address={address!} name={name} truncateLenght={16} />
+      <Box sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}>
+        <CopyButton text={address!} />
+        <ExplorerLink
+          blockchain={network}
+          path="account"
+          txHash={address}
+          sx={{ color: "" }}
+        />
+      </Box>
+    </Box>
+  );
+};
+
 export const TxDetails = ({ data, network }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
   const TxComponentType = ({ data }: Props): JSX.Element => {
@@ -34,49 +62,39 @@ export const TxDetails = ({ data, network }: Props) => {
       }}
     >
       <Box p={4}>
-        {data.type === TX_TYPE_OPTION.SEND ? (
+        {data.type !== TX_TYPE_OPTION.RECEIVE ? (
           <>
-            <Typography color="white" mb={1}>
-              {data.type}{" "}
-              <span
-                style={{ fontWeight: "bold" }}
-              >{`${data.valueAmount}`}</span>{" "}
-              {data.txMsg}
-            </Typography>
-
-            <Box
-              sx={{
-                display: "flex",
-                position: "relative",
-              }}
-            >
-              <AccountAvatar
-                address={data.from ?? data.to}
-                name={""}
-                truncateLenght={16}
-              ></AccountAvatar>
-              <Box
-                sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}
-              >
-                <CopyButton text={data?.from ?? data.to} />
-                <ExplorerLink
-                  blockchain={network}
-                  path="account"
-                  txHash={data.from ?? data.to}
-                  sx={{ color: "" }}
+            {data.type === TX_TYPE_OPTION.SEND ? (
+              <>
+                <Typography color="white" mb={1}>
+                  {data.type}{" "}
+                  <span
+                    style={{ fontWeight: "bold" }}
+                  >{`${data.valueAmount}`}</span>{" "}
+                  {data.txMsg}
+                </Typography>
+                <AccountExplorer
+                  address={data.to}
+                  name={""}
+                  network={network}
                 />
-              </Box>
-            </Box>
+              </>
+            ) : (
+              <>
+                <Typography color="white" mb={1}>
+                  Contract interaction with{" "}
+                </Typography>
+                <AccountExplorer
+                  address={data.contractAddress}
+                  name=""
+                  network={network}
+                />
+              </>
+            )}
           </>
-        ) : (
-          <Typography color="white" mb={1}>
-            Contract interaction with{" "}
-            <span style={{ fontWeight: "bold" }}>{data.type}</span>
-          </Typography>
-        )}
+        ) : null}
         <Box mt={4}>
           <TxComponentType data={data} network={network} />
-
           {data.selector ? (
             <>
               <Typography

@@ -5,7 +5,6 @@ import { useTheme } from "@mui/material/styles";
 import router from "next/router";
 import { ChainId } from "useink/dist/chains";
 
-import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
 import { getChain } from "@/config/chain";
@@ -43,15 +42,12 @@ export function XsignersAccountTable({
   if (multisigs === null || !accountConnected) return null;
 
   return (
-    <MainContentCard
-      stylesContainer={{
-        alignItems: "center",
-        sx: {
-          margin: { xs: 1, sm: 2, md: 2, lg: 3, xl: 3 },
-        },
+    <Box
+      sx={{
+        margin: { xs: 1, sm: 2, md: 3, lg: 4, xl: 10 },
       }}
     >
-      <Box display="flex" alignItems="center" gap={1.25}>
+      <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
         <Typography variant="h3" color="white">
           My XSigners accounts ({multisigs.length})
         </Typography>
@@ -81,14 +77,15 @@ export function XsignersAccountTable({
               display="flex"
               gap={8}
               alignItems="center"
-              justifyContent="space-around"
+              justifyContent="space-between"
               sx={{
                 borderBottom: "1px solid #2F2F2F",
                 borderTop: "1px solid #2F2F2F",
                 "&:hover": { backgroundColor: "#2F2F2F" },
               }}
               p={1}
-              pl={0}
+              pl={2}
+              pr={4}
             >
               <Box width={300}>
                 <AccountSigner
@@ -141,6 +138,6 @@ export function XsignersAccountTable({
           </Box>
         ))}
       </Box>
-    </MainContentCard>
+    </Box>
   );
 }
