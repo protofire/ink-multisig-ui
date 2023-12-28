@@ -12,6 +12,7 @@ import { InkConfig } from "useink";
 
 import { AppToastNotifications } from "@/components/AppToastNotification";
 import { AppNotificationsContextProvider } from "@/components/AppToastNotification/AppNotificationsContext";
+import { ContractEventListener } from "@/components/ContractEventListener/indext";
 import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { CHAINS } from "@/config/chain";
@@ -69,6 +70,7 @@ export default function App(props: ExtendedProps) {
                 return (
                   <ThemeCustomization settings={settings}>
                     <AppNotificationsContextProvider>
+                      <ContractEventListener />
                       <WalletConnectionGuard walletRequired={walletRequired}>
                         {getLayout(<Component {...pageProps} />)}
                       </WalletConnectionGuard>
