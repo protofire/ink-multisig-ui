@@ -130,3 +130,9 @@ export const hexStringToAscii = (hexString: string): string => {
 
   return asciiString;
 };
+
+export function capitalizeFirstLetter(identifier: string | undefined) {
+  return identifier
+    ? identifier.charAt(0).toUpperCase() + identifier.slice(1)
+    : "";
+}

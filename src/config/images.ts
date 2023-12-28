@@ -8,5 +8,5 @@ export const CHAINS_IMG_PATH = `/assets/chains/`;
 export const TX_TYPE_IMG = {
   SEND: "/assets/arrow-receive.svg",
   RECEIVE: "/assets/arrow-send.svg",
-  CONTRACT: "/assets/arrow-outward.svg",
+  CONTRACT: "/assets/contract.svg",
 };
