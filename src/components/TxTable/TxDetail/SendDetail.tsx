@@ -19,7 +19,7 @@ export const SendDetail = ({
   const date = formatDate(data.creationTimestamp);
   return (
     <Grid container>
-      <CustomGridItem colType="name">Created:</CustomGridItem>
+      <CustomGridItem colType="name">Created at:</CustomGridItem>
       <CustomGridItem colType="value">{date}</CustomGridItem>
       <CustomGridItem colType="name">Created by:</CustomGridItem>
       <CustomGridItem
