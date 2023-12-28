@@ -92,12 +92,7 @@ export const TxDetails = ({ data, network }: Props) => {
               </>
             )}
           </>
-        ) : (
-          <Typography color="white" mb={1}>
-            Contract interaction with{" "}
-            <span style={{ fontWeight: "bold" }}>{data.type}</span>
-          </Typography>
-        )}
+        ) : null}
         <Box mt={4}>
           <TxComponentType data={data} network={network} />
           {data.selector ? (

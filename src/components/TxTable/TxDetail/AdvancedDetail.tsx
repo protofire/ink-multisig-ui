@@ -9,11 +9,11 @@ type Props = { data: TransactionProposedItemUi };
 
 export const AdvancedDetail = ({ data }: Props) => {
   const DATA = {
-    Method: data.selector,
-    Name: data.methodName ?? "-",
+    "Method selector": data.selector,
+    "Method name": data.methodName ?? "-",
     "Raw args": data.rawArgs ?? "-",
     Argument: data.args?.length === 0 || data.args === null ? "-" : data.args,
-    Value: data.value,
+    Value: data.valueAmount ?? data.value,
     "Creation block #": data.creationBlockNumber,
     "Last update block #": data.lastUpdatedBlockNumber,
   };
@@ -32,7 +32,7 @@ export const AdvancedDetail = ({ data }: Props) => {
                 xs={3}
                 sm={3}
                 md={3}
-              >{`${name}s:`}</Grid>
+              >{`${name}s (decoded):`}</Grid>
               <CustomGridItem colType="value" />
               <Grid
                 item
