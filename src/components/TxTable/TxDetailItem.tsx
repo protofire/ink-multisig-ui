@@ -62,7 +62,16 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
   }
 
   return (
-    <Accordion>
+    <Accordion
+      sx={{
+        "&.Mui-expanded": {
+          border: "1px solid",
+          borderColor: "#FFE873",
+          borderRadius: "0.2rem",
+          background: "#ffe87326",
+        },
+      }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls={`${txData.id}-content`}
