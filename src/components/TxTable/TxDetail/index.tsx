@@ -49,7 +49,7 @@ export const TxDetails = ({ data, network }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
   const TxComponentType = ({ data }: Props): JSX.Element => {
     if (data.type === TX_TYPE_OPTION.RECEIVE) {
-      return <ReceivedDetail data={data} />;
+      return <ReceivedDetail data={data} network={network} />;
     }
     return <SendDetail data={data} network={network} />;
   };
@@ -92,7 +92,18 @@ export const TxDetails = ({ data, network }: Props) => {
               </>
             )}
           </>
-        ) : null}
+        ) : (
+          <>
+            <Typography color="white" mb={1}>
+              {data.type}{" "}
+              <span
+                style={{ fontWeight: "bold" }}
+              >{`${data.valueAmount}`}</span>{" "}
+              {data.txMsg}
+            </Typography>
+            <AccountExplorer address={data.from} name={""} network={network} />
+          </>
+        )}
         <Box mt={4}>
           <TxComponentType data={data} network={network} />
           {data.selector ? (

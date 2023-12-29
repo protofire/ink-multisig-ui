@@ -1,9 +1,15 @@
 import { ExternalTransactionData } from "@/domain/repositores/ISquidDbRepository";
+import {
+  RawTransferProposed,
+  RawTxType,
+} from "@/domain/repositores/ITxHistoryRepository";
 import { RawTransactionProposed } from "@/domain/repositores/ITxQueueRepository";
 import {
   Approval,
+  FullTxProposed,
   Rejection,
   TransactionProposed,
+  TransferProposed,
 } from "@/domain/TransactionProposed";
 
 import { rawToExternalTransactionData } from "./toExternalTxData";
@@ -73,5 +79,38 @@ export function rawToTransactionProposed(
     status: rawTransaction.status,
     txId: rawTransaction.txId,
     value: rawTransaction.value,
+    typename: rawTransaction.__typename,
+  };
+}
+
+export function rawToTransferProposed(
+  rawTransfer: RawTransferProposed
+): TransferProposed {
+  return {
+    from: rawTransfer.from,
+    id: rawTransfer.id,
+    creationBlockNumber: rawTransfer.creationBlockNumber,
+    creationTimestamp: new Date(rawTransfer.creationTimestamp),
+    to: rawTransfer.to,
+    tokenAddress: rawTransfer.tokenAddress,
+    transferType: rawTransfer.transferType,
+    tokenDecimals: rawTransfer.tokenDecimals,
+    value: rawTransfer.value,
+    typename: rawTransfer.__typename,
+  };
+}
+
+export function rawToFullTxProposed(rawTx: RawTxType): FullTxProposed {
+  let transaction = {} as TransactionProposed;
+  let transfer = {} as TransferProposed;
+  if (rawTx.__typename === "Transaction") {
+    transaction = rawToTransactionProposed(rawTx);
+    console.log("transaction", transaction);
+  }
+  transfer = rawToTransferProposed(rawTx);
+
+  return {
+    ...transaction,
+    ...transfer,
   };
 }

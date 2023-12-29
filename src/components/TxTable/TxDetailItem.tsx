@@ -34,7 +34,6 @@ type Props = {
 
 export const TxDetailItem = ({ txData, index, network }: Props) => {
   const date = formatDate(txData.creationTimestamp);
-
   const txStateMsg =
     txData.status === TX_TYPE_OPTION.STATUS.PROPOSED
       ? "Awaiting Confirmations"
@@ -42,6 +41,7 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
 
   const successTx =
     txData.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS ||
+    txData.status === TX_TYPE_OPTION.STATUS.EXECUTED_FAILURE ||
     txData.type === TX_TYPE_OPTION.RECEIVE;
 
   if (!txData.type) {

@@ -13,6 +13,7 @@ import { SignatoriesAccountDatabase } from "@/services/localDB/SignatoriesAccoun
 import { XsignerSelectedRepository } from "@/services/localDB/XsignerSelectedRepository";
 import { LocalStorageNetworkRepository } from "@/services/LocalStorageNetworkRepository";
 import { GraphClient } from "@/services/squid/GraphClient";
+import { TxHistoryRepository } from "@/services/squid/TxHistoryRepository";
 import { TxQueueRepository } from "@/services/squid/TxQueueRepository";
 import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 
@@ -24,6 +25,7 @@ interface DbContext {
   addressBookRepository: IAddressBookRepository;
   assetRepository: IAssetRepository;
   txQueueRepository: ITxQueueRepository;
+  txHistoryRepository: TxHistoryRepository;
 }
 
 const signatoriesAccountRepository = new SignatoriesAccountDatabase(
@@ -36,6 +38,7 @@ const networkRepository = new LocalStorageNetworkRepository();
 const graphSquidClient = new GraphClient(networkRepository);
 const xsignerOwnersRepository = new XsignerOwnersRepository(graphSquidClient);
 const txQueueRepository = new TxQueueRepository(graphSquidClient);
+const txHistoryRepository = new TxHistoryRepository(graphSquidClient);
 
 const DbContext = createContext<DbContext>({
   networkRepository,
@@ -45,6 +48,7 @@ const DbContext = createContext<DbContext>({
   addressBookRepository,
   assetRepository,
   txQueueRepository,
+  txHistoryRepository,
 });
 
 export const LocalDbProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -58,6 +62,7 @@ export const LocalDbProvider: React.FC<PropsWithChildren> = ({ children }) => {
         addressBookRepository,
         assetRepository,
         txQueueRepository,
+        txHistoryRepository,
       }}
     >
       {children}

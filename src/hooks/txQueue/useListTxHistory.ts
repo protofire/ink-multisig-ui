@@ -8,13 +8,14 @@ import { TransactionEvents } from "@/domain/events/TransactionEvents";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   emptyDisplayInfo,
+  TransactionDisplayInfo,
   TransactionProposedItemUi,
 } from "@/domain/TransactionProposedItemUi";
 import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { customReportError } from "@/utils/error";
 
 import { useNetworkApi } from "../useNetworkApi";
-import { getDisplayInfo } from "./getDisplayInfo";
+import { getDisplayInfo, getDisplayTransferInfo } from "./getDisplayInfo";
 import { mapOwnersToActions } from "./mapOwnersToActions";
 
 export type TabTxTypes = "queue" | "history";
@@ -36,11 +37,10 @@ export const TX_TYPE_OPTION = {
   STATUS: {
     PROPOSED: "PROPOSED",
     EXECUTED_SUCCESS: "EXECUTED_SUCCESS",
-    EXECUTED_FAILURE: "EXECUTED_FAILURE",
   },
 };
 
-export function useListTxQueue(
+export function useListTxHistory(
   xsignerAccount: SignatoriesAccount,
   network: ChainId
 ) {
@@ -51,7 +51,7 @@ export function useListTxQueue(
   const [error, setError] = useState<string | null>(null);
   const chain = getChain(network);
   const { owners, address: xsignerAddress } = xsignerAccount;
-  const { txQueueRepository } = useLocalDbContext();
+  const { txHistoryRepository } = useLocalDbContext();
   const { apiPromise } = useNetworkApi();
   const { decimals } = usePolkadotContext();
 
@@ -65,8 +65,7 @@ export function useListTxQueue(
     setError(null);
 
     try {
-      const result = await txQueueRepository.getQueue(xsignerAddress);
-
+      const result = await txHistoryRepository.getHistory(xsignerAddress);
       if (!result) throw Error("Query failure");
 
       const extendedResult: TransactionProposedItemUi[] = result.map((tx) => ({
@@ -77,29 +76,16 @@ export function useListTxQueue(
       setData(extendedResult);
 
       result.forEach(async (txProposed, index) => {
-        const displayInfo = await getDisplayInfo({
+        let displayInfo: TransactionDisplayInfo;
+        displayInfo = await getDisplayInfo({
           apiPromise,
           txProposed,
           multisigAddress: xsignerAddress,
           nativeToken: { ...chain, decimals },
         });
 
-        extendedResult[index] = {
-          ...txProposed,
-          ownersAction: mapOwnersToActions({
-            owners,
-            approvals: txProposed.approvals,
-            rejectors: txProposed.rejections,
-            network,
-          }),
-          ...displayInfo,
-        };
-
-        setData((prev) => {
-          if (!prev) return;
-
-          const _newState = [...prev];
-          _newState[index] = {
+        if (txProposed.typename === "Transaction") {
+          extendedResult[index] = {
             ...txProposed,
             ownersAction: mapOwnersToActions({
               owners,
@@ -109,9 +95,40 @@ export function useListTxQueue(
             }),
             ...displayInfo,
           };
+          setData((prev) => {
+            if (!prev) return;
+            const _newState = [...prev];
+            _newState[index] = {
+              ...txProposed,
+              ownersAction: mapOwnersToActions({
+                owners,
+                approvals: txProposed.approvals,
+                rejectors: txProposed.rejections,
+                network,
+              }),
+              ...displayInfo,
+            };
+            return _newState;
+          });
+        } else {
+          displayInfo = await getDisplayTransferInfo({
+            apiPromise,
+            txProposed,
+            multisigAddress: xsignerAddress,
+            nativeToken: { ...chain, decimals },
+          });
 
-          return _newState;
-        });
+          setData((prev) => {
+            if (!prev) return;
+            const _newState = [...prev];
+            _newState[index] = {
+              ...txProposed,
+              ownersAction: [],
+              ...displayInfo,
+            };
+            return _newState;
+          });
+        }
       });
     } catch (err) {
       customReportError(err);
@@ -125,7 +142,7 @@ export function useListTxQueue(
     decimals,
     network,
     owners,
-    txQueueRepository,
+    txHistoryRepository,
     xsignerAddress,
   ]);
 
