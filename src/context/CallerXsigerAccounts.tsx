@@ -62,10 +62,10 @@ export const CallerXsignersAccountProvider: React.FC<PropsWithChildren> = ({
 
         if (existingAccount) {
           const updatedOwners = multisig.owners.map((owner: Owner) => {
-            const newOwnerData =
+            const oldOwnerData =
               existingAccount.owners.find((o) => o.address === owner.address) ||
               owner;
-            return { ...newOwnerData };
+            return { ...owner, name: oldOwnerData.name };
           });
 
           accountsToUpdate.push({

@@ -58,6 +58,7 @@ export class XsignerOwnersRepository implements IXsignerOwnersRepository {
       variables: {
         address: [address],
       },
+      fetchPolicy: "network-only",
     });
 
     if (!data?.multisigs) return null;

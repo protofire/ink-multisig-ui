@@ -64,6 +64,7 @@ export class TxQueueRepository implements ITxQueueRepository {
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_QUEUE,
       variables: { address },
+      fetchPolicy: "network-only",
     });
     return data?.transactions.map((transactions) =>
       rawToTransactionProposed(transactions)
