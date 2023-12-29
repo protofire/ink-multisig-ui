@@ -55,50 +55,50 @@ export default function SettingsPage() {
   const managerStep = useManagerActiveStep();
   const { setXsigner } = useSetXsignerSelected();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!xSignerSelected?.address) return;
-      try {
-        const result = await xsignerOwnersRepository.getMultisigByAddress(
-          xSignerSelected.address as string
-        );
-        if (result) {
-          const newOwners = result.owners
-            .filter((address) => {
-              return !xSignerSelected.owners?.find(
-                (owner) => owner.address === address
-              );
-            })
-            ?.map((address, index) => {
-              return {
-                address: address,
-                name: `Signer ${
-                  (xSignerSelected.owners?.length ?? 0) + index + 1
-                }`,
-              };
-            });
-          const owners =
-            newOwners.length > 0
-              ? xSignerSelected.owners?.length > 0
-                ? [...xSignerSelected.owners, ...newOwners]
-                : newOwners
-              : xSignerSelected.owners || [];
-          const multisig = {
-            ...xSignerSelected,
-            owners,
-            threshold: result.threshold,
-          } as SignatoriesAccount;
-          setSelectedMultisig(multisig);
-          data.handleOwners(multisig.owners, 0);
-          await setXsigner(multisig);
-        } else {
-          setSelectedMultisig(xSignerSelected);
-        }
-      } catch {
+  const fetchData = async () => {
+    if (!xSignerSelected?.address) return;
+
+    try {
+      const result = await xsignerOwnersRepository.getMultisigByAddress(
+        xSignerSelected.address
+      );
+
+      if (result) {
+        const existingOwners = xSignerSelected.owners || [];
+        let nextIndex = existingOwners.length;
+
+        const updatedOwners = result.owners.map((address) => {
+          const existingOwner = existingOwners.find(
+            (owner) => owner.address === address
+          );
+
+          if (existingOwner) {
+            return existingOwner;
+          } else {
+            nextIndex++;
+            return { address, name: `Signer ${nextIndex}` };
+          }
+        });
+
+        const multisig = {
+          ...xSignerSelected,
+          owners: updatedOwners,
+          threshold: result.threshold,
+        } as SignatoriesAccount;
+
+        setSelectedMultisig(multisig);
+        data.handleOwners(multisig.owners, 0);
+        data.handleThreshold(result.threshold, multisig.owners.length);
+        await setXsigner(multisig);
+      } else {
         setSelectedMultisig(xSignerSelected);
       }
-    };
+    } catch {
+      setSelectedMultisig(xSignerSelected);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -207,7 +207,7 @@ export default function SettingsPage() {
       )
       .toU8a();
     const abiMessage = getMessageInfo(contract as ContractPromise, type);
-    if (!input) return null;
+    if (!input || !abiMessage) return null;
 
     const inputArray = new Uint8Array(input.length);
     inputArray.set(input, 0);
@@ -279,6 +279,7 @@ export default function SettingsPage() {
             type: "success",
           });
           handleCancel();
+          fetchData();
         }
       }
     );

@@ -24,7 +24,7 @@ export interface UseFormSignersAccountStateReturn {
     field?: number
   ) => void;
   handleOwners: (newOwners: ArrayOneOrMore<Owner>, step: number) => void;
-  handleThreshold: (newThreshold: number) => void;
+  handleThreshold: (newThreshold: number, ownersLength?: number) => void;
   errors: Array<Array<ValidationError>>;
   setErrors: SetState<Array<Array<ValidationError>>>;
 }
@@ -144,8 +144,9 @@ export const useFormSignersAccountState = () => {
   );
 
   const handleThreshold = useCallback(
-    (newThreshold: number) => {
-      if (VALIDATIONS.threshold(newThreshold, owners.length)) {
+    (newThreshold: number, ownersLength?: number) => {
+      const numberOfOwners = ownersLength ?? owners.length;
+      if (VALIDATIONS.threshold(newThreshold, numberOfOwners)) {
         setThreshold(newThreshold);
       }
     },
