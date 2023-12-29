@@ -2,7 +2,13 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { WeightV2 } from "useink/dist/core";
+import {
+  decodeCallResult,
+  toRegistryErrorDecoded,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+} from "useink/core";
+import { ContractPromise, WeightV2 } from "useink/dist/core";
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { OWNER_STEPS, THRESHOLD_STEPS } from "@/components/Settings/constants";
@@ -21,6 +27,8 @@ import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
+import { getMessageInfo } from "@/utils/blockchain";
+import { MAX_CALL_WEIGHT, PROOFSIZE } from "@/utils/bn";
 import { customReportError } from "@/utils/error";
 
 export default function SettingsPage() {
@@ -117,7 +125,7 @@ export default function SettingsPage() {
     try {
       setIsLoading(true);
       const parsedData = {
-        addOwner: data.owners[0].address,
+        addOwner: data.owners.slice(-1)[0].address,
         changeThreshold: data.threshold,
       };
       const transactionType =
@@ -138,17 +146,14 @@ export default function SettingsPage() {
       }
 
       const gasRequired = dryRunResult.value.gasRequired as WeightV2;
-      await executeTransaction(gasRequired, transactionData);
-      addNotification({
-        message:
-          "Transaction sent successfully. You can check it on Transactions queue.",
-        type: "success",
-      });
-      handleCancel();
+      await executeTransaction(
+        gasRequired,
+        transactionData,
+        "Transaction sent successfully. You can check it on Transactions queue."
+      );
     } catch (e) {
       const errorFormatted = customReportError(e);
       addNotification({ message: errorFormatted, type: "error" });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -176,16 +181,14 @@ export default function SettingsPage() {
       }
 
       const gasRequired = dryRunResult.value.gasRequired as WeightV2;
-      await executeTransaction(gasRequired, transactionData);
-      addNotification({
-        message:
-          "Transaction sent successfully. You can check it on Transactions queue.",
-        type: "success",
-      });
+      await executeTransaction(
+        gasRequired,
+        transactionData,
+        "Transaction sent successfully. You can check it on Transactions queue."
+      );
     } catch (e) {
       const errorFormatted = customReportError(e);
       addNotification({ message: errorFormatted, type: "error" });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -194,7 +197,8 @@ export default function SettingsPage() {
     type: string,
     data: { [key: string]: string | number }
   ) {
-    const txData = multisigContractPromise?.contract.tx[type];
+    const contract = multisigContractPromise?.contract;
+    const txData = contract?.tx[type];
     const selector = txData?.meta.selector;
     const input = api.apiPromise
       ?.createType(
@@ -202,12 +206,38 @@ export default function SettingsPage() {
         data[type]
       )
       .toU8a();
-
+    const abiMessage = getMessageInfo(contract as ContractPromise, type);
     if (!input) return null;
 
     const inputArray = new Uint8Array(input.length);
     inputArray.set(input, 0);
+    const dryRunData = await contract?.query[type](
+      xSignerSelected?.address as string,
+      {
+        gasLimit: api.apiPromise?.registry.createType("WeightV2", {
+          refTime: MAX_CALL_WEIGHT,
+          proofSize: PROOFSIZE,
+        }) as WeightV2,
+      },
+      data[type]
+    );
+    const err = toRegistryErrorDecoded(
+      api.apiPromise?.registry,
+      dryRunData?.result
+    );
+    const decodedData = decodeCallResult(
+      dryRunData?.result,
+      abiMessage,
+      contract?.abi.registry
+    );
 
+    if (err) {
+      throw new Error(err.docs.join("\n"));
+    }
+
+    if (decodedData?.value.Err) {
+      throw new Error(`Error: ${decodedData?.value.Err}`);
+    }
     return {
       address: xSignerSelected?.address,
       selector: selector,
@@ -224,7 +254,8 @@ export default function SettingsPage() {
 
   async function executeTransaction(
     gasRequired: WeightV2,
-    transactionData: any
+    transactionData: any,
+    successMessage: string
   ) {
     const proposeTx = multisigContractPromise?.contract.tx.proposeTx;
     const tx = proposeTx?.(
@@ -235,9 +266,22 @@ export default function SettingsPage() {
     );
 
     if (!accountConnected?.address) return null;
-    return await tx?.signAndSend(accountConnected?.address, {
-      signer: accountConnected?.signer,
-    });
+    return await tx?.signAndSend(
+      accountConnected?.address,
+      {
+        signer: accountConnected?.signer,
+      },
+      ({ status }) => {
+        if (status.isInBlock) {
+          setIsLoading(false);
+          addNotification({
+            message: successMessage,
+            type: "success",
+          });
+          handleCancel();
+        }
+      }
+    );
   }
 
   const renderTitle = () => {
