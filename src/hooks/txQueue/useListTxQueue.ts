@@ -4,7 +4,7 @@ import { ChainId } from "useink/dist/chains";
 import { getChain } from "@/config/chain";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { TransactionEvents } from "@/domain/events/TransactionEvents";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   emptyDisplayInfo,
@@ -54,9 +54,9 @@ export function useListTxQueue(
   const { apiPromise } = useNetworkApi();
   const { decimals } = usePolkadotContext();
 
-  useEventListenerCallback([TransactionEvents.transactionSent], () => {
-    // createTxList();
-  });
+  useEventListenerCallback(MultisigContractEvents.TransactionProposed, () =>
+    createTxList()
+  );
 
   const createTxList = useCallback(async () => {
     if (!apiPromise) return;

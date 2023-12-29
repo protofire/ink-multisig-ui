@@ -12,10 +12,11 @@ import { InkConfig } from "useink";
 
 import { AppToastNotifications } from "@/components/AppToastNotification";
 import { AppNotificationsContextProvider } from "@/components/AppToastNotification/AppNotificationsContext";
-import { ContractEventListener } from "@/components/ContractEventListener/indext";
 import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { MultisigEventListener } from "@/components/MultisigEventListener";
 import { CHAINS } from "@/config/chain";
+import { CallerXsignersAccountProvider } from "@/context/CallerXsigerAccounts";
 import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
@@ -70,10 +71,12 @@ export default function App(props: ExtendedProps) {
                 return (
                   <ThemeCustomization settings={settings}>
                     <AppNotificationsContextProvider>
-                      <ContractEventListener />
-                      <WalletConnectionGuard walletRequired={walletRequired}>
-                        {getLayout(<Component {...pageProps} />)}
-                      </WalletConnectionGuard>
+                      <MultisigEventListener />
+                      <CallerXsignersAccountProvider>
+                        <WalletConnectionGuard walletRequired={walletRequired}>
+                          {getLayout(<Component {...pageProps} />)}
+                        </WalletConnectionGuard>
+                      </CallerXsignersAccountProvider>
                       <AppToastNotifications />
                     </AppNotificationsContextProvider>
                   </ThemeCustomization>

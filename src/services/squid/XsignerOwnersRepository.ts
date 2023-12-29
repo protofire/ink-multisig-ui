@@ -12,7 +12,7 @@ import { GraphClient } from "./GraphClient";
 import { multisigRawToSignatoriesAccount } from "./transformers/toSignatoriesAccount";
 
 const FETCH_MULTISIG = gql`
-  query MyQuery($address: String!) {
+  query MultisigsByAddress($address: String!) {
     multisigs(where: { addressSS58_eq: $address }) {
       owners
       threshold
@@ -23,7 +23,7 @@ const FETCH_MULTISIG = gql`
 `;
 
 const FETCH_MULTISIGS_BY_OWNER = gql`
-  query MyQuery($address: [String!]!) {
+  query MultisigsWhereOwnersIncludes($address: [String!]!) {
     multisigs(where: { owners_containsAny: $address }) {
       owners
       threshold
