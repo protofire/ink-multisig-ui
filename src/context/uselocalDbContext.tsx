@@ -2,6 +2,7 @@ import React, { createContext, PropsWithChildren, useContext } from "react";
 
 import { IAddressBookRepository } from "@/domain/repositores/IAddressBookRepository";
 import { IAssetRepository } from "@/domain/repositores/IAssetRepository";
+import { IMultisigEventsRepository } from "@/domain/repositores/IMultisigEventsRepository";
 import { INetworkRepository } from "@/domain/repositores/INetworkRepository";
 import { ITxQueueRepository } from "@/domain/repositores/ITxQueueRepository";
 import { IXsignerOwnersRepository } from "@/domain/repositores/IXsignerOwnersRepository";
@@ -11,6 +12,7 @@ import { AddressBookRepository } from "@/services/localDB/AddressBookRepository"
 import { AssetRepository } from "@/services/localDB/AssetRepository";
 import { SignatoriesAccountDatabase } from "@/services/localDB/SignatoriesAccountRepository";
 import { XsignerSelectedRepository } from "@/services/localDB/XsignerSelectedRepository";
+import { LocalMultisigEventsRepository } from "@/services/LocalMultisigEventsRepository";
 import { LocalStorageNetworkRepository } from "@/services/LocalStorageNetworkRepository";
 import { GraphClient } from "@/services/squid/GraphClient";
 import { TxHistoryRepository } from "@/services/squid/TxHistoryRepository";
@@ -26,6 +28,7 @@ interface DbContext {
   assetRepository: IAssetRepository;
   txQueueRepository: ITxQueueRepository;
   txHistoryRepository: TxHistoryRepository;
+  localMultisigEventRepo: IMultisigEventsRepository;
 }
 
 const signatoriesAccountRepository = new SignatoriesAccountDatabase(
@@ -39,6 +42,7 @@ const graphSquidClient = new GraphClient(networkRepository);
 const xsignerOwnersRepository = new XsignerOwnersRepository(graphSquidClient);
 const txQueueRepository = new TxQueueRepository(graphSquidClient);
 const txHistoryRepository = new TxHistoryRepository(graphSquidClient);
+const localMultisigEventRepo = new LocalMultisigEventsRepository();
 
 const DbContext = createContext<DbContext>({
   networkRepository,
@@ -49,6 +53,7 @@ const DbContext = createContext<DbContext>({
   assetRepository,
   txQueueRepository,
   txHistoryRepository,
+  localMultisigEventRepo,
 });
 
 export const LocalDbProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -63,6 +68,7 @@ export const LocalDbProvider: React.FC<PropsWithChildren> = ({ children }) => {
         assetRepository,
         txQueueRepository,
         txHistoryRepository,
+        localMultisigEventRepo,
       }}
     >
       {children}

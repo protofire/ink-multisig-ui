@@ -8,6 +8,19 @@ export interface AppNotification {
   type?: "default" | "info" | "success" | "error" | "warning";
 }
 
+export function isAppNotification(obj: unknown): obj is AppNotification {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "id" in obj &&
+    "message" in obj &&
+    typeof (obj as AppNotification).id === "number" &&
+    typeof (obj as AppNotification).message === "string" &&
+    ((obj as AppNotification).type === undefined ||
+      typeof (obj as AppNotification).type === "string")
+  );
+}
+
 type NotificationWithoutId = Omit<AppNotification, "id">;
 
 export interface AppNotificationRepository {

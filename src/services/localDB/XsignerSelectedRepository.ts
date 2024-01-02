@@ -8,11 +8,11 @@ import {
 export class XsignerSelectedRepository implements IXsignerSelectedRepository {
   private readonly storageKey = "signatoriesAccount";
 
-  getAccount(): SignatoriesAccount | null {
+  getAccount(): SignatoriesAccount["address"] | null {
     return getLocalStorageState(this.storageKey, null);
   }
 
-  saveAccount(account: SignatoriesAccount): void {
+  saveAccount(account: SignatoriesAccount["address"]): void {
     setLocalStorageState(this.storageKey, account);
   }
 }

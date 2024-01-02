@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 import { IS_DEVELOPMENT } from "@/config/app";
 import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
-import { TransactionEvents } from "@/domain/events/TransactionEvents";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
 import { XsignerAccountEvents } from "@/domain/events/XsignerAccountEvents";
 
@@ -11,7 +11,7 @@ type EventNames =
   | keyof typeof AddressBookEvents
   | keyof typeof WalletConnectionEvents
   | keyof typeof XsignerAccountEvents
-  | keyof typeof TransactionEvents;
+  | keyof typeof MultisigContractEvents;
 
 export function useEventListenerCallback(
   events: EventNames[] | EventNames, // accept any array of strings as event names
