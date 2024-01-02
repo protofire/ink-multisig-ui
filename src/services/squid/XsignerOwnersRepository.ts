@@ -42,6 +42,7 @@ export class XsignerOwnersRepository implements IXsignerOwnersRepository {
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_MULTISIG,
       variables: { address },
+      fetchPolicy: "no-cache",
     });
 
     return data?.multisigs[0] || null;

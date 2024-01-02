@@ -55,7 +55,7 @@ export const SendDetail = ({
           }}
         >
           {data.proposalTxHash}{" "}
-          <Box display={"inline-block"}>
+          <Box display={"inline-block"} sx={{ padding: "0.6em 0" }}>
             <CopyButton text={data.proposalTxHash} />
             <ExplorerLink
               blockchain={network}

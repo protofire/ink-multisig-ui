@@ -1,6 +1,5 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Button, CircularProgress } from "@mui/material";
-import { BN, BN_ONE } from "@polkadot/util";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -12,6 +11,7 @@ import {
 import { ContractPromise, WeightV2 } from "useink/dist/core";
 
 import { ChainExtended, getChain } from "@/config/chain";
+import { ROUTES } from "@/config/routes";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
@@ -24,6 +24,7 @@ import {
   splitTokenAmount,
   transformArgsToBytes,
 } from "@/utils/blockchain";
+import { MAX_CALL_WEIGHT, PROOFSIZE } from "@/utils/bn";
 import { customReportError } from "@/utils/error";
 
 import { useAppNotificationContext } from "../AppToastNotification/AppNotificationsContext";
@@ -36,9 +37,6 @@ type TxData = {
   token: string;
   chain: ChainExtended;
 };
-
-const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
-const PROOFSIZE = new BN(1_000_000);
 
 export const Transaction = ({ pspToken }: { pspToken?: string }) => {
   const [txData, setTxData] = useState<TxData>();
@@ -166,19 +164,30 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
           },
           Object.values(transferTxStruct)
         );
-        const hash = await tx?.signAndSend(accountConnected?.address, {
-          signer: accountConnected?.signer,
-        });
 
-        addNotification({
-          message: `Transaction successfully sent. TxHash: ${hash?.toHuman()}`,
-          type: "success",
-        });
-        // router.replace(ROUTES.AllTx);
+        await tx?.signAndSend(
+          accountConnected?.address,
+          {
+            signer: accountConnected?.signer,
+          },
+          ({ status }) => {
+            if (status.isInBlock) {
+              setIsLoading(false);
+              addNotification({
+                message: "Transaction successfully sent.",
+                type: "success",
+              });
+              document.dispatchEvent(
+                new CustomEvent(TransactionEvents.transactionSent)
+              );
+              router.replace(ROUTES.Assets);
+            }
+          }
+        );
+
       } catch (e) {
         const errorFormated = customReportError(e);
         addNotification({ message: errorFormated, type: "error" });
-      } finally {
         setIsLoading(false);
       }
     } else {
