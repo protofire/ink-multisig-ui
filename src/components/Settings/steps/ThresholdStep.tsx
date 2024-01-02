@@ -21,10 +21,10 @@ function ThresholdStep({
   owners: ArrayOneOrMore<Owner>;
   step: number;
   threshold: number;
-  handleThreshold: (threshold: number, step: number) => void;
+  handleThreshold: (threshold: number) => void;
 }) {
   const handleThresholdChange = (event: SelectChangeEvent<number>) => {
-    handleThreshold(event.target.value as number, step);
+    handleThreshold(event.target.value as number);
   };
 
   return (
