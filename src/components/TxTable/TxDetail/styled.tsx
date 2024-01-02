@@ -27,7 +27,11 @@ export const CustomGridItem: React.FC<
 > = ({ children, colType, defaultWidth = DEFAULT_COL_WIDTH, gridProps }) => {
   const type = defaultWidth[colType];
   const TypographyComponent = {
-    name: <Typography color="#837376">{children}</Typography>,
+    name: (
+      <Typography color="#837376" sx={{ padding: "0.6em 0" }}>
+        {children}
+      </Typography>
+    ),
     value: (
       <Typography
         sx={{
@@ -36,6 +40,7 @@ export const CustomGridItem: React.FC<
           wordWrap: "break-word",
           wordBreak: "break-all",
           maxWidth: "100%",
+          padding: "0.6rem 0",
         }}
       >
         {children}
