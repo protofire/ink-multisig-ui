@@ -54,8 +54,12 @@ export function useListTxQueue(
   const { apiPromise } = useNetworkApi();
   const { decimals } = usePolkadotContext();
 
-  useEventListenerCallback(MultisigContractEvents.TransactionProposed, () =>
-    createTxList()
+  useEventListenerCallback(
+    [
+      MultisigContractEvents.TransactionProposed,
+      MultisigContractEvents.TransactionRemoved,
+    ],
+    () => createTxList()
   );
 
   const createTxList = useCallback(async () => {

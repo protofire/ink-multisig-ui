@@ -177,14 +177,10 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
                 message: "Transaction successfully sent.",
                 type: "success",
               });
-              document.dispatchEvent(
-                new CustomEvent(TransactionEvents.transactionSent)
-              );
               router.replace(ROUTES.Assets);
             }
           }
         );
-
       } catch (e) {
         const errorFormated = customReportError(e);
         addNotification({ message: errorFormated, type: "error" });
