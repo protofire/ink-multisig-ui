@@ -1,20 +1,26 @@
 import { useCallback, useEffect, useMemo } from "react";
+import { ToastOptions } from "react-toastify";
 
 import {
   AppNotification,
+  isAppNotification,
   useAppNotificationContext,
 } from "@/components/AppToastNotification/AppNotificationsContext";
 
 import { AppToastNotificationUI, toast } from "./AppToastNotificationUI";
 
-function _createToast(
-  notification: AppNotification,
-  remove: () => void
+export function createToast(
+  notification: AppNotification | React.ReactNode,
+  options?: ToastOptions
 ): number | string {
-  return toast(notification.message, {
-    type: notification.type ?? "default",
-    onOpen: remove,
-  });
+  if (isAppNotification(notification)) {
+    return toast(notification.message, {
+      type: notification.type ?? "default",
+      ...options,
+    });
+  }
+
+  return toast(notification, options);
 }
 
 export function AppToastNotifications() {
@@ -32,7 +38,7 @@ export function AppToastNotifications() {
 
   useEffect(() => {
     if (firstNotification) {
-      _createToast(firstNotification, removeNotificationCb);
+      createToast(firstNotification, { onOpen: removeNotificationCb });
     }
   }, [firstNotification, removeNotificationCb]);
   return <AppToastNotificationUI />;

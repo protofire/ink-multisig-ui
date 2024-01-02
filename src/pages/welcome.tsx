@@ -9,8 +9,8 @@ import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import { XsignersAccountTable } from "@/components/XsignersAccountTable";
 import { ROUTES } from "@/config/routes";
+import { useCallerXsignersAccount } from "@/context/CallerXsigerAccounts";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useFetchXsignersAccountByOwner } from "@/hooks/xsignersAccount/useFetchXsignersAccountByOwner";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 
 export default function WelcomePage() {
@@ -21,10 +21,7 @@ export default function WelcomePage() {
     multisigs,
     isLoading: isLoadingMultisigs,
     error,
-  } = useFetchXsignersAccountByOwner({
-    accountAddress: accountConnected?.address,
-    networkId: network,
-  });
+  } = useCallerXsignersAccount();
 
   return (
     <Box>

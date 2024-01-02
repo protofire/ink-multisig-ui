@@ -23,7 +23,7 @@ export function useSetXsignerSelected(): UseSetXsignerSelectedReturn {
       setIsLoading(true);
 
       try {
-        xsignerSelectedRepository.saveAccount(account);
+        xsignerSelectedRepository.saveAccount(account.address);
         document.dispatchEvent(
           new CustomEvent(XsignerAccountEvents.onChangeAccount)
         );

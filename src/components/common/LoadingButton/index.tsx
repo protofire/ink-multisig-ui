@@ -6,7 +6,14 @@ import * as React from "react";
 export interface LoadingButtonProps
   extends Pick<
     ButtonProps,
-    "ref" | "onClick" | "variant" | "size" | "children" | "sx" | "fullWidth"
+    | "ref"
+    | "onClick"
+    | "variant"
+    | "size"
+    | "children"
+    | "sx"
+    | "fullWidth"
+    | "startIcon"
   > {
   isLoading?: boolean;
 }

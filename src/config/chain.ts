@@ -7,12 +7,9 @@ import {
 } from "@/services/useink/chains/testnet-chaindata";
 import { Chain, ChainId } from "@/services/useink/types";
 
-import { IS_DEVELOPMENT } from "./app";
 import { CHAINS_IMG_PATH } from "./images";
 
-export const DEFAULT_CHAIN: Chain["id"] = IS_DEVELOPMENT
-  ? "shibuya-testnet"
-  : "astar";
+export const DEFAULT_CHAIN: Chain["id"] = "shibuya-testnet";
 
 export type ChainExtended = Chain & {
   id: ChainId;
@@ -24,14 +21,12 @@ export type ChainExtended = Chain & {
 };
 
 export const CHAINS: ArrayOneOrMore<Chain> = [
-  RococoContractsTestnet,
   ShibuyaTestnet,
   // Astar,
   // ShidenKusama,
 ];
 
 export const CHAINS_TOKENS = {
-  [RococoContractsTestnet.id]: "ROC",
   [ShibuyaTestnet.id]: "SBY",
 };
 

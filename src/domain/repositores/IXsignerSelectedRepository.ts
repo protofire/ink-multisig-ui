@@ -1,6 +1,6 @@
 import { SignatoriesAccount } from "../SignatoriesAccount";
 
 export interface IXsignerSelectedRepository {
-  getAccount(): SignatoriesAccount | null;
-  saveAccount(account: SignatoriesAccount): void;
+  getAccount(): SignatoriesAccount["address"] | null;
+  saveAccount(account: SignatoriesAccount["address"]): void;
 }

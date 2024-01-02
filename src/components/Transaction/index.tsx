@@ -14,7 +14,6 @@ import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { TransactionEvents } from "@/domain/events/TransactionEvents";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { usePSPContractPromise } from "@/hooks/contractPromise/usePSPContractPromise";
 import { useGetDryRun } from "@/hooks/useGetDryRun";
@@ -178,9 +177,6 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
                 message: "Transaction successfully sent.",
                 type: "success",
               });
-              document.dispatchEvent(
-                new CustomEvent(TransactionEvents.transactionSent)
-              );
               router.replace(ROUTES.Assets);
             }
           }
@@ -189,11 +185,6 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
         const errorFormated = customReportError(e);
         addNotification({ message: errorFormated, type: "error" });
         setIsLoading(false);
-
-        // EMIT EVENT
-        // document.dispatchEvent(
-        //   new CustomEvent(TransactionEvents.transactionSent)
-        // );
       }
     } else {
       setCurrentStep(currentStep + 1);
