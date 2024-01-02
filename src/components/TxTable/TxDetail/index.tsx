@@ -46,7 +46,7 @@ export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
 };
 
 export const TxDetails = ({ data, network }: Props) => {
-  const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+  const [showAdvancedDetails, setShowAdvancedDetails] = useState(true);
   const TxComponentType = ({ data }: Props): JSX.Element => {
     if (data.type === TX_TYPE_OPTION.RECEIVE) {
       return <ReceivedDetail data={data} network={network} />;

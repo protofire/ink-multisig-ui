@@ -136,13 +136,10 @@ export default function ManageOwners({
               fullWidth
               margin="normal"
             />
-            <TextField
-              label="Address"
-              autoFocus
-              value={currentOwner?.address}
-              fullWidth
-              margin="normal"
-              inputProps={{ readOnly: true }}
+            <AccountSigner
+              name=""
+              address={currentOwner?.address as string}
+              truncateAmount={16}
             />
             <Box display="flex" alignItems="center" gap={1.25}>
               <Typography variant="body2" component="p">

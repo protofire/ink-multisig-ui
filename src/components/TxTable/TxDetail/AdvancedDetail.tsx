@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { Fragment } from "react";
 
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
@@ -89,7 +89,17 @@ export const AdvancedDetail = ({ data }: Props) => {
         return (
           <Fragment key={index}>
             <CustomGridItem colType="name">{`${name}:`}</CustomGridItem>
-            <CustomGridItem colType="value">{value as string}</CustomGridItem>
+            <CustomGridItem colType="value">
+              <Box
+                sx={{
+                  padding: "0.6em 0",
+                  wordWrap: "break-word",
+                  wordBreak: "break-all",
+                }}
+              >
+                {value as string}
+              </Box>
+            </CustomGridItem>
           </Fragment>
         );
       })}
