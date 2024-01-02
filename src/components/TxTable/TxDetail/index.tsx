@@ -13,6 +13,7 @@ import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
 
 interface Props {
+  successTx?: boolean;
   data: TransactionProposedItemUi;
   network: ChainId;
 }
@@ -45,7 +46,7 @@ export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
   );
 };
 
-export const TxDetails = ({ data, network }: Props) => {
+export const TxDetails = ({ data, network, successTx }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(true);
   const TxComponentType = ({ data }: Props): JSX.Element => {
     if (data.type === TX_TYPE_OPTION.RECEIVE) {
@@ -67,7 +68,7 @@ export const TxDetails = ({ data, network }: Props) => {
             {data.type === TX_TYPE_OPTION.SEND ? (
               <>
                 <Typography color="white" mb={1}>
-                  {data.type}{" "}
+                  {successTx ? "Sent" : data.type}{" "}
                   <span
                     style={{ fontWeight: "bold" }}
                   >{`${data.valueAmount}`}</span>{" "}
@@ -95,7 +96,7 @@ export const TxDetails = ({ data, network }: Props) => {
         ) : (
           <>
             <Typography color="white" mb={1}>
-              {data.type}{" "}
+              {successTx ? "Received" : data.type}{" "}
               <span
                 style={{ fontWeight: "bold" }}
               >{`${data.valueAmount}`}</span>{" "}

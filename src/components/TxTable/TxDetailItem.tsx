@@ -114,7 +114,17 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
                 flexDirection: "column",
               }}
             >
-              <span>{txData.type}</span>
+              {successTx ? (
+                <span>
+                  {txData.type === TX_TYPE_OPTION.RECEIVE
+                    ? "Received"
+                    : txData.type === TX_TYPE_OPTION.SEND
+                    ? "Sent"
+                    : txData.type}
+                </span>
+              ) : (
+                <span>{txData.type}</span>
+              )}
               <span style={{ fontSize: "0.9rem" }}>
                 {txData.txMsg} : {truncateAddress(txData.from ?? txData.to, 9)}
               </span>
@@ -138,9 +148,10 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
-          <TxDetails data={txData} network={network} />
+          <TxDetails successTx={successTx} data={txData} network={network} />
           {txData.type !== TX_TYPE_OPTION.RECEIVE ? (
             <TxStepper
+              successTx={successTx}
               approvalCount={txData.approvalCount}
               owners={txData.ownersAction}
               network={network}

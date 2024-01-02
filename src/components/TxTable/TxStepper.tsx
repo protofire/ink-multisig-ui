@@ -77,10 +77,12 @@ export default function TxStepper({
   approvalCount,
   owners,
   network,
+  successTx = false,
 }: {
   approvalCount: number;
   owners: Order[] | undefined;
   network: ChainId;
+  successTx: boolean;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
   const approvalsLength = owners?.length;
@@ -166,36 +168,40 @@ export default function TxStepper({
               sx={{ fontSize: "1.1rem" }}
               onClick={() => setShowOwners(!showOwners)}
             >
-              Hide all
+              {showOwners ? "Hide all" : "Show all"}
             </Link>
           </StepLabel>
         </Step>
-        <Step>
-          <StepLabel
-            StepIconComponent={() => CircleStepIcon(false)}
-            sx={{
-              color: "#FFFF",
-            }}
-          >
-            <Typography>Can be executed</Typography>
-            <StepContent sx={{ margin: "0px", padding: "0px" }}>
-              <span style={{ fontSize: "0.8rem" }}>
-                This transaction will be executed once the threshold is reached
-              </span>{" "}
-            </StepContent>
-          </StepLabel>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
-              marginTop: "2rem",
-            }}
-          >
-            <Button variant="outlined">Reject</Button>
-            <Button variant="contained">Confirm</Button>
-          </Box>
-        </Step>
+        {!successTx ? (
+          <Step>
+            <StepLabel
+              StepIconComponent={() => CircleStepIcon(false)}
+              sx={{
+                color: "#FFFF",
+              }}
+            >
+              <Typography>Can be executed</Typography>
+              <StepContent sx={{ margin: "0px", padding: "0px" }}>
+                <span style={{ fontSize: "0.8rem" }}>
+                  This transaction will be executed once the threshold is
+                  reached
+                </span>{" "}
+              </StepContent>
+            </StepLabel>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+                marginTop: "2rem",
+              }}
+            >
+              <Button variant="outlined">Reject</Button>
+              <Button variant="contained">Confirm</Button>
+            </Box>
+          </Step>
+        ) : null}
       </Stepper>
     </Box>
   );
