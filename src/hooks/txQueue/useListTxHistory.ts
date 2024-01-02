@@ -4,14 +4,12 @@ import { ChainId } from "useink/dist/chains";
 import { getChain } from "@/config/chain";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { TransactionEvents } from "@/domain/events/TransactionEvents";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   emptyDisplayInfo,
   TransactionDisplayInfo,
   TransactionProposedItemUi,
 } from "@/domain/TransactionProposedItemUi";
-import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { customReportError } from "@/utils/error";
 
 import { useNetworkApi } from "../useNetworkApi";
@@ -54,10 +52,6 @@ export function useListTxHistory(
   const { txHistoryRepository } = useLocalDbContext();
   const { apiPromise } = useNetworkApi();
   const { decimals } = usePolkadotContext();
-
-  useEventListenerCallback([TransactionEvents.transactionSent], () => {
-    // createTxList();
-  });
 
   const createTxList = useCallback(async () => {
     if (!apiPromise) return;
