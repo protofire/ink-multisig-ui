@@ -11,7 +11,7 @@ import { GraphClient } from "./GraphClient";
 import { rawToFullTxProposed } from "./transformers/toTransactionProposed";
 
 const FETCH_QUEUE = gql`
-  query MyQuery($address: String!) {
+  query TxHistory($address: String!) {
     txes(
       where: { multisig: { addressSS58_eq: $address } }
       orderBy: creationTimestamp_DESC
