@@ -11,6 +11,7 @@ import { FullTxProposed } from "@/domain/TransactionProposed";
 import { TransactionDisplayInfo } from "@/domain/TransactionProposedItemUi";
 import { ApiPromise, ContractPromise } from "@/services/substrate/types";
 import { decodeCallArgs } from "@/utils/blockchain";
+import { getErrorMessage } from "@/utils/error";
 import { balanceToFixed, parseNativeBalance } from "@/utils/formatString";
 
 const TRANSFER_METHOD_SELECTOR = "0x84a15da1";
@@ -56,31 +57,30 @@ export const getDisplayInfo = async ({
     multisigAddress === txProposed.contractAddress &&
     txProposed.selector === TRANSFER_METHOD_SELECTOR
   ) {
-    const decodedData = decodeCallArgs(
-      contractPromise,
-      "transfer",
-      txProposed.rawArgs as string // always will be string in native transfer
-    );
-
-    displayInfo["valueAmount"] = `${parseNativeBalance(decodedData[1])} ${
-      nativeToken.token
-    }`;
-    displayInfo["to"] = decodedData[0];
-    displayInfo["img"] = TX_TYPE_IMG.SEND;
+    try {
+      const decodedData = decodeCallArgs(
+        contractPromise,
+        "transfer",
+        txProposed.rawArgs as string // always will be string in native transfer
+      );
+      displayInfo["valueAmount"] = `${parseNativeBalance(decodedData[1])} ${
+        nativeToken.token
+      }`;
+      displayInfo["to"] = decodedData[0];
+    } catch (e) {
+      getErrorMessage(e);
+    } finally {
+      displayInfo["img"] = TX_TYPE_IMG.SEND;
+    }
   } else if (txProposed.selector === PSP22_TRANSFER_METHOD_SELECTOR) {
     contractPromise = new ContractPromise(
       apiPromise,
       Psp22Sdk.contractMetadata().ContractAbi,
       txProposed.contractAddress
     );
+
     let tokenDecimals = undefined;
     let tokenSymbol = undefined;
-    const decodedData = decodeCallArgs(
-      contractPromise,
-      "psp22::transfer",
-      txProposed.rawArgs as string // always will be string in transfer UI
-    );
-
     tokenDecimals = getValueResponse(
       await call(
         contractPromise,
@@ -96,14 +96,25 @@ export const getDisplayInfo = async ({
       )
     );
 
-    displayInfo["valueAmount"] = tokenDecimals
-      ? `${balanceToFixed(
-          decodedData[1],
-          parseInt(tokenDecimals)
-        )} ${tokenSymbol}`
-      : "";
-    displayInfo["to"] = decodedData[0];
-    displayInfo["img"] = TX_TYPE_IMG.SEND;
+    try {
+      const decodedData = decodeCallArgs(
+        contractPromise,
+        "psp22::transfer",
+        txProposed.rawArgs as string // always will be string in transfer UI
+      );
+
+      displayInfo["valueAmount"] = tokenDecimals
+        ? `${balanceToFixed(
+            decodedData[1],
+            parseInt(tokenDecimals)
+          )} ${tokenSymbol}`
+        : "";
+      displayInfo["to"] = decodedData[0];
+    } catch (e) {
+      getErrorMessage(e);
+    } finally {
+      displayInfo["img"] = TX_TYPE_IMG.SEND;
+    }
   } else {
     displayInfo["to"] = txProposed.contractAddress;
 
