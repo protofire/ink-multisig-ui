@@ -10,6 +10,7 @@ import {
   WeightV2,
 } from "@/services/substrate/types";
 import { getDecodedOutput } from "@/services/substrate/utils/contractExecResult";
+import { getIfSpecialError } from "@/services/substrate/utils/specialErrorWrapper";
 
 interface UseDryRunExecutionProps {
   contractPromise: ContractPromise;
@@ -72,7 +73,11 @@ export function useDryRunExecution({
         setOutcome("Transaction will be executed");
       }
     } else {
-      setError("Transaction will be reverted");
+      const error = result.error?.name
+        ? getIfSpecialError(result.error?.name)
+        : "Transaction will be reverted due to unknown error";
+
+      setError(error);
       setOutcome("Transaction will be reverted");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
