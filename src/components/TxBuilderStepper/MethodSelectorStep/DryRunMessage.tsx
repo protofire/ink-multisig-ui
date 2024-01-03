@@ -4,8 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import { alpha } from "@mui/system";
 
 import { MySkeleton } from "@/components/common/LoadingSkeleton";
-
-import { DryRunExecutionResult } from "./useDryRunExecution";
+import { DryRunExecutionResult } from "@/hooks/useDryRunExecution";
 
 type Props = Omit<DryRunExecutionResult, "executeDryRun" | "gasRequired">;
 
