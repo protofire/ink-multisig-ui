@@ -40,7 +40,7 @@ export const getDisplayInfo = async ({
 }: Props): Promise<TransactionDisplayInfo> => {
   const displayInfo: TransactionDisplayInfo = {
     img: TX_TYPE_IMG.CONTRACT,
-    type: "Send",
+    type: "Custom Contract",
     txMsg: "to",
     valueAmount: "",
     to: undefined,
@@ -70,6 +70,7 @@ export const getDisplayInfo = async ({
     } catch (e) {
       getErrorMessage(e);
     } finally {
+      displayInfo["type"] = "Send Native";
       displayInfo["img"] = TX_TYPE_IMG.SEND;
     }
   } else if (txProposed.selector === PSP22_TRANSFER_METHOD_SELECTOR) {
@@ -113,6 +114,7 @@ export const getDisplayInfo = async ({
     } catch (e) {
       getErrorMessage(e);
     } finally {
+      displayInfo["type"] = "Send PSP22";
       displayInfo["img"] = TX_TYPE_IMG.SEND;
     }
   } else {
@@ -122,7 +124,7 @@ export const getDisplayInfo = async ({
       txProposed.value,
       nativeToken.decimals
     )} ${nativeToken.token}`;
-    displayInfo["type"] = txProposed.methodName || txProposed.selector;
+    displayInfo["type"] = "Custom Contract";
   }
   return displayInfo;
 };
