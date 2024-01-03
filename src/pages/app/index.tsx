@@ -1,6 +1,7 @@
 import { Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
+import AccountConfirmationModal from "@/components/AccountConfirmationModal";
 import { AddressBookWidget } from "@/components/AddressBookWidget";
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 import NetworkConfirmationModal from "@/components/NetworkConfirmationModal";
@@ -25,6 +26,7 @@ export default function AppDashboard() {
   return (
     <>
       <NetworkConfirmationModal />
+      <AccountConfirmationModal />
       <Grid container spacing={3} mt={2}>
         <Grid item xs={12} sm={6} md={3}>
           <SummaryCard
