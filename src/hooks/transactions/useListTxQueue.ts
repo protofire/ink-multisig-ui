@@ -4,41 +4,20 @@ import { ChainId } from "useink/dist/chains";
 import { getChain } from "@/config/chain";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import {
   emptyDisplayInfo,
-  TransactionDisplayInfo,
   TransactionProposedItemUi,
 } from "@/domain/TransactionProposedItemUi";
+import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { customReportError } from "@/utils/error";
 
 import { useNetworkApi } from "../useNetworkApi";
-import { getDisplayInfo, getDisplayTransferInfo } from "./getDisplayInfo";
+import { getDisplayInfo } from "./getDisplayInfo";
 import { mapOwnersToActions } from "./mapOwnersToActions";
 
-export type TabTxTypes = "queue" | "history";
-
-export const TX_OWNER_STATUS_TYPE = {
-  APPROVED: "Approved",
-  REJECTED: "Rejected",
-  PENDING: "Pending",
-};
-
-export const TX_TYPE_OPTION = {
-  RECEIVE: "Receive",
-  SEND: "Send",
-  TRANSACTION: "Transaction",
-  TRANSFER: "Transfer",
-  TOKEN: {
-    NATIVE: "NATIVE",
-  },
-  STATUS: {
-    PROPOSED: "PROPOSED",
-    EXECUTED_SUCCESS: "EXECUTED_SUCCESS",
-  },
-};
-
-export function useListTxHistory(
+export function useListTxQueue(
   xsignerAccount: SignatoriesAccount,
   network: ChainId
 ) {
@@ -49,17 +28,26 @@ export function useListTxHistory(
   const [error, setError] = useState<string | null>(null);
   const chain = getChain(network);
   const { owners, address: xsignerAddress } = xsignerAccount;
-  const { txHistoryRepository } = useLocalDbContext();
+  const { txQueueRepository } = useLocalDbContext();
   const { apiPromise } = useNetworkApi();
   const { decimals } = usePolkadotContext();
 
-  const buildTxhistoryList = useCallback(async () => {
+  useEventListenerCallback(
+    [
+      MultisigContractEvents.TransactionProposed,
+      MultisigContractEvents.TransactionRemoved,
+    ],
+    () => createTxList()
+  );
+
+  const createTxList = useCallback(async () => {
     if (!apiPromise) return;
     setIsLoading(true);
     setError(null);
 
     try {
-      const result = await txHistoryRepository.getHistory(xsignerAddress);
+      const result = await txQueueRepository.getQueue(xsignerAddress);
+
       if (!result) throw Error("Query failure");
 
       const extendedResult: TransactionProposedItemUi[] = result.map((tx) => ({
@@ -70,16 +58,29 @@ export function useListTxHistory(
       setData(extendedResult);
 
       result.forEach(async (txProposed, index) => {
-        let displayInfo: TransactionDisplayInfo;
-        displayInfo = await getDisplayInfo({
+        const displayInfo = await getDisplayInfo({
           apiPromise,
           txProposed,
           multisigAddress: xsignerAddress,
           nativeToken: { ...chain, decimals },
         });
 
-        if (txProposed.typename === "Transaction") {
-          extendedResult[index] = {
+        extendedResult[index] = {
+          ...txProposed,
+          ownersAction: mapOwnersToActions({
+            owners,
+            approvals: txProposed.approvals,
+            rejectors: txProposed.rejections,
+            network,
+          }),
+          ...displayInfo,
+        };
+
+        setData((prev) => {
+          if (!prev) return;
+
+          const _newState = [...prev];
+          _newState[index] = {
             ...txProposed,
             ownersAction: mapOwnersToActions({
               owners,
@@ -89,40 +90,9 @@ export function useListTxHistory(
             }),
             ...displayInfo,
           };
-          setData((prev) => {
-            if (!prev) return;
-            const _newState = [...prev];
-            _newState[index] = {
-              ...txProposed,
-              ownersAction: mapOwnersToActions({
-                owners,
-                approvals: txProposed.approvals,
-                rejectors: txProposed.rejections,
-                network,
-              }),
-              ...displayInfo,
-            };
-            return _newState;
-          });
-        } else {
-          displayInfo = await getDisplayTransferInfo({
-            apiPromise,
-            txProposed,
-            multisigAddress: xsignerAddress,
-            nativeToken: { ...chain, decimals },
-          });
 
-          setData((prev) => {
-            if (!prev) return;
-            const _newState = [...prev];
-            _newState[index] = {
-              ...txProposed,
-              ownersAction: [],
-              ...displayInfo,
-            };
-            return _newState;
-          });
-        }
+          return _newState;
+        });
       });
     } catch (err) {
       customReportError(err);
@@ -136,13 +106,13 @@ export function useListTxHistory(
     decimals,
     network,
     owners,
-    txHistoryRepository,
+    txQueueRepository,
     xsignerAddress,
   ]);
 
   useEffect(() => {
-    buildTxhistoryList();
-  }, [buildTxhistoryList]);
+    createTxList();
+  }, [createTxList]);
 
   return { data, isLoading, error };
 }

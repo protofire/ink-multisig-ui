@@ -6,7 +6,7 @@ import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
 import CopyButton from "@/components/common/CopyButton";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
-import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
+import { TX_TYPE } from "@/hooks/transactions/const";
 
 import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
@@ -49,7 +49,7 @@ export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
 export const TxDetails = ({ data, network, successTx }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(true);
   const TxComponentType = ({ data }: Props): JSX.Element => {
-    if (data.type === TX_TYPE_OPTION.RECEIVE) {
+    if (data.type === TX_TYPE.RECEIVE) {
       return <ReceivedDetail data={data} network={network} />;
     }
     return <SendDetail data={data} network={network} />;
@@ -63,9 +63,9 @@ export const TxDetails = ({ data, network, successTx }: Props) => {
       }}
     >
       <Box p={4}>
-        {data.type !== TX_TYPE_OPTION.RECEIVE ? (
+        {data.type !== TX_TYPE.RECEIVE ? (
           <>
-            {data.type === TX_TYPE_OPTION.SEND ? (
+            {data.type === TX_TYPE.SEND ? (
               <>
                 <Typography color="white" mb={1}>
                   {successTx ? "Sent" : data.type}{" "}

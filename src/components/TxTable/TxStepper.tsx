@@ -13,7 +13,10 @@ import * as React from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { Order } from "@/domain/repositores/ITxQueueRepository";
-import { TX_OWNER_STATUS_TYPE } from "@/hooks/txQueue/useListTxQueue";
+import {
+  TX_OWNER_STATUS_TYPE,
+  TX_STATUS_TYPE,
+} from "@/hooks/transactions/const";
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
@@ -77,16 +80,15 @@ export default function TxStepper({
   approvalCount,
   owners,
   network,
-  successTx = false,
+  status,
 }: {
   approvalCount: number;
   owners: Order[] | undefined;
   network: ChainId;
-  successTx: boolean;
+  status: string;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
   const approvalsLength = owners?.length;
-
   return (
     <Box
       sx={{ maxWidth: 400, padding: "20px", borderLeft: "3px solid #120D0E" }}
@@ -172,7 +174,7 @@ export default function TxStepper({
             </Link>
           </StepLabel>
         </Step>
-        {!successTx ? (
+        {status === TX_STATUS_TYPE.PROPOSED ? (
           <Step>
             <StepLabel
               StepIconComponent={() => CircleStepIcon(false)}

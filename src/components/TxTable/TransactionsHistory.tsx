@@ -3,7 +3,7 @@ import React from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { useListTxHistory } from "@/hooks/txQueue/useListTxHistory";
+import { useListTxHistory } from "@/hooks/transactions/useListTxHistory";
 
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import { TxDetailItem } from "./TxDetailItem";

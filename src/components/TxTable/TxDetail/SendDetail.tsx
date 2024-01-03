@@ -66,6 +66,23 @@ export const SendDetail = ({
           </Box>
         </Box>
       </CustomGridItem>
+      {data.error ? (
+        <Box
+          width={"100%"}
+          p={1.3}
+          border={"1px solid"}
+          borderColor={"red"}
+          borderRadius={"0.4rem"}
+          bgcolor={(theme) => theme.palette.error.main + "40"}
+          color={"red"}
+        >
+          <Grid container>
+            <Grid item xs={12} sm={12} md={12} textAlign={"center"}>
+              Error: {data.error}
+            </Grid>
+          </Grid>
+        </Box>
+      ) : null}
     </Grid>
   );
 };
