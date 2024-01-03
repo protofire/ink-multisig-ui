@@ -53,7 +53,7 @@ export function useListTxHistory(
   const { apiPromise } = useNetworkApi();
   const { decimals } = usePolkadotContext();
 
-  const createTxList = useCallback(async () => {
+  const buildTxhistoryList = useCallback(async () => {
     if (!apiPromise) return;
     setIsLoading(true);
     setError(null);
@@ -141,8 +141,8 @@ export function useListTxHistory(
   ]);
 
   useEffect(() => {
-    createTxList();
-  }, [createTxList]);
+    buildTxhistoryList();
+  }, [buildTxhistoryList]);
 
   return { data, isLoading, error };
 }
