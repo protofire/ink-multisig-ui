@@ -105,7 +105,6 @@ export function rawToFullTxProposed(rawTx: RawTxType): FullTxProposed {
   let transfer = {} as TransferProposed;
   if (rawTx.__typename === "Transaction") {
     transaction = rawToTransactionProposed(rawTx);
-    console.log("transaction", transaction);
   }
   transfer = rawToTransferProposed(rawTx);
 

@@ -80,7 +80,6 @@ export class TxHistoryRepository implements ITxHistoryRepository {
       query: FETCH_QUEUE,
       variables: { address },
     });
-
     return data.txes
       .filter((transactions) => transactions.status !== "PROPOSED")
       .map((transactions) => rawToFullTxProposed(transactions));
