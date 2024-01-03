@@ -1,11 +1,9 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useCallback, useEffect, useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useGetDryRun } from "@/hooks/useGetDryRun";
+import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { ContractPromise } from "@/services/substrate/types";
-import { customReportError } from "@/utils/error";
 
 import { useContractTx } from "../TxBuilderStepper/ProposeTxStep/useContractTx";
 
@@ -16,73 +14,73 @@ export function ConfirmationWidget({
   multisigContractPromise: ContractPromise;
   txId: string;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const { accountConnected } = usePolkadotContext();
   const theme = useTheme();
 
-  const approveDryRun = useGetDryRun(
-    multisigContractPromise,
-    "approveTx",
-    accountConnected?.address
-  );
+  // const approveDryRun = useGetDryRun(
+  //   multisigContractPromise,
+  //   "approveTx",
+  //   accountConnected?.address
+  // );
 
-  const rejectDryRun = useGetDryRun(
-    multisigContractPromise,
-    "approveTx",
-    accountConnected?.address
-  );
+  // const rejectDryRun = useGetDryRun(
+  //   multisigContractPromise,
+  //   "approveTx",
+  //   accountConnected?.address
+  // );
 
-  const executeApproveDryRun = useCallback(async () => {
-    console.log("handleDryRun");
-    try {
-      const dryRunResult = await approveDryRun.send([parseInt(txId)]);
-      console.log(dryRunResult);
-      if (!dryRunResult?.ok) {
-        throw new Error(
-          dryRunResult?.error.toString() ??
-            "Error on executing the transaction."
-        );
-      }
-    } catch (e) {
-      const errorFormatted = customReportError(e);
-      console.log(errorFormatted);
-    }
-  }, [approveDryRun, txId]);
+  // const executeApproveDryRun = useCallback(async () => {
+  //   console.log("handleDryRun");
+  //   try {
+  //     const dryRunResult = await approveDryRun.send([parseInt(txId)]);
+  //     console.log(dryRunResult);
+  //     if (!dryRunResult?.ok) {
+  //       throw new Error(
+  //         dryRunResult?.error.toString() ??
+  //           "Error on executing the transaction."
+  //       );
+  //     }
+  //   } catch (e) {
+  //     const errorFormatted = customReportError(e);
+  //     console.log(errorFormatted);
+  //   }
+  // }, [approveDryRun, txId]);
 
-  const executeRejectDryRun = useCallback(async () => {
-    console.log("handleDryRun");
-    try {
-      const dryRunResult = await rejectDryRun.send([parseInt(txId)]);
-      console.log(dryRunResult);
-      if (!dryRunResult?.ok) {
-        throw new Error(
-          dryRunResult?.error.toString() ??
-            "Error on executing the transaction."
-        );
-      }
-    } catch (e) {
-      const errorFormatted = customReportError(e);
-      console.log(errorFormatted);
-      //addNotification({ message: errorFormatted, type: "error" });
-      //setIsLoading(false);
-    }
-  }, [rejectDryRun, txId]);
+  // const executeRejectDryRun = useCallback(async () => {
+  //   console.log("handleDryRun");
+  //   try {
+  //     const dryRunResult = await rejectDryRun.send([parseInt(txId)]);
+  //     console.log(dryRunResult);
+  //     if (!dryRunResult?.ok) {
+  //       throw new Error(
+  //         dryRunResult?.error.toString() ??
+  //           "Error on executing the transaction."
+  //       );
+  //     }
+  //   } catch (e) {
+  //     const errorFormatted = customReportError(e);
+  //     console.log(errorFormatted);
+  //     //addNotification({ message: errorFormatted, type: "error" });
+  //     //setIsLoading(false);
+  //   }
+  // }, [rejectDryRun, txId]);
 
-  useEffect(() => {
-    executeApproveDryRun();
-    executeRejectDryRun();
-  }, [accountConnected?.address, executeApproveDryRun, executeRejectDryRun]);
+  // useEffect(() => {
+  //   executeApproveDryRun();
+  //   executeRejectDryRun();
+  // }, []);
   // // Create approveDryRun outside of the component
-  // const approveMessage = multisigContractPromise.abi.findMessage("approveTx");
+  const approveMessage = multisigContractPromise.abi.findMessage("approveTx");
 
-  // const approveDryRun = useDryRunExecution({
-  //   contractPromise: multisigContractPromise,
-  //   message: approveMessage,
-  //   params: [parseInt(txId)],
-  //   substrateRegistry: multisigContractPromise.registry,
-  //   addressCaller: accountConnected?.address,
-  //   autoRun: false,
-  // });
+  const failingApproveDryRun = useDryRunExecution({
+    contractPromise: multisigContractPromise,
+    message: approveMessage,
+    params: [parseInt(txId)],
+    substrateRegistry: multisigContractPromise.registry,
+    addressCaller: accountConnected?.address,
+    autoRun: false,
+  });
 
   // useEffect(() => {
   //   if (approveDryRun.error !== undefined || approveDryRun.isRunning) {
@@ -156,8 +154,8 @@ export function ConfirmationWidget({
             variant="outlined"
             disabled={false}
             onClick={() => {
-              executeRejectDryRun();
-              //rejectTx.signAndSend([parseInt(txId)]);
+              //executeRejectDryRun();
+              rejectTx.signAndSend([parseInt(txId)]);
             }}
           >
             Reject
@@ -166,8 +164,8 @@ export function ConfirmationWidget({
             variant="contained"
             disabled={false}
             onClick={() => {
-              executeApproveDryRun();
-              //approveTx.signAndSend([parseInt(txId)]);
+              //executeApproveDryRun();
+              approveTx.signAndSend([parseInt(txId)]);
             }}
           >
             Confirm
