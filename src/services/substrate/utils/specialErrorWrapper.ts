@@ -3,7 +3,8 @@ export type SpecialErrors = (typeof SPECIAL_ERRORS)[number];
 
 const mapSpecialErrors: Record<SpecialErrors, string> = {
   StorageDepositLimitExhausted:
-    "StorageDepositLimitExhausted, if you have no balance in your xsigner account, the Dry-run simulation of the Transaction may work improperly",
+    "Transaction might fail. Insufficient native balance in the multisig \
+    xsigner account can lead to inaccurate transaction simulations. Please add funds to the multisig",
 };
 
 function isSpecialError(error: string): error is SpecialErrors {
