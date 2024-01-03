@@ -15,6 +15,7 @@ import { ChainId } from "useink/dist/chains";
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
+import { ContractPromise } from "@/services/substrate/types";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { TxDetails } from "./TxDetail";
@@ -30,9 +31,15 @@ type Props = {
   txData: TransactionProposedItemUi;
   index: number;
   network: ChainId;
+  multisigContractPromise: ContractPromise;
 };
 
-export const TxDetailItem = ({ txData, index, network }: Props) => {
+export const TxDetailItem = ({
+  txData,
+  index,
+  network,
+  multisigContractPromise,
+}: Props) => {
   const date = formatDate(txData.creationTimestamp);
 
   const txStateMsg =
@@ -144,6 +151,8 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
               approvalCount={txData.approvalCount}
               owners={txData.ownersAction}
               network={network}
+              txId={txData.txId}
+              multisigContractPromise={multisigContractPromise}
             />
           ) : (
             <></>

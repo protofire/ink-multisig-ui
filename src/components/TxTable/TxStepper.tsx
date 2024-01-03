@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Button, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import Box from "@mui/material/Box";
 import Step from "@mui/material/Step";
 import StepContent from "@mui/material/StepContent";
@@ -9,6 +9,7 @@ import { StepIconProps } from "@mui/material/StepIcon";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
+import { ContractPromise } from "@polkadot/api-contract";
 import * as React from "react";
 import { ChainId } from "useink/dist/chains";
 
@@ -18,6 +19,7 @@ import { TX_OWNER_STATUS_TYPE } from "@/hooks/txQueue/useListTxQueue";
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
 import { ExplorerLink } from "../ExplorerLink";
+import { ConfirmationWidget } from "./ConfirmationWidget";
 
 const CircleStepIconRoot = styled("div")(() => ({
   marginLeft: "7px",
@@ -77,10 +79,14 @@ export default function TxStepper({
   approvalCount,
   owners,
   network,
+  txId,
+  multisigContractPromise,
 }: {
   approvalCount: number;
   owners: Order[] | undefined;
   network: ChainId;
+  txId: string;
+  multisigContractPromise: ContractPromise;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
   const approvalsLength = owners?.length;
@@ -192,8 +198,10 @@ export default function TxStepper({
               marginTop: "2rem",
             }}
           >
-            <Button variant="outlined">Reject</Button>
-            <Button variant="contained">Confirm</Button>
+            <ConfirmationWidget
+              multisigContractPromise={multisigContractPromise}
+              txId={txId}
+            />
           </Box>
         </Step>
       </Stepper>
