@@ -35,6 +35,12 @@ const CircleStepIconRoot = styled("div")(() => ({
     borderRadius: "50%",
     backgroundColor: "#ADD500",
   },
+  "& .CircletepIcon-rejectedIcon": {
+    width: 11,
+    height: 11,
+    borderRadius: "50%",
+    backgroundColor: "red",
+  },
 }));
 
 const ColorlibStepIconRoot = styled("div")<{
@@ -45,14 +51,18 @@ const ColorlibStepIconRoot = styled("div")<{
   color: "#ADD500",
 }));
 
-const CircleStepIcon = (isSigned: boolean) => {
+const CircleStepIcon = (status: string) => {
+  let className = "CircletepIcon";
+
+  if (status === TX_OWNER_STATUS_TYPE.APPROVED) {
+    className = "CircletepIcon-completedIcon";
+  } else if (status === TX_OWNER_STATUS_TYPE.REJECTED) {
+    className = "CircletepIcon-rejectedIcon";
+  }
+
   return (
     <CircleStepIconRoot>
-      {isSigned ? (
-        <div className="CircletepIcon-completedIcon" />
-      ) : (
-        <div className="CircletepIcon" />
-      )}
+      <div className={className} />
     </CircleStepIconRoot>
   );
 };
@@ -130,11 +140,7 @@ export default function TxStepper({
           owners?.map((element: Order, index: number) => (
             <Step key={index}>
               <StepLabel
-                StepIconComponent={() =>
-                  CircleStepIcon(
-                    element.status === TX_OWNER_STATUS_TYPE.APPROVED
-                  )
-                }
+                StepIconComponent={() => CircleStepIcon(element.status)}
               >
                 <Box sx={{ display: "flex" }}>
                   <AccountAvatar
