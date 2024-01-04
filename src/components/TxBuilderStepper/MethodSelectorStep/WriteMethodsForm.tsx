@@ -39,7 +39,6 @@ export function WriteMethodsForm({
     contractPromise,
     message: abiMessage,
     params: inputData,
-    substrateRegistry,
     autoRun: true,
   });
 

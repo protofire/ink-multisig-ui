@@ -81,12 +81,14 @@ export default function TxStepper({
   network,
   txId,
   multisigContractPromise,
+  expanded,
 }: {
   approvalCount: number;
   owners: Order[] | undefined;
   network: ChainId;
   txId: string;
   multisigContractPromise: ContractPromise;
+  expanded: boolean;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
   const approvalsLength = owners?.length;
@@ -201,6 +203,7 @@ export default function TxStepper({
             <ConfirmationWidget
               multisigContractPromise={multisigContractPromise}
               txId={txId}
+              expanded={expanded}
             />
           </Box>
         </Step>

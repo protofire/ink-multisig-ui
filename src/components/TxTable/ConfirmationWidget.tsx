@@ -12,13 +12,17 @@ import { shouldDisable } from "@/services/useink/utils";
 import { DryRunMessage } from "../TxBuilderStepper/MethodSelectorStep/DryRunMessage";
 import { useContractTx } from "../TxBuilderStepper/ProposeTxStep/useContractTx";
 
+interface Props {
+  multisigContractPromise: ContractPromise;
+  txId: string;
+  expanded: boolean;
+}
+
 export function ConfirmationWidget({
   multisigContractPromise,
   txId,
-}: {
-  multisigContractPromise: ContractPromise;
-  txId: string;
-}) {
+  expanded,
+}: Props) {
   const approveMessage = useMemo(
     () => multisigContractPromise.abi.findMessage("approveTx"),
     [multisigContractPromise.abi]
@@ -28,9 +32,8 @@ export function ConfirmationWidget({
     contractPromise: multisigContractPromise,
     message: approveMessage,
     params: [parseInt(txId)],
-    substrateRegistry: multisigContractPromise.registry,
     addressCaller: accountConnected?.address,
-    autoRun: true,
+    autoRun: expanded,
     successOutcome: "You can vote",
     failureOutcome: "You can't vote",
   });

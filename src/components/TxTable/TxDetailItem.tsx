@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
@@ -41,6 +42,18 @@ export const TxDetailItem = ({
   multisigContractPromise,
 }: Props) => {
   const date = formatDate(txData.creationTimestamp);
+  const [expandedIds, setExpandedIds] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const expanded = !!expandedIds[txData.txId];
+
+  const handleChange =
+    (id: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpandedIds((prevExpandedIds) => ({
+        ...prevExpandedIds,
+        [id]: isExpanded ? true : !prevExpandedIds[id],
+      }));
+    };
 
   const txStateMsg =
     txData.status === TX_TYPE_OPTION.STATUS.PROPOSED
@@ -53,7 +66,11 @@ export const TxDetailItem = ({
 
   if (!txData.type) {
     return (
-      <Accordion>
+      <Accordion
+        key={txData.txId}
+        expanded={expanded}
+        onChange={handleChange(txData.txId)}
+      >
         <Grid
           sx={{
             "&.MuiGrid-root": {
@@ -153,6 +170,7 @@ export const TxDetailItem = ({
               network={network}
               txId={txData.txId}
               multisigContractPromise={multisigContractPromise}
+              expanded={expanded}
             />
           ) : (
             <></>

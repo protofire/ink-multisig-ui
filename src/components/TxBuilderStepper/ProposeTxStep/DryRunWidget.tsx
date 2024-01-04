@@ -32,7 +32,6 @@ export function DryRunMultisigWidget({
     contractPromise: contractMultisigPromise,
     message: proposeTxAbiMessage || undefined,
     params: _transferTxStruct,
-    substrateRegistry: contractMultisigPromise.registry,
     addressCaller: accountConnected?.address,
     autoRun: true,
   });

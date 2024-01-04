@@ -3,11 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { useGetDryRun } from "@/hooks/useGetDryRun";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
-import {
-  AbiMessage,
-  ContractPromise,
-  Registry,
-} from "@/services/substrate/types";
+import { AbiMessage, ContractPromise } from "@/services/substrate/types";
 import { getIfSpecialError } from "@/services/substrate/utils/specialErrorWrapper";
 import { customReportError } from "@/utils/error";
 
@@ -16,7 +12,6 @@ interface UseDryRunExecutionProps {
   message: AbiMessage | undefined;
   params: unknown[] | undefined;
   autoRun?: boolean;
-  substrateRegistry: Registry;
   addressCaller?: string;
   successOutcome?: string;
   failureOutcome?: string;
@@ -34,7 +29,6 @@ export function useDryRunExecution({
   message,
   params,
   autoRun = false,
-  substrateRegistry,
   addressCaller,
   successOutcome = "Transaction will be executed",
   failureOutcome = "Transaction will be reverted",
@@ -73,9 +67,8 @@ export function useDryRunExecution({
       setError(errorFormatted);
       setOutcome(failureOutcome);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dryRun, message, substrateRegistry]);
+  }, [dryRun, failureOutcome, memoizedParams, successOutcome, message]);
 
   useDebouncedEffect({
     effect: executeDryRun,
