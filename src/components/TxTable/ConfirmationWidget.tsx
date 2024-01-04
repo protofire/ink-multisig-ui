@@ -1,9 +1,11 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useCallback, useEffect, useState } from "react";
 
+import { LoadingButton } from "@/components/common/LoadingButton";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { useGetDryRun } from "@/hooks/useGetDryRun";
+import { TWO_SECONDS, useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 import { ContractPromise } from "@/services/substrate/types";
 import { shouldDisable } from "@/services/useink/utils";
 import { customReportError } from "@/utils/error";
@@ -22,6 +24,10 @@ export function ConfirmationWidget({
   const [error, setError] = useState<string>();
   const [isRunning, setIsRunning] = useState(true);
   const { accountConnected } = usePolkadotContext();
+  const { recentlyClicked: recentlyClickedApprove, ref: refButtonApprove } =
+    useRecentlyClicked(TWO_SECONDS);
+  const { recentlyClicked: recentlyClickedReject, ref: refButtonReject } =
+    useRecentlyClicked(TWO_SECONDS);
   const theme = useTheme();
 
   const reset = () => {
@@ -78,14 +84,12 @@ export function ConfirmationWidget({
   useEffect(() => {
     reset();
     executeApproveDryRun();
-  }, [
-    accountConnected?.address,
-    approveTx.outcome,
-    executeApproveDryRun,
-    rejectTx.outcome,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountConnected?.address, approveTx.outcome, rejectTx.outcome]);
 
-  const isLoading = shouldDisable(approveTx.tx) || shouldDisable(rejectTx.tx);
+  const _isLoadingApprove =
+    recentlyClickedApprove || shouldDisable(approveTx.tx);
+  const _isLoadingReject = recentlyClickedReject || shouldDisable(rejectTx.tx);
 
   return (
     <>
@@ -104,34 +108,40 @@ export function ConfirmationWidget({
           bgcolor={theme.palette.grey.A100}
           p={3}
         >
-          <Button
+          <LoadingButton
+            ref={refButtonReject}
             variant="outlined"
             disabled={
               outcome === undefined ||
               error !== undefined ||
               isRunning ||
-              isLoading
+              _isLoadingReject ||
+              _isLoadingApprove
             }
             onClick={() => {
               rejectTx.signAndSend([parseInt(txId)]);
             }}
+            isLoading={_isLoadingReject}
           >
             Reject
-          </Button>
-          <Button
+          </LoadingButton>
+          <LoadingButton
+            ref={refButtonApprove}
             variant="contained"
             disabled={
               outcome === undefined ||
               error !== undefined ||
               isRunning ||
-              isLoading
+              _isLoadingApprove ||
+              _isLoadingReject
             }
+            isLoading={_isLoadingApprove}
             onClick={() => {
               approveTx.signAndSend([parseInt(txId)]);
             }}
           >
             Confirm
-          </Button>
+          </LoadingButton>
         </Box>
       </Box>
     </>

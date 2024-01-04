@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 type RefType = HTMLButtonElement | null;
-const ONE_SECOND = 1000; // ms
+export const ONE_SECOND = 1000; // ms
+export const TWO_SECONDS = 2500; // ms
 
 export function useRecentlyClicked(waitTime = ONE_SECOND) {
   const [clicked, setClicked] = useState(false);

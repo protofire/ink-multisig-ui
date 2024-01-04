@@ -9,7 +9,6 @@ import {
   Registry,
   WeightV2,
 } from "@/services/substrate/types";
-import { getDecodedOutput } from "@/services/substrate/utils/contractExecResult";
 import { getIfSpecialError } from "@/services/substrate/utils/specialErrorWrapper";
 
 interface UseDryRunExecutionProps {
@@ -54,18 +53,22 @@ export function useDryRunExecution({
 
     const result = await dryRun.send(memoizedParams);
     if (result?.ok) {
-      setGasRequired(result.value.gasRequired);
-      const { decodedOutput, isError } =
-        (message &&
-          getDecodedOutput(
-            {
-              debugMessage: result.value.raw.debugMessage,
-              result: result.value.raw.result,
-            },
-            message,
-            substrateRegistry
-          )) ||
-        {};
+      throw new Error(
+        result?.error.toString() ?? "Error executing the dry running."
+      );
+
+      // setGasRequired(result.value.gasRequired);
+      // const { decodedOutput, isError } =
+      //   (message &&
+      //     getDecodedOutput(
+      //       {
+      //         debugMessage: result.value.raw.debugMessage,
+      //         result: result.value.raw.result,
+      //       },
+      //       message,
+      //       substrateRegistry
+      //     )) ||
+      //   {};
       if (isError) {
         setOutcome("Transaction will be reverted");
         setError(decodedOutput);
