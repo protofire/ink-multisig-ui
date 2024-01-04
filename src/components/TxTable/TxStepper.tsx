@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Button, Link } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Step from "@mui/material/Step";
 import StepContent from "@mui/material/StepContent";
@@ -22,6 +24,8 @@ import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
 import { ExplorerLink } from "../ExplorerLink";
 
+type OwnerStatus = "Approved" | "Rejected" | "Pending";
+
 const CircleStepIconRoot = styled("div")(() => ({
   marginLeft: "7px",
   "& .CircletepIcon": {
@@ -36,43 +40,40 @@ const CircleStepIconRoot = styled("div")(() => ({
     borderRadius: "50%",
     backgroundColor: "#ADD500",
   },
+  "& .CircletepIcon-canceledIcon": {
+    width: 11,
+    height: 11,
+    borderRadius: "50%",
+    backgroundColor: "red",
+  },
 }));
 
-const ColorlibStepIconRoot = styled("div")<{
-  ownerState: { completed?: boolean; active?: boolean };
-}>(() => ({
+const ColorlibStepIconRoot = styled("div")(() => ({
   zIndex: 1,
   marginTop: "5px",
   color: "#ADD500",
 }));
 
-const CircleStepIcon = (isSigned: boolean) => {
-  return (
-    <CircleStepIconRoot>
-      {isSigned ? (
-        <div className="CircletepIcon-completedIcon" />
-      ) : (
-        <div className="CircletepIcon" />
-      )}
-    </CircleStepIconRoot>
-  );
+const CircleStepIcon = (ownerStatus: OwnerStatus) => {
+  const type = {
+    Approved: <div className="CircletepIcon-completedIcon" />,
+    Rejected: <div className="CircletepIcon-canceledIcon" />,
+    Pending: <div className="CircletepIcon" />,
+  };
+  return <CircleStepIconRoot>{type[ownerStatus]}</CircleStepIconRoot>;
 };
 
-function ColorlibStepIcon(props: StepIconProps) {
-  const { active, completed, className } = props;
-
+function ColorlibStepIcon(props: StepIconProps, ownersLength: number) {
+  const lastIndex = (ownersLength + 2).toString();
   const icons: { [index: string]: React.ReactElement } = {
     1: <AddCircleIcon />,
     2: <CheckCircleIcon />,
+    3: <VisibilityIcon sx={{ color: "#ffff" }} />,
+    [lastIndex]: <VisibilityOffIcon sx={{ color: "#ffff" }} />,
   };
 
   return (
-    <ColorlibStepIconRoot
-      ownerState={{ completed, active }}
-      className={className}
-    >
-      {icons[String(props.icon)]}
-    </ColorlibStepIconRoot>
+    <ColorlibStepIconRoot>{icons[String(props.icon)]}</ColorlibStepIconRoot>
   );
 }
 
@@ -121,63 +122,71 @@ export default function TxStepper({
             </Typography>{" "}
           </StepLabel>
         </Step>
-        {showOwners ? (
-          owners?.map((element: Order, index: number) => (
-            <Step key={index}>
-              <StepLabel
-                StepIconComponent={() =>
-                  CircleStepIcon(
-                    element.status === TX_OWNER_STATUS_TYPE.APPROVED
-                  )
-                }
-              >
-                <Box sx={{ display: "flex" }}>
-                  <AccountAvatar
-                    address={element.address}
-                    name={element.name}
-                    truncateLenght={4}
-                  ></AccountAvatar>
-                  <Box
-                    sx={{
-                      marginTop: "20px",
-                      marginLeft: "15px",
-                      display: "flex",
-                    }}
+        {showOwners
+          ? owners?.map((element: Order, index: number) => (
+              <Step key={index}>
+                {index !== owners?.length ? (
+                  <StepLabel
+                    StepIconComponent={() =>
+                      CircleStepIcon(element.status as OwnerStatus)
+                    }
                   >
-                    <CopyButton text={element.address} />
-                    <ExplorerLink
-                      blockchain={network}
-                      path="account"
-                      txHash={element.address}
-                      sx={{ color: "" }}
-                    />
-                  </Box>
-                </Box>
-              </StepLabel>
-            </Step>
-          ))
-        ) : (
-          <></>
-        )}
+                    <Box sx={{ display: "flex" }}>
+                      <AccountAvatar
+                        address={element.address}
+                        name={element.name}
+                        truncateLenght={4}
+                      ></AccountAvatar>
+                      <Box
+                        sx={{
+                          marginTop: "20px",
+                          marginLeft: "15px",
+                          display: "flex",
+                        }}
+                      >
+                        <CopyButton text={element.address} />
+                        <ExplorerLink
+                          blockchain={network}
+                          path="account"
+                          txHash={element.address}
+                        />
+                      </Box>
+                    </Box>
+                  </StepLabel>
+                ) : null}
+              </Step>
+            ))
+          : null}
         <Step>
           <StepLabel
-            StepIconComponent={() => CircleStepIcon(true)}
+            StepIconComponent={(e) => ColorlibStepIcon(e, owners!.length + 1)}
             sx={{
-              color: "#ADD500",
+              color: "red",
             }}
           >
-            <Link
-              sx={{ fontSize: "1.1rem" }}
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: "bold",
+                fontSize: "1.1rem",
+                paddingTop: "1.1rem",
+                marginBottom: "22px",
+                cursor: "pointer",
+                color: "#ffe873",
+                textDecoration: "underline",
+              }}
               onClick={() => setShowOwners(!showOwners)}
             >
               {showOwners ? "Hide all" : "Show all"}
-            </Link>
+            </Typography>
           </StepLabel>
         </Step>
         {status === TX_STATUS_TYPE.PROPOSED ? (
           <Step>
             <StepLabel
-              StepIconComponent={() => CircleStepIcon(false)}
+              StepIconComponent={() =>
+                CircleStepIcon(TX_OWNER_STATUS_TYPE.PENDING as OwnerStatus)
+              }
               sx={{
                 color: "#FFFF",
               }}

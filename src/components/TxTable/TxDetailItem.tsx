@@ -54,7 +54,7 @@ const buildStateMsg = (txType: string, error: string | null) => {
         <Typography ml={0.4}>Error</Typography>
       </Box>
     ),
-    EXECUTED_CANCEL: "Canceled",
+    CANCELLED: "Canceled",
   };
 
   // This validation assumes that a receive does not have the status property.

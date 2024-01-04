@@ -29,7 +29,7 @@ export interface RawTransactionProposed {
   proposalTxHash: string;
   proposer: string;
   rejectionCount: number;
-  rejections: { rejected: string; rejectionTimestamp: string }[];
+  rejections: { rejector: string; rejectionTimestamp: string }[];
   selector: string;
   status: string;
   txId: string;

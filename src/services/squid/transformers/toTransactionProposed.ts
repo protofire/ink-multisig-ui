@@ -27,7 +27,7 @@ function createRejections(
   rawRejections: RawTransactionProposed["rejections"]
 ): Rejection[] {
   return rawRejections.map((rejection) => ({
-    rejector: rejection.rejected,
+    rejector: rejection.rejector,
     rejectionTimestamp: new Date(rejection.rejectionTimestamp),
   }));
 }
@@ -107,7 +107,6 @@ export function rawToFullTxProposed(rawTx: RawTxType): FullTxProposed {
     transaction = rawToTransactionProposed(rawTx);
   }
   transfer = rawToTransferProposed(rawTx);
-
   return {
     ...transaction,
     ...transfer,
