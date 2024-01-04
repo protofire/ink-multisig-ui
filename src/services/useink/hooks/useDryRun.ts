@@ -66,8 +66,17 @@ export function useDryRun<T>(
           params,
           options
         );
+        if (!resp || !resp.ok) {
+          const error = resp.error.asModule
+            ? chainContract.contract.registry.findMetaError(resp.error.asModule)
+            : undefined;
 
-        if (!resp || !resp.ok) return;
+          const errorResp = { ...resp, error };
+
+          setIsSubmitting(false);
+          setResult(errorResp);
+          return errorResp;
+        }
 
         const { gasConsumed, gasRequired, storageDeposit } = resp.value.raw;
 

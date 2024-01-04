@@ -18,6 +18,7 @@ export const TransactionHistory: React.FC<Props> = ({
   network,
 }) => {
   const { data } = useListTxHistory(xsignerAccount, network);
+
   if (data === undefined) {
     return (
       <Box mt={2}>
@@ -31,10 +32,10 @@ export const TransactionHistory: React.FC<Props> = ({
       {data.map((txData, index) => {
         return (
           <TxDetailItem
-            key={txData.id}
+            key={index}
             txData={txData}
+            threshold={xsignerAccount.threshold}
             network={network}
-            index={index}
           />
         );
       })}

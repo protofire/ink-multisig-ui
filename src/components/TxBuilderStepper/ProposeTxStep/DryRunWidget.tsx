@@ -3,10 +3,10 @@ import { useEffect, useMemo } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Transaction } from "@/domain/Transaction";
+import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { AbiMessage, ContractPromise } from "@/services/substrate/types";
 
 import { DryRunMessage } from "../MethodSelectorStep/DryRunMessage";
-import { useDryRunExecution } from "../MethodSelectorStep/useDryRunExecution";
 
 interface Props {
   contractMultisigPromise: ContractPromise;
@@ -32,7 +32,6 @@ export function DryRunMultisigWidget({
     contractPromise: contractMultisigPromise,
     message: proposeTxAbiMessage || undefined,
     params: _transferTxStruct,
-    substrateRegistry: contractMultisigPromise.registry,
     addressCaller: accountConnected?.address,
     autoRun: true,
   });

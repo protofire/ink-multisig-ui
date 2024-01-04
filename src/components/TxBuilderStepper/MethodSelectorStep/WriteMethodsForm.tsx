@@ -2,6 +2,7 @@ import { Box, FormHelperText, Stack, Typography } from "@mui/material";
 
 import { ArgumentsForm } from "@/components/ArgumentForm/ArgumentForm";
 import { UseArgValuesReturn } from "@/components/ArgumentForm/useArgValues";
+import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import {
   AbiMessage,
   ContractPromise,
@@ -11,7 +12,6 @@ import {
 import { useTxBuilderContext } from "../TxBuilderContext";
 import { DryRunMessage } from "./DryRunMessage";
 import { MethodDocumentation } from "./MethodDocumentation";
-import { useDryRunExecution } from "./useDryRunExecution";
 
 interface Props {
   abiMessage: AbiMessage;
@@ -39,7 +39,6 @@ export function WriteMethodsForm({
     contractPromise,
     message: abiMessage,
     params: inputData,
-    substrateRegistry,
     autoRun: true,
   });
 
