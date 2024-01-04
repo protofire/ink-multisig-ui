@@ -30,14 +30,12 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 
 type Props = {
   txData: TransactionProposedItemUi;
-  index: number;
   network: ChainId;
   multisigContractPromise: ContractPromise;
 };
 
 export const TxDetailItem = ({
   txData,
-  index,
   network,
   multisigContractPromise,
 }: Props) => {
@@ -98,8 +96,8 @@ export const TxDetailItem = ({
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls={`${txData.id}-content`}
-        id={`${txData.id}-header`}
+        aria-controls={`${txData.txId}-content`}
+        id={`${txData.txId}-header`}
       >
         <Grid
           sx={{
@@ -114,7 +112,7 @@ export const TxDetailItem = ({
           container
         >
           <StyledGrid item xs={1} sm={1} md={1}>
-            <Typography>{index + 1}</Typography>
+            <Typography>{txData.txId}</Typography>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
             <Image

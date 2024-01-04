@@ -34,13 +34,11 @@ export const TransactionQueueDetail: React.FC<Props> = ({
   return (
     <>
       {data.map((txData) => {
-        const index = Number(txData.txId);
         return (
           <TxDetailItem
-            key={txData.id}
+            key={txData.txId}
             txData={txData}
             network={network}
-            index={index}
             multisigContractPromise={multisigContractPromise.contract}
           />
         );
