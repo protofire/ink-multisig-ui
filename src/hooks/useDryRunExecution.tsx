@@ -73,36 +73,6 @@ export function useDryRunExecution({
       setError(errorFormatted);
       setOutcome(failureOutcome);
     }
-    // if (!result?.ok) {
-    //   throw new Error(
-    //     result?.error.toString() ?? "Error executing the dry running."
-    //   );
-
-    //   const { decodedOutput, isError } =
-    //     (message &&
-    //       getDecodedOutput(
-    //         {
-    //           debugMessage: result.value.raw.debugMessage,
-    //           result: result.value.raw.result,
-    //         },
-    //         message,
-    //         substrateRegistry
-    //       )) ||
-    //     {};
-    //   if (isError) {
-    //     setOutcome("Transaction will be reverted");
-    //     setError(decodedOutput);
-    //   } else {
-    //     setOutcome("Transaction will be executed");
-    //   }
-    // } else {
-    //   const error = result.error?.name
-    //     ? getIfSpecialError(result.error?.name)
-    //     : "Transaction will be reverted due to unknown error";
-
-    //   setError(error);
-    //   setOutcome("Transaction will be reverted");
-    // }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dryRun, message, substrateRegistry]);
