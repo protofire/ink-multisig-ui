@@ -78,6 +78,7 @@ function ColorlibStepIcon(props: StepIconProps) {
 export default function TxStepper({
   approvalCount,
   owners,
+  threshold,
   network,
   txId,
   multisigContractPromise,
@@ -85,13 +86,13 @@ export default function TxStepper({
 }: {
   approvalCount: number;
   owners: Order[] | undefined;
+  threshold: number;
   network: ChainId;
   txId: string;
   multisigContractPromise: ContractPromise;
   expanded: boolean;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
-  const approvalsLength = owners?.length;
 
   return (
     <Box
@@ -121,7 +122,7 @@ export default function TxStepper({
               Confirmations{" "}
               <span
                 style={{ color: "#636669", marginLeft: "1rem" }}
-              >{`(${approvalCount} / ${approvalsLength})`}</span>
+              >{`(${approvalCount} / ${threshold})`}</span>
             </Typography>{" "}
           </StepLabel>
         </Step>

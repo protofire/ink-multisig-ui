@@ -38,6 +38,7 @@ export const TransactionQueueDetail: React.FC<Props> = ({
           <TxDetailItem
             key={txData.txId}
             txData={txData}
+            threshold={xsignerAccount.threshold}
             network={network}
             multisigContractPromise={multisigContractPromise.contract}
           />

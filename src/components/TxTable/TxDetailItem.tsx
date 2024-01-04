@@ -30,12 +30,14 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 
 type Props = {
   txData: TransactionProposedItemUi;
+  threshold: number;
   network: ChainId;
   multisigContractPromise: ContractPromise;
 };
 
 export const TxDetailItem = ({
   txData,
+  threshold,
   network,
   multisigContractPromise,
 }: Props) => {
@@ -165,6 +167,7 @@ export const TxDetailItem = ({
             <TxStepper
               approvalCount={txData.approvalCount}
               owners={txData.ownersAction}
+              threshold={threshold}
               network={network}
               txId={txData.txId}
               multisigContractPromise={multisigContractPromise}
