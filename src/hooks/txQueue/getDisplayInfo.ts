@@ -47,27 +47,32 @@ export const getDisplayInfo = async ({
     from: undefined,
   };
 
-  let contractPromise = new ContractPromise(
-    apiPromise,
-    MultisigSdk.contractMetadata().ContractAbi,
-    multisigAddress
-  );
+  let contractPromise: ContractPromise;
 
   if (multisigAddress === txProposed.contractAddress) {
+    const contractAbi = MultisigSdk.contractMetadata().ContractAbi;
+    contractPromise = new ContractPromise(
+      apiPromise,
+      contractAbi,
+      multisigAddress
+    );
+
     const message = contractPromise.abi.messages.find(
       (message) => message.selector.toString() === txProposed.selector
     );
 
-    if (message === undefined) {
-      displayInfo["to"] = txProposed.contractAddress;
-      displayInfo["valueAmount"] = `${balanceToFixed(
+    const methodName = message?.method;
+
+    if (!methodName) {
+      displayInfo.to = txProposed.contractAddress;
+      displayInfo.valueAmount = `${balanceToFixed(
         txProposed.value,
         nativeToken.decimals
       )} ${nativeToken.token}`;
-      displayInfo["type"] = txProposed.methodName || txProposed.selector;
+      displayInfo.type = txProposed.methodName || txProposed.selector;
       return displayInfo;
     }
-    const methodName = message?.method;
+
     const decodedData = decodeCallArgs(
       contractPromise,
       methodName!,
@@ -84,7 +89,6 @@ export const getDisplayInfo = async ({
         break;
       }
       default: {
-        // Update txProposed with decoded data
         txProposed.methodName = methodName!;
         txProposed.args;
         const args: ContractParam[] = [];
@@ -95,28 +99,30 @@ export const getDisplayInfo = async ({
           });
         });
         txProposed.args = args;
-        displayInfo["to"] = txProposed.contractAddress;
-        displayInfo["valueAmount"] = `${balanceToFixed(
+        displayInfo.to = txProposed.contractAddress;
+        displayInfo.valueAmount = `${balanceToFixed(
           txProposed.value,
           nativeToken.decimals
         )} ${nativeToken.token}`;
-        displayInfo["type"] = methodName;
+        displayInfo.type = methodName;
         //TODO: Maybe add setting img
         break;
       }
     }
   } else if (txProposed.selector === PSP22_TRANSFER_METHOD_SELECTOR) {
+    const contractAbi = Psp22Sdk.contractMetadata().ContractAbi;
     contractPromise = new ContractPromise(
       apiPromise,
-      Psp22Sdk.contractMetadata().ContractAbi,
+      contractAbi,
       txProposed.contractAddress
     );
+
     let tokenDecimals = undefined;
     let tokenSymbol = undefined;
     const decodedData = decodeCallArgs(
       contractPromise,
       "psp22::transfer",
-      txProposed.rawArgs as string // always will be string in transfer UI
+      txProposed.rawArgs as string // Always will be string
     );
 
     tokenDecimals = getValueResponse(
@@ -134,22 +140,21 @@ export const getDisplayInfo = async ({
       )
     );
 
-    displayInfo["valueAmount"] = tokenDecimals
+    displayInfo.valueAmount = tokenDecimals
       ? `${balanceToFixed(
           decodedData[1],
           parseInt(tokenDecimals)
         )} ${tokenSymbol}`
       : "";
-    displayInfo["to"] = decodedData[0];
-    displayInfo["img"] = TX_TYPE_IMG.SEND;
+    displayInfo.to = decodedData[0];
+    displayInfo.img = TX_TYPE_IMG.SEND;
   } else {
-    displayInfo["to"] = txProposed.contractAddress;
-
-    displayInfo["valueAmount"] = `${balanceToFixed(
+    displayInfo.to = txProposed.contractAddress;
+    displayInfo.valueAmount = `${balanceToFixed(
       txProposed.value,
       nativeToken.decimals
     )} ${nativeToken.token}`;
-    displayInfo["type"] = txProposed.methodName || txProposed.selector;
+    displayInfo.type = txProposed.methodName || txProposed.selector;
   }
 
   return displayInfo;
