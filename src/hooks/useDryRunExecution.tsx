@@ -7,9 +7,9 @@ import {
   AbiMessage,
   ContractPromise,
   Registry,
-  WeightV2,
 } from "@/services/substrate/types";
 import { getIfSpecialError } from "@/services/substrate/utils/specialErrorWrapper";
+import { customReportError } from "@/utils/error";
 
 interface UseDryRunExecutionProps {
   contractPromise: ContractPromise;
@@ -18,6 +18,8 @@ interface UseDryRunExecutionProps {
   autoRun?: boolean;
   substrateRegistry: Registry;
   addressCaller?: string;
+  successOutcome?: string;
+  failureOutcome?: string;
 }
 
 export interface DryRunExecutionResult {
@@ -25,7 +27,6 @@ export interface DryRunExecutionResult {
   error: string | undefined;
   isRunning: boolean;
   executeDryRun: () => void;
-  gasRequired: WeightV2 | undefined;
 }
 
 export function useDryRunExecution({
@@ -35,6 +36,8 @@ export function useDryRunExecution({
   autoRun = false,
   substrateRegistry,
   addressCaller,
+  successOutcome = "Transaction will be executed",
+  failureOutcome = "Transaction will be reverted",
 }: UseDryRunExecutionProps): DryRunExecutionResult {
   const { xSignerSelected } = useGetXsignerSelected();
   const dryRun = useGetDryRun(
@@ -45,44 +48,62 @@ export function useDryRunExecution({
   const [outcome, setOutcome] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const memoizedParams = useMemo(() => params, [params]);
-  const [gasRequired, setGasRequired] = useState<WeightV2>();
 
   const executeDryRun = useCallback(async () => {
     setOutcome(undefined);
     setError(undefined);
 
-    const result = await dryRun.send(memoizedParams);
-    if (result?.ok) {
-      throw new Error(
-        result?.error.toString() ?? "Error executing the dry running."
-      );
+    try {
+      const dryRunResult = await dryRun.send(memoizedParams);
+      if (!dryRunResult?.ok) {
+        const error = dryRunResult.error?.name
+          ? getIfSpecialError(dryRunResult.error?.name)
+          : "Transaction will be reverted due to unknown error";
 
-      // setGasRequired(result.value.gasRequired);
-      // const { decodedOutput, isError } =
-      //   (message &&
-      //     getDecodedOutput(
-      //       {
-      //         debugMessage: result.value.raw.debugMessage,
-      //         result: result.value.raw.result,
-      //       },
-      //       message,
-      //       substrateRegistry
-      //     )) ||
-      //   {};
-      if (isError) {
-        setOutcome("Transaction will be reverted");
-        setError(decodedOutput);
+        setError(error);
+        setOutcome(failureOutcome);
+      } else if (dryRunResult.value.decoded?.Err) {
+        setOutcome(failureOutcome);
+        setError(dryRunResult.value.decoded?.Err);
       } else {
-        setOutcome("Transaction will be executed");
+        setOutcome(successOutcome);
       }
-    } else {
-      const error = result.error?.name
-        ? getIfSpecialError(result.error?.name)
-        : "Transaction will be reverted due to unknown error";
-
-      setError(error);
-      setOutcome("Transaction will be reverted");
+    } catch (e) {
+      const errorFormatted = customReportError(e);
+      setError(errorFormatted);
+      setOutcome(failureOutcome);
     }
+    // if (!result?.ok) {
+    //   throw new Error(
+    //     result?.error.toString() ?? "Error executing the dry running."
+    //   );
+
+    //   const { decodedOutput, isError } =
+    //     (message &&
+    //       getDecodedOutput(
+    //         {
+    //           debugMessage: result.value.raw.debugMessage,
+    //           result: result.value.raw.result,
+    //         },
+    //         message,
+    //         substrateRegistry
+    //       )) ||
+    //     {};
+    //   if (isError) {
+    //     setOutcome("Transaction will be reverted");
+    //     setError(decodedOutput);
+    //   } else {
+    //     setOutcome("Transaction will be executed");
+    //   }
+    // } else {
+    //   const error = result.error?.name
+    //     ? getIfSpecialError(result.error?.name)
+    //     : "Transaction will be reverted due to unknown error";
+
+    //   setError(error);
+    //   setOutcome("Transaction will be reverted");
+    // }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dryRun, message, substrateRegistry]);
 
@@ -98,6 +119,5 @@ export function useDryRunExecution({
     error,
     isRunning: dryRun.isSubmitting,
     executeDryRun,
-    gasRequired,
   };
 }
