@@ -43,15 +43,15 @@ const buildStateMsg = (txType: string, error: string | null) => {
     EXECUTED_SUCCESS: "Success",
     EXECUTED_FAILURE: (
       <Box
-        color={"red"}
+        color={(theme) => theme.palette.error.main}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
       >
+        <ErrorOutlineIcon sx={{ top: "1rem", fontSize: "1.3rem" }} />
         <Tooltip title={error} placement="top">
-          <ErrorOutlineIcon sx={{ top: "1rem", fontSize: "1.3rem" }} />
+          <Typography ml={0.4}>Error</Typography>
         </Tooltip>
-        <Typography ml={0.4}>Error</Typography>
       </Box>
     ),
     EXECUTED_CANCEL: "Canceled",
