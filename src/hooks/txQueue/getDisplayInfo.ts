@@ -7,6 +7,7 @@ import { MultisigSdk, Psp22Sdk } from "xsigners-sdk-test";
 
 import { ChainExtended } from "@/config/chain";
 import { TX_TYPE_IMG } from "@/config/images";
+import { ContractParam } from "@/domain/repositores/ISquidDbRepository";
 import { TransactionProposed } from "@/domain/TransactionProposed";
 import { TransactionDisplayInfo } from "@/domain/TransactionProposedItemUi";
 import { ApiPromise, ContractPromise } from "@/services/substrate/types";
@@ -46,39 +47,82 @@ export const getDisplayInfo = async ({
     from: undefined,
   };
 
-  let contractPromise = new ContractPromise(
-    apiPromise,
-    MultisigSdk.contractMetadata().ContractAbi,
-    multisigAddress
-  );
+  let contractPromise: ContractPromise;
 
-  if (
-    multisigAddress === txProposed.contractAddress &&
-    txProposed.selector === TRANSFER_METHOD_SELECTOR
-  ) {
-    const decodedData = decodeCallArgs(
-      contractPromise,
-      "transfer",
-      txProposed.rawArgs as string // always will be string in native transfer
-    );
-
-    displayInfo["valueAmount"] = `${parseNativeBalance(decodedData[1])} ${
-      nativeToken.token
-    }`;
-    displayInfo["to"] = decodedData[0];
-    displayInfo["img"] = TX_TYPE_IMG.SEND;
-  } else if (txProposed.selector === PSP22_TRANSFER_METHOD_SELECTOR) {
+  if (multisigAddress === txProposed.contractAddress) {
+    const contractAbi = MultisigSdk.contractMetadata().ContractAbi;
     contractPromise = new ContractPromise(
       apiPromise,
-      Psp22Sdk.contractMetadata().ContractAbi,
+      contractAbi,
+      multisigAddress
+    );
+
+    const message = contractPromise.abi.messages.find(
+      (message) => message.selector.toString() === txProposed.selector
+    );
+
+    const methodName = message?.method;
+
+    if (!methodName) {
+      displayInfo.to = txProposed.contractAddress;
+      displayInfo.valueAmount = `${balanceToFixed(
+        txProposed.value,
+        nativeToken.decimals
+      )} ${nativeToken.token}`;
+      displayInfo.type = txProposed.methodName || txProposed.selector;
+      return displayInfo;
+    }
+
+    const decodedData = decodeCallArgs(
+      contractPromise,
+      methodName!,
+      txProposed.rawArgs as string // Always will be string
+    );
+
+    switch (methodName) {
+      case "transfer": {
+        displayInfo["valueAmount"] = `${parseNativeBalance(decodedData[1])} ${
+          nativeToken.token
+        }`;
+        displayInfo["to"] = decodedData[0];
+        displayInfo["img"] = TX_TYPE_IMG.SEND;
+        break;
+      }
+      default: {
+        txProposed.methodName = methodName!;
+        txProposed.args;
+        const args: ContractParam[] = [];
+        decodedData.forEach((arg: any, index: number) => {
+          args.push({
+            name: message?.args[index].name,
+            value: arg,
+          });
+        });
+        txProposed.args = args;
+        displayInfo.to = txProposed.contractAddress;
+        displayInfo.valueAmount = `${balanceToFixed(
+          txProposed.value,
+          nativeToken.decimals
+        )} ${nativeToken.token}`;
+        displayInfo.type = methodName;
+        //TODO: Maybe add setting img
+        break;
+      }
+    }
+  } else if (txProposed.selector === PSP22_TRANSFER_METHOD_SELECTOR) {
+    const contractAbi = Psp22Sdk.contractMetadata().ContractAbi;
+    contractPromise = new ContractPromise(
+      apiPromise,
+      contractAbi,
       txProposed.contractAddress
     );
+
     let tokenDecimals = undefined;
     let tokenSymbol = undefined;
     const decodedData = decodeCallArgs(
       contractPromise,
       "psp22::transfer",
-      txProposed.rawArgs as string // always will be string in transfer UI
+      txProposed.rawArgs as string // Always will be string
     );
 
     tokenDecimals = getValueResponse(
@@ -96,22 +140,21 @@ export const getDisplayInfo = async ({
       )
     );
 
-    displayInfo["valueAmount"] = tokenDecimals
+    displayInfo.valueAmount = tokenDecimals
       ? `${balanceToFixed(
           decodedData[1],
           parseInt(tokenDecimals)
         )} ${tokenSymbol}`
       : "";
-    displayInfo["to"] = decodedData[0];
-    displayInfo["img"] = TX_TYPE_IMG.SEND;
+    displayInfo.to = decodedData[0];
+    displayInfo.img = TX_TYPE_IMG.SEND;
   } else {
-    displayInfo["to"] = txProposed.contractAddress;
-
-    displayInfo["valueAmount"] = `${balanceToFixed(
+    displayInfo.to = txProposed.contractAddress;
+    displayInfo.valueAmount = `${balanceToFixed(
       txProposed.value,
       nativeToken.decimals
     )} ${nativeToken.token}`;
-    displayInfo["type"] = txProposed.methodName || txProposed.selector;
+    displayInfo.type = txProposed.methodName || txProposed.selector;
   }
 
   return displayInfo;
