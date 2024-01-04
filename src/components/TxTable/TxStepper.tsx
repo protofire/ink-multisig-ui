@@ -51,7 +51,7 @@ const ColorlibStepIconRoot = styled("div")<{
   color: "#ADD500",
 }));
 
-const CircleStepIcon = (status: string) => {
+const CircleStepIcon = (status?: string) => {
   let className = "CircletepIcon";
 
   if (status === TX_OWNER_STATUS_TYPE.APPROVED) {
@@ -103,6 +103,8 @@ export default function TxStepper({
   expanded: boolean;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
+  const canBeExecuted =
+    approvalCount === threshold ? TX_OWNER_STATUS_TYPE.APPROVED : undefined;
 
   return (
     <Box
@@ -172,7 +174,7 @@ export default function TxStepper({
         )}
         <Step>
           <StepLabel
-            StepIconComponent={() => CircleStepIcon(true)}
+            StepIconComponent={() => CircleStepIcon()}
             sx={{
               color: "#ADD500",
             }}
@@ -187,7 +189,7 @@ export default function TxStepper({
         </Step>
         <Step>
           <StepLabel
-            StepIconComponent={() => CircleStepIcon(false)}
+            StepIconComponent={() => CircleStepIcon(canBeExecuted)}
             sx={{
               color: "#FFFF",
             }}
