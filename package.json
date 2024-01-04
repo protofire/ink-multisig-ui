@@ -45,7 +45,7 @@
     "react-toastify": "^9.1.3",
     "sass": "^1.63.6",
     "useink": "^1.14.1",
-    "xsigners-sdk-test": "^0.0.13"
+    "xsigners-sdk-test": "^0.0.14"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.2.1",
