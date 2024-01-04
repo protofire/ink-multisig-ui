@@ -27,6 +27,7 @@ export type BaseStepperProps = {
   managerStep: ManagerActiveStep;
   customInitialRedirect?: () => void;
   customFinalRedirect?: () => void;
+  onHandleBack?: () => void;
   reset?: () => void;
   isConfirmLoading?: boolean;
 };
@@ -40,6 +41,7 @@ function BaseStepper({
   reset,
   customInitialRedirect,
   customFinalRedirect,
+  onHandleBack,
   isConfirmLoading = false,
 }: BaseStepperProps) {
   const { activeStep, upCreationStep, downCreationStep } = managerStep;
@@ -81,6 +83,7 @@ function BaseStepper({
       }
     } else {
       downCreationStep();
+      onHandleBack?.();
     }
   };
 

@@ -98,6 +98,11 @@ export default function SettingsPage() {
     }
   };
 
+  const handleBack = () => {
+    if (!selectedMultisig) return;
+    data.handleOwners(selectedMultisig.owners, 0);
+  };
+
   useEffect(() => {
     fetchData();
 
@@ -325,6 +330,7 @@ export default function SettingsPage() {
           customInitialRedirect={handleCancel}
           customFinalRedirect={handleConfirm}
           isConfirmLoading={isLoading}
+          onHandleBack={handleBack}
         />
       ) : (
         <>

@@ -35,7 +35,7 @@ export default function ManageOwners({
   isDeletedLoading?: boolean;
 }) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState({ edit: false, delete: false });
   const [ownersList, setOwnersList] = React.useState<
     ArrayOneOrMore<Owner> | undefined
   >(owners);
@@ -50,17 +50,18 @@ export default function ManageOwners({
 
   const handleEdit = (owner: Owner) => {
     setCurrentOwner(owner);
-    setOpen(true);
+    setOpen({ edit: true, delete: false });
   };
 
   const handleClose = () => {
     setCurrentOwner({} as Owner);
-    setOpen(false);
+    setOpen({ edit: false, delete: false });
   };
 
   const handleLocalDelete = (owner: Owner) => {
     if (owners?.length === 1) return;
-    handleDeleteOwner(owner);
+    setCurrentOwner(owner);
+    setOpen({ edit: false, delete: true });
   };
 
   const handleSave = async () => {
@@ -90,7 +91,7 @@ export default function ManageOwners({
   return (
     <Box display="flex">
       <Modal
-        open={open}
+        open={open.edit}
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
         <Box
@@ -177,6 +178,58 @@ export default function ManageOwners({
           </Box>
         </Box>
       </Modal>
+      <Modal
+        open={open.delete}
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          flexDirection="column"
+          p={2}
+          width={500}
+          sx={{ backgroundColor: theme.palette.grey.A100 }}
+        >
+          <Box
+            display="flex"
+            flexDirection="row"
+            width="100%"
+            alignItems="center"
+            justifyContent="space-between"
+            mt={1}
+            pl={2}
+          >
+            <Typography variant="h5" color="primary">
+              Are you sure you want to delete this owner?
+            </Typography>
+            <Typography variant="h6" onClick={handleClose}>
+              <CloseIcon />
+            </Typography>
+          </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            width={250}
+            mt={3}
+          >
+            <Button onClick={handleClose} variant="outlined" sx={{ width: 94 }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setOpen({ edit: false, delete: false });
+                handleDeleteOwner(currentOwner);
+              }}
+              variant="contained"
+              sx={{ width: 134 }}
+            >
+              Confirm
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
       <Box minWidth={300}>
         <Typography variant="h5">Manage Owners</Typography>
       </Box>
@@ -207,17 +260,26 @@ export default function ManageOwners({
                     sx={{ cursor: "pointer" }}
                     onClick={() => handleEdit(owner)}
                   />
-                  {!isDeletedLoading ? (
+                  {isDeletedLoading &&
+                  currentOwner.address === owner.address ? (
+                    <CircularProgress color="secondary" size={20} />
+                  ) : (
                     <DeleteOutlinedIcon
-                      onClick={() => handleLocalDelete(owner)}
+                      onClick={() =>
+                        !isDeletedLoading && handleLocalDelete(owner)
+                      }
                       sx={{
                         cursor:
-                          owners?.length === 1 ? "not-allowed" : "pointer",
+                          owners?.length === 1 || isDeletedLoading
+                            ? "not-allowed"
+                            : "pointer",
                       }}
-                      color={owners?.length === 1 ? "disabled" : "inherit"}
+                      color={
+                        owners?.length === 1 || isDeletedLoading
+                          ? "disabled"
+                          : "inherit"
+                      }
                     />
-                  ) : (
-                    <CircularProgress color="secondary" size={20} />
                   )}
                 </Box>
               </Box>
