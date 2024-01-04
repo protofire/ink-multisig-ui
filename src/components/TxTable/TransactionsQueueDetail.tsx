@@ -4,6 +4,7 @@ import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
 
 import { TxDetailItem } from "./TxDetailItem";
@@ -18,8 +19,11 @@ export const TransactionQueueDetail: React.FC<Props> = ({
   network,
 }) => {
   const { data } = useListTxQueue(xsignerAccount, network);
+  const { multisigContractPromise } = useMultisigContractPromise(
+    xsignerAccount.address
+  );
 
-  if (data === undefined) {
+  if (data === undefined || multisigContractPromise?.contract === undefined) {
     return (
       <Box mt={2}>
         <LoadingSkeleton count={5} width={"100%"} />
@@ -30,13 +34,13 @@ export const TransactionQueueDetail: React.FC<Props> = ({
   return (
     <>
       {data.map((txData) => {
-        const index = Number(txData.txId);
         return (
           <TxDetailItem
-            key={txData.id}
+            key={txData.txId}
             txData={txData}
+            threshold={xsignerAccount.threshold}
             network={network}
-            index={index}
+            multisigContractPromise={multisigContractPromise.contract}
           />
         );
       })}

@@ -10,11 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
+import { ContractPromise } from "@/services/substrate/types";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { TxDetails } from "./TxDetail";
@@ -28,12 +30,30 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 
 type Props = {
   txData: TransactionProposedItemUi;
-  index: number;
+  threshold: number;
   network: ChainId;
+  multisigContractPromise: ContractPromise;
 };
 
-export const TxDetailItem = ({ txData, index, network }: Props) => {
+export const TxDetailItem = ({
+  txData,
+  threshold,
+  network,
+  multisigContractPromise,
+}: Props) => {
   const date = formatDate(txData.creationTimestamp);
+  const [expandedIds, setExpandedIds] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const expanded = !!expandedIds[txData.txId];
+
+  const handleChange =
+    (id: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpandedIds((prevExpandedIds) => ({
+        ...prevExpandedIds,
+        [id]: isExpanded ? true : !prevExpandedIds[id],
+      }));
+    };
 
   const txStateMsg =
     txData.status === TX_TYPE_OPTION.STATUS.PROPOSED
@@ -46,7 +66,11 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
 
   if (!txData.type) {
     return (
-      <Accordion>
+      <Accordion
+        key={txData.txId}
+        expanded={expanded}
+        onChange={handleChange(txData.txId)}
+      >
         <Grid
           sx={{
             "&.MuiGrid-root": {
@@ -74,8 +98,8 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls={`${txData.id}-content`}
-        id={`${txData.id}-header`}
+        aria-controls={`${txData.txId}-content`}
+        id={`${txData.txId}-header`}
       >
         <Grid
           sx={{
@@ -90,7 +114,7 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
           container
         >
           <StyledGrid item xs={1} sm={1} md={1}>
-            <Typography>{index + 1}</Typography>
+            <Typography>{txData.txId}</Typography>
           </StyledGrid>
           <StyledGrid item xs={1} sm={1} md={1}>
             <Image
@@ -143,7 +167,11 @@ export const TxDetailItem = ({ txData, index, network }: Props) => {
             <TxStepper
               approvalCount={txData.approvalCount}
               owners={txData.ownersAction}
+              threshold={threshold}
               network={network}
+              txId={txData.txId}
+              multisigContractPromise={multisigContractPromise}
+              expanded={expanded}
             />
           ) : (
             <></>
