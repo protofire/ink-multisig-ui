@@ -11,6 +11,7 @@ export type TransactionDisplayInfo = {
     | "Receive"
     | "Send Native"
     | "Send PSP22"
+    | "Settings"
     | "Custom Contract"
     | undefined;
   img: string;
