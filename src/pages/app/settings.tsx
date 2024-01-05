@@ -22,6 +22,7 @@ import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
+import { parseDryRunData } from "@/hooks/useDryRunExecution";
 import { useGetDryRun } from "@/hooks/useGetDryRun";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
@@ -143,17 +144,20 @@ export default function SettingsPage() {
 
       if (!transactionData) return;
 
-      const dryRunResult = await performDryRun(transactionData);
-      if (!dryRunResult?.ok) {
+      const dryRunResult = await performDryRun(
+        transactionData,
+        transactionType
+      );
+
+      if (dryRunResult?.error) {
         throw new Error(
           dryRunResult?.error.toString() ??
             "Error on executing the transaction."
         );
       }
 
-      const gasRequired = dryRunResult.value.gasRequired as WeightV2;
       await executeTransaction(
-        gasRequired,
+        dryRunResult?.gasRequired,
         transactionData,
         "Transaction sent successfully. You can check it on Transactions queue."
       );
@@ -178,17 +182,20 @@ export default function SettingsPage() {
 
       if (!transactionData) return;
 
-      const dryRunResult = await performDryRun(transactionData);
-      if (!dryRunResult?.ok) {
+      const dryRunResult = await performDryRun(
+        transactionData,
+        transactionType
+      );
+
+      if (dryRunResult?.error) {
         throw new Error(
-          dryRunResult?.error.toString() ??
+          dryRunResult?.error?.toString() ??
             "Error on executing the transaction."
         );
       }
 
-      const gasRequired = dryRunResult.value.gasRequired as WeightV2;
       await executeTransaction(
-        gasRequired,
+        dryRunResult?.gasRequired,
         transactionData,
         "Transaction sent successfully. You can check it on Transactions queue."
       );
@@ -254,8 +261,15 @@ export default function SettingsPage() {
     };
   }
 
-  async function performDryRun(transactionData: any) {
-    return await dryRun.send([transactionData]);
+  async function performDryRun(transactionData: any, type: string) {
+    const result = await parseDryRunData(
+      dryRun,
+      [transactionData],
+      "Transaction will be reverted",
+      "Transaction will be executed"
+    );
+
+    return result;
   }
 
   async function executeTransaction(
