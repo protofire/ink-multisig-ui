@@ -278,13 +278,15 @@ export default function SettingsPage() {
       },
       ({ status }) => {
         if (status.isInBlock) {
-          setIsLoading(false);
-          addNotification({
-            message: successMessage,
-            type: "success",
-          });
-          handleCancel();
-          fetchData();
+          setTimeout(() => {
+            setIsLoading(false);
+            addNotification({
+              message: successMessage,
+              type: "success",
+            });
+            handleCancel();
+            fetchData();
+          }, 2000);
         }
       }
     );
