@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const { config } = require("./src/services/squid/squidConfig");
+const { version } = require("./package.json");
 
 const nextConfig = {
   reactStrictMode: true,
@@ -11,6 +12,9 @@ const nextConfig = {
     "@mui/icons-material": {
       transform: "@mui/icons-material/{{member}}",
     },
+  },
+  publicRuntimeConfig: {
+    version,
   },
   async rewrites() {
     return [
