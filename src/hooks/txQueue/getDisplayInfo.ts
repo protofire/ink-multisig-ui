@@ -14,7 +14,6 @@ import { ApiPromise, ContractPromise } from "@/services/substrate/types";
 import { decodeCallArgs } from "@/utils/blockchain";
 import { balanceToFixed, parseNativeBalance } from "@/utils/formatString";
 
-const TRANSFER_METHOD_SELECTOR = "0x84a15da1";
 const PSP22_TRANSFER_METHOD_SELECTOR = "0xdb20f9f5";
 
 interface Props {
