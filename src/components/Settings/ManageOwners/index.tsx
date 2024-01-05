@@ -193,25 +193,40 @@ export default function ManageOwners({
         >
           <Box
             display="flex"
-            flexDirection="row"
+            flexDirection="column"
             width="100%"
             alignItems="center"
             justifyContent="space-between"
             mt={1}
             pl={2}
           >
-            <Typography variant="h5" color="primary">
-              Are you sure you want to delete this owner?
-            </Typography>
-            <Typography variant="h6" onClick={handleClose}>
-              <CloseIcon />
-            </Typography>
+            <Box
+              display="flex"
+              width="100%"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography variant="h5" color="primary">
+                Are you sure you want to delete this owner?
+              </Typography>
+              <Typography variant="h6" onClick={handleClose}>
+                <CloseIcon />
+              </Typography>
+            </Box>
+            <Box mt={3} mb={2}>
+              <AccountSigner
+                key={currentOwner.address}
+                name={currentOwner.name}
+                address={currentOwner.address}
+                truncateAmount={12}
+              />
+            </Box>
           </Box>
           <Box
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            width={250}
+            width={300}
             mt={3}
           >
             <Button onClick={handleClose} variant="outlined" sx={{ width: 94 }}>

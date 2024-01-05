@@ -9,6 +9,7 @@ import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
 import { getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
+import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { formatThreshold } from "@/utils/formatString";
 
@@ -27,15 +28,34 @@ export function XsignersAccountTable({
 }: Props) {
   const { logo, name: networkName } = getChain(network);
   const theme = useTheme();
+  const { signatoriesAccountRepository } = useLocalDbContext();
 
-  const handleMultisigRedirect = (address: string) => {
+  const handleMultisigRedirect = async (address: string) => {
     const selectedMultisig = multisigs?.find(
       (multisig) => multisig.address === address
     );
+
     if (!selectedMultisig) {
       return;
     }
-    setXsigner(selectedMultisig as SignatoriesAccount);
+    const savedMultisig =
+      await signatoriesAccountRepository.getSignatoryAccount(
+        selectedMultisig.networkId,
+        selectedMultisig.address
+      );
+    const updatedMultisigWithOwners = {
+      ...selectedMultisig,
+      owners: selectedMultisig.owners.map((owner) => {
+        const savedOwner = savedMultisig?.owners.find(
+          (savedOwner) => savedOwner.address === owner.address
+        );
+        return {
+          ...owner,
+          name: savedOwner?.name || owner.name,
+        };
+      }),
+    };
+    await setXsigner(updatedMultisigWithOwners as SignatoriesAccount);
     router.replace(ROUTES.App);
   };
 
