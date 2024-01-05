@@ -3,6 +3,7 @@ import { useEvents, useEventSubscription, useTx } from "useink";
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { SaveProps } from "@/components/StepperSignersAccount";
+import { XsignerAccountEvents } from "@/domain/events/XsignerAccountEvents";
 import { useMultisigFactoryContract } from "@/hooks/contractPromise/useTxMultisigFactory";
 import { useTxDispatchNotification } from "@/hooks/useTxDispatchNotfication";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
@@ -63,6 +64,9 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
             setError(errorFormated);
             addNotification({ message: errorFormated, type: "error" });
           } else if (_result?.isCompleted) {
+            document.dispatchEvent(
+              new CustomEvent(XsignerAccountEvents.newAccountCreated)
+            );
             setNewAccount(account);
           }
         }
