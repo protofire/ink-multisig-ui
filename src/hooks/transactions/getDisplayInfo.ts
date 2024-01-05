@@ -8,7 +8,7 @@ import { MultisigSdk, Psp22Sdk } from "xsigners-sdk-test";
 import { ChainExtended } from "@/config/chain";
 import { TX_TYPE_IMG } from "@/config/images";
 import { ContractParam } from "@/domain/repositores/ISquidDbRepository";
-import { TransactionProposed } from "@/domain/TransactionProposed";
+import { FullTxProposed } from "@/domain/TransactionProposed";
 import { TransactionDisplayInfo } from "@/domain/TransactionProposedItemUi";
 import { ApiPromise, ContractPromise } from "@/services/substrate/types";
 import { decodeCallArgs } from "@/utils/blockchain";
@@ -20,7 +20,7 @@ const PSP22_TRANSFER_METHOD_SELECTOR = "0xdb20f9f5";
 interface Props {
   multisigAddress: string;
   apiPromise: ApiPromise;
-  txProposed: TransactionProposed;
+  txProposed: FullTxProposed;
   nativeToken: ChainExtended & { decimals: number };
 }
 
@@ -160,6 +160,27 @@ export const getDisplayInfo = async ({
       nativeToken.decimals
     )} ${nativeToken.token}`;
   }
+
+  return displayInfo;
+};
+
+export const getDisplayTransferInfo = async ({
+  txProposed,
+  nativeToken,
+}: Props): Promise<TransactionDisplayInfo> => {
+  const displayInfo: TransactionDisplayInfo = {
+    img: TX_TYPE_IMG.RECEIVE,
+    type: "Receive",
+    txMsg: "from",
+    valueAmount: "",
+    to: txProposed.to,
+    from: txProposed.from,
+  };
+
+  displayInfo.valueAmount = `${balanceToFixed(
+    txProposed.value,
+    nativeToken.decimals
+  )} ${nativeToken.token}`;
 
   return displayInfo;
 };

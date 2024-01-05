@@ -115,9 +115,9 @@ export const TxDetailItem = ({
   if (!txData.type) {
     return (
       <Accordion
-        key={txData.txId}
+        key={txData.txId ?? txData.id}
         expanded={expanded}
-        onChange={handleChange(txData.txId)}
+        onChange={handleChange(txData.txId ?? txData.id)}
       >
         <Grid
           sx={{
