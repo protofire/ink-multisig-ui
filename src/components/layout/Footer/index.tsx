@@ -1,4 +1,4 @@
-import { Link, Tooltip, Typography } from "@mui/material";
+import { Link, Stack, Tooltip, Typography } from "@mui/material";
 import getConfig from "next/config";
 import React from "react";
 
@@ -27,14 +27,19 @@ export const Footer: React.FC = () => {
         </Tooltip>
       )}
       {version && (
-        <Link
-          underline="hover"
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/protofire/ink-multisig-ui"
-        >
-          <Typography variant="caption">UI: v{version}</Typography>
-        </Link>
+        <Typography variant="caption">
+          <Stack display={"flex"} direction={"row"}>
+            UI: &nbsp;
+            <Link
+              underline="hover"
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/protofire/ink-multisig-ui"
+            >
+              v{version}
+            </Link>
+          </Stack>
+        </Typography>
       )}
     </FooterContainer>
   );
