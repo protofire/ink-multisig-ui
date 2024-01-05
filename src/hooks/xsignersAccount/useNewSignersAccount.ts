@@ -65,7 +65,7 @@ export function useNewSignersAccount(onSave: UseAddSignersAccount["save"]) {
             addNotification({ message: errorFormated, type: "error" });
           } else if (_result?.isCompleted) {
             document.dispatchEvent(
-              new CustomEvent(XsignerAccountEvents.newAccountCreated)
+              new CustomEvent(XsignerAccountEvents.accountCreated)
             );
             setNewAccount(account);
           }

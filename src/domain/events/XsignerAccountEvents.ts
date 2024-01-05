@@ -1,5 +1,5 @@
 export const enum XsignerAccountEvents {
-  newAccountCreated = "newAccountCreated",
+  accountCreated = "accountCreated",
   onChangeAccount = "onChangeAccount",
   blockchainAccountsReloaded = "blockchainAccountsReloaded",
 }

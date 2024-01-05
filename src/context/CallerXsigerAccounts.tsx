@@ -117,7 +117,7 @@ export const CallerXsignersAccountProvider: React.FC<PropsWithChildren> = ({
       MultisigContractEvents.OwnerAdded,
       MultisigContractEvents.OwnerRemoved,
       MultisigContractEvents.ThresholdChanged,
-      XsignerAccountEvents.newAccountCreated,
+      XsignerAccountEvents.accountCreated,
     ],
     () => fetchAndUpdateMultisigs()
   );
