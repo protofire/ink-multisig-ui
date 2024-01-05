@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Button, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import Box from "@mui/material/Box";
 import Step from "@mui/material/Step";
 import StepContent from "@mui/material/StepContent";
@@ -9,6 +9,7 @@ import { StepIconProps } from "@mui/material/StepIcon";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
+import { ContractPromise } from "@polkadot/api-contract";
 import * as React from "react";
 import { ChainId } from "useink/dist/chains";
 
@@ -18,6 +19,7 @@ import { TX_OWNER_STATUS_TYPE } from "@/hooks/txQueue/useListTxQueue";
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
 import { ExplorerLink } from "../ExplorerLink";
+import { ConfirmationWidget } from "./ConfirmationWidget";
 
 const CircleStepIconRoot = styled("div")(() => ({
   marginLeft: "7px",
@@ -33,6 +35,12 @@ const CircleStepIconRoot = styled("div")(() => ({
     borderRadius: "50%",
     backgroundColor: "#ADD500",
   },
+  "& .CircletepIcon-rejectedIcon": {
+    width: 11,
+    height: 11,
+    borderRadius: "50%",
+    backgroundColor: "red",
+  },
 }));
 
 const ColorlibStepIconRoot = styled("div")<{
@@ -43,14 +51,18 @@ const ColorlibStepIconRoot = styled("div")<{
   color: "#ADD500",
 }));
 
-const CircleStepIcon = (isSigned: boolean) => {
+const CircleStepIcon = (status?: string) => {
+  let className = "CircletepIcon";
+
+  if (status === TX_OWNER_STATUS_TYPE.APPROVED) {
+    className = "CircletepIcon-completedIcon";
+  } else if (status === TX_OWNER_STATUS_TYPE.REJECTED) {
+    className = "CircletepIcon-rejectedIcon";
+  }
+
   return (
     <CircleStepIconRoot>
-      {isSigned ? (
-        <div className="CircletepIcon-completedIcon" />
-      ) : (
-        <div className="CircletepIcon" />
-      )}
+      <div className={className} />
     </CircleStepIconRoot>
   );
 };
@@ -76,14 +88,23 @@ function ColorlibStepIcon(props: StepIconProps) {
 export default function TxStepper({
   approvalCount,
   owners,
+  threshold,
   network,
+  txId,
+  multisigContractPromise,
+  expanded,
 }: {
   approvalCount: number;
   owners: Order[] | undefined;
+  threshold: number;
   network: ChainId;
+  txId: string;
+  multisigContractPromise: ContractPromise;
+  expanded: boolean;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
-  const approvalsLength = owners?.length;
+  const canBeExecuted =
+    approvalCount === threshold ? TX_OWNER_STATUS_TYPE.APPROVED : undefined;
 
   return (
     <Box
@@ -113,7 +134,7 @@ export default function TxStepper({
               Confirmations{" "}
               <span
                 style={{ color: "#636669", marginLeft: "1rem" }}
-              >{`(${approvalCount} / ${approvalsLength})`}</span>
+              >{`(${approvalCount} / ${threshold})`}</span>
             </Typography>{" "}
           </StepLabel>
         </Step>
@@ -121,11 +142,7 @@ export default function TxStepper({
           owners?.map((element: Order, index: number) => (
             <Step key={index}>
               <StepLabel
-                StepIconComponent={() =>
-                  CircleStepIcon(
-                    element.status === TX_OWNER_STATUS_TYPE.APPROVED
-                  )
-                }
+                StepIconComponent={() => CircleStepIcon(element.status)}
               >
                 <Box sx={{ display: "flex" }}>
                   <AccountAvatar
@@ -157,7 +174,7 @@ export default function TxStepper({
         )}
         <Step>
           <StepLabel
-            StepIconComponent={() => CircleStepIcon(true)}
+            StepIconComponent={() => CircleStepIcon()}
             sx={{
               color: "#ADD500",
             }}
@@ -172,7 +189,7 @@ export default function TxStepper({
         </Step>
         <Step>
           <StepLabel
-            StepIconComponent={() => CircleStepIcon(false)}
+            StepIconComponent={() => CircleStepIcon(canBeExecuted)}
             sx={{
               color: "#FFFF",
             }}
@@ -192,8 +209,11 @@ export default function TxStepper({
               marginTop: "2rem",
             }}
           >
-            <Button variant="outlined">Reject</Button>
-            <Button variant="contained">Confirm</Button>
+            <ConfirmationWidget
+              multisigContractPromise={multisigContractPromise}
+              txId={txId}
+              expanded={expanded}
+            />
           </Box>
         </Step>
       </Stepper>
