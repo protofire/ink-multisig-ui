@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: .docker/web/Dockerfile
+    env_file:
+      - .docker/web/.env_web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    ports:
+      - "${EXTERNAL_DB_PORT}:5432"
+      # Uncomment for logging all SQL statements
+      # command: ["postgres", "-c", "log_statement=all"]
+  api:
+    build:
+      context: .
+      dockerfile: .docker/squid/Dockerfile
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=5432
+      - DB_HOST=db
+      - DB_PASS=${DB_PASS}
+      - GQL_PORT=4350
+    ports:
+      # GraphQL endpoint at port 4350
+      - "${EXTERNAL_GQL_PORT}:4350"
+    command: ["sqd", "serve:prod"]
+    depends_on:
+      - db
+  processor:
+    build:
+      context: .
+      dockerfile: .docker/squid/Dockerfile
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=5432
+      - DB_HOST=db
+      - DB_PASS=${DB_PASS}
+    ports:
+      # prometheus metrics exposed at port 3000
+      - "${EXTERNAL_PROMETEUS_PORT}:3000"
+    command: ["./wait-for-it.sh", "db:5432", "--", "sqd", "process:prod"]
+    depends_on:
+      - db
