@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import getConfig from "next/config";
 import React from "react";
 
@@ -19,23 +19,16 @@ export const Footer: React.FC = () => {
   return (
     <FooterContainer>
       {isBeta && (
-        <Typography variant="body1">
-          This project is in beta. Use at your own risk.
-        </Typography>
-      )}
-      {version && (
-        <Box display="flex" justifyContent={"right"} pr={"1rem"}>
-          <Typography
-            sx={{
-              color: "#ffffff7d",
-              fontSize: "0.65rem",
-              marginTop: "0.2rem",
-            }}
-          >
-            UI V{version}
+        <Tooltip
+          title="This project is in beta. Use at your own risk."
+          placement="top"
+        >
+          <Typography variant="caption" color="primary">
+            Beta version
           </Typography>
-        </Box>
+        </Tooltip>
       )}
+      {version && <Typography variant="caption">UI V{version}</Typography>}
     </FooterContainer>
   );
 };
