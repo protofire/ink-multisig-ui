@@ -1,4 +1,4 @@
-import { Tooltip, Typography } from "@mui/material";
+import { Link, Tooltip, Typography } from "@mui/material";
 import getConfig from "next/config";
 import React from "react";
 
@@ -23,12 +23,19 @@ export const Footer: React.FC = () => {
           title="This project is in beta. Use at your own risk."
           placement="top"
         >
-          <Typography variant="caption" color="primary">
-            Beta version
-          </Typography>
+          <Typography variant="caption">Beta version</Typography>
         </Tooltip>
       )}
-      {version && <Typography variant="caption">UI V{version}</Typography>}
+      {version && (
+        <Link
+          underline="hover"
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/protofire/ink-multisig-ui"
+        >
+          <Typography variant="caption">UI: v{version}</Typography>
+        </Link>
+      )}
     </FooterContainer>
   );
 };
