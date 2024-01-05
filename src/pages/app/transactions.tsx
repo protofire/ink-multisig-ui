@@ -6,7 +6,6 @@ import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSele
 
 export default function TxPage() {
   const { xSignerSelected } = useGetXsignerSelected();
-
   if (!xSignerSelected) {
     return <FallbackSpinner />;
   }

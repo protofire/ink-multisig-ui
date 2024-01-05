@@ -1,3 +1,4 @@
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Grid } from "@mui/material";
 import { ChainId } from "useink/dist/chains";
 
@@ -66,6 +67,38 @@ export const SendDetail = ({
           </Box>
         </Box>
       </CustomGridItem>
+      {data.error ? (
+        <Box
+          width={"100%"}
+          p={1.3}
+          border={"1px solid"}
+          borderColor={(theme) => theme.palette.error.main + "90"}
+          borderRadius={"0.4rem"}
+          bgcolor={(theme) => theme.palette.error.main + "10"}
+          color={(theme) => theme.palette.error.main}
+        >
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              gap={1}
+            >
+              <ErrorOutlineIcon sx={{ fontSize: "1.3rem" }} />
+              Error: {data.error}
+            </Grid>
+          </Grid>
+        </Box>
+      ) : null}
     </Grid>
   );
 };

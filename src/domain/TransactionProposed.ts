@@ -35,4 +35,20 @@ export interface TransactionProposed extends Arguments {
   txId: string;
   value: string;
   rawArgs: string | null;
+  typename: string;
 }
+
+export interface TransferProposed {
+  creationBlockNumber: number;
+  creationTimestamp: Date;
+  from: string;
+  id: string;
+  to: string;
+  tokenAddress: string;
+  tokenDecimals: string;
+  transferType: string;
+  value: string;
+  typename: string;
+}
+
+export type FullTxProposed = TransactionProposed & TransferProposed;

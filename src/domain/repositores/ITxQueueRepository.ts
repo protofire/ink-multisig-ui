@@ -1,5 +1,5 @@
-import { TransactionProposed } from "../TransactionProposed";
-import { OwnerWithAction } from "../TransactionProposedItemUi";
+import { FullTxProposed } from "../TransactionProposed";
+import { RawTxType } from "./ITxHistoryRepository";
 import { RawExternalTransactionData } from "./IXsignerOwnersRepository";
 
 export interface MyQueryVariables {
@@ -7,26 +7,12 @@ export interface MyQueryVariables {
 }
 
 export interface MyQueryResponse {
-  transactions: RawTransactionProposed[];
+  transactions: RawTxType[];
 }
 
 export interface ITxQueueRepository {
-  getQueue(address: string): Promise<TransactionProposed[] | null>;
+  getQueue(address: string): Promise<FullTxProposed[] | null>;
 }
-
-export interface TransferType {
-  creationBlockNumber: number;
-  creationTimestamp: string;
-  from: string;
-  id: string;
-  to: string;
-  tokenAddress: string;
-  tokenDecimals: string;
-  transferType: string;
-  value: string;
-  __typename: string;
-}
-
 export interface RawTransactionProposed {
   approvalCount: number;
   approvals: { approver: string; approvalTimestamp: string }[];
@@ -51,22 +37,8 @@ export interface RawTransactionProposed {
   __typename: string;
 }
 
-export type TxType = RawTransactionProposed & TransferType;
-
 export type Order = {
   address: string;
   name: string;
   status: string;
-};
-
-export type ExtendedDataType = TxType & {
-  state: string;
-  token: string;
-  img: string;
-  type: string;
-  to: string;
-  txMsg: string;
-  txStateMsg: string;
-  valueAmount: string;
-  ownersAction: OwnerWithAction[] | undefined;
 };

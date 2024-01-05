@@ -6,13 +6,14 @@ import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
 import CopyButton from "@/components/common/CopyButton";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
-import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
+import { TX_TYPE } from "@/hooks/transactions/const";
 
 import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
 
 interface Props {
+  successTx?: boolean;
   data: TransactionProposedItemUi;
   network: ChainId;
 }
@@ -45,11 +46,11 @@ export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
   );
 };
 
-export const TxDetails = ({ data, network }: Props) => {
+export const TxDetails = ({ data, network, successTx }: Props) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(true);
   const TxComponentType = ({ data }: Props): JSX.Element => {
-    if (data.type === TX_TYPE_OPTION.RECEIVE) {
-      return <ReceivedDetail data={data} />;
+    if (data.type === TX_TYPE.RECEIVE) {
+      return <ReceivedDetail data={data} network={network} />;
     }
     return <SendDetail data={data} network={network} />;
   };
@@ -62,12 +63,12 @@ export const TxDetails = ({ data, network }: Props) => {
       }}
     >
       <Box p={4}>
-        {data.type !== TX_TYPE_OPTION.RECEIVE ? (
+        {data.type !== TX_TYPE.RECEIVE ? (
           <>
-            {data.type === TX_TYPE_OPTION.SEND ? (
+            {data.type === TX_TYPE.SEND ? (
               <>
                 <Typography color="white" mb={1}>
-                  {data.type}{" "}
+                  {successTx ? "Sent" : data.type}{" "}
                   <span
                     style={{ fontWeight: "bold" }}
                   >{`${data.valueAmount}`}</span>{" "}
@@ -92,7 +93,18 @@ export const TxDetails = ({ data, network }: Props) => {
               </>
             )}
           </>
-        ) : null}
+        ) : (
+          <>
+            <Typography color="white" mb={1}>
+              {successTx ? "Received" : data.type}{" "}
+              <span
+                style={{ fontWeight: "bold" }}
+              >{`${data.valueAmount}`}</span>{" "}
+              {data.txMsg}
+            </Typography>
+            <AccountExplorer address={data.from} name={""} network={network} />
+          </>
+        )}
         <Box mt={4}>
           <TxComponentType data={data} network={network} />
           {data.selector ? (
