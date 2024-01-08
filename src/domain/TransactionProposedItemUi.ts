@@ -6,10 +6,14 @@ export interface OwnerWithAction extends Owner {
   status: "Pending" | "Approved" | "Rejected";
 }
 
-type CustomTx = string;
-
 export type TransactionDisplayInfo = {
-  type: "Receive" | "Send" | CustomTx | undefined;
+  type:
+    | "Receive"
+    | "Send Native"
+    | "Send PSP22"
+    | "Settings"
+    | "Custom Contract"
+    | undefined;
   img: string;
   txMsg: "from" | "to" | undefined;
   valueAmount: string;

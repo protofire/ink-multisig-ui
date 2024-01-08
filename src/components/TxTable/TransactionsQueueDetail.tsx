@@ -5,7 +5,7 @@ import { ChainId } from "useink/dist/chains";
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
-import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
+import { useListTxQueue } from "@/hooks/transactions/useListTxQueue";
 
 import { TxDetailItem } from "./TxDetailItem";
 

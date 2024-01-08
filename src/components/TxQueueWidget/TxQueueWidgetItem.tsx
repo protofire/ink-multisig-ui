@@ -2,7 +2,7 @@ import Image from "next/image";
 import * as React from "react";
 
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
-import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
+import { TX_TYPE } from "@/hooks/transactions/const";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
@@ -52,7 +52,7 @@ export const TxQueueWidgetItem = ({ data, owners }: Props) => {
           </StyledStack>
         </StyledBox>
         <StyledValueBox>
-          {type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
+          {type === TX_TYPE.RECEIVE ? `+` : "-"}
           {`${data.valueAmount}`}
           <span>
             {approvalCount}/{owners}

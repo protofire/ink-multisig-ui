@@ -19,10 +19,15 @@ export const StyledBox = styled(Box)<BoxProps>(() => ({
   flexDirection: "column",
 }));
 
-export const FlexCenterBox = styled(Box)<BoxProps>(() => ({
+export const FlexCenterBox = styled(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: "4rem",
+  gap: "1rem",
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "0",
+  },
 }));
 
 export const FooterButton = styled(Button)<ButtonProps & { width?: number }>(

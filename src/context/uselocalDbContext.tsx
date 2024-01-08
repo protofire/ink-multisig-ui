@@ -15,6 +15,7 @@ import { XsignerSelectedRepository } from "@/services/localDB/XsignerSelectedRep
 import { LocalMultisigEventsRepository } from "@/services/LocalMultisigEventsRepository";
 import { LocalStorageNetworkRepository } from "@/services/LocalStorageNetworkRepository";
 import { GraphClient } from "@/services/squid/GraphClient";
+import { TxHistoryRepository } from "@/services/squid/TxHistoryRepository";
 import { TxQueueRepository } from "@/services/squid/TxQueueRepository";
 import { XsignerOwnersRepository } from "@/services/squid/XsignerOwnersRepository";
 
@@ -26,6 +27,7 @@ interface DbContext {
   addressBookRepository: IAddressBookRepository;
   assetRepository: IAssetRepository;
   txQueueRepository: ITxQueueRepository;
+  txHistoryRepository: TxHistoryRepository;
   localMultisigEventRepo: IMultisigEventsRepository;
 }
 
@@ -39,6 +41,7 @@ const networkRepository = new LocalStorageNetworkRepository();
 const graphSquidClient = new GraphClient(networkRepository);
 const xsignerOwnersRepository = new XsignerOwnersRepository(graphSquidClient);
 const txQueueRepository = new TxQueueRepository(graphSquidClient);
+const txHistoryRepository = new TxHistoryRepository(graphSquidClient);
 const localMultisigEventRepo = new LocalMultisigEventsRepository();
 
 const DbContext = createContext<DbContext>({
@@ -49,6 +52,7 @@ const DbContext = createContext<DbContext>({
   addressBookRepository,
   assetRepository,
   txQueueRepository,
+  txHistoryRepository,
   localMultisigEventRepo,
 });
 
@@ -63,6 +67,7 @@ export const LocalDbProvider: React.FC<PropsWithChildren> = ({ children }) => {
         addressBookRepository,
         assetRepository,
         txQueueRepository,
+        txHistoryRepository,
         localMultisigEventRepo,
       }}
     >

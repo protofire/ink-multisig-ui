@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -7,16 +8,20 @@ import {
   Box,
   Grid,
   GridProps,
+  Tooltip,
   Typography,
 } from "@mui/material";
+import { ContractPromise } from "@polkadot/api-contract";
 import Image from "next/image";
 import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
-import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
-import { TX_TYPE_OPTION } from "@/hooks/txQueue/useListTxQueue";
-import { ContractPromise } from "@/services/substrate/types";
+import {
+  TransactionDisplayInfo,
+  TransactionProposedItemUi,
+} from "@/domain/TransactionProposedItemUi";
+import { TX_STATUS_TYPE, TX_TYPE } from "@/hooks/transactions/const";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { TxDetails } from "./TxDetail";
@@ -31,8 +36,52 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
 type Props = {
   txData: TransactionProposedItemUi;
   threshold: number;
+  index?: number;
   network: ChainId;
-  multisigContractPromise: ContractPromise;
+  multisigContractPromise?: ContractPromise;
+};
+
+const buildStateMsg = (txType: string, error: string | null) => {
+  const msg = {
+    PROPOSED: "Awaiting Confirmations",
+    EXECUTED_SUCCESS: "Success",
+    EXECUTED_FAILURE: (
+      <Box
+        color={(theme) => theme.palette.error.main}
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <ErrorOutlineIcon sx={{ top: "1rem", fontSize: "1.3rem" }} />
+        <Tooltip title={error} placement="top">
+          <Typography ml={0.4}>Error</Typography>
+        </Tooltip>
+      </Box>
+    ),
+    CANCELLED: "Canceled",
+  };
+
+  // This validation assumes that a receive does not have the status property.
+  // Receives are always success
+  return msg[txType as keyof typeof TX_STATUS_TYPE] ?? "Success";
+};
+
+const buildItemType = (txData: TransactionProposedItemUi) => {
+  const { type, methodName, selector, status } = txData;
+
+  if (!type) return undefined;
+
+  const success =
+    status === TX_STATUS_TYPE.EXECUTED_SUCCESS || type === TX_TYPE.RECEIVE;
+
+  const txType = {
+    Receive: success ? "Received" : type,
+    "Send Native": success ? "Sent" : "Send",
+    "Send PSP22": success ? "Sent" : "Send",
+    "Custom Contract": methodName || selector,
+  };
+
+  return txType[type as keyof TransactionDisplayInfo["type"]];
 };
 
 export const TxDetailItem = ({
@@ -42,6 +91,7 @@ export const TxDetailItem = ({
   multisigContractPromise,
 }: Props) => {
   const date = formatDate(txData.creationTimestamp);
+
   const [expandedIds, setExpandedIds] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -55,21 +105,19 @@ export const TxDetailItem = ({
       }));
     };
 
-  const txStateMsg =
-    txData.status === TX_TYPE_OPTION.STATUS.PROPOSED
-      ? "Awaiting Confirmations"
-      : "Success";
-
+  const txStateMsg = buildStateMsg(txData.status, txData.error);
   const successTx =
-    txData.status === TX_TYPE_OPTION.STATUS.EXECUTED_SUCCESS ||
-    txData.type === TX_TYPE_OPTION.RECEIVE;
+    txData.status === TX_STATUS_TYPE.EXECUTED_SUCCESS ||
+    txData.type === TX_TYPE.RECEIVE;
+
+  const txType = buildItemType(txData);
 
   if (!txData.type) {
     return (
       <Accordion
-        key={txData.txId}
+        key={txData.txId ?? txData.id}
         expanded={expanded}
-        onChange={handleChange(txData.txId)}
+        onChange={handleChange(txData.txId ?? txData.id)}
       >
         <Grid
           sx={{
@@ -138,7 +186,7 @@ export const TxDetailItem = ({
                 flexDirection: "column",
               }}
             >
-              <span>{txData.type}</span>
+              <span>{txType}</span>
               <span style={{ fontSize: "0.9rem" }}>
                 {txData.txMsg} : {truncateAddress(txData.from ?? txData.to, 9)}
               </span>
@@ -146,7 +194,7 @@ export const TxDetailItem = ({
           </StyledGrid>
           <StyledGrid item xs={2} sm={2} md={2}>
             <Typography>
-              {txData.type === TX_TYPE_OPTION.RECEIVE ? `+` : "-"}
+              {txData.type === TX_TYPE.RECEIVE ? `+` : "-"}
               {`${txData.valueAmount}`}
             </Typography>
           </StyledGrid>
@@ -162,20 +210,19 @@ export const TxDetailItem = ({
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor: "#201A1B", padding: "0px" }}>
         <Box sx={{ flexGrow: 1, display: "flex" }}>
-          <TxDetails data={txData} network={network} />
-          {txData.type !== TX_TYPE_OPTION.RECEIVE ? (
+          <TxDetails successTx={successTx} data={txData} network={network} />
+          {txData.type !== TX_TYPE.RECEIVE ? (
             <TxStepper
               approvalCount={txData.approvalCount}
               owners={txData.ownersAction}
               threshold={threshold}
               network={network}
               txId={txData.txId}
-              multisigContractPromise={multisigContractPromise}
+              multisigContractPromise={multisigContractPromise ?? undefined}
               expanded={expanded}
+              status={txData.status}
             />
-          ) : (
-            <></>
-          )}
+          ) : null}
         </Box>
       </AccordionDetails>
     </Accordion>

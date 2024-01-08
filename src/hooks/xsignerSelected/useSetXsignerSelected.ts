@@ -16,7 +16,8 @@ interface UseSetXsignerSelectedReturn {
 export function useSetXsignerSelected(): UseSetXsignerSelectedReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { xsignerSelectedRepository } = useLocalDbContext();
+  const { xsignerSelectedRepository, signatoriesAccountRepository } =
+    useLocalDbContext();
 
   const setXsigner = useCallback(
     async (account: SignatoriesAccount): Promise<SignatoriesAccount | void> => {
@@ -24,6 +25,10 @@ export function useSetXsignerSelected(): UseSetXsignerSelectedReturn {
 
       try {
         xsignerSelectedRepository.saveAccount(account.address);
+        signatoriesAccountRepository.updateSignatoryAccount(account, {
+          owners: account.owners,
+          threshold: account.threshold,
+        });
         document.dispatchEvent(
           new CustomEvent(XsignerAccountEvents.onChangeAccount)
         );
@@ -35,7 +40,7 @@ export function useSetXsignerSelected(): UseSetXsignerSelectedReturn {
         setIsLoading(false);
       }
     },
-    [xsignerSelectedRepository]
+    [signatoriesAccountRepository, xsignerSelectedRepository]
   );
 
   return { setXsigner, isLoading, error };

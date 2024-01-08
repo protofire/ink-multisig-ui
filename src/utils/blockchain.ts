@@ -162,6 +162,7 @@ export const getMessageInfo = (
   contractPromise: ContractPromise,
   methodName: string
 ): AbiMessage | null => {
+  if (!contractPromise?.abi?.messages) return null;
   return (
     contractPromise.abi.messages.find((m) => m.method === methodName) || null
   );

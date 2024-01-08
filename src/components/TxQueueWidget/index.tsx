@@ -5,7 +5,7 @@ import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { useListTxQueue } from "@/hooks/txQueue/useListTxQueue";
+import { useListTxQueue } from "@/hooks/transactions/useListTxQueue";
 
 import {
   NoItems,
