@@ -32,7 +32,7 @@ function ReviewStep({
       <Box display="flex" justifyContent="center">
         <StyledBox mt={3} mb={1} gap={2}>
           <FlexCenterBox>
-            <Typography variant="h6" width={120}>
+            <Typography variant="h6" width={100}>
               Network
             </Typography>
             <NetworkBadge
@@ -44,7 +44,7 @@ function ReviewStep({
             />
           </FlexCenterBox>
           <FlexCenterBox>
-            <Typography variant="h6" width={120}>
+            <Typography variant="h6" width={100}>
               Owner
             </Typography>
             <Typography component="div">
@@ -59,7 +59,7 @@ function ReviewStep({
             </Typography>
           </FlexCenterBox>
           <FlexCenterBox>
-            <Typography variant="h6" width={120}>
+            <Typography variant="h6" width={100}>
               Threshold
             </Typography>
             <Typography variant="body1" color={theme.palette.common.white}>
