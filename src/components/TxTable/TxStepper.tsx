@@ -64,15 +64,32 @@ const ColorlibStepIconRoot = styled("div")(() => ({
   color: "#ADD500",
 }));
 
-const CircleStepIcon = (status?: string) => {
-  const type = {
-    Pending: "CircletepIcon",
-    Approved: "CircletepIcon-completedIcon",
-    Rejected: "CircletepIcon-rejectedIcon",
-  };
+const CircleStepIcon = (
+  status?: string,
+  approvalCount?: number,
+  threshold?: number
+) => {
+  let className = "";
+  if (approvalCount === threshold || status === TX_OWNER_STATUS_TYPE.APPROVED) {
+    className = "CircletepIcon-completedIcon";
+  }
+
+  if (
+    status === TX_STATUS_TYPE.PROPOSED ||
+    status === TX_OWNER_STATUS_TYPE.PENDING
+  ) {
+    className = "CircletepIcon";
+  }
+
+  if (
+    status === TX_STATUS_TYPE.CANCELLED ||
+    status === TX_OWNER_STATUS_TYPE.REJECTED
+  ) {
+    className = "CircletepIcon-rejectedIcon";
+  }
   return (
     <CircleStepIconRoot>
-      <div className={type[status as OwnerStatus] ?? type["Rejected"]} />
+      <div className={className} />
     </CircleStepIconRoot>
   );
 };
@@ -123,10 +140,8 @@ export default function TxStepper({
   status: string;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
-  const canBeExecuted =
-    approvalCount === threshold ? TX_OWNER_STATUS_TYPE.APPROVED : undefined;
   const isProposed = status === TX_STATUS_TYPE.PROPOSED;
-  const isCanceled = status === TX_STATUS_TYPE.CANCELLED;
+  const isCancelled = status === TX_STATUS_TYPE.CANCELLED;
   return (
     <Box
       sx={{ maxWidth: 400, padding: "20px", borderLeft: "3px solid #120D0E" }}
@@ -223,13 +238,15 @@ export default function TxStepper({
         <StyledStep active={true}>
           <StepLabel
             sx={{ mt: 1.5 }}
-            StepIconComponent={() => CircleStepIcon(canBeExecuted)}
+            StepIconComponent={() =>
+              CircleStepIcon(status, approvalCount, threshold)
+            }
           >
             <Typography>
               {isProposed
                 ? "Can be executed"
-                : isCanceled
-                ? "Canceled"
+                : isCancelled
+                ? "Cancelled"
                 : "Executed"}
             </Typography>
           </StepLabel>
@@ -252,7 +269,7 @@ export default function TxStepper({
               ) : (
                 <Typography sx={{ fontSize: "0.8rem", mb: 2 }}>
                   This transaction has been{" "}
-                  {isCanceled ? "canceled" : "executed"}
+                  {isCancelled ? "cancelled" : "executed"}
                 </Typography>
               )}
             </Box>

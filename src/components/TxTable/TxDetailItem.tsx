@@ -58,7 +58,7 @@ const buildStateMsg = (txType: string, error: string | null) => {
         </Tooltip>
       </Box>
     ),
-    CANCELLED: "Canceled",
+    CANCELLED: "Cancelled",
   };
 
   // This validation assumes that a receive does not have the status property.
