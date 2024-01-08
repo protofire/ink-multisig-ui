@@ -30,7 +30,7 @@ function ReviewStep({
         You&apos;re about to create a new XSigners Account and will have to
         confirm the transaction with your connected wallet.
       </Typography>
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" justifyContent={{ xs: "flex-start", md: "center" }}>
         <StyledBox mt={3} mb={1} gap={2}>
           <FlexCenterBox>
             <Typography variant="h6" width={100}>
