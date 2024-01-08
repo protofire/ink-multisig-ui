@@ -16,7 +16,7 @@ export function TopBar({
         <Stack direction="row" gap={1} sx={{ flexGrow: 1 }}>
           <Link href={ROUTES.Home} passHref>
             <Image
-              src="/xSigners-logo.svg"
+              src="/xSigners-logo-beta.svg"
               alt="xSigners Wallet"
               priority
               width={160}

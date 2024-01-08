@@ -10,6 +10,7 @@ import { TopBar } from "@/components/layout/TopBar";
 import { useSettingsTheme } from "@/context/SettingsThemeConsumer";
 import { scalePixels } from "@/themes/spacing";
 
+import { Footer } from "./Footer";
 import { VerticalMenuBar } from "./VerticalMenuBar";
 
 const ContentWrapper = styled(Box)<BoxProps & { drawerwidth: number }>(
@@ -45,6 +46,7 @@ export const AppLayout: React.FC<PropsWithChildren> = ({ children }) => {
         <ContentWrapper drawerwidth={marginLeft} component="main">
           {children}
         </ContentWrapper>
+        <Footer />
       </MainContentWrapper>
     </VerticalLayoutWrapper>
   );
