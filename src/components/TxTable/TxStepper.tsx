@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -71,16 +72,28 @@ const CircleStepIcon = (status?: string) => {
   };
   return (
     <CircleStepIconRoot>
-      <div className={type[status as OwnerStatus] ?? "CircletepIcon"} />
+      <div className={type[status as OwnerStatus] ?? type["Rejected"]} />
     </CircleStepIconRoot>
   );
 };
 
-function ColorlibStepIcon(props: StepIconProps, ownersLength: number) {
-  const lastIndex = (ownersLength + 2).toString();
+function ColorlibStepIcon(
+  props: StepIconProps,
+  ownersLength?: number,
+  status?: string
+) {
+  let lastIndex = "";
+  if (ownersLength) {
+    lastIndex = (ownersLength + 2).toString();
+  }
   const icons: { [index: string]: React.ReactElement } = {
     1: <AddCircleIcon />,
-    2: <CheckCircleIcon />,
+    2:
+      status === TX_STATUS_TYPE.CANCELLED ? (
+        <CancelIcon sx={{ color: "red" }} />
+      ) : (
+        <CheckCircleIcon />
+      ),
     3: <VisibilityIcon sx={{ color: "#ffff" }} />,
     [lastIndex]: <VisibilityOffIcon sx={{ color: "#ffff" }} />,
   };
@@ -112,9 +125,8 @@ export default function TxStepper({
   const [showOwners, setShowOwners] = React.useState(true);
   const canBeExecuted =
     approvalCount === threshold ? TX_OWNER_STATUS_TYPE.APPROVED : undefined;
-
   const isProposed = status === TX_STATUS_TYPE.PROPOSED;
-
+  const isCanceled = status === TX_STATUS_TYPE.CANCELLED;
   return (
     <Box
       sx={{ maxWidth: 400, padding: "20px", borderLeft: "3px solid #120D0E" }}
@@ -143,7 +155,7 @@ export default function TxStepper({
         </StyledStep>
         <StyledStep>
           <StepLabel
-            StepIconComponent={ColorlibStepIcon}
+            StepIconComponent={(e) => ColorlibStepIcon(e, undefined, status)}
             sx={{
               color: "#ADD500",
               display: "flex",
@@ -214,7 +226,11 @@ export default function TxStepper({
             StepIconComponent={() => CircleStepIcon(canBeExecuted)}
           >
             <Typography>
-              {isProposed ? "Can be executed" : "Executed"}
+              {isProposed
+                ? "Can be executed"
+                : isCanceled
+                ? "Canceled"
+                : "Executed"}
             </Typography>
           </StepLabel>
           <StepContent sx={{ mt: "0.4rem", padding: "0px" }}>
@@ -235,7 +251,8 @@ export default function TxStepper({
                 </>
               ) : (
                 <Typography sx={{ fontSize: "0.8rem", mb: 2 }}>
-                  This transaction has been executed
+                  This transaction has been{" "}
+                  {isCanceled ? "canceled" : "executed"}
                 </Typography>
               )}
             </Box>
