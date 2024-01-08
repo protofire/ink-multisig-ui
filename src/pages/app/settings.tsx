@@ -55,16 +55,17 @@ export default function SettingsPage() {
   const managerStep = useManagerActiveStep();
   const { setXsigner } = useSetXsignerSelected();
 
-  const fetchData = async () => {
-    if (!xSignerSelected?.address) return;
+  const fetchData = async (updatedMultisig?: SignatoriesAccount) => {
+    const currentMultisig = updatedMultisig ?? xSignerSelected;
+    if (!currentMultisig?.address) return;
 
     try {
       const result = await xsignerOwnersRepository.getMultisigByAddress(
-        xSignerSelected.address
+        currentMultisig.address
       );
 
       if (result) {
-        const existingOwners = xSignerSelected.owners || [];
+        const existingOwners = currentMultisig.owners || [];
         let nextIndex = existingOwners.length;
 
         const updatedOwners = result.owners.map((address) => {
@@ -81,7 +82,7 @@ export default function SettingsPage() {
         });
 
         const multisig = {
-          ...xSignerSelected,
+          ...currentMultisig,
           owners: updatedOwners,
           threshold: result.threshold,
         } as SignatoriesAccount;
@@ -91,11 +92,16 @@ export default function SettingsPage() {
         data.handleThreshold(result.threshold, multisig.owners.length);
         await setXsigner(multisig);
       } else {
-        setSelectedMultisig(xSignerSelected);
+        setSelectedMultisig(currentMultisig);
       }
     } catch {
-      setSelectedMultisig(xSignerSelected);
+      setSelectedMultisig(currentMultisig);
     }
+  };
+
+  const handleBack = () => {
+    if (!selectedMultisig) return;
+    data.handleOwners(selectedMultisig.owners, 0);
   };
 
   useEffect(() => {
@@ -271,15 +277,22 @@ export default function SettingsPage() {
       {
         signer: accountConnected?.signer,
       },
-      ({ status }) => {
+      async ({ status }) => {
         if (status.isInBlock) {
-          setIsLoading(false);
-          addNotification({
-            message: successMessage,
-            type: "success",
-          });
-          handleCancel();
-          fetchData();
+          const updatedMultisig = {
+            ...selectedMultisig,
+            owners: data.owners,
+            threshold: data.threshold,
+          } as SignatoriesAccount;
+          setTimeout(() => {
+            setIsLoading(false);
+            addNotification({
+              message: successMessage,
+              type: "success",
+            });
+            handleCancel();
+            fetchData(updatedMultisig);
+          }, 2000);
         }
       }
     );
@@ -325,6 +338,7 @@ export default function SettingsPage() {
           customInitialRedirect={handleCancel}
           customFinalRedirect={handleConfirm}
           isConfirmLoading={isLoading}
+          onHandleBack={handleBack}
         />
       ) : (
         <>

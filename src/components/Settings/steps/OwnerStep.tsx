@@ -80,9 +80,9 @@ function OwnerStep({
               }
             />
           </Box>
-          {errors[step][1]?.error && (
+          {errors[step][owners.length - 1]?.error && (
             <Typography variant="caption" color="red">
-              {errors[step][1]?.message}
+              {errors[step][owners.length - 1]?.message}
             </Typography>
           )}
         </Box>
