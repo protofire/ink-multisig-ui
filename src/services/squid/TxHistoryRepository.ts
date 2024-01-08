@@ -79,6 +79,7 @@ export class TxHistoryRepository implements ITxHistoryRepository {
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
       query: FETCH_QUEUE,
       variables: { address },
+      fetchPolicy: "network-only",
     });
     return data.txes
       .filter((transactions) => transactions.status !== "PROPOSED")
