@@ -4,7 +4,6 @@ import { Drawer, DrawerProps, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 import { XsignerAccountInfoWidget } from "@/components/XsignerAccountInfoWidget";
 import { useSettingsTheme } from "@/context/SettingsThemeConsumer";
@@ -36,16 +35,15 @@ const DrawerStyled = styled(Drawer)<DrawerStyledProps>(
 );
 
 export function VerticalMenuBar() {
-  const [open, setOpen] = useState(true);
   const { pathname } = useRouter();
-  const { settings } = useSettingsTheme();
+  const { settings, saveSettings } = useSettingsTheme();
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    saveSettings({ ...settings, navOpen: true });
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    saveSettings({ ...settings, navOpen: false });
   };
 
   return (
@@ -54,7 +52,7 @@ export function VerticalMenuBar() {
         drawerwidth={settings.drawerWidth || DEFAULT_WIDTH}
         variant="persistent"
         anchor="left"
-        open={open}
+        open={settings.navOpen}
       >
         <XsignerAccountInfoWidget />
         <Navigation currentPath={pathname} />
@@ -68,8 +66,10 @@ export function VerticalMenuBar() {
           margin: "1rem",
         }}
       >
-        <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
-          {open ? (
+        <IconButton
+          onClick={settings.navOpen ? handleDrawerClose : handleDrawerOpen}
+        >
+          {settings.navOpen ? (
             <Tooltip title="Close menu" placement="top">
               <CloseIcon fontSize="large" />
             </Tooltip>
