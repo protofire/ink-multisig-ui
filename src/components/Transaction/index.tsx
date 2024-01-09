@@ -177,7 +177,7 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
                 message: "Transaction successfully sent.",
                 type: "success",
               });
-              router.replace(ROUTES.Assets);
+              router.replace(ROUTES.Transactions);
             }
           }
         );

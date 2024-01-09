@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { ReactElement, ReactNode, useEffect, useRef } from "react";
+import { ReactElement, ReactNode, useEffect } from "react";
 
 import { ROUTES, RouteValue, routeValues } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
@@ -25,7 +25,7 @@ function _getRedirectQuery(initialRoute: string) {
 export function ConnectedGuard({ children, fallback }: ConnectedGuardProps) {
   const { accountConnected } = usePolkadotContext();
   const router = useRouter();
-  const initialRoute = useRef(router.asPath);
+  const initialRoute = router.asPath ?? ROUTES.Welcome;
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -33,12 +33,10 @@ export function ConnectedGuard({ children, fallback }: ConnectedGuardProps) {
     if (!accountConnected) {
       router.push({
         pathname: `${ROUTES.Connect}`,
-        ..._getRedirectQuery(initialRoute.current),
+        ..._getRedirectQuery(initialRoute),
       });
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountConnected, initialRoute.current]);
+  }, [accountConnected, initialRoute, router]);
 
   if (!accountConnected) {
     return fallback;

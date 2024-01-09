@@ -10,7 +10,7 @@ import { FullTxProposed } from "@/domain/TransactionProposed";
 import { GraphClient } from "./GraphClient";
 import { rawToFullTxProposed } from "./transformers/toTransactionProposed";
 
-const FETCH_QUEUE = gql`
+const FETCH_HISTORY = gql`
   query TxHistory($address: String!) {
     txes(
       where: { multisig: { addressSS58_eq: $address } }
@@ -77,8 +77,9 @@ export class TxHistoryRepository implements ITxHistoryRepository {
   async getHistory(address: string): Promise<FullTxProposed[] | null> {
     const client = this.client.getCurrentApolloClient();
     const { data } = await client.query<MyQueryResponse, MyQueryVariables>({
-      query: FETCH_QUEUE,
+      query: FETCH_HISTORY,
       variables: { address },
+      fetchPolicy: "network-only",
     });
     return data.txes
       .filter((transactions) => transactions.status !== "PROPOSED")
