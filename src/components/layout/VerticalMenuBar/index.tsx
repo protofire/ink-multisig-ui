@@ -1,5 +1,8 @@
-import { Drawer, DrawerProps } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Drawer, DrawerProps, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Box } from "@mui/system";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -46,14 +49,37 @@ export function VerticalMenuBar() {
   };
 
   return (
-    <DrawerStyled
-      drawerwidth={settings.drawerWidth || DEFAULT_WIDTH}
-      variant="persistent"
-      anchor="left"
-      open={open}
-    >
-      <XsignerAccountInfoWidget />
-      <Navigation currentPath={pathname} />
-    </DrawerStyled>
+    <>
+      <DrawerStyled
+        drawerwidth={settings.drawerWidth || DEFAULT_WIDTH}
+        variant="persistent"
+        anchor="left"
+        open={open}
+      >
+        <XsignerAccountInfoWidget />
+        <Navigation currentPath={pathname} />
+      </DrawerStyled>
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          zIndex: "9999",
+          margin: "1rem",
+        }}
+      >
+        <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
+          {open ? (
+            <Tooltip title="Close menu" placement="top">
+              <CloseIcon fontSize="large" />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Open menu" placement="top">
+              <MenuIcon fontSize="large" />
+            </Tooltip>
+          )}
+        </IconButton>
+      </Box>
+    </>
   );
 }
