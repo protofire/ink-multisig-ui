@@ -3,8 +3,10 @@ import { ReactElement, ReactNode, useEffect } from "react";
 
 import { ROUTES, RouteValue, routeValues } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { useDelay } from "@/hooks/useDelay";
+import { DELAY_UNTIL_READ_WALLETS } from "@/services/useink/constants";
 
-interface ConnectedGuardProps {
+interface ConnectionGuardProps {
   children: ReactNode;
   fallback: ReactElement | null;
 }
@@ -22,21 +24,22 @@ function _getRedirectQuery(initialRoute: string) {
   return null;
 }
 
-export function ConnectedGuard({ children, fallback }: ConnectedGuardProps) {
+export function ConnectionGuard({ children, fallback }: ConnectionGuardProps) {
   const { accountConnected } = usePolkadotContext();
   const router = useRouter();
   const initialRoute = router.asPath ?? ROUTES.Welcome;
+  const isDelayFinished = useDelay(DELAY_UNTIL_READ_WALLETS);
 
   useEffect(() => {
     if (!router.isReady) return;
 
-    if (!accountConnected) {
+    if (!accountConnected && isDelayFinished) {
       router.push({
         pathname: `${ROUTES.Connect}`,
         ..._getRedirectQuery(initialRoute),
       });
     }
-  }, [accountConnected, initialRoute, router]);
+  }, [accountConnected, initialRoute, isDelayFinished, router]);
 
   if (!accountConnected) {
     return fallback;
