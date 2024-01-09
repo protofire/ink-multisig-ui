@@ -27,8 +27,6 @@ import CopyButton from "../common/CopyButton";
 import { ExplorerLink } from "../ExplorerLink";
 import { ConfirmationWidget } from "./ConfirmationWidget";
 
-type OwnerStatus = "Approved" | "Rejected" | "Pending";
-
 export const StyledStep = styled(Step)<StepProps>(() => ({
   padding: 0,
   "& .MuiStepLabel-root": {
@@ -70,7 +68,11 @@ const CircleStepIcon = (
   threshold?: number
 ) => {
   let className = "";
-  if (approvalCount === threshold || status === TX_OWNER_STATUS_TYPE.APPROVED) {
+  if (
+    approvalCount === threshold ||
+    status === TX_OWNER_STATUS_TYPE.APPROVED ||
+    status === TX_STATUS_TYPE.EXECUTED_SUCCESS
+  ) {
     className = "CircletepIcon-completedIcon";
   }
 
