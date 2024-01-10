@@ -45,5 +45,5 @@ export function ConnectionGuard({ children, fallback }: ConnectionGuardProps) {
     return fallback;
   }
 
-  return <>{children}</>;
+  return children;
 }

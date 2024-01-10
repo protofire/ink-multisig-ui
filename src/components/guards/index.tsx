@@ -4,6 +4,7 @@ import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 
 import { ConnectionGuard } from "./ConnectedGuard";
 import { WhenWalletIsConnectedGuard } from "./WhenWalletIsConnectedGuard";
+import { XsignerCreatedGuard } from "./XsignerCreatedGuard";
 
 type GuardProps = PropsWithChildren & {
   connectedWalletRequired: boolean;
@@ -15,7 +16,11 @@ export const Guard = ({ children, connectedWalletRequired }: GuardProps) => {
       <ConnectionGuard
         fallback={<FallbackSpinner text="Checking wallet connection" />}
       >
-        {children}
+        <XsignerCreatedGuard
+          fallback={<FallbackSpinner text="Checking xsigner selected" />}
+        >
+          {children}
+        </XsignerCreatedGuard>
       </ConnectionGuard>
     );
   }
