@@ -14,7 +14,7 @@ import { Footer } from "./Footer";
 import { VerticalMenuBar } from "./VerticalMenuBar";
 
 const ContentWrapper = styled(Box)<
-  BoxProps & { drawerwidth: number; navopen: boolean }
+  BoxProps & { drawerwidth: number; navopen: boolean | string }
 >(({ theme, drawerwidth, navopen }) => ({
   width: "100%",
   paddingTop: theme.spacing(10),
@@ -48,7 +48,7 @@ export const AppLayout: React.FC<PropsWithChildren> = ({ children }) => {
         <ContentWrapper
           drawerwidth={marginLeft}
           component="main"
-          navopen={settings.navOpen}
+          navopen={settings.navOpen.toString()}
         >
           {children}
         </ContentWrapper>
