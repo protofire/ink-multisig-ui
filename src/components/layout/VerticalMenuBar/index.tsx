@@ -1,5 +1,5 @@
-import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { Drawer, DrawerProps, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
@@ -70,11 +70,11 @@ export function VerticalMenuBar() {
           onClick={settings.navOpen ? handleDrawerClose : handleDrawerOpen}
         >
           {settings.navOpen ? (
-            <Tooltip title="Close menu" placement="top">
-              <CloseIcon fontSize="large" />
+            <Tooltip title="Hide menu" placement="top">
+              <MenuOpenIcon fontSize="large" />
             </Tooltip>
           ) : (
-            <Tooltip title="Open menu" placement="top">
+            <Tooltip title="Show menu" placement="top">
               <MenuIcon fontSize="large" />
             </Tooltip>
           )}
