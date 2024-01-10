@@ -38,12 +38,8 @@ export function VerticalMenuBar() {
   const { pathname } = useRouter();
   const { settings, saveSettings } = useSettingsTheme();
 
-  const handleDrawerOpen = () => {
-    saveSettings({ ...settings, navOpen: true });
-  };
-
-  const handleDrawerClose = () => {
-    saveSettings({ ...settings, navOpen: false });
+  const handleDrawerToggle = () => {
+    saveSettings({ ...settings, navOpen: !settings.navOpen });
   };
 
   return (
@@ -66,9 +62,7 @@ export function VerticalMenuBar() {
           margin: "1rem",
         }}
       >
-        <IconButton
-          onClick={settings.navOpen ? handleDrawerClose : handleDrawerOpen}
-        >
+        <IconButton onClick={handleDrawerToggle}>
           {settings.navOpen ? (
             <Tooltip title="Hide menu" placement="top">
               <MenuOpenIcon fontSize="large" />

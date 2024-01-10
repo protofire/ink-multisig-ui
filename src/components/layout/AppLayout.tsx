@@ -18,10 +18,9 @@ const ContentWrapper = styled(Box)<
 >(({ theme, drawerwidth, navopen }) => ({
   width: "100%",
   paddingTop: theme.spacing(10),
-  /* paddingLeft: theme.spacing(scalePixels(drawerwidth) + 20), */
   paddingLeft: navopen
     ? theme.spacing(scalePixels(drawerwidth) + 4)
-    : theme.spacing(20),
+    : theme.spacing(4),
   paddingRight: theme.spacing(4),
   [theme.breakpoints.up("xl")]: {
     paddingLeft: theme.spacing(scalePixels(drawerwidth) + 20),

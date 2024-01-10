@@ -17,7 +17,10 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { MultisigEventListener } from "@/components/MultisigEventListener";
 import { CHAINS } from "@/config/chain";
 import { CallerXsignersAccountProvider } from "@/context/CallerXsigerAccounts";
-import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
+import {
+  SettingsThemeConsumer,
+  SettingsThemeProvider,
+} from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
@@ -66,23 +69,27 @@ export default function App(props: ExtendedProps) {
       >
         <PolkadotContextProvider>
           <LocalDbProvider>
-            <SettingsThemeConsumer>
-              {({ settings }) => {
-                return (
-                  <ThemeCustomization settings={settings}>
-                    <AppNotificationsContextProvider>
-                      <MultisigEventListener />
-                      <CallerXsignersAccountProvider>
-                        <WalletConnectionGuard walletRequired={walletRequired}>
-                          {getLayout(<Component {...pageProps} />)}
-                        </WalletConnectionGuard>
-                      </CallerXsignersAccountProvider>
-                      <AppToastNotifications />
-                    </AppNotificationsContextProvider>
-                  </ThemeCustomization>
-                );
-              }}
-            </SettingsThemeConsumer>
+            <SettingsThemeProvider>
+              <SettingsThemeConsumer>
+                {({ settings }) => {
+                  return (
+                    <ThemeCustomization settings={settings}>
+                      <AppNotificationsContextProvider>
+                        <MultisigEventListener />
+                        <CallerXsignersAccountProvider>
+                          <WalletConnectionGuard
+                            walletRequired={walletRequired}
+                          >
+                            {getLayout(<Component {...pageProps} />)}
+                          </WalletConnectionGuard>
+                        </CallerXsignersAccountProvider>
+                        <AppToastNotifications />
+                      </AppNotificationsContextProvider>
+                    </ThemeCustomization>
+                  );
+                }}
+              </SettingsThemeConsumer>
+            </SettingsThemeProvider>
           </LocalDbProvider>
         </PolkadotContextProvider>
       </UseInkProvider>
