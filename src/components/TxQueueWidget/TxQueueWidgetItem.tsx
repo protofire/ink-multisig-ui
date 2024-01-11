@@ -20,7 +20,7 @@ interface Props {
 
 export const TxQueueWidgetItem = ({ data, owners }: Props) => {
   const date = formatDate(data.creationTimestamp);
-  const { to, approvalCount, type, img } = data;
+  const { to, approvalCount, type, img, methodName } = data;
 
   if (!data.type) {
     return (
@@ -44,7 +44,7 @@ export const TxQueueWidgetItem = ({ data, owners }: Props) => {
             height={30}
           />
           <StyledStack>
-            <span>{type}</span>
+            <span>{type === "Settings" ? methodName : type}</span>
             <span>{date}</span>
             <p>
               {data.txMsg} {truncateAddress(to, 12)}
