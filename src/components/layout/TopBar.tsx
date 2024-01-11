@@ -14,7 +14,7 @@ export function TopBar({
     <AppBar elevation={0} position="fixed">
       <Toolbar>
         <Stack direction="row" gap={1} sx={{ flexGrow: 1 }}>
-          <Link href={ROUTES.Home} passHref>
+          <Link href={ROUTES.Welcome} passHref>
             <Image
               src="/xSigners-logo-beta.svg"
               alt="xSigners Wallet"

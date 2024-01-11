@@ -94,4 +94,4 @@ export default function WelcomePage() {
 }
 
 WelcomePage.getLayout = (page: ReactNode) => <BasicLayout>{page}</BasicLayout>;
-WelcomePage.walletRequired = false;
+WelcomePage.connectedWalletRequired = false;
