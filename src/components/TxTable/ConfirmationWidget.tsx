@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react";
 
 import { LoadingButton } from "@/components/common/LoadingButton";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { TWO_SECONDS, useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 import { ContractPromise } from "@/services/substrate/types";
@@ -47,16 +48,20 @@ export function ConfirmationWidget({
   const approveTx = useContractTx({
     contractPromise: multisigContractPromise,
     abiMessage: multisigContractPromise.abi.findMessage("approveTx"),
-    onTxHash: (txHash) => {
-      console.log("onApproveTxHash", txHash);
+    onTxHash: () => {
+      document.dispatchEvent(
+        new CustomEvent(MultisigContractEvents.TransactionApproved)
+      );
     },
   });
 
   const rejectTx = useContractTx({
     contractPromise: multisigContractPromise,
     abiMessage: multisigContractPromise.abi.findMessage("rejectTx"),
-    onTxHash: (txHash) => {
-      console.log("onRejectTxHash", txHash);
+    onTxHash: () => {
+      document.dispatchEvent(
+        new CustomEvent(MultisigContractEvents.TransactionRejected)
+      );
     },
   });
 

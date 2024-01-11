@@ -76,8 +76,8 @@ const buildItemType = (txData: TransactionProposedItemUi) => {
 
   const txType = {
     Receive: success ? "Received" : type,
-    "Send Native": success ? "Sent" : "Send",
-    "Send PSP22": success ? "Sent" : "Send",
+    "Send Native": success ? "Sent" : type,
+    "Send PSP22": success ? "Sent" : type,
     Settings: methodName || "Settings",
     "Custom Contract": methodName || "Custom Contract",
   };
