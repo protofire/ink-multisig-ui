@@ -47,8 +47,9 @@ export default function SettingsPage() {
   const { accountConnected } = usePolkadotContext();
   const theme = useTheme();
   const [steps, setSteps] = useState<StepProps | null>();
-  const [selectedMultisig, setSelectedMultisig] =
-    useState<SignatoriesAccount | null>(xSignerSelected);
+  const [selectedMultisig, setSelectedMultisig] = useState<
+    SignatoriesAccount | null | undefined
+  >(xSignerSelected);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { addNotification } = useAppNotificationContext();
   const data = useFormSignersAccountState();

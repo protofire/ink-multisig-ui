@@ -1,18 +1,19 @@
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { GetServerSideProps } from "next";
 
-import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 import { ROUTES } from "@/config/routes";
 
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    redirect: {
+      destination: ROUTES.Welcome,
+      permanent: false,
+    },
+  };
+};
+
 function IndexPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace(ROUTES.Welcome);
-  }, [router]);
-
-  return <FallbackSpinner text="Checking if you have some account..." />;
+  return null;
 }
-IndexPage.walletRequired = false;
+IndexPage.connectedWalletRequired = false;
 
 export default IndexPage;

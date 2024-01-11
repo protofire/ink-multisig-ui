@@ -12,7 +12,7 @@ import { InkConfig } from "useink";
 
 import { AppToastNotifications } from "@/components/AppToastNotification";
 import { AppNotificationsContextProvider } from "@/components/AppToastNotification/AppNotificationsContext";
-import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
+import { Guard } from "@/components/guards";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { MultisigEventListener } from "@/components/MultisigEventListener";
 import { CHAINS } from "@/config/chain";
@@ -41,7 +41,7 @@ export interface ExtendedProps extends AppProps {
   emotionCache: EmotionCache;
   Component: NextPage & {
     getLayout?: (_page: React.ReactElement) => React.ReactNode;
-    walletRequired?: boolean;
+    connectedWalletRequired?: boolean;
   };
 }
 
@@ -52,7 +52,7 @@ const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
 
 export default function App(props: ExtendedProps) {
   const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
-  const walletRequired = Component.walletRequired ?? true;
+  const connectedWalletRequired = Component.connectedWalletRequired ?? true;
   const getLayout =
     Component.getLayout ?? ((page) => <AppLayout>{page}</AppLayout>);
 
@@ -73,9 +73,11 @@ export default function App(props: ExtendedProps) {
                     <AppNotificationsContextProvider>
                       <MultisigEventListener />
                       <CallerXsignersAccountProvider>
-                        <WalletConnectionGuard walletRequired={walletRequired}>
+                        <Guard
+                          connectedWalletRequired={connectedWalletRequired}
+                        >
                           {getLayout(<Component {...pageProps} />)}
-                        </WalletConnectionGuard>
+                        </Guard>
                       </CallerXsignersAccountProvider>
                       <AppToastNotifications />
                     </AppNotificationsContextProvider>

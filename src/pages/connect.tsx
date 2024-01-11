@@ -3,7 +3,6 @@ import { Button, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ReactNode, useState } from "react";
 
-import { RouterRedirectGuard } from "@/components/guards/RouterRedirectGuard";
 import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import { ROUTES } from "@/config/routes";
@@ -33,33 +32,31 @@ export function ConnectWalletPage() {
   };
 
   return (
-    <RouterRedirectGuard>
-      <MainContentCard
-        stylesContainer={{
-          alignItems: "center",
-          sx: {
-            backgroundColor: theme.palette.background.paper,
-            padding: "2rem 1rem",
-          },
-        }}
-        title="Connect your Wallet"
-        paragraph="To continue with the following actions you need to connect your wallet."
-      >
-        {instructions && (
-          <Typography variant="body1">
-            {instructions}, you will need a wallet to sign the transaction.
-          </Typography>
-        )}
-        <Button variant="contained" onClick={disptachConnect}>
-          <AccountBalanceWalletIcon />
-          Connect your wallet
-        </Button>
-      </MainContentCard>
-    </RouterRedirectGuard>
+    <MainContentCard
+      stylesContainer={{
+        alignItems: "center",
+        sx: {
+          backgroundColor: theme.palette.background.paper,
+          padding: "2rem 1rem",
+        },
+      }}
+      title="Connect your Wallet"
+      paragraph="To continue with the following actions you need to connect your wallet."
+    >
+      {instructions && (
+        <Typography variant="body1">
+          {instructions}, you will need a wallet to sign the transaction.
+        </Typography>
+      )}
+      <Button variant="contained" onClick={disptachConnect}>
+        <AccountBalanceWalletIcon />
+        Connect your wallet
+      </Button>
+    </MainContentCard>
   );
 }
 
-ConnectWalletPage.walletRequired = false;
+ConnectWalletPage.connectedWalletRequired = false;
 ConnectWalletPage.getLayout = (page: ReactNode) => (
   <BasicLayout>{page}</BasicLayout>
 );
