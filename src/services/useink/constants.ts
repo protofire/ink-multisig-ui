@@ -1,1 +1,1 @@
-export const DELAY_UNTIL_READ_WALLETS = 1000; // ms
+export const DELAY_UNTIL_READ_WALLETS = 2000; // ms
