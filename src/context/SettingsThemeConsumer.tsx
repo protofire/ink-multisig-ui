@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { Settings } from "@/themes/types";
+import { createNotImplementedWarning } from "@/utils/error";
 import {
   getLocalStorageState,
   setLocalStorageState,
@@ -28,7 +29,7 @@ const defaultSettings: Settings = {
 
 export const SettingsThemeContext = createContext<SettingsContextValue>({
   settings: defaultSettings,
-  saveSettings: () => null,
+  saveSettings: () => createNotImplementedWarning("saveSettings"),
 });
 
 export const SettingsThemeProvider = ({
@@ -56,7 +57,7 @@ export const SettingsThemeProvider = ({
   };
 
   return (
-    <SettingsThemeContext.Provider value={{ saveSettings, settings }}>
+    <SettingsThemeContext.Provider value={{ settings, saveSettings }}>
       {children}
     </SettingsThemeContext.Provider>
   );
@@ -64,7 +65,7 @@ export const SettingsThemeProvider = ({
 
 export const SettingsThemeConsumer = SettingsThemeContext.Consumer;
 
-export const useSettingsTheme = () => {
+export const useSettingsTheme = (): SettingsContextValue => {
   const context = useContext(SettingsThemeContext);
   if (context === undefined) {
     throw new Error(
