@@ -16,10 +16,6 @@ type AssetTabsProps = {
   onChange?: (_: React.SyntheticEvent, newValue: number) => void;
 };
 
-// const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-//   props.onChange?.(newValue);
-// };
-
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
