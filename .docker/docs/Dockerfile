@@ -8,7 +8,7 @@ RUN apt-get install git
 WORKDIR /xs-doc
 
 # Clone the application to the container
-RUN git clone https://github.com/GabrielCamba/xs-doc.git .
+RUN git clone https://github.com/protofire/xs-doc.git .
 
 # Install the dependencies in the container
 RUN yarn install 
