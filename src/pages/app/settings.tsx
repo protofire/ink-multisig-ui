@@ -1,14 +1,8 @@
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useEffect, useState } from "react";
-import {
-  decodeCallResult,
-  toRegistryErrorDecoded,
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-} from "useink/core";
-import { ContractPromise, WeightV2 } from "useink/dist/core";
+import { useEffect, useRef, useState } from "react";
+import { AbiMessage, ContractPromise } from "useink/dist/core";
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { OWNER_STEPS, THRESHOLD_STEPS } from "@/components/Settings/constants";
@@ -18,19 +12,15 @@ import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner"
 import BaseStepper from "@/components/StepperSignersAccount/BaseStepper";
 import { StepProps } from "@/components/StepperSignersAccount/constants";
 import { useManagerActiveStep } from "@/components/StepperSignersAccount/useManagerActiveStep";
+import { useContractTx } from "@/components/TxBuilderStepper/ProposeTxStep/useContractTx";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
-import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
-import { parseDryRunData } from "@/hooks/useDryRunExecution";
-import { useGetDryRun } from "@/hooks/useGetDryRun";
-import { useNetworkApi } from "@/hooks/useNetworkApi";
+import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
-import { getMessageInfo } from "@/utils/blockchain";
-import { MAX_CALL_WEIGHT, PROOFSIZE } from "@/utils/bn";
-import { customReportError } from "@/utils/error";
+import { transformArgsToBytes } from "@/utils/blockchain";
 
 export default function SettingsPage() {
   const { xSignerSelected } = useGetXsignerSelected();
@@ -43,9 +33,15 @@ export default function SettingsPage() {
     version: string;
   }) ?? { version: "unknown" };
 
-  const dryRun = useGetDryRun(multisigContractPromise?.contract, "proposeTx");
-  const api = useNetworkApi();
-  const { accountConnected } = usePolkadotContext();
+  const [params, setParams] = useState<unknown[]>([]);
+  const [methodName, setMethodName] = useState<AbiMessage | undefined>();
+  const { error, outcome, executeDryRun } = useDryRunExecution({
+    contractPromise: multisigContractPromise?.contract as ContractPromise,
+    message: methodName,
+    params,
+    addressCaller: xSignerSelected?.address,
+  });
+
   const theme = useTheme();
   const [steps, setSteps] = useState<StepProps | null>();
   const [selectedMultisig, setSelectedMultisig] =
@@ -55,6 +51,64 @@ export default function SettingsPage() {
   const data = useFormSignersAccountState();
   const managerStep = useManagerActiveStep();
   const { setXsigner } = useSetXsignerSelected();
+  const dryRunExecuted = useRef(false);
+
+  const handleTxCompleted = () => {
+    setParams([]);
+    setMethodName(undefined);
+    const updatedMultisig = {
+      ...selectedMultisig,
+      owners: data.owners,
+      threshold: data.threshold,
+    } as SignatoriesAccount;
+    setTimeout(() => {
+      setIsLoading(false);
+      addNotification({
+        message: "Transaction executed successfully",
+        type: "success",
+      });
+      handleCancel();
+      fetchData(updatedMultisig);
+    }, 2000);
+  };
+
+  const { signAndSend, error: txError } = useContractTx({
+    contractPromise: multisigContractPromise?.contract as ContractPromise,
+    abiMessage: multisigContractPromise?.contract.abi.findMessage("proposeTx"),
+    onTxMined: handleTxCompleted,
+  });
+
+  useEffect(() => {
+    if (params.length) {
+      executeDryRun();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.length]);
+
+  useEffect(() => {
+    if (error && dryRunExecuted.current) {
+      addNotification({ message: error, type: "error" });
+      setIsLoading(false);
+      return;
+    }
+
+    if (outcome && !error) {
+      const txTransferStruct = prepareTransactionData();
+      dryRunExecuted.current = false;
+      signAndSend([txTransferStruct]);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addNotification, error, outcome]);
+
+  useEffect(() => {
+    if (txError) {
+      setIsLoading(false);
+      setParams([]);
+      setMethodName(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [txError]);
 
   const fetchData = async (updatedMultisig?: SignatoriesAccount) => {
     const currentMultisig = updatedMultisig ?? xSignerSelected;
@@ -107,7 +161,6 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetchData();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xSignerSelected?.address]);
 
@@ -128,188 +181,52 @@ export default function SettingsPage() {
     }
   };
 
+  const setupTransaction = (
+    transactionType: string,
+    transactionData: unknown
+  ) => {
+    setIsLoading(true);
+    setMethodName(
+      multisigContractPromise?.contract.abi.findMessage(transactionType)
+    );
+    dryRunExecuted.current = true;
+    setParams([transactionData]);
+  };
+
   const handleConfirm = async () => {
-    try {
-      setIsLoading(true);
-      const parsedData = {
-        addOwner: data.owners.slice(-1)[0].address,
-        changeThreshold: data.threshold,
-      };
-      const transactionType =
-        steps === OWNER_STEPS ? "addOwner" : "changeThreshold";
-      const transactionData = await prepareTransactionData(
-        transactionType,
-        parsedData
-      );
+    const transactionType =
+      steps === OWNER_STEPS ? "addOwner" : "changeThreshold";
+    const transactionData = {
+      addOwner: data.owners.slice(-1)[0].address,
+      changeThreshold: data.threshold,
+    };
 
-      if (!transactionData) return;
-
-      const dryRunResult = await performDryRun(
-        transactionData,
-        transactionType
-      );
-
-      if (dryRunResult?.error) {
-        throw new Error(
-          dryRunResult?.error.toString() ??
-            "Error on executing the transaction."
-        );
-      }
-
-      await executeTransaction(
-        dryRunResult?.gasRequired,
-        transactionData,
-        "Transaction sent successfully. You can check it on Transactions queue."
-      );
-    } catch (e) {
-      const errorFormatted = customReportError(e);
-      addNotification({ message: errorFormatted, type: "error" });
-      setIsLoading(false);
-    }
+    setupTransaction(transactionType, transactionData[transactionType]);
   };
 
   const handleDeleteOwner = async (owner: Owner) => {
-    try {
-      setIsLoading(true);
-      const parsedData = {
-        removeOwner: owner.address,
-      };
-      const transactionType = "removeOwner";
-      const transactionData = await prepareTransactionData(
-        transactionType,
-        parsedData
-      );
+    const transactionType = "removeOwner";
+    const transactionData = {
+      removeOwner: owner.address,
+    };
 
-      if (!transactionData) return;
-
-      const dryRunResult = await performDryRun(
-        transactionData,
-        transactionType
-      );
-
-      if (dryRunResult?.error) {
-        throw new Error(
-          dryRunResult?.error?.toString() ??
-            "Error on executing the transaction."
-        );
-      }
-
-      await executeTransaction(
-        dryRunResult?.gasRequired,
-        transactionData,
-        "Transaction sent successfully. You can check it on Transactions queue."
-      );
-    } catch (e) {
-      const errorFormatted = customReportError(e);
-      addNotification({ message: errorFormatted, type: "error" });
-      setIsLoading(false);
-    }
+    setupTransaction(transactionType, transactionData[transactionType]);
   };
 
-  async function prepareTransactionData(
-    type: string,
-    data: { [key: string]: string | number }
-  ) {
-    const contract = multisigContractPromise?.contract;
-    const txData = contract?.tx[type];
-    const selector = txData?.meta.selector;
-    const input = api.apiPromise
-      ?.createType(
-        type === "addOwner" || type === "removeOwner" ? "AccountId" : "u8",
-        data[type]
-      )
-      .toU8a();
-    const abiMessage = getMessageInfo(contract as ContractPromise, type);
-    if (!input || !abiMessage) return null;
-
-    const inputArray = new Uint8Array(input.length);
-    inputArray.set(input, 0);
-    const dryRunData = await contract?.query[type](
-      xSignerSelected?.address as string,
-      {
-        gasLimit: api.apiPromise?.registry.createType("WeightV2", {
-          refTime: MAX_CALL_WEIGHT,
-          proofSize: PROOFSIZE,
-        }) as WeightV2,
-      },
-      data[type]
+  function prepareTransactionData() {
+    const input = transformArgsToBytes(
+      multisigContractPromise?.contract as ContractPromise,
+      methodName?.method as string,
+      params
     );
-    const err = toRegistryErrorDecoded(
-      api.apiPromise?.registry,
-      dryRunData?.result
-    );
-    const decodedData = decodeCallResult(
-      dryRunData?.result,
-      abiMessage,
-      contract?.abi.registry
-    );
-
-    if (err) {
-      throw new Error(err.docs.join("\n"));
-    }
-
-    if (decodedData?.value.Err) {
-      throw new Error(`Error: ${decodedData?.value.Err}`);
-    }
     return {
       address: xSignerSelected?.address,
-      selector: selector,
-      input: Array.from(inputArray),
+      selector: methodName?.selector,
+      input: Array.from(input),
       transferredValue: 0,
       gasLimit: 0,
       allowReentry: true,
     };
-  }
-
-  async function performDryRun(transactionData: any, type: string) {
-    const result = await parseDryRunData(
-      dryRun,
-      [transactionData],
-      "Transaction will be reverted",
-      "Transaction will be executed"
-    );
-
-    return result;
-  }
-
-  async function executeTransaction(
-    gasRequired: WeightV2,
-    transactionData: any,
-    successMessage: string
-  ) {
-    const proposeTx = multisigContractPromise?.contract.tx.proposeTx;
-    const tx = proposeTx?.(
-      {
-        gasLimit: gasRequired,
-      },
-      Object.values(transactionData)
-    );
-
-    if (!accountConnected?.address) return null;
-    return await tx?.signAndSend(
-      accountConnected?.address,
-      {
-        signer: accountConnected?.signer,
-      },
-      async ({ status }) => {
-        if (status.isInBlock) {
-          const updatedMultisig = {
-            ...selectedMultisig,
-            owners: data.owners,
-            threshold: data.threshold,
-          } as SignatoriesAccount;
-          setTimeout(() => {
-            setIsLoading(false);
-            addNotification({
-              message: successMessage,
-              type: "success",
-            });
-            handleCancel();
-            fetchData(updatedMultisig);
-          }, 2000);
-        }
-      }
-    );
   }
 
   const renderTitle = () => {

@@ -76,6 +76,8 @@ export function useDryRunExecution({
   const memoizedParams = useMemo(() => params, [params]);
 
   const executeDryRun = useCallback(async () => {
+    setError(undefined);
+    setOutcome(undefined);
     const { outcome, error } = await parseDryRunData(
       dryRun,
       memoizedParams,
