@@ -8,7 +8,7 @@ import {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
 } from "useink/core";
-import { ContractPromise, WeightV2 } from "useink/dist/core";
+import { ContractPromise, RegistryError, WeightV2 } from "useink/dist/core";
 
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
@@ -19,6 +19,7 @@ import { usePSPContractPromise } from "@/hooks/contractPromise/usePSPContractPro
 import { useGetDryRun } from "@/hooks/useGetDryRun";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
+import { getIfSpecialError } from "@/services/substrate/utils/specialErrorWrapper";
 import {
   getMessageInfo,
   splitTokenAmount,
@@ -81,6 +82,13 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
     }
   }, [pspToken, setField]);
 
+  const formatErrorMsg = (err: RegistryError) => {
+    const parsedError = err?.name
+      ? getIfSpecialError(err.name)
+      : "Transaction will be reverted due to unknown error";
+    return parsedError;
+  };
+
   const handleNext = async () => {
     if (isLastStep) {
       const amount = Number(splitTokenAmount(txData?.amount)?.amount ?? 0);
@@ -142,7 +150,7 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
         );
 
         if (err) {
-          throw new Error(err.docs.join("\n"));
+          throw new Error(formatErrorMsg(err));
         }
 
         if (decodedData?.value.Err) {
@@ -150,10 +158,10 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
         }
 
         const result = await dryRun.send([transferTxStruct]);
+
         if (!result?.ok) {
-          throw new Error(
-            result?.error.toString() ?? "Error on executing the transaction."
-          );
+          const parsedError = formatErrorMsg(result?.error);
+          throw new Error(parsedError ?? "Error on executing the transaction.");
         }
         const gasRequired = (result?.ok &&
           result?.value.gasRequired) as WeightV2;
