@@ -12,8 +12,13 @@ interface TabPanelProps {
 type AssetTabsProps = {
   options: string[];
   children: React.ReactNode;
-  onChange?: (newValue: number) => void;
+  value: number;
+  onChange?: (_: React.SyntheticEvent, newValue: number) => void;
 };
+
+// const handleChange = (_: React.SyntheticEvent, newValue: number) => {
+//   props.onChange?.(newValue);
+// };
 
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -39,17 +44,11 @@ function a11yProps(index: number) {
 }
 
 export default function TxTabs(props: AssetTabsProps) {
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-    props.onChange?.(newValue);
-  };
-
+  const { value, onChange } = props;
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={value} onChange={handleChange}>
+        <Tabs value={value} onChange={onChange}>
           {props.options.map((option, index) => (
             <Tab
               key={option}
