@@ -89,6 +89,8 @@ export default function SettingsPage() {
     if (error && dryRunExecuted.current) {
       addNotification({ message: error, type: "error" });
       setIsLoading(false);
+      setParams([]);
+      setMethodName(undefined);
       return;
     }
 
