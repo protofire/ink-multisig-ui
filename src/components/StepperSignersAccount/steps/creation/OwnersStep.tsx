@@ -63,7 +63,7 @@ function OwnersStep({
   };
 
   const handleThresholdChange = (event: SelectChangeEvent<number>) => {
-    handleThreshold(event.target.value as number, step);
+    handleThreshold(event.target.value as number, owners.length);
   };
 
   return (
