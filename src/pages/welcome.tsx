@@ -2,7 +2,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { BasicLayout } from "@/components/layout/BasicLayout";
@@ -15,13 +15,17 @@ import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSele
 
 export default function WelcomePage() {
   const { accountConnected, network } = usePolkadotContext();
-  const { setXsigner } = useSetXsignerSelected();
+  const { setXsigner, clearXsignerSelected } = useSetXsignerSelected();
   const theme = useTheme();
   const {
     multisigs,
     isLoading: isLoadingMultisigs,
     error,
   } = useCallerXsignersAccount();
+
+  useEffect(() => {
+    clearXsignerSelected();
+  }, [clearXsignerSelected]);
 
   return (
     <Box>

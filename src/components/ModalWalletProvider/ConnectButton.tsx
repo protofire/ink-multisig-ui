@@ -46,7 +46,10 @@ export const ConnectButton: React.FC = () => {
   );
 
   const _setAccount = (account: WalletAccount) => {
-    if (!xSignerSelected) return;
+    if (!xSignerSelected) {
+      setAccount(account);
+      return;
+    }
 
     const isOwner = xSignerSelected.owners.find((o) =>
       areAddressesEqual(o.address, account.address)
