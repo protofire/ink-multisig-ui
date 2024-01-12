@@ -210,7 +210,24 @@ export default function TxStepper({
         {showOwners
           ? owners?.map((element: Order, index: number) => {
               if (signerExecuting.includes(element.address)) {
-                return <LoadingSkeleton key={element.address} />;
+                return (
+                  <StyledStep active={true} key={index}>
+                    <StepLabel
+                      StepIconComponent={() =>
+                        CircleStepIcon(TX_OWNER_STATUS_TYPE.PENDING)
+                      }
+                    >
+                      <Box
+                        sx={{
+                          marginLeft: "15px",
+                          display: "flex",
+                        }}
+                      >
+                        <LoadingSkeleton count={2} key={element.address} />
+                      </Box>
+                    </StepLabel>
+                  </StyledStep>
+                );
               }
 
               return (
