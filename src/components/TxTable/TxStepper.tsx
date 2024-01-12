@@ -14,6 +14,7 @@ import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import { ContractPromise } from "@polkadot/api-contract";
 import * as React from "react";
+import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { Order } from "@/domain/repositores/ITxQueueRepository";
@@ -24,6 +25,7 @@ import {
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
+import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import { ExplorerLink } from "../ExplorerLink";
 import { ConfirmationWidget } from "./ConfirmationWidget";
 
@@ -144,6 +146,8 @@ export default function TxStepper({
   const [showOwners, setShowOwners] = React.useState(true);
   const isProposed = status === TX_STATUS_TYPE.PROPOSED;
   const isCancelled = status === TX_STATUS_TYPE.CANCELLED;
+  const [signerExecuting, setSignerExecuting] = useState<Array<string>>([]);
+
   return (
     <Box
       sx={{ maxWidth: 400, padding: "20px", borderLeft: "3px solid #120D0E" }}
@@ -189,36 +193,42 @@ export default function TxStepper({
           </StepLabel>
         </StyledStep>
         {showOwners
-          ? owners?.map((element: Order, index: number) => (
-              <StyledStep active={true} key={index}>
-                <StepLabel
-                  StepIconComponent={() => CircleStepIcon(element.status)}
-                >
-                  <Box sx={{ display: "flex" }}>
-                    <AccountAvatar
-                      address={element.address}
-                      name={element.name}
-                      truncateLenght={4}
-                    ></AccountAvatar>
-                    <Box
-                      sx={{
-                        marginTop: "20px",
-                        marginLeft: "15px",
-                        display: "flex",
-                      }}
-                    >
-                      <CopyButton text={element.address} />
-                      <ExplorerLink
-                        blockchain={network}
-                        path="account"
-                        sx={{ color: "" }}
-                        txHash={element.address}
-                      />
+          ? owners?.map((element: Order, index: number) => {
+              if (signerExecuting.includes(element.address)) {
+                return <LoadingSkeleton key={element.address} />;
+              }
+
+              return (
+                <StyledStep active={true} key={index}>
+                  <StepLabel
+                    StepIconComponent={() => CircleStepIcon(element.status)}
+                  >
+                    <Box sx={{ display: "flex" }}>
+                      <AccountAvatar
+                        address={element.address}
+                        name={element.name}
+                        truncateLenght={4}
+                      ></AccountAvatar>
+                      <Box
+                        sx={{
+                          marginTop: "20px",
+                          marginLeft: "15px",
+                          display: "flex",
+                        }}
+                      >
+                        <CopyButton text={element.address} />
+                        <ExplorerLink
+                          blockchain={network}
+                          path="account"
+                          sx={{ color: "" }}
+                          txHash={element.address}
+                        />
+                      </Box>
                     </Box>
-                  </Box>
-                </StepLabel>
-              </StyledStep>
-            ))
+                  </StepLabel>
+                </StyledStep>
+              );
+            })
           : null}
         <StyledStep>
           <StepLabel
