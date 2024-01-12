@@ -35,7 +35,7 @@ export async function parseDryRunData(
   try {
     const dryRunResult = await dryRunInstance.send(data);
     if (!dryRunResult?.ok) {
-      const parsedError = dryRunResult.error?.name
+      const parsedError = dryRunResult?.error?.name
         ? getIfSpecialError(dryRunResult.error?.name)
         : "Transaction will be reverted due to unknown error";
 

@@ -53,6 +53,11 @@ export function CreateNewAccount({ networkId }: CreateNewAccountProps) {
       const errors = [...data.errors];
       errors[activeStep.execution][0] = { error: true, message: error };
       data.setErrors(errors);
+    } else {
+      if (error) {
+        setIsExecuting(false);
+        hasBeenCalled.current = false;
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStep.execution, error]);
