@@ -19,6 +19,15 @@ export function useMultisigContractPromise(address?: string): UseSdkXsigners {
     JSON.parse(metadata?.ContractAbi || ""),
     network
   );
+  // const contractArgs = useMemo(() => {
+  //   return [address || "", JSON.parse(metadata?.ContractAbi || ""), network];
+  // }, [address, metadata?.ContractAbi, network]);
+
+  // const multisigContractPromise = useContract(
+  //   contractArgs[0],
+  //   contractArgs[1],
+  //   contractArgs[2]
+  // );
 
   return { multisigContractPromise, network };
 }

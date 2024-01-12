@@ -1,27 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
-import {
-  SignAndSend,
-  Tx,
-  useEvents,
-  useEventSubscription,
-  useTx,
-} from "useink";
+import { SignAndSend, Tx, useTx } from "useink";
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { AbiMessage, ContractPromise } from "@/services/substrate/types";
 import { getOutcomeText } from "@/services/substrate/utils/contractExecResult";
 import { getErrorMessage } from "@/utils/error";
-
-type EventPayload = {
-  createdAt: number;
-  name: string;
-  args: unknown[];
-};
-
-type Event = {
-  id: string;
-} & EventPayload;
 
 interface Props {
   contractPromise: ContractPromise | undefined;
@@ -34,7 +18,6 @@ interface UseContractTxReturn {
   tx: Tx<unknown>;
   outcome: string;
   error: string | undefined;
-  events: Event[];
   signAndSend: SignAndSend;
 }
 
@@ -58,12 +41,6 @@ export function useContractTx({
   }, [chainId, contract, method]);
 
   const tx = useTx(callContractArgs.chainContract, callContractArgs.method);
-
-  useEventSubscription(callContractArgs.chainContract);
-  const { events } = useEvents(
-    callContractArgs.chainContract?.contract.address || undefined,
-    [callContractArgs.method]
-  );
 
   const signAndSend = useCallback(
     (inputData: unknown[] | undefined) => {
@@ -92,5 +69,5 @@ export function useContractTx({
     [addNotification, onCallback, onTxHash, tx]
   );
 
-  return { tx, outcome, error, events, signAndSend };
+  return { tx, outcome, error, signAndSend };
 }
