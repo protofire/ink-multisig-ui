@@ -249,7 +249,7 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
             variant="contained"
             color="primary"
           >
-            {isLastStep ? "Execute" : "Next"}
+            {isLastStep ? "Sign" : "Next"}
             {isLoading && <CircularProgress color="secondary" size={20} />}
           </Button>
         </Box>
