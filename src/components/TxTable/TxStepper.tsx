@@ -17,11 +17,13 @@ import * as React from "react";
 import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { Order } from "@/domain/repositores/ITxQueueRepository";
 import {
   TX_OWNER_STATUS_TYPE,
   TX_STATUS_TYPE,
 } from "@/hooks/transactions/const";
+import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
@@ -87,7 +89,8 @@ const CircleStepIcon = (
 
   if (
     status === TX_STATUS_TYPE.CANCELLED ||
-    status === TX_OWNER_STATUS_TYPE.REJECTED
+    status === TX_OWNER_STATUS_TYPE.REJECTED ||
+    status === TX_STATUS_TYPE.EXECUTED_FAILURE
   ) {
     className = "CircletepIcon-rejectedIcon";
   }
@@ -110,7 +113,8 @@ function ColorlibStepIcon(
   const icons: { [index: string]: React.ReactElement } = {
     1: <AddCircleIcon />,
     2:
-      status === TX_STATUS_TYPE.CANCELLED ? (
+      status === TX_STATUS_TYPE.CANCELLED ||
+      status === TX_STATUS_TYPE.EXECUTED_FAILURE ? (
         <CancelIcon sx={{ color: "red" }} />
       ) : (
         <CheckCircleIcon />
@@ -147,6 +151,17 @@ export default function TxStepper({
   const isProposed = status === TX_STATUS_TYPE.PROPOSED;
   const isCancelled = status === TX_STATUS_TYPE.CANCELLED;
   const [signerExecuting, setSignerExecuting] = useState<string[]>([]);
+
+  useEventListenerCallback(
+    [
+      MultisigContractEvents.Reject,
+      MultisigContractEvents.Approve,
+      MultisigContractEvents.Error,
+    ],
+    () => {
+      setSignerExecuting([]);
+    }
+  );
 
   return (
     <Box

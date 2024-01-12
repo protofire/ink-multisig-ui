@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 
 import { LoadingButton } from "@/components/common/LoadingButton";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { TWO_SECONDS, useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 import { ContractPromise } from "@/services/substrate/types";
@@ -50,7 +51,9 @@ export function ConfirmationWidget({
     contractPromise: multisigContractPromise,
     abiMessage: multisigContractPromise.abi.findMessage("approveTx"),
     onTxHash: (txHash: string) => {
-      console.log("txHash", txHash);
+      if (txHash === "Error") {
+        document.dispatchEvent(new CustomEvent(MultisigContractEvents.Error));
+      }
     },
   });
 
@@ -58,7 +61,9 @@ export function ConfirmationWidget({
     contractPromise: multisigContractPromise,
     abiMessage: multisigContractPromise.abi.findMessage("rejectTx"),
     onTxHash: (txHash: string) => {
-      console.log("txHash", txHash);
+      if (txHash === "Error") {
+        document.dispatchEvent(new CustomEvent(MultisigContractEvents.Error));
+      }
     },
   });
 
