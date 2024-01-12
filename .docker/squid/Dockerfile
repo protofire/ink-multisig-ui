@@ -3,7 +3,7 @@ FROM node AS node-with-gyp
 RUN apk add g++ make python3 git
 FROM node-with-gyp AS builder
 WORKDIR /squid
-RUN git clone https://github.com/0xLucca/ink-multisig-squid-shibuya.git && mv ink-multisig-squid-shibuya/* . && rm -rf ink-multisig-squid-shibuya
+RUN git clone https://github.com/protofire/ink-multisig-squid-shibuya.git && mv ink-multisig-squid-shibuya/* . && rm -rf ink-multisig-squid-shibuya
 RUN npm ci
 RUN npm run build
 FROM node-with-gyp AS deps

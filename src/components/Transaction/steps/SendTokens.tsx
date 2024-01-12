@@ -19,7 +19,7 @@ import { balanceToFixed } from "@/utils/formatString";
 import InputWithMax from "../inputs/InputWithMax";
 
 type Props = {
-  setField: (field: string, value: string | number) => void;
+  setField: (field: string, value: string | number | undefined) => void;
   setErrors: (errors: string[]) => void;
   errors: string[];
   amount: string;
@@ -171,6 +171,7 @@ export const SendTokens = (props: Props) => {
             setInputValue("0");
             isInputDirty.current.amount = false;
             if (selectedAsset) {
+              setField("token", selectedAsset.address);
               setTokenSelected({
                 symbol: selectedAsset.name,
                 isNative: false,
@@ -181,13 +182,14 @@ export const SendTokens = (props: Props) => {
         >
           <MenuItem
             value="native"
-            onClick={() =>
+            onClick={() => {
+              setField("token", undefined);
               setTokenSelected({
                 symbol: tokenSymbol,
                 isNative: true,
                 address: "native",
-              })
-            }
+              });
+            }}
           >
             <Box display="flex" alignItems="center" gap={1}>
               <Avatar src={chain?.logo.src} alt={chain?.logo.alt} />

@@ -58,7 +58,7 @@ const buildStateMsg = (txType: string, error: string | null) => {
         </Tooltip>
       </Box>
     ),
-    CANCELLED: "Canceled",
+    CANCELLED: "Cancelled",
   };
 
   // This validation assumes that a receive does not have the status property.
@@ -67,7 +67,7 @@ const buildStateMsg = (txType: string, error: string | null) => {
 };
 
 const buildItemType = (txData: TransactionProposedItemUi) => {
-  const { type, methodName, selector, status } = txData;
+  const { type, methodName, status } = txData;
 
   if (!type) return undefined;
 
@@ -78,7 +78,8 @@ const buildItemType = (txData: TransactionProposedItemUi) => {
     Receive: success ? "Received" : type,
     "Send Native": success ? "Sent" : "Send",
     "Send PSP22": success ? "Sent" : "Send",
-    "Custom Contract": methodName || selector,
+    Settings: methodName || "Settings",
+    "Custom Contract": methodName || "Custom Contract",
   };
 
   return txType[type as keyof TransactionDisplayInfo["type"]];

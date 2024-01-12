@@ -1,7 +1,9 @@
-import { Drawer, DrawerProps } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import { Drawer, DrawerProps, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Box } from "@mui/system";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 import { XsignerAccountInfoWidget } from "@/components/XsignerAccountInfoWidget";
 import { useSettingsTheme } from "@/context/SettingsThemeConsumer";
@@ -33,27 +35,45 @@ const DrawerStyled = styled(Drawer)<DrawerStyledProps>(
 );
 
 export function VerticalMenuBar() {
-  const [open, setOpen] = useState(true);
   const { pathname } = useRouter();
-  const { settings } = useSettingsTheme();
+  const { settings, saveSettings } = useSettingsTheme();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleDrawerToggle = () => {
+    saveSettings({ ...settings, navOpen: !settings.navOpen });
   };
 
   return (
-    <DrawerStyled
-      drawerwidth={settings.drawerWidth || DEFAULT_WIDTH}
-      variant="persistent"
-      anchor="left"
-      open={open}
-    >
-      <XsignerAccountInfoWidget />
-      <Navigation currentPath={pathname} />
-    </DrawerStyled>
+    <>
+      <DrawerStyled
+        drawerwidth={settings.drawerWidth || DEFAULT_WIDTH}
+        variant="persistent"
+        anchor="left"
+        open={settings.navOpen}
+      >
+        <XsignerAccountInfoWidget />
+        <Navigation currentPath={pathname} />
+      </DrawerStyled>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: "0",
+          left: "0",
+          zIndex: "9999",
+          margin: "1rem",
+        }}
+      >
+        <IconButton onClick={handleDrawerToggle}>
+          {settings.navOpen ? (
+            <Tooltip title="Hide menu" placement="top">
+              <MenuOpenIcon fontSize="large" />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Show menu" placement="top">
+              <MenuIcon fontSize="large" />
+            </Tooltip>
+          )}
+        </IconButton>
+      </Box>
+    </>
   );
 }

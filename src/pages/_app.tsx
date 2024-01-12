@@ -12,12 +12,15 @@ import { InkConfig } from "useink";
 
 import { AppToastNotifications } from "@/components/AppToastNotification";
 import { AppNotificationsContextProvider } from "@/components/AppToastNotification/AppNotificationsContext";
-import { WalletConnectionGuard } from "@/components/guards/WalletConnectionGuard";
+import { Guard } from "@/components/guards";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { MultisigEventListener } from "@/components/MultisigEventListener";
 import { CHAINS } from "@/config/chain";
 import { CallerXsignersAccountProvider } from "@/context/CallerXsigerAccounts";
-import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
+import {
+  SettingsThemeConsumer,
+  SettingsThemeProvider,
+} from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
@@ -41,7 +44,7 @@ export interface ExtendedProps extends AppProps {
   emotionCache: EmotionCache;
   Component: NextPage & {
     getLayout?: (_page: React.ReactElement) => React.ReactNode;
-    walletRequired?: boolean;
+    connectedWalletRequired?: boolean;
   };
 }
 
@@ -52,7 +55,7 @@ const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
 
 export default function App(props: ExtendedProps) {
   const { Component, pageProps, emotionCache = clientSideEmotionCache } = props;
-  const walletRequired = Component.walletRequired ?? true;
+  const connectedWalletRequired = Component.connectedWalletRequired ?? true;
   const getLayout =
     Component.getLayout ?? ((page) => <AppLayout>{page}</AppLayout>);
 
@@ -69,17 +72,21 @@ export default function App(props: ExtendedProps) {
             <SettingsThemeConsumer>
               {({ settings }) => {
                 return (
-                  <ThemeCustomization settings={settings}>
-                    <AppNotificationsContextProvider>
-                      <MultisigEventListener />
-                      <CallerXsignersAccountProvider>
-                        <WalletConnectionGuard walletRequired={walletRequired}>
-                          {getLayout(<Component {...pageProps} />)}
-                        </WalletConnectionGuard>
-                      </CallerXsignersAccountProvider>
-                      <AppToastNotifications />
-                    </AppNotificationsContextProvider>
-                  </ThemeCustomization>
+                  <SettingsThemeProvider>
+                    <ThemeCustomization settings={settings}>
+                      <AppNotificationsContextProvider>
+                        <MultisigEventListener />
+                        <CallerXsignersAccountProvider>
+                          <Guard
+                            connectedWalletRequired={connectedWalletRequired}
+                          >
+                            {getLayout(<Component {...pageProps} />)}
+                          </Guard>
+                        </CallerXsignersAccountProvider>
+                        <AppToastNotifications />
+                      </AppNotificationsContextProvider>
+                    </ThemeCustomization>
+                  </SettingsThemeProvider>
                 );
               }}
             </SettingsThemeConsumer>

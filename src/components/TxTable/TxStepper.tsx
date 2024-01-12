@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { StepConnector } from "@mui/material";
 import Box from "@mui/material/Box";
-import Step from "@mui/material/Step";
+import Step, { StepProps } from "@mui/material/Step";
 import StepContent from "@mui/material/StepContent";
 import { StepIconProps } from "@mui/material/StepIcon";
 import StepLabel from "@mui/material/StepLabel";
@@ -25,7 +27,12 @@ import CopyButton from "../common/CopyButton";
 import { ExplorerLink } from "../ExplorerLink";
 import { ConfirmationWidget } from "./ConfirmationWidget";
 
-type OwnerStatus = "Approved" | "Rejected" | "Pending";
+export const StyledStep = styled(Step)<StepProps>(() => ({
+  padding: 0,
+  "& .MuiStepLabel-root": {
+    padding: 0,
+  },
+}));
 
 const CircleStepIconRoot = styled("div")(() => ({
   marginLeft: "7px",
@@ -55,24 +62,57 @@ const ColorlibStepIconRoot = styled("div")(() => ({
   color: "#ADD500",
 }));
 
-const CircleStepIcon = (status?: string) => {
-  const type = {
-    Pending: "CircletepIcon",
-    Approved: "CircletepIcon-completedIcon",
-    Rejected: "CircletepIcon-rejectedIcon",
-  };
+const CircleStepIcon = (
+  status?: string,
+  approvalCount?: number,
+  threshold?: number
+) => {
+  let className = "";
+  if (
+    approvalCount === threshold ||
+    status === TX_OWNER_STATUS_TYPE.APPROVED ||
+    status === TX_STATUS_TYPE.EXECUTED_SUCCESS
+  ) {
+    className = "CircletepIcon-completedIcon";
+  }
+
+  if (
+    status === TX_STATUS_TYPE.PROPOSED ||
+    status === TX_OWNER_STATUS_TYPE.PENDING
+  ) {
+    className = "CircletepIcon";
+  }
+
+  if (
+    status === TX_STATUS_TYPE.CANCELLED ||
+    status === TX_OWNER_STATUS_TYPE.REJECTED
+  ) {
+    className = "CircletepIcon-rejectedIcon";
+  }
   return (
     <CircleStepIconRoot>
-      <div className={type[status as OwnerStatus] ?? "CircletepIcon"} />
+      <div className={className} />
     </CircleStepIconRoot>
   );
 };
 
-function ColorlibStepIcon(props: StepIconProps, ownersLength: number) {
-  const lastIndex = (ownersLength + 2).toString();
+function ColorlibStepIcon(
+  props: StepIconProps,
+  ownersLength?: number,
+  status?: string
+) {
+  let lastIndex = "";
+  if (ownersLength) {
+    lastIndex = (ownersLength + 2).toString();
+  }
   const icons: { [index: string]: React.ReactElement } = {
     1: <AddCircleIcon />,
-    2: <CheckCircleIcon />,
+    2:
+      status === TX_STATUS_TYPE.CANCELLED ? (
+        <CancelIcon sx={{ color: "red" }} />
+      ) : (
+        <CheckCircleIcon />
+      ),
     3: <VisibilityIcon sx={{ color: "#ffff" }} />,
     [lastIndex]: <VisibilityOffIcon sx={{ color: "#ffff" }} />,
   };
@@ -102,28 +142,37 @@ export default function TxStepper({
   status: string;
 }) {
   const [showOwners, setShowOwners] = React.useState(true);
-  const canBeExecuted =
-    approvalCount === threshold ? TX_OWNER_STATUS_TYPE.APPROVED : undefined;
-
+  const isProposed = status === TX_STATUS_TYPE.PROPOSED;
+  const isCancelled = status === TX_STATUS_TYPE.CANCELLED;
   return (
     <Box
       sx={{ maxWidth: 400, padding: "20px", borderLeft: "3px solid #120D0E" }}
     >
-      <Stepper orientation="vertical">
-        <Step>
+      <Stepper
+        connector={
+          <StepConnector
+            sx={{
+              span: {
+                minHeight: "19px",
+              },
+            }}
+          ></StepConnector>
+        }
+        orientation="vertical"
+      >
+        <StyledStep>
           <StepLabel
             StepIconComponent={ColorlibStepIcon}
             sx={{
               color: "#ADD500",
-              fontSize: "1.5rem",
             }}
           >
             <Typography>Created</Typography>
           </StepLabel>
-        </Step>
-        <Step>
+        </StyledStep>
+        <StyledStep>
           <StepLabel
-            StepIconComponent={ColorlibStepIcon}
+            StepIconComponent={(e) => ColorlibStepIcon(e, undefined, status)}
             sx={{
               color: "#ADD500",
               display: "flex",
@@ -131,57 +180,53 @@ export default function TxStepper({
           >
             <Typography>
               Confirmations{" "}
-              <span
-                style={{ color: "#636669", marginLeft: "1rem" }}
-              >{`(${approvalCount} / ${threshold})`}</span>
-            </Typography>{" "}
+              {isProposed ? (
+                <span
+                  style={{ color: "#636669", marginLeft: "1rem" }}
+                >{`(${approvalCount} / ${threshold})`}</span>
+              ) : null}
+            </Typography>
           </StepLabel>
-        </Step>
+        </StyledStep>
         {showOwners
           ? owners?.map((element: Order, index: number) => (
-              <Step key={index}>
-                {index !== owners?.length ? (
-                  <StepLabel
-                    StepIconComponent={() => CircleStepIcon(element.status)}
-                  >
-                    <Box sx={{ display: "flex" }}>
-                      <AccountAvatar
-                        address={element.address}
-                        name={element.name}
-                        truncateLenght={4}
-                      ></AccountAvatar>
-                      <Box
-                        sx={{
-                          marginTop: "20px",
-                          marginLeft: "15px",
-                          display: "flex",
-                        }}
-                      >
-                        <CopyButton text={element.address} />
-                        <ExplorerLink
-                          blockchain={network}
-                          path="account"
-                          sx={{ color: "" }}
-                          txHash={element.address}
-                        />
-                      </Box>
+              <StyledStep active={true} key={index}>
+                <StepLabel
+                  StepIconComponent={() => CircleStepIcon(element.status)}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <AccountAvatar
+                      address={element.address}
+                      name={element.name}
+                      truncateLenght={4}
+                    ></AccountAvatar>
+                    <Box
+                      sx={{
+                        marginTop: "20px",
+                        marginLeft: "15px",
+                        display: "flex",
+                      }}
+                    >
+                      <CopyButton text={element.address} />
+                      <ExplorerLink
+                        blockchain={network}
+                        path="account"
+                        sx={{ color: "" }}
+                        txHash={element.address}
+                      />
                     </Box>
-                  </StepLabel>
-                ) : null}
-              </Step>
+                  </Box>
+                </StepLabel>
+              </StyledStep>
             ))
           : null}
-        <Step>
+        <StyledStep>
           <StepLabel
             StepIconComponent={(e) => ColorlibStepIcon(e, owners!.length + 1)}
           >
             <Typography
-              variant="h2"
               sx={{
                 fontWeight: "bold",
-                fontSize: "1.1rem",
-                paddingTop: "1.1rem",
-                marginBottom: "22px",
                 cursor: "pointer",
                 color: "#ffe873",
                 textDecoration: "underline",
@@ -191,35 +236,47 @@ export default function TxStepper({
               {showOwners ? "Hide all" : "Show all"}
             </Typography>
           </StepLabel>
-        </Step>
-        {status === TX_STATUS_TYPE.PROPOSED && multisigContractPromise ? (
-          <Step>
-            <StepLabel StepIconComponent={() => CircleStepIcon(canBeExecuted)}>
-              <Typography>Can be executed</Typography>
-              <StepContent sx={{ margin: "0px", padding: "0px" }}>
-                <span style={{ fontSize: "0.8rem" }}>
-                  This transaction will be executed once the threshold is
-                  reached
-                </span>{" "}
-              </StepContent>
-            </StepLabel>
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-around",
-                alignItems: "center",
-                marginTop: "2rem",
-              }}
-            >
-              <ConfirmationWidget
-                multisigContractPromise={multisigContractPromise}
-                txId={txId}
-                expanded={expanded}
-              />
+        </StyledStep>
+        <StyledStep active={true}>
+          <StepLabel
+            sx={{ mt: 1.5 }}
+            StepIconComponent={() =>
+              CircleStepIcon(status, approvalCount, threshold)
+            }
+          >
+            <Typography>
+              {isProposed
+                ? "Can be executed"
+                : isCancelled
+                ? "Cancelled"
+                : "Executed"}
+            </Typography>
+          </StepLabel>
+          <StepContent sx={{ mt: "0.4rem", padding: "0px" }}>
+            <Box sx={{ ml: 2 }}>
+              {isProposed ? (
+                <>
+                  <Typography sx={{ fontSize: "0.8rem", mb: 3, mr: 3 }}>
+                    This transaction will be executed once the threshold is
+                    reached
+                  </Typography>
+                  {multisigContractPromise ? (
+                    <ConfirmationWidget
+                      multisigContractPromise={multisigContractPromise}
+                      txId={txId}
+                      expanded={expanded}
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <Typography sx={{ fontSize: "0.8rem", mb: 2 }}>
+                  This transaction has been{" "}
+                  {isCancelled ? "cancelled" : "executed"}
+                </Typography>
+              )}
             </Box>
-          </Step>
-        ) : null}
+          </StepContent>
+        </StyledStep>
       </Stepper>
     </Box>
   );

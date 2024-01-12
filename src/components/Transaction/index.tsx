@@ -8,7 +8,7 @@ import {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
 } from "useink/core";
-import { ContractPromise, WeightV2 } from "useink/dist/core";
+import { ContractPromise, RegistryError, WeightV2 } from "useink/dist/core";
 
 import { ChainExtended, getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
@@ -19,6 +19,7 @@ import { usePSPContractPromise } from "@/hooks/contractPromise/usePSPContractPro
 import { useGetDryRun } from "@/hooks/useGetDryRun";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
+import { getIfSpecialError } from "@/services/substrate/utils/specialErrorWrapper";
 import {
   getMessageInfo,
   splitTokenAmount,
@@ -34,7 +35,7 @@ import { TransactionBox } from "./styled";
 type TxData = {
   to: string;
   amount: string;
-  token: string;
+  token: string | undefined;
   chain: ChainExtended;
 };
 
@@ -60,6 +61,19 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
   const isLastStep = currentStep === steps.length - 1;
   const Component = steps[currentStep].Component;
 
+  const resetTxData = () => {
+    setTxData((prevTxData) => {
+      const updatedData = {
+        ...prevTxData,
+        to: "",
+        amount: "0 SBY",
+        token: "",
+      } as TxData;
+      return updatedData;
+    });
+    setErrors([]);
+  };
+
   const setField = useCallback((field: string, value: unknown) => {
     setTxData((prevTxData) => {
       const updatedData = {
@@ -80,6 +94,13 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
       setField("token", pspToken);
     }
   }, [pspToken, setField]);
+
+  const formatErrorMsg = (err: RegistryError) => {
+    const parsedError = err?.name
+      ? getIfSpecialError(err.name)
+      : "Transaction will be reverted due to unknown error";
+    return parsedError;
+  };
 
   const handleNext = async () => {
     if (isLastStep) {
@@ -142,7 +163,7 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
         );
 
         if (err) {
-          throw new Error(err.docs.join("\n"));
+          throw new Error(formatErrorMsg(err));
         }
 
         if (decodedData?.value.Err) {
@@ -150,10 +171,10 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
         }
 
         const result = await dryRun.send([transferTxStruct]);
+
         if (!result?.ok) {
-          throw new Error(
-            result?.error.toString() ?? "Error on executing the transaction."
-          );
+          const parsedError = formatErrorMsg(result?.error);
+          throw new Error(parsedError ?? "Error on executing the transaction.");
         }
         const gasRequired = (result?.ok &&
           result?.value.gasRequired) as WeightV2;
@@ -177,7 +198,7 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
                 message: "Transaction successfully sent.",
                 type: "success",
               });
-              router.replace(ROUTES.Assets);
+              router.replace(ROUTES.Transactions);
             }
           }
         );
@@ -210,7 +231,10 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
         >
           {currentStep > 0 && (
             <Button
-              onClick={() => setCurrentStep(currentStep - 1)}
+              onClick={() => {
+                resetTxData();
+                setCurrentStep(currentStep - 1);
+              }}
               variant="outlined"
               disabled={isLoading}
             >

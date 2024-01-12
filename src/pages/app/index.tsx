@@ -9,11 +9,14 @@ import { SummaryCard } from "@/components/SummaryCard";
 import { XsignerBalanceText } from "@/components/SummaryCard/XsignerBalanceText";
 import { TxQueueWidget } from "@/components/TxQueueWidget";
 import { ROUTES } from "@/config/routes";
+import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
+import { ChainId } from "@/services/useink/types";
 
 export default function AppDashboard() {
   const { xSignerSelected } = useGetXsignerSelected();
+  const { assetRepository } = useLocalDbContext();
 
   const { balance, isLoading: isLoadingBalance } = useGetBalance(
     xSignerSelected?.address
@@ -22,6 +25,10 @@ export default function AppDashboard() {
   if (!xSignerSelected) {
     return <FallbackSpinner />;
   }
+
+  const assets = assetRepository.getAssetList(
+    xSignerSelected.networkId as ChainId
+  );
 
   return (
     <>
@@ -39,7 +46,10 @@ export default function AppDashboard() {
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <SummaryCard captionTitle="Tracked Tokens" caption="-" />
+          <SummaryCard
+            captionTitle="Tracked Tokens"
+            caption={`${assets.length}`}
+          />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <SummaryCard

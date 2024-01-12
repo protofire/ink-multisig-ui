@@ -11,8 +11,9 @@ export function useGetXsignerSelected() {
   const { xsignerSelectedRepository, signatoriesAccountRepository } =
     useLocalDbContext();
   const { network } = usePolkadotContext();
-  const [xSignerSelected, setXsignerSelected] =
-    useState<SignatoriesAccount | null>(null);
+  const [xSignerSelected, setXsignerSelected] = useState<
+    SignatoriesAccount | null | undefined
+  >();
 
   const getAccount = useCallback(async () => {
     const addressAccount = xsignerSelectedRepository.getAccount();
@@ -26,6 +27,8 @@ export function useGetXsignerSelected() {
 
     if (account) {
       setXsignerSelected(account);
+    } else {
+      setXsignerSelected(null);
     }
   }, [network, signatoriesAccountRepository, xsignerSelectedRepository]);
 
