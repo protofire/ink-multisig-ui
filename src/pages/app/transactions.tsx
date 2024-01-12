@@ -3,14 +3,14 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
-import { TxTable } from "@/components/TxTable";
+import { TAB_TX, TxTable, TxTabType } from "@/components/TxTable";
 import { ROUTES } from "@/config/routes";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
-const types = ["queue", "history"];
+const DEFAULT_TAB: TxTabType = "queue";
 
 export default function TxPage() {
-  const [value, setValue] = useState(types.indexOf(types[0]));
+  const [value, setValue] = useState(DEFAULT_TAB);
   const { xSignerSelected } = useGetXsignerSelected();
 
   const router = useRouter();
@@ -19,8 +19,8 @@ export default function TxPage() {
   const setTab = useCallback(() => {
     let tabIndex = 0;
     if (tab !== undefined && !Array.isArray(tab)) {
-      if (types.includes(tab)) {
-        tabIndex = types.indexOf(tab);
+      if (TAB_TX.includes(tab)) {
+        tabIndex = TAB_TX.indexOf(tab);
       }
     }
     handleChange(null, tabIndex);
@@ -30,7 +30,7 @@ export default function TxPage() {
     setValue(newValue);
     router.replace({
       pathname: ROUTES.Transactions,
-      query: { tab: types[newValue] },
+      query: { tab: TAB_TX[newValue] },
     });
   };
 
@@ -56,8 +56,7 @@ export default function TxPage() {
         Transactions
       </Typography>
       <TxTable
-        types={types}
-        value={value}
+        tabSelected={value}
         xsignerAccount={xSignerSelected}
         handleChange={handleChange}
       />

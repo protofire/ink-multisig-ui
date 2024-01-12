@@ -3,6 +3,8 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import * as React from "react";
 
+import { TxTabType } from ".";
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -12,7 +14,7 @@ interface TabPanelProps {
 type AssetTabsProps = {
   options: string[];
   children: React.ReactNode;
-  value: number;
+  tabSelected: TxTabType;
   onChange?: (_: React.SyntheticEvent, newValue: number) => void;
 };
 
@@ -40,11 +42,12 @@ function a11yProps(index: number) {
 }
 
 export default function TxTabs(props: AssetTabsProps) {
-  const { value, onChange } = props;
+  const { tabSelected, onChange } = props;
+
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={value} onChange={onChange}>
+        <Tabs value={tabSelected} onChange={onChange}>
           {props.options.map((option, index) => (
             <Tab
               key={option}
@@ -55,7 +58,7 @@ export default function TxTabs(props: AssetTabsProps) {
           ))}
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={value}>
+      <CustomTabPanel value={tabSelected} index={tabSelected}>
         {props.children}
       </CustomTabPanel>
     </Box>

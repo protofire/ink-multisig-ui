@@ -8,23 +8,25 @@ import TxTabs from "./Tabs";
 import { TransactionHistory } from "./TransactionsHistory";
 import { TransactionQueueDetail } from "./TransactionsQueueDetail";
 
+export const TAB_TX = ["queue", "history"] as const;
+export type TxTabType = (typeof TAB_TX)[number];
+
 interface Props {
   xsignerAccount: SignatoriesAccount;
-  types: string[];
-  value: number;
+  tabSelected: TxTabType;
   handleChange: (_: React.SyntheticEvent, newValue: number) => void;
 }
 
-export function TxTable({ xsignerAccount, types, value, handleChange }: Props) {
+export function TxTable({ xsignerAccount, tabSelected, handleChange }: Props) {
   const { network } = usePolkadotContext();
   return (
     <Box sx={{ width: "100%" }}>
       <TxTabs
-        value={value}
-        options={types.map((t) => capitalizeFirstLetter(t))}
+        value={tabSelected}
+        options={TAB_TX.map((t) => capitalizeFirstLetter(t))}
         onChange={handleChange}
       >
-        {value === 0 ? (
+        {tabSelected === "queue" ? (
           <TransactionQueueDetail
             xsignerAccount={xsignerAccount}
             network={network}
