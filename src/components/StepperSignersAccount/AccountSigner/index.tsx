@@ -2,13 +2,10 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Avatar, Box, IconButton, SvgIcon, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Identicon from "@polkadot/react-identicon";
-import { useRouter } from "next/router";
 
 import CopyButton from "@/components/common/CopyButton";
-import { ROUTES } from "@/config/routes";
-import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { useListSignersAccount } from "@/hooks/xsignersAccount";
-import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
+import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { getExplorerUrl } from "@/utils/blockchain";
 import { truncateAddress } from "@/utils/formatString";
 
 interface Props {
@@ -27,16 +24,11 @@ export function AccountSigner({
   showLink = true,
 }: Props) {
   const theme = useTheme();
-  const router = useRouter();
-  const { data } = useListSignersAccount();
-  const { setXsigner } = useSetXsignerSelected();
+  const { network } = usePolkadotContext();
 
-  const handleMultisigRedirect = (address: string) => {
-    const selectedMultisig = data?.find(
-      (multisig) => multisig.address === address
-    ) as SignatoriesAccount;
-    setXsigner(selectedMultisig);
-    router.replace(ROUTES.App);
+  const handleExplorerUri = (address: string) => {
+    const explorerUri = getExplorerUrl(network, address);
+    window.open(explorerUri, "_blank");
   };
 
   return (
@@ -54,10 +46,7 @@ export function AccountSigner({
           </Typography>
           {showCopy && <CopyButton text={address} />}
           {showLink && (
-            <IconButton
-              onClick={() => handleMultisigRedirect(address)}
-              size="small"
-            >
+            <IconButton onClick={() => handleExplorerUri(address)} size="small">
               <SvgIcon
                 component={OpenInNewIcon}
                 inheritViewBox

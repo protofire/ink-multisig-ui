@@ -7,26 +7,39 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useEffect } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
 import { StyledBox } from "@/components/StepperSignersAccount/styled";
 import { Owner } from "@/domain/SignatoriesAccount";
+import { ValidationError } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 
 function ThresholdStep({
   owners,
   threshold,
   handleThreshold,
   step,
+  errors,
+  setErrors,
 }: {
   owners: ArrayOneOrMore<Owner>;
   step: number;
   threshold: number;
   handleThreshold: (threshold: number) => void;
+  errors: Array<ValidationError[]>;
+  setErrors: (errors: Array<ValidationError[]>) => void;
 }) {
+  useEffect(() => {
+    const newErrors = [...errors];
+    newErrors[step] = [];
+    setErrors(newErrors);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleThresholdChange = (event: SelectChangeEvent<number>) => {
     handleThreshold(event.target.value as number);
   };
-
   return (
     <Box>
       <StyledBox

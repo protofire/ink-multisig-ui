@@ -1,11 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import {
-  SignAndSend,
-  Tx,
-  useEvents,
-  useEventSubscription,
-  useTx,
-} from "useink";
+import { SignAndSend, Tx, useTx } from "useink";
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
@@ -13,28 +7,18 @@ import { AbiMessage, ContractPromise } from "@/services/substrate/types";
 import { getOutcomeText } from "@/services/substrate/utils/contractExecResult";
 import { getErrorMessage } from "@/utils/error";
 
-type EventPayload = {
-  createdAt: number;
-  name: string;
-  args: unknown[];
-};
-
-type Event = {
-  id: string;
-} & EventPayload;
-
 interface Props {
   contractPromise: ContractPromise | undefined;
   abiMessage: AbiMessage | null | undefined;
   onCallback?: () => void;
   onTxHash?: (txHash: string) => void;
+  onTxMined?: () => void;
 }
 
 interface UseContractTxReturn {
   tx: Tx<unknown>;
   outcome: string;
   error: string | undefined;
-  events: Event[];
   signAndSend: SignAndSend;
 }
 
@@ -42,6 +26,7 @@ export function useContractTx({
   contractPromise: contract,
   abiMessage,
   onCallback,
+  onTxMined,
   onTxHash,
 }: Props): UseContractTxReturn {
   const { network: chainId } = usePolkadotContext();
@@ -59,12 +44,6 @@ export function useContractTx({
 
   const tx = useTx(callContractArgs.chainContract, callContractArgs.method);
 
-  useEventSubscription(callContractArgs.chainContract);
-  const { events } = useEvents(
-    callContractArgs.chainContract?.contract.address || undefined,
-    [callContractArgs.method]
-  );
-
   const signAndSend = useCallback(
     (inputData: unknown[] | undefined) => {
       setOutcome("");
@@ -81,6 +60,8 @@ export function useContractTx({
           setError(errorFormated);
           addNotification({ message: errorFormated, type: "error" });
           tx.resetState();
+        } else if (_result?.isInBlock) {
+          onTxMined?.();
         } else if (_result?.isCompleted) {
           const decodedOutput = getOutcomeText(_result.status.value.toHuman());
           setOutcome(decodedOutput);
@@ -89,8 +70,8 @@ export function useContractTx({
         }
       });
     },
-    [addNotification, onCallback, onTxHash, tx]
+    [addNotification, onCallback, onTxMined, onTxHash, tx]
   );
 
-  return { tx, outcome, error, events, signAndSend };
+  return { tx, outcome, error, signAndSend };
 }

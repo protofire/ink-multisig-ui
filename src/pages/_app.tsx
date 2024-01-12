@@ -17,7 +17,10 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { MultisigEventListener } from "@/components/MultisigEventListener";
 import { CHAINS } from "@/config/chain";
 import { CallerXsignersAccountProvider } from "@/context/CallerXsigerAccounts";
-import { SettingsThemeConsumer } from "@/context/SettingsThemeConsumer";
+import {
+  SettingsThemeConsumer,
+  SettingsThemeProvider,
+} from "@/context/SettingsThemeConsumer";
 import { LocalDbProvider } from "@/context/uselocalDbContext";
 import { PolkadotContextProvider } from "@/context/usePolkadotContext";
 import ThemeCustomization from "@/themes";
@@ -69,19 +72,21 @@ export default function App(props: ExtendedProps) {
             <SettingsThemeConsumer>
               {({ settings }) => {
                 return (
-                  <ThemeCustomization settings={settings}>
-                    <AppNotificationsContextProvider>
-                      <MultisigEventListener />
-                      <CallerXsignersAccountProvider>
-                        <Guard
-                          connectedWalletRequired={connectedWalletRequired}
-                        >
-                          {getLayout(<Component {...pageProps} />)}
-                        </Guard>
-                      </CallerXsignersAccountProvider>
-                      <AppToastNotifications />
-                    </AppNotificationsContextProvider>
-                  </ThemeCustomization>
+                  <SettingsThemeProvider>
+                    <ThemeCustomization settings={settings}>
+                      <AppNotificationsContextProvider>
+                        <MultisigEventListener />
+                        <CallerXsignersAccountProvider>
+                          <Guard
+                            connectedWalletRequired={connectedWalletRequired}
+                          >
+                            {getLayout(<Component {...pageProps} />)}
+                          </Guard>
+                        </CallerXsignersAccountProvider>
+                        <AppToastNotifications />
+                      </AppNotificationsContextProvider>
+                    </ThemeCustomization>
+                  </SettingsThemeProvider>
                 );
               }}
             </SettingsThemeConsumer>

@@ -51,3 +51,9 @@ services:
     command: ["./wait-for-it.sh", "db:5432", "--", "sqd", "process:prod"]
     depends_on:
       - db
+  docs:
+    build:
+      context: .
+      dockerfile: .docker/docs/Dockerfile
+    ports:
+      - "3001:3001"
