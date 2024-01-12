@@ -90,7 +90,7 @@ const buildItemType = (txData: TransactionProposedItemUi) => {
   if (success) {
     formatType = formatPastTime(type as keyof TransactionDisplayInfo["type"]);
   }
-  return formatType === "Settings" ? methodName : type;
+  return formatType === "Settings" ? methodName : formatType;
 };
 
 export const TxDetailItem = ({
