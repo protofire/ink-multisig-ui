@@ -9,7 +9,7 @@ interface Props extends Omit<UseModalBehaviour, "openModal"> {
 }
 
 const message =
-  "You are about to change to a account that you aren&apos;t the owner. You\
+  "You are about to change to a account that you aren' t the owner. You\
   will be redirected to the Welcome page. Do you want to continue?";
 
 export default function AccountConfirmationModal({
