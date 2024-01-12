@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
@@ -9,27 +8,30 @@ import TxTabs from "./Tabs";
 import { TransactionHistory } from "./TransactionsHistory";
 import { TransactionQueueDetail } from "./TransactionsQueueDetail";
 
-const types = ["queue", "history"];
+export const TAB_TX = ["queue", "history"] as const;
+export type TxTabType = (typeof TAB_TX)[number];
+export const DEFAULT_TAB = 0; // Initial tab index "queue"
 
 interface Props {
   xsignerAccount: SignatoriesAccount;
+  tabSelectedIndex: number;
+  handleChange: (_: React.SyntheticEvent, newValue: number) => void;
 }
 
-export function TxTable({ xsignerAccount }: Props) {
-  const [type, setType] = useState(types[0]);
+export function TxTable({
+  xsignerAccount,
+  tabSelectedIndex,
+  handleChange,
+}: Props) {
   const { network } = usePolkadotContext();
-
-  const handleChange = (newValue: number) => {
-    setType(types[newValue]);
-  };
-
   return (
     <Box sx={{ width: "100%" }}>
       <TxTabs
-        options={types.map((t) => capitalizeFirstLetter(t))}
+        tabSelectedIndex={tabSelectedIndex}
+        options={TAB_TX.map((t) => capitalizeFirstLetter(t))}
         onChange={handleChange}
       >
-        {type === "queue" ? (
+        {tabSelectedIndex === DEFAULT_TAB ? (
           <TransactionQueueDetail
             xsignerAccount={xsignerAccount}
             network={network}
