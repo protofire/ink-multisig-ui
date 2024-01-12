@@ -46,7 +46,14 @@ function ConfirmationDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onConfirm}>Confirm</Button>
+          <Button
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+          >
+            Confirm
+          </Button>
         </DialogActions>
       </Box>
     </Dialog>
