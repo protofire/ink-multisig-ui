@@ -34,7 +34,7 @@ import { TransactionBox } from "./styled";
 type TxData = {
   to: string;
   amount: string;
-  token: string;
+  token: string | undefined;
   chain: ChainExtended;
 };
 
@@ -59,6 +59,19 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
   const dryRun = useGetDryRun(multisigContractPromise?.contract, "proposeTx");
   const isLastStep = currentStep === steps.length - 1;
   const Component = steps[currentStep].Component;
+
+  const resetTxData = () => {
+    setTxData((prevTxData) => {
+      const updatedData = {
+        ...prevTxData,
+        to: "",
+        amount: "0 SBY",
+        token: "",
+      } as TxData;
+      return updatedData;
+    });
+    setErrors([]);
+  };
 
   const setField = useCallback((field: string, value: unknown) => {
     setTxData((prevTxData) => {
@@ -210,7 +223,10 @@ export const Transaction = ({ pspToken }: { pspToken?: string }) => {
         >
           {currentStep > 0 && (
             <Button
-              onClick={() => setCurrentStep(currentStep - 1)}
+              onClick={() => {
+                resetTxData();
+                setCurrentStep(currentStep - 1);
+              }}
               variant="outlined"
               disabled={isLoading}
             >
