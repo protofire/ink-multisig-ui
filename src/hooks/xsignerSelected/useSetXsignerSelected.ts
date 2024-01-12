@@ -11,6 +11,7 @@ interface UseSetXsignerSelectedReturn {
   ) => Promise<SignatoriesAccount | void>;
   isLoading: boolean;
   error: string | null;
+  clearXsignerSelected: () => void;
 }
 
 export function useSetXsignerSelected(): UseSetXsignerSelectedReturn {
@@ -43,5 +44,10 @@ export function useSetXsignerSelected(): UseSetXsignerSelectedReturn {
     [signatoriesAccountRepository, xsignerSelectedRepository]
   );
 
-  return { setXsigner, isLoading, error };
+  const clearXsignerSelected = useCallback(
+    () => xsignerSelectedRepository.saveAccount(""),
+    [xsignerSelectedRepository]
+  );
+
+  return { setXsigner, isLoading, error, clearXsignerSelected };
 }
