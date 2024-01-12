@@ -13,6 +13,7 @@ import { XsignerAccountEvents } from "@/domain/events/XsignerAccountEvents";
 import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { ArrayOneOrMore } from "@/domain/utilityTsTypes";
 import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
+import { areAddressesEqual } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
 import { usePolkadotContext } from "./usePolkadotContext";
@@ -63,8 +64,9 @@ export const CallerXsignersAccountProvider: React.FC<PropsWithChildren> = ({
         if (existingAccount) {
           const updatedOwners = multisig.owners.map((owner: Owner) => {
             const oldOwnerData =
-              existingAccount.owners.find((o) => o.address === owner.address) ||
-              owner;
+              existingAccount.owners.find((o) =>
+                areAddressesEqual(o.address, owner.address)
+              ) || owner;
             return { ...owner, name: oldOwnerData.name };
           });
 

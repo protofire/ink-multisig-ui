@@ -10,6 +10,11 @@ import {
   //@ts-expect-error
 } from "useink/core";
 
+import {
+  RococoContractsTestnet,
+  ShibuyaTestnet,
+} from "@/services/useink/chains/testnet-chaindata";
+
 export const isValidAddress = (address: string | undefined) => {
   try {
     encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
@@ -110,6 +115,13 @@ const networkIdToPrefix: Record<string, number> = {
   "rococo-contracts-testnet": 42,
 };
 
+export const areAddressesEqual = (address1: string, address2: string) => {
+  const rawAddress1 = ss58.decode(address1).bytes;
+  const rawAddress2 = ss58.decode(address2).bytes;
+
+  return rawAddress1 === rawAddress2;
+};
+
 export const formatAddressForNetwork = (address: string, networkId: string) => {
   const rawAddress = ss58.decode(address).bytes;
 
@@ -185,4 +197,13 @@ export const decodeCallArgs = (
   const decodedData = abiMessage.value.fromU8a(dataAU8array);
   const data = decodedData.args.map((arg: any) => arg.toHuman());
   return data;
+};
+
+export const getExplorerUrl = (networkId: string, address: string) => {
+  const networks = [ShibuyaTestnet, RococoContractsTestnet];
+  const explorerUri =
+    networks.find((network) => network.id === networkId)?.subscanUrl ||
+    ShibuyaTestnet.subscanUrl;
+
+  return `${explorerUri}/account/${address}`;
 };

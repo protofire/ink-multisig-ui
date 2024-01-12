@@ -1,3 +1,4 @@
+import * as ss58 from "@subsquid/ss58";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrayOneOrMore } from "useink/dist/core";
 
@@ -102,13 +103,19 @@ export const useFormSignersAccountState = () => {
       const seenAddresses = new Set<string>();
 
       newOwners.forEach((owner, index) => {
-        let errorMessage = "";
+        let errorMessage = "",
+          address;
 
+        try {
+          address = ss58.decode(owner.address).bytes;
+        } catch {
+          address = "";
+        }
         // Check for duplicated addresses
-        if (seenAddresses.has(owner.address)) {
+        if (seenAddresses.has(address)) {
           errorMessage = DUPLICATE_ADDRESS_ERROR;
         } else {
-          seenAddresses.add(owner.address);
+          seenAddresses.add(address);
         }
 
         // Continue with other validations if no duplicate error
