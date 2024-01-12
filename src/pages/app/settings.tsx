@@ -20,7 +20,7 @@ import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
-import { transformArgsToBytes } from "@/utils/blockchain";
+import { areAddressesEqual, transformArgsToBytes } from "@/utils/blockchain";
 
 export default function SettingsPage() {
   const { xSignerSelected } = useGetXsignerSelected();
@@ -127,8 +127,8 @@ export default function SettingsPage() {
         let nextIndex = existingOwners.length;
 
         const updatedOwners = result.owners.map((address) => {
-          const existingOwner = existingOwners.find(
-            (owner) => owner.address === address
+          const existingOwner = existingOwners.find((owner) =>
+            areAddressesEqual(owner.address, address)
           );
 
           if (existingOwner) {
