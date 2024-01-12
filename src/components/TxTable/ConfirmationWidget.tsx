@@ -1,9 +1,10 @@
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useEffect, useMemo } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 
 import { LoadingButton } from "@/components/common/LoadingButton";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { TWO_SECONDS, useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 import { ContractPromise } from "@/services/substrate/types";
@@ -14,6 +15,7 @@ import { useContractTx } from "../TxBuilderStepper/ProposeTxStep/useContractTx";
 
 interface Props {
   multisigContractPromise: ContractPromise;
+  setSignerExecuting: Dispatch<SetStateAction<string[]>>;
   txId: string;
   expanded: boolean;
 }
@@ -21,6 +23,7 @@ interface Props {
 export function ConfirmationWidget({
   multisigContractPromise,
   txId,
+  setSignerExecuting,
   expanded,
 }: Props) {
   const approveMessage = useMemo(
@@ -47,16 +50,20 @@ export function ConfirmationWidget({
   const approveTx = useContractTx({
     contractPromise: multisigContractPromise,
     abiMessage: multisigContractPromise.abi.findMessage("approveTx"),
-    onTxHash: (txHash) => {
-      console.log("onApproveTxHash", txHash);
+    onTxHash: (txHash: string) => {
+      if (txHash === "Error") {
+        document.dispatchEvent(new CustomEvent(MultisigContractEvents.Error));
+      }
     },
   });
 
   const rejectTx = useContractTx({
     contractPromise: multisigContractPromise,
     abiMessage: multisigContractPromise.abi.findMessage("rejectTx"),
-    onTxHash: (txHash) => {
-      console.log("onRejectTxHash", txHash);
+    onTxHash: (txHash: string) => {
+      if (txHash === "Error") {
+        document.dispatchEvent(new CustomEvent(MultisigContractEvents.Error));
+      }
     },
   });
 
@@ -101,6 +108,7 @@ export function ConfirmationWidget({
               _isLoadingApprove
             }
             onClick={() => {
+              setSignerExecuting([accountConnected!.address]);
               rejectTx.signAndSend([parseInt(txId)]);
             }}
             isLoading={_isLoadingReject}
@@ -119,6 +127,7 @@ export function ConfirmationWidget({
             }
             isLoading={_isLoadingApprove}
             onClick={() => {
+              setSignerExecuting([accountConnected!.address]);
               approveTx.signAndSend([parseInt(txId)]);
             }}
           >

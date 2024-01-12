@@ -6,4 +6,5 @@ export enum MultisigContractEvents {
   OwnerRemoved = "OwnerRemoved",
   Approve = "Approve",
   Reject = "Reject",
+  Error = "Error",
 }

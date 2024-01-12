@@ -52,9 +52,11 @@ const buildStateMsg = (txType: string, error: string | null) => {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <ErrorOutlineIcon sx={{ top: "1rem", fontSize: "1.3rem" }} />
         <Tooltip title={error} placement="top">
-          <Typography ml={0.4}>Error</Typography>
+          <span style={{ display: "flex" }}>
+            <ErrorOutlineIcon sx={{ top: "1rem", fontSize: "1.3rem" }} />
+            <Typography ml={0.4}>Error</Typography>
+          </span>
         </Tooltip>
       </Box>
     ),
@@ -66,23 +68,29 @@ const buildStateMsg = (txType: string, error: string | null) => {
   return msg[txType as keyof typeof TX_STATUS_TYPE] ?? "Success";
 };
 
-const buildItemType = (txData: TransactionProposedItemUi) => {
-  const { type, methodName, status } = txData;
+const formatPastTime = (type: keyof TransactionDisplayInfo["type"]) => {
+  const mapPastNames = {
+    Receive: "Received",
+    "Send Native": "Sent Native",
+    "Send PSP22": "Sent PSP22",
+  };
 
-  if (!type) return undefined;
+  return mapPastNames[type] ?? type;
+};
+
+const buildItemType = (txData: TransactionProposedItemUi) => {
+  const { type, status, methodName } = txData;
+
+  let formatType = type;
+  if (!formatType) return undefined;
 
   const success =
     status === TX_STATUS_TYPE.EXECUTED_SUCCESS || type === TX_TYPE.RECEIVE;
 
-  const txType = {
-    Receive: success ? "Received" : type,
-    "Send Native": success ? "Sent" : "Send",
-    "Send PSP22": success ? "Sent" : "Send",
-    Settings: methodName || "Settings",
-    "Custom Contract": methodName || "Custom Contract",
-  };
-
-  return txType[type as keyof TransactionDisplayInfo["type"]];
+  if (success) {
+    formatType = formatPastTime(type as keyof TransactionDisplayInfo["type"]);
+  }
+  return formatType === "Settings" ? methodName : formatType;
 };
 
 export const TxDetailItem = ({

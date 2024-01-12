@@ -14,16 +14,20 @@ import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import { ContractPromise } from "@polkadot/api-contract";
 import * as React from "react";
+import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { Order } from "@/domain/repositores/ITxQueueRepository";
 import {
   TX_OWNER_STATUS_TYPE,
   TX_STATUS_TYPE,
 } from "@/hooks/transactions/const";
+import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 
 import { AccountAvatar } from "../AddressAccountSelect/AccountAvatar";
 import CopyButton from "../common/CopyButton";
+import { LoadingSkeleton } from "../common/LoadingSkeleton";
 import { ExplorerLink } from "../ExplorerLink";
 import { ConfirmationWidget } from "./ConfirmationWidget";
 
@@ -85,7 +89,8 @@ const CircleStepIcon = (
 
   if (
     status === TX_STATUS_TYPE.CANCELLED ||
-    status === TX_OWNER_STATUS_TYPE.REJECTED
+    status === TX_OWNER_STATUS_TYPE.REJECTED ||
+    status === TX_STATUS_TYPE.EXECUTED_FAILURE
   ) {
     className = "CircletepIcon-rejectedIcon";
   }
@@ -108,7 +113,8 @@ function ColorlibStepIcon(
   const icons: { [index: string]: React.ReactElement } = {
     1: <AddCircleIcon />,
     2:
-      status === TX_STATUS_TYPE.CANCELLED ? (
+      status === TX_STATUS_TYPE.CANCELLED ||
+      status === TX_STATUS_TYPE.EXECUTED_FAILURE ? (
         <CancelIcon sx={{ color: "red" }} />
       ) : (
         <CheckCircleIcon />
@@ -144,6 +150,19 @@ export default function TxStepper({
   const [showOwners, setShowOwners] = React.useState(true);
   const isProposed = status === TX_STATUS_TYPE.PROPOSED;
   const isCancelled = status === TX_STATUS_TYPE.CANCELLED;
+  const [signerExecuting, setSignerExecuting] = useState<string[]>([]);
+
+  useEventListenerCallback(
+    [
+      MultisigContractEvents.Reject,
+      MultisigContractEvents.Approve,
+      MultisigContractEvents.Error,
+    ],
+    () => {
+      setSignerExecuting([]);
+    }
+  );
+
   return (
     <Box
       sx={{ maxWidth: 400, padding: "20px", borderLeft: "3px solid #120D0E" }}
@@ -189,36 +208,59 @@ export default function TxStepper({
           </StepLabel>
         </StyledStep>
         {showOwners
-          ? owners?.map((element: Order, index: number) => (
-              <StyledStep active={true} key={index}>
-                <StepLabel
-                  StepIconComponent={() => CircleStepIcon(element.status)}
-                >
-                  <Box sx={{ display: "flex" }}>
-                    <AccountAvatar
-                      address={element.address}
-                      name={element.name}
-                      truncateLenght={4}
-                    ></AccountAvatar>
-                    <Box
-                      sx={{
-                        marginTop: "20px",
-                        marginLeft: "15px",
-                        display: "flex",
-                      }}
+          ? owners?.map((element: Order, index: number) => {
+              if (signerExecuting.includes(element.address)) {
+                return (
+                  <StyledStep active={true} key={index}>
+                    <StepLabel
+                      StepIconComponent={() =>
+                        CircleStepIcon(TX_OWNER_STATUS_TYPE.PENDING)
+                      }
                     >
-                      <CopyButton text={element.address} />
-                      <ExplorerLink
-                        blockchain={network}
-                        path="account"
-                        sx={{ color: "" }}
-                        txHash={element.address}
-                      />
+                      <Box
+                        sx={{
+                          marginLeft: "15px",
+                          display: "flex",
+                        }}
+                      >
+                        <LoadingSkeleton count={2} key={element.address} />
+                      </Box>
+                    </StepLabel>
+                  </StyledStep>
+                );
+              }
+
+              return (
+                <StyledStep active={true} key={index}>
+                  <StepLabel
+                    StepIconComponent={() => CircleStepIcon(element.status)}
+                  >
+                    <Box sx={{ display: "flex" }}>
+                      <AccountAvatar
+                        address={element.address}
+                        name={element.name}
+                        truncateLenght={4}
+                      ></AccountAvatar>
+                      <Box
+                        sx={{
+                          marginTop: "20px",
+                          marginLeft: "15px",
+                          display: "flex",
+                        }}
+                      >
+                        <CopyButton text={element.address} />
+                        <ExplorerLink
+                          blockchain={network}
+                          path="account"
+                          sx={{ color: "" }}
+                          txHash={element.address}
+                        />
+                      </Box>
                     </Box>
-                  </Box>
-                </StepLabel>
-              </StyledStep>
-            ))
+                  </StepLabel>
+                </StyledStep>
+              );
+            })
           : null}
         <StyledStep>
           <StepLabel
@@ -263,6 +305,7 @@ export default function TxStepper({
                   {multisigContractPromise ? (
                     <ConfirmationWidget
                       multisigContractPromise={multisigContractPromise}
+                      setSignerExecuting={setSignerExecuting}
                       txId={txId}
                       expanded={expanded}
                     />
