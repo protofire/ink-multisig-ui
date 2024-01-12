@@ -66,11 +66,11 @@ const buildStateMsg = (txType: string, error: string | null) => {
   return msg[txType as keyof typeof TX_STATUS_TYPE] ?? "Success";
 };
 
-const mapPastNames = {
-  Receive: "Received",
-  "Send Native": "Sent Native",
-  "Send PSP22": "Sent PSP22",
-};
+// const mapPastNames = {
+//   Receive: "Received",
+//   "Send Native": "Sent Native",
+//   "Send PSP22": "Sent PSP22",
+// };
 
 const buildItemType = (txData: TransactionProposedItemUi) => {
   const { type, methodName, status } = txData;
@@ -80,9 +80,9 @@ const buildItemType = (txData: TransactionProposedItemUi) => {
   const success =
     status === TX_STATUS_TYPE.EXECUTED_SUCCESS || type === TX_TYPE.RECEIVE;
 
-  if (success) {
-    txType = formatPastTime(type);
-  }
+  // if (success) {
+  //   txType = formatPastTime(type);
+  // }
 
   const txType = {
     Receive: success ? "Received" : type,

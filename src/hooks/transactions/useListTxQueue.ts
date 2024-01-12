@@ -36,8 +36,6 @@ export function useListTxQueue(
     [
       MultisigContractEvents.TransactionProposed,
       MultisigContractEvents.TransactionRemoved,
-      MultisigContractEvents.TransactionApproved,
-      MultisigContractEvents.TransactionRejected,
     ],
     () => createTxList()
   );

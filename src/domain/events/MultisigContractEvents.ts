@@ -4,6 +4,4 @@ export enum MultisigContractEvents {
   OwnerAdded = "OwnerAdded",
   ThresholdChanged = "ThresholdChanged",
   OwnerRemoved = "OwnerRemoved",
-  TransactionApproved = "TransactionApproved",
-  TransactionRejected = "TransactionRejected",
 }

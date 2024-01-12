@@ -146,7 +146,7 @@ export default function TxStepper({
   const [showOwners, setShowOwners] = React.useState(true);
   const isProposed = status === TX_STATUS_TYPE.PROPOSED;
   const isCancelled = status === TX_STATUS_TYPE.CANCELLED;
-  const [signerExecuting, setSignerExecuting] = useState<Array<string>>([]);
+  const [signerExecuting, setSignerExecuting] = useState<string[]>([]);
 
   return (
     <Box
@@ -273,6 +273,7 @@ export default function TxStepper({
                   {multisigContractPromise ? (
                     <ConfirmationWidget
                       multisigContractPromise={multisigContractPromise}
+                      setSignerExecuting={setSignerExecuting}
                       txId={txId}
                       expanded={expanded}
                     />
