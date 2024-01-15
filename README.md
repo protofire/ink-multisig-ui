@@ -31,7 +31,7 @@ To run the web app along with the Squid node, follow these steps:
   docker-compose --env-file .docker/squid/.env_squid up
   ```
 
-- If you prefer running the app without a local Squid node, you can do the following:
+- If you prefer running the app without a local Squid node (And avoid syncronization time), you can do the following:
 
   1. Open the .env file.
   2. Modify the NEXT_SHIBUYA_GQL_ENDPOINT variable to the provided test node, and also remove the NEXT_PUBLIC_DOCS_URL as the app will automatically redirect to the hosted docs page.
