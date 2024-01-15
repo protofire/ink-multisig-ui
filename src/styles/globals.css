@@ -6,12 +6,14 @@
 
 html,
 body {
-  max-width: 100vw;
+  width: 100vw;
   overflow-x: hidden;
   padding: 0 !important;
+  scrollbar-width: 8px;
 }
 
 body {
+  height: 100vh; 
   color: rgb(var(--foreground-rgb));
   background-color: #121212;
   background: linear-gradient(
@@ -31,4 +33,18 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+::-webkit-scrollbar {
+  width: 8px
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(36, 36, 36);
+  border-radius: 8px;
+  box-shadow: inset 0 0 1px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
 }
