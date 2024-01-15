@@ -14,6 +14,10 @@ interface Props extends PropsWithChildren {
   fallback: ReactElement | null;
 }
 
+function isARouteAllowedWithoutAccount(route: string): boolean | undefined {
+  return route === ROUTES.New || route === ROUTES.Load;
+}
+
 export function XsignerCreatedGuard({ children, fallback = null }: Props) {
   const { xSignerSelected } = useGetXsignerSelected();
   const { setXsigner } = useSetXsignerSelected();
@@ -21,6 +25,7 @@ export function XsignerCreatedGuard({ children, fallback = null }: Props) {
   const { signatoriesAccountRepository } = useLocalDbContext();
   const { addNotification } = useAppNotificationContext();
   const isMounted = useRef(false);
+  const allowNoAccount = isARouteAllowedWithoutAccount(router.route);
 
   useEffect(() => {
     if (
@@ -28,7 +33,8 @@ export function XsignerCreatedGuard({ children, fallback = null }: Props) {
       !accountConnected ||
       isMounted.current ||
       xSignerSelected ||
-      xSignerSelected === undefined
+      xSignerSelected === undefined ||
+      allowNoAccount
     )
       return;
 
@@ -61,15 +67,16 @@ export function XsignerCreatedGuard({ children, fallback = null }: Props) {
       isMounted.current = false;
     };
   }, [
-    networkId,
     accountConnected,
+    addNotification,
+    allowNoAccount,
+    networkId,
+    setXsigner,
     signatoriesAccountRepository,
     xSignerSelected,
-    setXsigner,
-    addNotification,
   ]);
 
-  if (!xSignerSelected) {
+  if (!xSignerSelected && !allowNoAccount) {
     return fallback;
   }
 
