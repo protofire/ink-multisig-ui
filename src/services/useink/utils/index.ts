@@ -6,4 +6,4 @@ export const hasAny = (
 ): boolean => statuses.includes(tx.status);
 
 export const shouldDisable = (tx: { status: TransactionStatus }): boolean =>
-  hasAny(tx, "DryRun", "PendingSignature", "Broadcast");
+  hasAny(tx, "DryRun", "PendingSignature", "Broadcast", "InBlock");
