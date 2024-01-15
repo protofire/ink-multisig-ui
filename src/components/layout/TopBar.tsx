@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ConnectButton } from "@/components/ModalWalletProvider/ConnectButton";
+import { DOCS_URL } from "@/config/app";
 import { ROUTES } from "@/config/routes";
 
 export function TopBar({
@@ -24,7 +25,7 @@ export function TopBar({
               height={50}
             />
           </Link>
-          <Link href="https://docs.xsigners.io/" target="_blank" rel="noopener">
+          <Link href={DOCS_URL} target="_blank" rel="noopener">
             <Typography
               variant="caption"
               color="primary"
