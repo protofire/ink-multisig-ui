@@ -34,7 +34,7 @@ To run the web app along with the Squid node, follow these steps:
 - If you prefer running the app without a local Squid node, you can do the following:
 
   1. Open the .env file.
-  2. Modify the NEXT_SHIBUYA_GQL_ENDPOINT variable to the provided test node.
+  2. Modify the NEXT_SHIBUYA_GQL_ENDPOINT variable to the provided test node, and also remove the NEXT_PUBLIC_DOCS_URL as the app will automatically redirect to the hosted docs page.
 
   ```
   NEXT_SHIBUYA_GQL_ENDPOINT="http://18.118.77.170:4350/graphql"
