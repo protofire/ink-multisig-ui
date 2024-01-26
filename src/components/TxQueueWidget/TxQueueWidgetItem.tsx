@@ -1,7 +1,10 @@
 import Image from "next/image";
 import * as React from "react";
 
-import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
+import {
+  isXsignerOrCustomContract,
+  TransactionProposedItemUi,
+} from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE } from "@/hooks/transactions/const";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
@@ -44,7 +47,11 @@ export const TxQueueWidgetItem = ({ data, owners }: Props) => {
             height={30}
           />
           <StyledStack>
-            <span>{type === "Settings" ? methodName : type}</span>
+            <span>
+              {isXsignerOrCustomContract(type) && methodName
+                ? methodName
+                : type}
+            </span>
             <span>{date}</span>
             <p>
               {data.txMsg} {truncateAddress(to, 12)}
