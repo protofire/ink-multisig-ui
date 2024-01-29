@@ -18,6 +18,7 @@ import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import {
+  isXsignerOrCustomContract,
   TransactionDisplayInfo,
   TransactionProposedItemUi,
 } from "@/domain/TransactionProposedItemUi";
@@ -90,7 +91,9 @@ const buildItemType = (txData: TransactionProposedItemUi) => {
   if (success) {
     formatType = formatPastTime(type as keyof TransactionDisplayInfo["type"]);
   }
-  return formatType === "Settings" ? methodName : formatType;
+  return isXsignerOrCustomContract(formatType) && methodName
+    ? methodName
+    : formatType;
 };
 
 export const TxDetailItem = ({
@@ -179,7 +182,7 @@ export const TxDetailItem = ({
               priority
               width={30}
               height={30}
-              alt="test"
+              alt="image of type of Transaction"
             />
           </StyledGrid>
           <StyledGrid
