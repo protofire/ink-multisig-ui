@@ -115,15 +115,40 @@ const networkIdToPrefix: Record<string, number> = {
   "rococo-contracts-testnet": 42,
 };
 
-export const areAddressesEqual = (address1: string, address2: string) => {
-  const rawAddress1 = ss58.decode(address1).bytes;
-  const rawAddress2 = ss58.decode(address2).bytes;
+export const getHexAddress = (address: string) => ss58.decode(address).bytes;
+
+/**
+ * Checks if two Polkadot/Kusama addresses are equal.
+ * This is done by decoding the addresses to their raw byte representation
+ * and comparing these byte arrays.
+ *
+ * @param {string} address1 - The first address to compare.
+ * @param {string} address2 - The second address to compare.
+ * @returns {boolean} - Returns true if the addresses are equal, otherwise false.
+ */
+export const areAddressesEqual = (
+  address1: string,
+  address2: string
+): boolean => {
+  const rawAddress1 = getHexAddress(address1);
+  const rawAddress2 = getHexAddress(address2);
 
   return rawAddress1 === rawAddress2;
 };
 
+/**
+ * Formats a Polkadot/Kusama address for a specific network.
+ * This is achieved by decoding the address to its raw byte format,
+ * then re-encoding it with the prefix corresponding to the desired network.
+ * Each network in the Polkadot ecosystem has a specific prefix which denotes the network.
+ *
+ * @param {string} address - The address to format.
+ * @param {string} networkId - The network identifier for which to format the address.
+ * @returns {string} - The formatted address for the specified network. If the networkId is unknown,
+ * it defaults to using a prefix of 42, commonly used for generic or development purposes.
+ */
 export const formatAddressForNetwork = (address: string, networkId: string) => {
-  const rawAddress = ss58.decode(address).bytes;
+  const rawAddress = isHex(address) ? address : ss58.decode(address).bytes;
 
   const prefix =
     networkIdToPrefix[networkId] !== undefined

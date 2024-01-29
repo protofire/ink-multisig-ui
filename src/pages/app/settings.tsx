@@ -300,7 +300,6 @@ export default function SettingsPage() {
           <Box mt={2} bgcolor={theme.palette.grey.A100} p={3}>
             <ManageOwners
               selectedMultisig={selectedMultisig ?? undefined}
-              owners={selectedMultisig?.owners}
               handleAddOwner={handleAddOwner}
               isDeletedLoading={isLoading}
               handleDeleteOwner={handleDeleteOwner}

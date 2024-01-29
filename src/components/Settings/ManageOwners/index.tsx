@@ -1,3 +1,4 @@
+import BookIcon from "@mui/icons-material/Book";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -8,36 +9,45 @@ import {
   Divider,
   Modal,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import router from "next/router";
 import * as React from "react";
-import { ArrayOneOrMore } from "useink/dist/core";
 
 import { useAppNotificationContext } from "@/components/AppToastNotification/AppNotificationsContext";
+import { LoadingButton } from "@/components/common/LoadingButton";
+import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import NetworkBadge from "@/components/NetworkBadge";
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
 import { getChain } from "@/config/chain";
-import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { ROUTES } from "@/config/routes";
+import {
+  CrossOwnerWithAddressBook,
+  Owner,
+  SignatoriesAccount,
+} from "@/domain/SignatoriesAccount";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 
+interface Props {
+  selectedMultisig?: SignatoriesAccount<CrossOwnerWithAddressBook>;
+  handleAddOwner: () => void;
+  handleDeleteOwner: (owner: Owner) => void;
+  isDeletedLoading?: boolean;
+}
+
 export default function ManageOwners({
-  owners,
   selectedMultisig,
   handleAddOwner,
   handleDeleteOwner,
   isDeletedLoading = false,
-}: {
-  owners?: ArrayOneOrMore<Owner>;
-  selectedMultisig?: SignatoriesAccount;
-  handleAddOwner: () => void;
-  handleDeleteOwner: (owner: Owner) => void;
-  isDeletedLoading?: boolean;
-}) {
+}: Props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState({ edit: false, delete: false });
+  const { owners } = selectedMultisig || {};
   const [ownersList, setOwnersList] = React.useState<
-    ArrayOneOrMore<Owner> | undefined
+    SignatoriesAccount<CrossOwnerWithAddressBook>["owners"] | undefined
   >(owners);
   const [currentOwner, setCurrentOwner] = React.useState<Owner>({} as Owner);
   const { setXsigner } = useSetXsignerSelected();
@@ -77,10 +87,12 @@ export default function ManageOwners({
 
     await setXsigner({
       ...selectedMultisig,
-      owners: newOwners as ArrayOneOrMore<Owner>,
+      owners: newOwners as SignatoriesAccount["owners"],
     });
 
-    setOwnersList(newOwners as ArrayOneOrMore<Owner>);
+    setOwnersList(
+      newOwners as SignatoriesAccount<CrossOwnerWithAddressBook>["owners"]
+    );
     handleClose();
     addNotification({
       message: "Owner name updated successfully",
@@ -92,7 +104,11 @@ export default function ManageOwners({
     <Box display="flex">
       <Modal
         open={open.edit}
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
         <Box
           display="flex"
@@ -180,7 +196,11 @@ export default function ManageOwners({
       </Modal>
       <Modal
         open={open.delete}
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
         <Box
           display="flex"
@@ -254,6 +274,9 @@ export default function ManageOwners({
           locally and will never be shared with us or any third parties.
         </Typography>
         <Box mt={2}>
+          {ownersList === undefined && (
+            <LoadingSkeleton count={5} width={"100%"} />
+          )}
           {ownersList?.map((owner) => (
             <Box
               display="flex"
@@ -271,10 +294,19 @@ export default function ManageOwners({
                   truncateAmount={16}
                 />
                 <Box display="flex" gap={0.25}>
-                  <CreateOutlinedIcon
-                    sx={{ cursor: "pointer" }}
-                    onClick={() => handleEdit(owner)}
-                  />
+                  {owner.inAddressBook ? (
+                    <Tooltip title="Edit on address book">
+                      <BookIcon
+                        sx={{ cursor: "pointer" }}
+                        onClick={() => router.replace(ROUTES.AddressBook)}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <CreateOutlinedIcon
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => handleEdit(owner)}
+                    />
+                  )}
                   {isDeletedLoading &&
                   currentOwner.address === owner.address ? (
                     <CircularProgress color="secondary" size={20} />
@@ -304,7 +336,7 @@ export default function ManageOwners({
             </Box>
           ))}
         </Box>
-        <Button
+        <LoadingButton
           variant="text"
           sx={{
             justifyContent: "flex-start",
@@ -312,10 +344,12 @@ export default function ManageOwners({
             fontSize: 14,
             marginTop: "1rem",
           }}
-          onClick={handleAddOwner}
+          {...(owners === undefined
+            ? { isLoading: true }
+            : { onClick: handleAddOwner })}
         >
           + Add new owner
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );

@@ -5,6 +5,7 @@ import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { AddressBook } from "@/domain/AddressBooks";
 import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
 import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
+import { formatAddressForNetwork } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
 export function useListAddressBook(networkId: string | undefined) {
@@ -23,6 +24,7 @@ export function useListAddressBook(networkId: string | undefined) {
       if (!result) return [];
       const newData = result.map((element) => ({
         ...element,
+        address: formatAddressForNetwork(element.address, network),
         isEditable: false,
       }));
       setData(newData);

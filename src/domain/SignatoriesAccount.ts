@@ -7,10 +7,18 @@ export type Owner = {
   name: string;
 };
 
-export interface SignatoriesAccount {
+export type CrossOwnerWithAddressBook = {
+  address: string;
+  name: string;
+  inAddressBook: boolean;
+};
+
+export interface SignatoriesAccount<
+  T extends Owner | CrossOwnerWithAddressBook = Owner
+> {
   address: string;
   name: string;
   networkId: Chain["id"];
-  owners: ArrayOneOrMore<Owner>;
+  owners: ArrayOneOrMore<T>;
   threshold: number;
 }

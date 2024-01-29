@@ -36,6 +36,7 @@ export class AddressBookRepository implements IAddressBookRepository {
   getItemByAddress(accountAddress: string): AddressBook | undefined {
     const data = getData(this.storageKey);
     if (!data) return undefined;
+
     const filterElement = Object.values(data).find(
       (element) => element.address === accountAddress
     );
