@@ -2,14 +2,22 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { AddressBook } from "@/domain/AddressBooks";
+import { AddressBookItemUi } from "@/domain/AddressBooks";
 import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
 import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 import { formatAddressForNetwork } from "@/utils/blockchain";
 import { customReportError } from "@/utils/error";
 
-export function useListAddressBook(networkId: string | undefined) {
-  const [data, setData] = useState<AddressBook[]>([]);
+export interface UseListAddressBookReturn {
+  data: AddressBookItemUi[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function useListAddressBook(
+  networkId: string | undefined
+): UseListAddressBookReturn {
+  const [data, setData] = useState<AddressBookItemUi[]>([]);
   const { network } = usePolkadotContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +32,8 @@ export function useListAddressBook(networkId: string | undefined) {
       if (!result) return [];
       const newData = result.map((element) => ({
         ...element,
-        address: formatAddressForNetwork(element.address, network),
+        address: element.address,
+        formattedAddress: formatAddressForNetwork(element.address, network),
         isEditable: false,
       }));
       setData(newData);

@@ -115,7 +115,8 @@ const networkIdToPrefix: Record<string, number> = {
   "rococo-contracts-testnet": 42,
 };
 
-export const getHexAddress = (address: string) => ss58.decode(address).bytes;
+export const getHexAddress = (address: string) =>
+  isHex(address) ? address : ss58.decode(address).bytes;
 
 /**
  * Checks if two Polkadot/Kusama addresses are equal.
@@ -148,7 +149,7 @@ export const areAddressesEqual = (
  * it defaults to using a prefix of 42, commonly used for generic or development purposes.
  */
 export const formatAddressForNetwork = (address: string, networkId: string) => {
-  const rawAddress = isHex(address) ? address : ss58.decode(address).bytes;
+  const rawAddress = getHexAddress(address);
 
   const prefix =
     networkIdToPrefix[networkId] !== undefined

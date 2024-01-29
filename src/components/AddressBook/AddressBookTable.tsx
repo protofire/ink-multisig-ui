@@ -11,42 +11,40 @@ import {
 import React, { useEffect, useState } from "react";
 
 import { getChain } from "@/config/chain";
-import { AddressBookInput } from "@/domain/AddressBooks";
+import { AddressBookInput, AddressBookItemUi } from "@/domain/AddressBooks";
 import { useDeleteAddressBook } from "@/hooks/addressBook/useDeleteAddressBook";
-import { useListAddressBook } from "@/hooks/addressBook/useListAddressBook";
 import { useUpdateAddressBook } from "@/hooks/addressBook/useUpdateAddressBook";
 import { ChainId } from "@/services/useink/types";
+import { getExplorerUrl } from "@/utils/blockchain";
 
 import CopyButton from "../common/CopyButton";
 import OpenNewTabButton from "../common/OpenNewTabButton";
 import SvgIconButton from "../common/SvgIconButton";
 import NetworkBadge from "../NetworkBadge";
 
-// TODO:
-// Remove this mock variable, replace with true value
-const mockURL = "https://polkadot.subscan.io/";
-
 type Props = {
   network: ChainId;
+  addressBookItems: AddressBookItemUi[];
 };
 
-const AddressBookTable = ({ network }: Props) => {
-  const { data } = useListAddressBook(network);
+const AddressBookTable = ({ network, addressBookItems }: Props) => {
   const { updateAddressBook, handleChange } = useUpdateAddressBook();
   const { deleteAddressBook } = useDeleteAddressBook();
   const [tempData, setTempData] = useState<AddressBookInput[]>([]);
 
   useEffect(() => {
-    setTempData(data as AddressBookInput[]);
-  }, [data]);
+    setTempData(
+      addressBookItems.map((item) => ({ ...item, isEditing: false }))
+    );
+  }, [addressBookItems]);
 
   const editAddressBook = (address: string) => {
-    const tempData = data as AddressBookInput[];
+    const tempData = addressBookItems as AddressBookInput[];
     const obj = tempData?.map((element) => {
       if (element.address === address) {
         return {
           ...element,
-          isEditable: !element.isEditable,
+          isEditing: !element.isEditing,
         };
       }
       return element;
@@ -70,7 +68,7 @@ const AddressBookTable = ({ network }: Props) => {
             const chain = getChain(addressBook.networkId);
             return (
               <TableRow key={index}>
-                {addressBook.isEditable ? (
+                {addressBook.isEditing ? (
                   <>
                     <TableCell>
                       <TextField
@@ -89,7 +87,7 @@ const AddressBookTable = ({ network }: Props) => {
                         name="address"
                         label="Required"
                         onChange={(e) => handleChange(e)}
-                        defaultValue={addressBook.address}
+                        defaultValue={addressBook.formattedAddress}
                         sx={{ minWidth: "33rem" }}
                       />
                     </TableCell>
@@ -103,10 +101,17 @@ const AddressBookTable = ({ network }: Props) => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body1" component="span">
-                        {addressBook.address}
+                        {addressBook.formattedAddress}
                       </Typography>{" "}
-                      <CopyButton text={addressBook?.address as string} />
-                      <OpenNewTabButton text={mockURL} />
+                      <CopyButton
+                        text={addressBook?.formattedAddress as string}
+                      />
+                      <OpenNewTabButton
+                        text={getExplorerUrl(
+                          network,
+                          addressBook.formattedAddress
+                        )}
+                      />
                     </TableCell>
                   </>
                 )}
@@ -120,7 +125,7 @@ const AddressBookTable = ({ network }: Props) => {
                   ></NetworkBadge>
                 </TableCell>
                 <TableCell>
-                  {addressBook.isEditable ? (
+                  {addressBook.isEditing ? (
                     <SvgIconButton
                       initialToolTipText="Save"
                       icon={TaskAlt}

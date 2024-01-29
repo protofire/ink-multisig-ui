@@ -5,7 +5,8 @@ import * as React from "react";
 import CopyButton from "@/components/common/CopyButton";
 import OpenNewTabButton from "@/components/common/OpenNewTabButton";
 import { ChainExtended } from "@/config/chain";
-import { AddressBook } from "@/domain/AddressBooks";
+import { AddressBookItemUi } from "@/domain/AddressBooks";
+import { getExplorerUrl } from "@/utils/blockchain";
 import { shortNameLonger, truncateAddress } from "@/utils/formatString";
 
 import {
@@ -17,27 +18,26 @@ import {
 } from "./styled";
 
 interface Props {
-  addressBook: AddressBook | null;
+  addressBook: AddressBookItemUi;
   network: ChainExtended;
 }
 
 export const AddressBookItem = ({ addressBook, network }: Props) => {
-  // TODO:
-  // Remove this mock variable, replace with true value
-  const mockURL = "https://polkadot.subscan.io/";
   return (
     <ListItemstyled>
       <StyledBox>
         <Avatar>
-          <Identicon value={addressBook?.address} size={32} theme="beachball" />
+          <Identicon value={addressBook.address} size={32} theme="beachball" />
         </Avatar>
         <StyledStack>
-          <span>{shortNameLonger(addressBook?.name as string)}</span>
-          <p>{truncateAddress(addressBook?.address, 12)}</p>
+          <span>{shortNameLonger(addressBook.name)}</span>
+          <p>{truncateAddress(addressBook.formattedAddress, 12)}</p>
         </StyledStack>
         <IconBoxStyled>
-          <CopyButton text={addressBook?.address as string}></CopyButton>
-          <OpenNewTabButton text={mockURL} />
+          <CopyButton text={addressBook.formattedAddress}></CopyButton>
+          <OpenNewTabButton
+            text={getExplorerUrl(network.id, addressBook?.formattedAddress)}
+          />
         </IconBoxStyled>
         <NetworkBoxStyled>
           <Avatar src={network?.logo.src} alt={network?.logo.alt} />

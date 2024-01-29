@@ -3,14 +3,20 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { XsignerAccountEvents } from "@/domain/events/XsignerAccountEvents";
-import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import {
+  CrossOwnerWithAddressBook,
+  SignatoriesAccount,
+} from "@/domain/SignatoriesAccount";
 import { createArrayOneOrMore } from "@/domain/utilityTsTypes";
 import { getHexAddress } from "@/utils/blockchain";
 
 import { useEventListenerCallback } from "../useEventListenerCallback";
 
 interface UseGetXsignerSelectedReturn {
-  xSignerSelected: SignatoriesAccount | null | undefined;
+  xSignerSelected:
+    | SignatoriesAccount<CrossOwnerWithAddressBook>
+    | null
+    | undefined;
 }
 
 export function useGetXsignerSelected(): UseGetXsignerSelectedReturn {
@@ -21,7 +27,7 @@ export function useGetXsignerSelected(): UseGetXsignerSelectedReturn {
   } = useLocalDbContext();
   const { network } = usePolkadotContext();
   const [xSignerSelected, setXsignerSelected] = useState<
-    SignatoriesAccount | null | undefined
+    SignatoriesAccount<CrossOwnerWithAddressBook> | null | undefined
   >();
 
   const getAccount = useCallback(async () => {

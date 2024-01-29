@@ -6,6 +6,10 @@ export interface AddressBook {
   networkId: Chain["id"];
 }
 
-export type AddressBookInput = AddressBook & {
-  isEditable: boolean;
+export interface AddressBookItemUi extends AddressBook {
+  formattedAddress: string;
+}
+
+export type AddressBookInput = AddressBookItemUi & {
+  isEditing: boolean;
 };
