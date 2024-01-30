@@ -100,12 +100,20 @@ export const NameInAddressBookProvider: React.FC<PropsWithChildren> = ({
         _name = findInAddressBook(address);
       } else if (isSigner) {
         _name = isSigner.name;
+      } else if (xSignerSelected?.address === address) {
+        _name = xSignerSelected.name;
       }
 
       setIsLoading(false);
       return _name;
     },
-    [accountConnected?.address, findInAddressBook, xSignerSelected?.owners]
+    [
+      accountConnected?.address,
+      findInAddressBook,
+      xSignerSelected?.address,
+      xSignerSelected?.name,
+      xSignerSelected?.owners,
+    ]
   );
 
   return (
