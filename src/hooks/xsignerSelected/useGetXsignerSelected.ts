@@ -7,7 +7,11 @@ import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 
 import { useEventListenerCallback } from "../useEventListenerCallback";
 
-export function useGetXsignerSelected() {
+interface UseGetXsignerSelectedReturn {
+  xSignerSelected: SignatoriesAccount | null | undefined;
+}
+
+export function useGetXsignerSelected(): UseGetXsignerSelectedReturn {
   const { xsignerSelectedRepository, signatoriesAccountRepository } =
     useLocalDbContext();
   const { network } = usePolkadotContext();

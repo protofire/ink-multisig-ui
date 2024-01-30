@@ -24,6 +24,7 @@ export function TxTable({
   handleChange,
 }: Props) {
   const { network } = usePolkadotContext();
+
   return (
     <Box sx={{ width: "100%" }}>
       <TxTabs

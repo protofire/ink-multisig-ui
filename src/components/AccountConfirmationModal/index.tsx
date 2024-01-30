@@ -9,7 +9,7 @@ interface Props extends Omit<UseModalBehaviour, "openModal"> {
 }
 
 const message =
-  "You are about to change to a account that you aren' t the owner. You\
+  "You are about to switch to an account that is not an owner of the current multisig. You\
   will be redirected to the Welcome page. Do you want to continue?";
 
 export default function AccountConfirmationModal({
@@ -19,7 +19,7 @@ export default function AccountConfirmationModal({
 }: Props) {
   return (
     <BaseConfirmationDialog
-      title="Change XSigners Acccount Confirmation"
+      title="Change XSigners Account Confirmation"
       message={message}
       open={isOpen}
       onClose={closeModal}

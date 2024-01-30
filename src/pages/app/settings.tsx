@@ -299,8 +299,9 @@ export default function SettingsPage() {
           </Box>
           <Box mt={2} bgcolor={theme.palette.grey.A100} p={3}>
             <ManageOwners
-              selectedMultisig={selectedMultisig ?? undefined}
-              owners={selectedMultisig?.owners}
+              selectedMultisig={
+                (selectedMultisig as SignatoriesAccount) ?? undefined
+              }
               handleAddOwner={handleAddOwner}
               isDeletedLoading={isLoading}
               handleDeleteOwner={handleDeleteOwner}

@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, BoxProps, Typography } from "@mui/material";
+import React from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { AccountAvatar } from "@/components/AddressAccountSelect/AccountAvatar";
@@ -8,6 +8,7 @@ import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE } from "@/hooks/transactions/const";
 
+import { NameInAddressBook } from "../NameInAddressBook";
 import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
@@ -22,18 +23,30 @@ interface TxInfoType {
   address: string | undefined;
   name: string;
   network: ChainId;
+  containerProps?: BoxProps;
+  boxActionsProps?: BoxProps;
 }
 
-export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
+export const AccountExplorer = ({
+  address,
+  name,
+  network,
+  containerProps = {
+    display: "flex",
+    position: "relative",
+  },
+  boxActionsProps = {
+    marginTop: "4px",
+    marginLeft: "15px",
+    display: "flex",
+  },
+}: TxInfoType) => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        position: "relative",
-      }}
-    >
-      <AccountAvatar address={address!} name={name} truncateLenght={16} />
-      <Box sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}>
+    <Box sx={containerProps}>
+      <AccountAvatar address={address!} name={name} truncateLenght={16}>
+        <NameInAddressBook recipient={address} />
+      </AccountAvatar>
+      <Box sx={boxActionsProps}>
         <CopyButton text={address!} />
         <ExplorerLink
           blockchain={network}
@@ -47,7 +60,6 @@ export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
 };
 
 export const TxDetails = ({ data, network, successTx }: Props) => {
-  const [showAdvancedDetails, setShowAdvancedDetails] = useState(true);
   const TxComponentType = ({ data }: Props): JSX.Element => {
     if (data.type === TX_TYPE.RECEIVE) {
       return <ReceivedDetail data={data} network={network} />;
@@ -107,25 +119,7 @@ export const TxDetails = ({ data, network, successTx }: Props) => {
         )}
         <Box mt={4}>
           <TxComponentType data={data} network={network} />
-          {data.selector ? (
-            <>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  fontWeight: "bold",
-                  marginTop: "22px",
-                  marginBottom: "22px",
-                  cursor: "pointer",
-                  color: "#ffe873",
-                  textDecoration: "underline",
-                }}
-                onClick={() => setShowAdvancedDetails(!showAdvancedDetails)}
-              >
-                {"Advanced Details"}
-              </Typography>
-              {!showAdvancedDetails ? <AdvancedDetail data={data} /> : null}
-            </>
-          ) : null}
+          {data.selector ? <AdvancedDetail data={data} /> : null}
         </Box>
       </Box>
     </Box>

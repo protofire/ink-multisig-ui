@@ -18,12 +18,14 @@ import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import {
+  isXsignerOrCustomContract,
   TransactionDisplayInfo,
   TransactionProposedItemUi,
 } from "@/domain/TransactionProposedItemUi";
 import { TX_STATUS_TYPE, TX_TYPE } from "@/hooks/transactions/const";
-import { formatDate, truncateAddress } from "@/utils/formatString";
+import { formatDate } from "@/utils/formatString";
 
+import { NameInAddressBook } from "./NameInAddressBook";
 import { TxDetails } from "./TxDetail";
 import TxStepper from "./TxStepper";
 
@@ -33,7 +35,7 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
   display: "flex",
 }));
 
-type Props = {
+export type Props = {
   txData: TransactionProposedItemUi;
   threshold: number;
   index?: number;
@@ -90,7 +92,9 @@ const buildItemType = (txData: TransactionProposedItemUi) => {
   if (success) {
     formatType = formatPastTime(type as keyof TransactionDisplayInfo["type"]);
   }
-  return formatType === "Settings" ? methodName : formatType;
+  return isXsignerOrCustomContract(formatType) && methodName
+    ? methodName
+    : formatType;
 };
 
 export const TxDetailItem = ({
@@ -105,6 +109,7 @@ export const TxDetailItem = ({
     {}
   );
   const expanded = !!expandedIds[txData.txId];
+  const recipient = txData.from ?? txData.to;
 
   const handleChange =
     (id: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -179,7 +184,7 @@ export const TxDetailItem = ({
               priority
               width={30}
               height={30}
-              alt="test"
+              alt="image of type of Transaction"
             />
           </StyledGrid>
           <StyledGrid
@@ -197,7 +202,7 @@ export const TxDetailItem = ({
             >
               <span>{txType}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                {txData.txMsg} : {truncateAddress(txData.from ?? txData.to, 9)}
+                {txData.txMsg} : <NameInAddressBook recipient={recipient} />
               </span>
             </Box>
           </StyledGrid>
