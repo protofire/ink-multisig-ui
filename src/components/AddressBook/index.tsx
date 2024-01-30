@@ -46,7 +46,7 @@ export const AddressBookContainer = ({ network }: Props) => {
             <NoItems>There are no registered address in this network</NoItems>
           </StyledList>
         ) : (
-          <AddressBookTable network={network} />
+          <AddressBookTable network={network} addressBookItems={data} />
         )}
       </AddressBookWidgetStyled>
       <ModalAddressBook

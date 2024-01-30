@@ -23,8 +23,9 @@ import {
   TransactionProposedItemUi,
 } from "@/domain/TransactionProposedItemUi";
 import { TX_STATUS_TYPE, TX_TYPE } from "@/hooks/transactions/const";
-import { formatDate, truncateAddress } from "@/utils/formatString";
+import { formatDate } from "@/utils/formatString";
 
+import { NameInAddressBook } from "./NameInAddressBook";
 import { TxDetails } from "./TxDetail";
 import TxStepper from "./TxStepper";
 
@@ -34,7 +35,7 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
   display: "flex",
 }));
 
-type Props = {
+export type Props = {
   txData: TransactionProposedItemUi;
   threshold: number;
   index?: number;
@@ -108,6 +109,7 @@ export const TxDetailItem = ({
     {}
   );
   const expanded = !!expandedIds[txData.txId];
+  const recipient = txData.from ?? txData.to;
 
   const handleChange =
     (id: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -200,7 +202,7 @@ export const TxDetailItem = ({
             >
               <span>{txType}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                {txData.txMsg} : {truncateAddress(txData.from ?? txData.to, 9)}
+                {txData.txMsg} : <NameInAddressBook recipient={recipient} />
               </span>
             </Box>
           </StyledGrid>

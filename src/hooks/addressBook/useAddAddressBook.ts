@@ -1,17 +1,24 @@
 import { ChangeEvent, useState } from "react";
 
+import { DEFAULT_CHAIN } from "@/config/chain";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { AddressBook } from "@/domain/AddressBooks";
 import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
 import { ChainId } from "@/services/useink/types";
-import { isValidAddress } from "@/utils/blockchain";
+import {
+  areAddressesEqual,
+  getHexAddress,
+  isValidAddress,
+} from "@/utils/blockchain";
 
 const VALIDATIONS = {
   isInputEmpty: (input: string) => input.trim() === "",
   isValidAddress: isValidAddress,
   existAddress: (accountAddress: string, data: AddressBook[]): boolean =>
-    data.some((element) => element.address === accountAddress),
+    data.some((addressBookItem) =>
+      areAddressesEqual(addressBookItem.address, accountAddress)
+    ),
 };
 
 const ERROR_MESSAGES = {
@@ -19,8 +26,6 @@ const ERROR_MESSAGES = {
   ALREADY_EXITS: "This address is already registered",
   INVALID_ADDRESS: "This is not a valid address",
 };
-
-const DEFAULT_CHAIN = "rococo-contracts-testnet";
 
 const initialErrorState = {
   name: {
@@ -109,19 +114,19 @@ export const useAddAddressBook = () => {
       return;
     }
 
-    addAddress(formInput, network);
+    _addAddress(formInput, network);
     setError(initialErrorState);
   };
 
-  const addAddress = (
+  const _addAddress = (
     addressBook: AddressBook | undefined,
     network: ChainId | undefined
   ) => {
     if (!addressBook) return;
     const newRegister: AddressBook = {
       networkId: network as ChainId,
-      name: addressBook?.name,
-      address: addressBook?.address,
+      name: addressBook.name,
+      address: getHexAddress(addressBook.address),
     };
 
     addressBookRepository.addAddress(newRegister);
@@ -136,7 +141,6 @@ export const useAddAddressBook = () => {
   };
 
   return {
-    addAddress,
     handleChangeInput,
     handleClick,
     resetState,

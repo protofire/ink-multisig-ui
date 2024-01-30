@@ -1,4 +1,11 @@
-import { IconButton, SvgIcon, SvgIconTypeMap, Tooltip } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton,
+  IconButtonProps,
+  SvgIcon,
+  SvgIconTypeMap,
+  Tooltip,
+} from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { ReactElement, useCallback, useState } from "react";
 
@@ -6,15 +13,20 @@ type SvgIconType = OverridableComponent<SvgIconTypeMap<object, "svg">> & {
   muiName: string;
 };
 
+interface Props extends IconButtonProps {
+  initialToolTipText?: string;
+  icon: SvgIconType;
+  onClick: (event: unknown) => void;
+  isLoading?: boolean;
+}
+
 const SvgIconButton = ({
   initialToolTipText = "See in explorer",
   icon,
   onClick,
-}: {
-  initialToolTipText?: string;
-  icon: SvgIconType;
-  onClick: (event: unknown) => void;
-}): ReactElement => {
+  isLoading,
+  ...props
+}: Props): ReactElement => {
   const [tooltipText, setTooltipText] = useState(initialToolTipText);
 
   const handleMouseLeave = useCallback(() => {
@@ -22,6 +34,10 @@ const SvgIconButton = ({
       setTooltipText(initialToolTipText);
     }, 500);
   }, [initialToolTipText]);
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Tooltip
@@ -33,6 +49,7 @@ const SvgIconButton = ({
         aria-label={initialToolTipText}
         onClick={onClick}
         size="small"
+        {...props}
       >
         <SvgIcon component={icon} inheritViewBox fontSize="small" />
       </IconButton>

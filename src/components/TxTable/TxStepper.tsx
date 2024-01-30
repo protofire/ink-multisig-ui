@@ -17,6 +17,7 @@ import * as React from "react";
 import { useState } from "react";
 import { ChainId } from "useink/dist/chains";
 
+import { useNameAddressBookContext } from "@/context/NameInAddressBookContext";
 import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { Order } from "@/domain/repositores/ITxQueueRepository";
 import {
@@ -151,6 +152,7 @@ export default function TxStepper({
   const isProposed = status === TX_STATUS_TYPE.PROPOSED;
   const isCancelled = status === TX_STATUS_TYPE.CANCELLED;
   const [signerExecuting, setSignerExecuting] = useState<string[]>([]);
+  const { nameConnectedOrAddressBookOrSigners } = useNameAddressBookContext();
 
   useEventListenerCallback(
     [
@@ -238,7 +240,11 @@ export default function TxStepper({
                     <Box sx={{ display: "flex" }}>
                       <AccountAvatar
                         address={element.address}
-                        name={element.name}
+                        name={
+                          nameConnectedOrAddressBookOrSigners(
+                            element.address
+                          ) || element.address
+                        }
                         truncateLenght={4}
                       ></AccountAvatar>
                       <Box

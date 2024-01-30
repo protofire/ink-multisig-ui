@@ -25,14 +25,16 @@ export const DetailsAccordionSummary = styled(
 )(() => ({
   backgroundColor: "inherit",
   boxShadow: "none",
+  flexDirection: "row-reverse",
   "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
+    transform: "rotate(270deg)",
   },
   "&:before": {
     display: "none",
   },
   "&.Mui-expanded": {
     margin: 0,
+    minHeight: "50px",
   },
   "& .MuiAccordionSummary-content": {
     margin: 0,
