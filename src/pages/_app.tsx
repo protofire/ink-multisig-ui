@@ -17,6 +17,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { MultisigEventListener } from "@/components/MultisigEventListener";
 import { CHAINS } from "@/config/chain";
 import { CallerXsignersAccountProvider } from "@/context/CallerXsigerAccounts";
+import { NameInAddressBookProvider } from "@/context/NameInAddressBookContext";
 import {
   SettingsThemeConsumer,
   SettingsThemeProvider,
@@ -77,11 +78,13 @@ export default function App(props: ExtendedProps) {
                       <AppNotificationsContextProvider>
                         <MultisigEventListener />
                         <CallerXsignersAccountProvider>
-                          <Guard
-                            connectedWalletRequired={connectedWalletRequired}
-                          >
-                            {getLayout(<Component {...pageProps} />)}
-                          </Guard>
+                          <NameInAddressBookProvider>
+                            <Guard
+                              connectedWalletRequired={connectedWalletRequired}
+                            >
+                              {getLayout(<Component {...pageProps} />)}
+                            </Guard>
+                          </NameInAddressBookProvider>
                         </CallerXsignersAccountProvider>
                         <AppToastNotifications />
                       </AppNotificationsContextProvider>

@@ -14,11 +14,7 @@ import { StepProps } from "@/components/StepperSignersAccount/constants";
 import { useManagerActiveStep } from "@/components/StepperSignersAccount/useManagerActiveStep";
 import { useContractTx } from "@/components/TxBuilderStepper/ProposeTxStep/useContractTx";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
-import {
-  CrossOwnerWithAddressBook,
-  Owner,
-  SignatoriesAccount,
-} from "@/domain/SignatoriesAccount";
+import { Owner, SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { useDryRunExecution } from "@/hooks/useDryRunExecution";
 import { useFormSignersAccountState } from "@/hooks/xsignersAccount/useFormSignersAccountState";
@@ -304,8 +300,7 @@ export default function SettingsPage() {
           <Box mt={2} bgcolor={theme.palette.grey.A100} p={3}>
             <ManageOwners
               selectedMultisig={
-                (selectedMultisig as SignatoriesAccount<CrossOwnerWithAddressBook>) ??
-                undefined
+                (selectedMultisig as SignatoriesAccount) ?? undefined
               }
               handleAddOwner={handleAddOwner}
               isDeletedLoading={isLoading}

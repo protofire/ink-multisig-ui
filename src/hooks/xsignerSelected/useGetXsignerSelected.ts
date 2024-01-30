@@ -3,31 +3,20 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { XsignerAccountEvents } from "@/domain/events/XsignerAccountEvents";
-import {
-  CrossOwnerWithAddressBook,
-  SignatoriesAccount,
-} from "@/domain/SignatoriesAccount";
-import { createArrayOneOrMore } from "@/domain/utilityTsTypes";
-import { getHexAddress } from "@/utils/blockchain";
+import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 
 import { useEventListenerCallback } from "../useEventListenerCallback";
 
 interface UseGetXsignerSelectedReturn {
-  xSignerSelected:
-    | SignatoriesAccount<CrossOwnerWithAddressBook>
-    | null
-    | undefined;
+  xSignerSelected: SignatoriesAccount | null | undefined;
 }
 
 export function useGetXsignerSelected(): UseGetXsignerSelectedReturn {
-  const {
-    xsignerSelectedRepository,
-    signatoriesAccountRepository,
-    addressBookRepository,
-  } = useLocalDbContext();
+  const { xsignerSelectedRepository, signatoriesAccountRepository } =
+    useLocalDbContext();
   const { network } = usePolkadotContext();
   const [xSignerSelected, setXsignerSelected] = useState<
-    SignatoriesAccount<CrossOwnerWithAddressBook> | null | undefined
+    SignatoriesAccount | null | undefined
   >();
 
   const getAccount = useCallback(async () => {
@@ -41,29 +30,11 @@ export function useGetXsignerSelected(): UseGetXsignerSelectedReturn {
       ));
 
     if (account) {
-      setXsignerSelected({
-        ...account,
-        owners: createArrayOneOrMore(
-          account.owners.map((owner) => {
-            const inAddressBook = addressBookRepository.getItemByAddress(
-              getHexAddress(owner.address)
-            );
-
-            if (!inAddressBook) return { ...owner, inAddressBook: false };
-
-            return { ...owner, name: inAddressBook.name, inAddressBook: true };
-          })
-        ),
-      });
+      setXsignerSelected(account);
     } else {
       setXsignerSelected(null);
     }
-  }, [
-    addressBookRepository,
-    network,
-    signatoriesAccountRepository,
-    xsignerSelectedRepository,
-  ]);
+  }, [network, signatoriesAccountRepository, xsignerSelectedRepository]);
 
   useEffect(() => {
     getAccount();

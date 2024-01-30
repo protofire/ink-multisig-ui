@@ -18,9 +18,11 @@ const getData = (storageKey: string): AddressBook[] | null => {
 export class AddressBookRepository implements IAddressBookRepository {
   private readonly storageKey = "addressBook";
 
-  getAddressList(networkId: string): AddressBook[] {
+  getAddressList(networkId?: string): AddressBook[] {
     const data = getData(this.storageKey);
     if (!data) return [];
+    if (!networkId) return data;
+
     return dataByNetwork(data, networkId);
   }
 

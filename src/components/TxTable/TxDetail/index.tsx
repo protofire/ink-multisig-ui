@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import React from "react";
 import { ChainId } from "useink/dist/chains";
 
@@ -8,6 +8,7 @@ import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 import { TX_TYPE } from "@/hooks/transactions/const";
 
+import { NameInAddressBook } from "../NameInAddressBook";
 import { AdvancedDetail } from "./AdvancedDetail";
 import { ReceivedDetail } from "./ReceivedDetail";
 import { SendDetail } from "./SendDetail";
@@ -22,18 +23,30 @@ interface TxInfoType {
   address: string | undefined;
   name: string;
   network: ChainId;
+  containerProps?: BoxProps;
+  boxActionsProps?: BoxProps;
 }
 
-export const AccountExplorer = ({ address, name, network }: TxInfoType) => {
+export const AccountExplorer = ({
+  address,
+  name,
+  network,
+  containerProps = {
+    display: "flex",
+    position: "relative",
+  },
+  boxActionsProps = {
+    marginTop: "4px",
+    marginLeft: "15px",
+    display: "flex",
+  },
+}: TxInfoType) => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        position: "relative",
-      }}
-    >
-      <AccountAvatar address={address!} name={name} truncateLenght={16} />
-      <Box sx={{ marginTop: "4px", marginLeft: "15px", display: "flex" }}>
+    <Box sx={containerProps}>
+      <AccountAvatar address={address!} name={name} truncateLenght={16}>
+        <NameInAddressBook recipient={address} />
+      </AccountAvatar>
+      <Box sx={boxActionsProps}>
         <CopyButton text={address!} />
         <ExplorerLink
           blockchain={network}

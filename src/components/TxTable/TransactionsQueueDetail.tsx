@@ -7,9 +7,9 @@ import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { useListTxQueue } from "@/hooks/transactions/useListTxQueue";
 
-import { Props as TxDetailItemProps, TxDetailItem } from "./TxDetailItem";
+import { TxDetailItem } from "./TxDetailItem";
 
-interface Props extends Pick<TxDetailItemProps, "findInAddressBook"> {
+interface Props {
   xsignerAccount: SignatoriesAccount;
   network: ChainId;
 }
@@ -17,7 +17,6 @@ interface Props extends Pick<TxDetailItemProps, "findInAddressBook"> {
 export const TransactionQueueDetail: React.FC<Props> = ({
   xsignerAccount,
   network,
-  findInAddressBook,
 }) => {
   const { data } = useListTxQueue(xsignerAccount, network);
   const { multisigContractPromise } = useMultisigContractPromise(
@@ -42,7 +41,6 @@ export const TransactionQueueDetail: React.FC<Props> = ({
             threshold={xsignerAccount.threshold}
             network={network}
             multisigContractPromise={multisigContractPromise.contract}
-            findInAddressBook={findInAddressBook}
           />
         );
       })}
