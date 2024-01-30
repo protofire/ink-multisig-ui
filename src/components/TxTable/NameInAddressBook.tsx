@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 
+import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { useNameAddressBookContext } from "@/context/NameInAddressBookContext";
 import { truncateAddress } from "@/utils/formatString";
-
-import { LoadingSkeleton } from "../common/LoadingSkeleton";
 
 interface Props {
   recipient: string | undefined;
@@ -12,7 +11,8 @@ export function NameInAddressBook({ recipient }: Props) {
   const [nameInAddressBook, setNameInAddressBook] = useState<
     string | undefined | null
   >();
-  const { nameConnectedOrAddressBookOrSigners } = useNameAddressBookContext();
+  const { isLoading, nameConnectedOrAddressBookOrSigners } =
+    useNameAddressBookContext();
 
   useEffect(() => {
     const _name = recipient
@@ -22,8 +22,8 @@ export function NameInAddressBook({ recipient }: Props) {
     setNameInAddressBook(_name);
   }, [recipient, nameConnectedOrAddressBookOrSigners]);
 
-  if (nameInAddressBook === undefined) {
-    return <LoadingSkeleton />;
+  if (isLoading || nameInAddressBook === undefined) {
+    return <LoadingSkeleton count={1} />;
   }
 
   return nameInAddressBook

@@ -88,17 +88,22 @@ export const NameInAddressBookProvider: React.FC<PropsWithChildren> = ({
 
   const nameConnectedOrAddressBookOrSigners = useCallback(
     (address: string) => {
-      if (accountConnected?.address === address) return YOU_TEXT;
-
-      const inAddressBook = findInAddressBook(address);
-      if (inAddressBook) return inAddressBook;
-
+      setIsLoading(true);
+      let _name = null;
       const isSigner = xSignerSelected?.owners.find(
         (owner) => owner.address === address
       );
-      if (isSigner) return isSigner.name;
 
-      return null;
+      if (accountConnected?.address === address) {
+        _name = YOU_TEXT;
+      } else if (findInAddressBook(address)) {
+        _name = findInAddressBook(address);
+      } else if (isSigner) {
+        _name = isSigner.name;
+      }
+
+      setIsLoading(false);
+      return _name;
     },
     [accountConnected?.address, findInAddressBook, xSignerSelected?.owners]
   );
