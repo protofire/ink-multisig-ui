@@ -1,16 +1,15 @@
 import { Box } from "@mui/material";
+import router from "next/router";
 import React from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
-import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useModalBehaviour } from "@/hooks/common/useModalBehaviour";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { useListTxQueue } from "@/hooks/transactions/useListTxQueue";
-import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 
-import { ModalTxExecution } from "./ModalTxExecution/indext";
+import { ModalTxExecution } from "./ModalTxExecution";
 import { useRemovedTxIds } from "./ModalTxExecution/useRemovedTxIds";
 import { TxDetailItem } from "./TxDetailItem";
 
@@ -28,10 +27,9 @@ export const TransactionQueueDetail: React.FC<Props> = ({
     xsignerAccount.address
   );
   const { isOpen, closeModal, openModal } = useModalBehaviour();
-  const { removedTxIds } = useRemovedTxIds(data);
-
-  useEventListenerCallback(MultisigContractEvents.TransactionExecuted, () => {
-    if (removedTxIds) openModal();
+  const { transactionToProcess } = useRemovedTxIds({
+    data,
+    callback: () => openModal(),
   });
 
   if (data === undefined || multisigContractPromise?.contract === undefined) {
@@ -41,6 +39,21 @@ export const TransactionQueueDetail: React.FC<Props> = ({
       </Box>
     );
   }
+
+  const replaceURLParam = (paramValue: string, paramKey?: "tab") => {
+    const newQueryParams = { ...router.query };
+
+    newQueryParams[paramKey] = paramValue;
+
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: newQueryParams,
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   return (
     <>
@@ -58,7 +71,9 @@ export const TransactionQueueDetail: React.FC<Props> = ({
       <ModalTxExecution
         open={isOpen}
         onClose={closeModal}
-        transactionId={removedTxIds.join(", ")}
+        transactionToProcess={transactionToProcess}
+        onConfirmText="Go to history"
+        onConfirm={() => replaceURLParam("history")}
       />
     </>
   );

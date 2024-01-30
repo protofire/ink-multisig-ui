@@ -4,6 +4,7 @@ import { useEvents, useEventSubscription } from "useink";
 
 import { createToast } from "@/components/AppToastNotification";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
+import { LocalMultisigEvents } from "@/domain/events/LocalMultisigEvents";
 import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
@@ -29,6 +30,8 @@ export function MultisigEventListener() {
         icon: <HearingIcon />,
       });
     });
+    events.length &&
+      document.dispatchEvent(new CustomEvent(LocalMultisigEvents.eventAdded));
   }, [events, localMultisigEventRepo]);
 
   useEffect(() => {

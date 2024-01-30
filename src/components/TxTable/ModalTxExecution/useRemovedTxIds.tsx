@@ -1,29 +1,55 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
+import { useLocalDbContext } from "@/context/uselocalDbContext";
+import { BlockchainIssuedEvent } from "@/domain/BlockchainIssuedEvent";
+import { LocalMultisigEvents } from "@/domain/events/LocalMultisigEvents";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
+import { useEventListenerCallback } from "@/hooks/useEventListenerCallback";
 
-type TxIds = TransactionProposedItemUi["txId"][];
+import { TransactionWithAction } from ".";
 
-export function useRemovedTxIds(
-  newData: TransactionProposedItemUi[] | undefined
-): {
-  removedTxIds: TxIds;
-} {
-  const [removedTxIds, setRemovedTxIds] = useState<TxIds>([]);
-  const previousDataRef = useRef<TransactionProposedItemUi[]>([]);
+interface Props {
+  data: TransactionProposedItemUi[] | undefined;
+  callback: () => void;
+}
 
+interface UseRemovedTxIdsReturn {
+  transactionToProcess: TransactionWithAction | undefined;
+}
+
+export function useRemovedTxIds({
+  data,
+  callback,
+}: Props): UseRemovedTxIdsReturn {
+  const [transactionToProcess, setTransactionWillBeExecuted] =
+    useState<UseRemovedTxIdsReturn["transactionToProcess"]>();
+  const { localMultisigEventRepo } = useLocalDbContext();
+  const [newEvent, setNewEvent] = useState<BlockchainIssuedEvent | undefined>();
+
+  useEventListenerCallback(LocalMultisigEvents.eventAdded, () =>
+    setNewEvent(
+      localMultisigEventRepo
+        .getEvents()
+        .find(
+          (event) =>
+            event.name === MultisigContractEvents.TransactionExecuted ||
+            event.name === MultisigContractEvents.TransactionRemoved
+        )
+    )
+  );
   useEffect(() => {
-    if (!newData) return;
+    if (!data || !newEvent) return;
 
-    const previousData = previousDataRef.current;
-    const removedIds = previousData
-      .filter((item) => !newData.some((newItem) => newItem.txId === item.txId))
-      .map((item) => item.txId);
+    const willBeExecuted = data.find((tx) => tx.txId === newEvent.args[0]);
+    if (willBeExecuted) {
+      setTransactionWillBeExecuted({
+        ...willBeExecuted,
+        actionName: newEvent.name,
+      });
+      callback();
+    }
+  }, [callback, data, localMultisigEventRepo, newEvent]);
 
-    setRemovedTxIds(removedIds);
-
-    previousDataRef.current = newData;
-  }, [newData]);
-
-  return { removedTxIds };
+  return { transactionToProcess };
 }
