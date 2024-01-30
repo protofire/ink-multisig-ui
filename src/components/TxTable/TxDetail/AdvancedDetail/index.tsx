@@ -33,8 +33,8 @@ export function AdvancedDetail({ data }: Props) {
           sx={{
             fontWeight: "bold",
             cursor: "pointer",
-            color: "#ffe873", // Color del enlace
-            textDecoration: "underline", // Subrayado para parecer un enlace
+            color: "#ffe873",
+            textDecoration: "underline",
           }}
         >
           Details
