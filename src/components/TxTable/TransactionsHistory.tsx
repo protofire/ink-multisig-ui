@@ -6,9 +6,9 @@ import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useListTxHistory } from "@/hooks/transactions/useListTxHistory";
 
 import { LoadingSkeleton } from "../common/LoadingSkeleton";
-import { TxDetailItem } from "./TxDetailItem";
+import { Props as TxDetailItemProps, TxDetailItem } from "./TxDetailItem";
 
-interface Props {
+interface Props extends Pick<TxDetailItemProps, "findInAddressBook"> {
   xsignerAccount: SignatoriesAccount;
   network: ChainId;
 }
@@ -16,6 +16,7 @@ interface Props {
 export const TransactionHistory: React.FC<Props> = ({
   xsignerAccount,
   network,
+  findInAddressBook,
 }) => {
   const { data } = useListTxHistory(xsignerAccount, network);
 
@@ -36,6 +37,7 @@ export const TransactionHistory: React.FC<Props> = ({
             txData={txData}
             threshold={xsignerAccount.threshold}
             network={network}
+            findInAddressBook={findInAddressBook}
           />
         );
       })}

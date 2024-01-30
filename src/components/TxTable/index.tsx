@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
+import { useSetInAddressBook } from "@/hooks/useSetInAddressBook";
 import { capitalizeFirstLetter } from "@/utils/formatString";
 
 import TxTabs from "./Tabs";
@@ -24,6 +25,8 @@ export function TxTable({
   handleChange,
 }: Props) {
   const { network } = usePolkadotContext();
+  const { findInAddressBook } = useSetInAddressBook();
+
   return (
     <Box sx={{ width: "100%" }}>
       <TxTabs
@@ -35,11 +38,13 @@ export function TxTable({
           <TransactionQueueDetail
             xsignerAccount={xsignerAccount}
             network={network}
+            findInAddressBook={findInAddressBook}
           />
         ) : (
           <TransactionHistory
             xsignerAccount={xsignerAccount}
             network={network}
+            findInAddressBook={findInAddressBook}
           />
         )}
       </TxTabs>

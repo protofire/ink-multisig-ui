@@ -23,6 +23,7 @@ import {
   TransactionProposedItemUi,
 } from "@/domain/TransactionProposedItemUi";
 import { TX_STATUS_TYPE, TX_TYPE } from "@/hooks/transactions/const";
+import { UseSetInAddressBook } from "@/hooks/useSetInAddressBook";
 import { formatDate, truncateAddress } from "@/utils/formatString";
 
 import { TxDetails } from "./TxDetail";
@@ -34,7 +35,7 @@ const StyledGrid = styled(Grid)<GridProps>(() => ({
   display: "flex",
 }));
 
-type Props = {
+export type Props = Pick<UseSetInAddressBook, "findInAddressBook"> & {
   txData: TransactionProposedItemUi;
   threshold: number;
   index?: number;
@@ -101,6 +102,7 @@ export const TxDetailItem = ({
   threshold,
   network,
   multisigContractPromise,
+  findInAddressBook,
 }: Props) => {
   const date = formatDate(txData.creationTimestamp);
 
@@ -108,6 +110,8 @@ export const TxDetailItem = ({
     {}
   );
   const expanded = !!expandedIds[txData.txId];
+  const recipient = txData.from ?? txData.to;
+  const nameFromAddressBook = recipient && findInAddressBook(recipient);
 
   const handleChange =
     (id: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -200,7 +204,10 @@ export const TxDetailItem = ({
             >
               <span>{txType}</span>
               <span style={{ fontSize: "0.9rem" }}>
-                {txData.txMsg} : {truncateAddress(txData.from ?? txData.to, 9)}
+                {txData.txMsg} :{" "}
+                {nameFromAddressBook
+                  ? `${nameFromAddressBook} (${truncateAddress(recipient, 4)})`
+                  : truncateAddress(recipient, 9)}
               </span>
             </Box>
           </StyledGrid>
