@@ -13,6 +13,7 @@ import {
   ModalTypography,
 } from "@/components/ModalAddressBook/styled";
 import { BlockchainIssuedEvent } from "@/domain/BlockchainIssuedEvent";
+import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
 import { TransactionProposedItemUi } from "@/domain/TransactionProposedItemUi";
 
 export type TransactionWithAction = TransactionProposedItemUi & {
@@ -36,11 +37,17 @@ export function ModalTxExecution({
 }: Props) {
   if (!open || !transactionToProcess) return;
 
+  const action =
+    transactionToProcess.actionName ===
+    MultisigContractEvents.TransactionExecuted
+      ? "executed"
+      : "removed";
+
   return (
     <Modal open={open} onClose={onClose}>
       <ModalStyled>
         <ModalTypography id="tx-modal-execution-title" variant="h3">
-          {`Transaction #${transactionToProcess.txId} has been "${transactionToProcess.actionName}"!`}
+          {`Transaction #${transactionToProcess.txId} has been "${action}"!`}
         </ModalTypography>
         <IconButton
           aria-label="close"

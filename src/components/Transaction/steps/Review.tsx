@@ -3,6 +3,7 @@ import { ApiPromise } from "@polkadot/api";
 
 import { AccountSigner } from "@/components/StepperSignersAccount/AccountSigner";
 import { ChainExtended, getChain } from "@/config/chain";
+import { useNameAddressBookContext } from "@/context/NameInAddressBookContext";
 import { useNetworkApi } from "@/hooks/useNetworkApi";
 import { chainTokenSymbol } from "@/services/useink/substrate/tokenTypes";
 
@@ -22,6 +23,7 @@ export const ReviewTokens = (props: Props) => {
   const { apiPromise: api } = useNetworkApi();
   const symbol = chainTokenSymbol(api as ApiPromise);
   const customToken = getChain();
+  const { nameConnectedOrAddressBookOrSigners } = useNameAddressBookContext();
 
   return (
     <Box display="flex" alignItems="center" flexDirection="column" gap={2}>
@@ -35,7 +37,7 @@ export const ReviewTokens = (props: Props) => {
             <Typography component="div">
               <AccountSigner
                 key={to}
-                name="Signer 1"
+                name={nameConnectedOrAddressBookOrSigners(to) || ""}
                 address={to}
                 truncateAmount={12}
               />

@@ -40,10 +40,10 @@ export const TransactionQueueDetail: React.FC<Props> = ({
     );
   }
 
-  const replaceURLParam = (paramValue: string, paramKey?: "tab") => {
+  const replaceURLParam = (paramValue: string) => {
     const newQueryParams = { ...router.query };
 
-    newQueryParams[paramKey] = paramValue;
+    newQueryParams["tab"] = paramValue;
 
     router.replace(
       {
