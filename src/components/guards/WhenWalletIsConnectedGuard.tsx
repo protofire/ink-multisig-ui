@@ -4,7 +4,7 @@ import { PropsWithChildren, useEffect } from "react";
 import { FallbackSpinner } from "@/components/common/FallbackSpinner";
 import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useDelay } from "@/hooks/useDelay";
+import { useDelay } from "@/hooks/common/useDelay";
 import { useFindSignersAccount } from "@/hooks/xsignersAccount";
 import { DELAY_UNTIL_READ_WALLETS } from "@/services/useink/constants";
 

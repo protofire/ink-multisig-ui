@@ -35,3 +35,9 @@ export const emptyDisplayInfo: TransactionDisplayInfo = {
   to: undefined,
   from: undefined,
 };
+
+export function isXsignerOrCustomContract(
+  type: TransactionDisplayInfo["type"]
+): boolean {
+  return type === "Settings" || type === "Custom Contract";
+}

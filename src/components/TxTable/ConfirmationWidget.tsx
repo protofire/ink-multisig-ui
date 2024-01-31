@@ -5,8 +5,11 @@ import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { LoadingButton } from "@/components/common/LoadingButton";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
 import { MultisigContractEvents } from "@/domain/events/MultisigContractEvents";
+import {
+  TWO_SECONDS,
+  useRecentlyClicked,
+} from "@/hooks/common/useRecentlyClicked";
 import { useDryRunExecution } from "@/hooks/useDryRunExecution";
-import { TWO_SECONDS, useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 import { ContractPromise } from "@/services/substrate/types";
 import { shouldDisable } from "@/services/useink/utils";
 

@@ -3,10 +3,25 @@ import { useState } from "react";
 import { useLocalDbContext } from "@/context/uselocalDbContext";
 import { AddressBook } from "@/domain/AddressBooks";
 import { AddressBookEvents } from "@/domain/events/AddressBookEvents";
+import { getHexAddress } from "@/utils/blockchain";
 
-export function useUpdateAddressBook() {
+export type AddressBookInput = Partial<Pick<AddressBook, "address" | "name">>;
+
+type UpdateAddressBookProps = {
+  oldAddressBook: AddressBook;
+  newAddressBook: AddressBook;
+};
+
+export interface UseUpdateAddressBook {
+  updateAddressBook: ({
+    oldAddressBook,
+    newAddressBook,
+  }: UpdateAddressBookProps) => void;
+}
+
+export function useUpdateAddressBook(): UseUpdateAddressBook {
   const { addressBookRepository } = useLocalDbContext();
-  const [editInput, setEditInput] = useState<AddressBook[]>([]);
+  const [editInput, setEditInput] = useState<AddressBookInput>({});
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -15,27 +30,27 @@ export function useUpdateAddressBook() {
     setEditInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const updateAddressBook = (addressBook: string) => {
-    const item = addressBookRepository.getItemByAddress(addressBook);
-    const element = {
-      ...item,
-      ...editInput,
-      isEditable: false,
-    } as AddressBook;
+  const updateAddressBook = ({
+    oldAddressBook,
+    newAddressBook,
+  }: UpdateAddressBookProps) => {
+    const hexAddress = getHexAddress(newAddressBook.address);
 
-    const tempData = addressBookRepository.getAddressList(element.networkId);
-    const index = tempData?.findIndex(
-      (element) => element.address === addressBook
+    const addressesInAddressBook = addressBookRepository.getAddressList(
+      oldAddressBook.networkId
     );
-    tempData[index] = element;
-    addressBookRepository.saveAddress(tempData);
+    const index = addressesInAddressBook?.findIndex(
+      (row) => row.address === oldAddressBook.address
+    );
+
+    addressesInAddressBook[index] = { ...newAddressBook, address: hexAddress };
+    addressBookRepository.saveAddress(addressesInAddressBook);
     document.dispatchEvent(
       new CustomEvent(AddressBookEvents.addressBookUpdated)
     );
   };
 
   return {
-    handleChange,
     updateAddressBook,
   };
 }

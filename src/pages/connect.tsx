@@ -7,7 +7,7 @@ import { BasicLayout } from "@/components/layout/BasicLayout";
 import { MainContentCard } from "@/components/layout/shared/MainContentCard";
 import { ROUTES } from "@/config/routes";
 import { WalletConnectionEvents } from "@/domain/events/WalletConnectionEvents";
-import { useRedirectComparison } from "@/hooks/useRedirectComparison";
+import { useRedirectComparison } from "@/hooks/common/useRedirectComparison";
 
 export function getTextInstructions(route: string) {
   if (route === ROUTES.New) {

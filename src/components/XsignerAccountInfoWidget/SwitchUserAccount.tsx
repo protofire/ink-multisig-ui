@@ -1,7 +1,7 @@
 import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
 import { IconButton } from "@mui/material";
 
-import { UseModalBehaviour } from "@/hooks/useModalBehaviour";
+import { UseModalBehaviour } from "@/hooks/common/useModalBehaviour";
 
 type Props = UseModalBehaviour;
 
