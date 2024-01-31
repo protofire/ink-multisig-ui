@@ -12,7 +12,7 @@ import * as React from "react";
 
 import { ROUTES } from "@/config/routes";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { UseModalBehaviour } from "@/hooks/useModalBehaviour";
+import { UseModalBehaviour } from "@/hooks/common/useModalBehaviour";
 import { formatThreshold, truncateAddress } from "@/utils/formatString";
 
 import CopyButton from "../common/CopyButton";

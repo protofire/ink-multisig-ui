@@ -10,9 +10,9 @@ import { ChainExtended } from "@/config/chain";
 import { AddressBookInput } from "@/domain/AddressBooks";
 import { UseDeleteAddressBookReturn } from "@/hooks/addressBook/useDeleteAddressBook";
 import { UseUpdateAddressBook } from "@/hooks/addressBook/useUpdateAddressBook";
+import { useRecentlyClicked } from "@/hooks/common/useRecentlyClicked";
 import { useForm } from "@/hooks/useForm";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 import { getExplorerUrl } from "@/utils/blockchain";
 import { notEmpty, onlyAddress } from "@/utils/inputValidation";
 

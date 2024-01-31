@@ -7,10 +7,10 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TextFieldWithLoadingProps } from "@/components/TextFieldWithLoading/TextFieldWithLoading";
 import { ROUTES } from "@/config/routes";
+import { useRecentlyClicked } from "@/hooks/common/useRecentlyClicked";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { sringArgsToContractParam } from "@/hooks/externalTxData/stringArgsToContractParam";
 import { useCreateExternalTxData } from "@/hooks/externalTxData/useCreateExternalTxData";
-import { useRecentlyClicked } from "@/hooks/useRecentlyClicked";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 import {
   replacerArgs,

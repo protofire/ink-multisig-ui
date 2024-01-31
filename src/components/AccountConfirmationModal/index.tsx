@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { UseModalBehaviour } from "@/hooks/useModalBehaviour";
+import { UseModalBehaviour } from "@/hooks/common/useModalBehaviour";
 
 import BaseConfirmationDialog from "../BaseConfirmationDialog";
 

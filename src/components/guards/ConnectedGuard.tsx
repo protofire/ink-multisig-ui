@@ -3,7 +3,7 @@ import { ReactElement, ReactNode, useEffect } from "react";
 
 import { ROUTES, RouteValue, routeValues } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useDelay } from "@/hooks/useDelay";
+import { useDelay } from "@/hooks/common/useDelay";
 import { DELAY_UNTIL_READ_WALLETS } from "@/services/useink/constants";
 
 interface ConnectionGuardProps {

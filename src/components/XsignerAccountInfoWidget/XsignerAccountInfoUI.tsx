@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { ChainColors, CHAINS_ALLOWED } from "@/config/chain";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
-import { useModalBehaviour } from "@/hooks/useModalBehaviour";
+import { useModalBehaviour } from "@/hooks/common/useModalBehaviour";
 import { useSetXsignerSelected } from "@/hooks/xsignerSelected/useSetXsignerSelected";
 import { formatThreshold, truncateAddress } from "@/utils/formatString";
 

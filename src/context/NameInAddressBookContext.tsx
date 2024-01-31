@@ -88,7 +88,6 @@ export const NameInAddressBookProvider: React.FC<PropsWithChildren> = ({
 
   const nameConnectedOrAddressBookOrSigners = useCallback(
     (address: string) => {
-      setIsLoading(true);
       let _name = null;
       const isSigner = xSignerSelected?.owners.find(
         (owner) => owner.address === address
@@ -104,7 +103,6 @@ export const NameInAddressBookProvider: React.FC<PropsWithChildren> = ({
         _name = xSignerSelected.name;
       }
 
-      setIsLoading(false);
       return _name;
     },
     [

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getChain } from "@/config/chain";
 import { ROUTES } from "@/config/routes";
 import { usePolkadotContext } from "@/context/usePolkadotContext";
-import { useModalBehaviour } from "@/hooks/useModalBehaviour";
+import { useModalBehaviour } from "@/hooks/common/useModalBehaviour";
 import { useGetXsignerSelected } from "@/hooks/xsignerSelected/useGetXsignerSelected";
 
 import BaseConfirmationDialog from "../BaseConfirmationDialog";
