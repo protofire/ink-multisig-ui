@@ -41,7 +41,7 @@ export function ModalTxExecution({
     transactionToProcess.actionName ===
     MultisigContractEvents.TransactionExecuted
       ? "executed"
-      : "removed";
+      : "cancelled";
 
   return (
     <Modal open={open} onClose={onClose}>

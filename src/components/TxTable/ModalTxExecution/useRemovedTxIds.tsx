@@ -34,7 +34,7 @@ export function useRemovedTxIds({
         .find(
           (event) =>
             event.name === MultisigContractEvents.TransactionExecuted ||
-            event.name === MultisigContractEvents.TransactionRemoved
+            event.name === MultisigContractEvents.TransactionCancelled
         )
     )
   );
