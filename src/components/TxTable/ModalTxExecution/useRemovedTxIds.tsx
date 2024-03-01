@@ -14,42 +14,55 @@ interface Props {
   callback: () => void;
 }
 
-interface UseRemovedTxIdsReturn {
-  transactionToProcess: TransactionWithAction | undefined;
+interface UsePendingTxRemovalReturn {
+  pendingTransaction: TransactionWithAction | undefined;
 }
 
-export function useRemovedTxIds({
+/**
+ * Listen blockchain events to identify transactions recently executed
+ * or cancelled that are not yet indexed in database.
+ *
+ * It uses events to detect changes and returns the ID of the transaction pending
+ * to be removed from the queue of proposed transactions.
+ */
+export function usePendingTxRemoval({
   data,
   callback,
-}: Props): UseRemovedTxIdsReturn {
-  const [transactionToProcess, setTransactionWillBeExecuted] =
-    useState<UseRemovedTxIdsReturn["transactionToProcess"]>();
+}: Props): UsePendingTxRemovalReturn {
+  const [pendingTransaction, setPendingTransaction] = useState<
+    UsePendingTxRemovalReturn["pendingTransaction"] | undefined
+  >();
   const { localMultisigEventRepo } = useLocalDbContext();
   const [newEvent, setNewEvent] = useState<BlockchainIssuedEvent | undefined>();
 
-  useEventListenerCallback(LocalMultisigEvents.eventAdded, () =>
-    setNewEvent(
-      localMultisigEventRepo
-        .getEvents()
-        .find(
-          (event) =>
-            event.name === MultisigContractEvents.TransactionExecuted ||
-            event.name === MultisigContractEvents.TransactionCancelled
-        )
-    )
-  );
+  useEventListenerCallback(LocalMultisigEvents.eventAdded, () => {
+    const latestEvent = localMultisigEventRepo
+      .getEvents()
+      .find(
+        (event) =>
+          event.name === MultisigContractEvents.TransactionExecuted ||
+          event.name === MultisigContractEvents.TransactionCancelled
+      );
+
+    if (latestEvent && latestEvent !== newEvent) {
+      setNewEvent(latestEvent);
+    }
+  });
+
   useEffect(() => {
     if (!data || !newEvent) return;
 
     const willBeExecuted = data.find((tx) => tx.txId === newEvent.args[0]);
-    if (willBeExecuted) {
-      setTransactionWillBeExecuted({
+    if (willBeExecuted && willBeExecuted !== pendingTransaction) {
+      setPendingTransaction({
         ...willBeExecuted,
         actionName: newEvent.name,
       });
       callback();
+      setNewEvent(undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callback, data, localMultisigEventRepo, newEvent]);
 
-  return { transactionToProcess };
+  return { pendingTransaction };
 }
