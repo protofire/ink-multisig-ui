@@ -1,16 +1,16 @@
 import { Box } from "@mui/material";
-import router from "next/router";
 import React from "react";
 import { ChainId } from "useink/dist/chains";
 
 import { LoadingSkeleton } from "@/components/common/LoadingSkeleton";
 import { SignatoriesAccount } from "@/domain/SignatoriesAccount";
 import { useModalBehaviour } from "@/hooks/common/useModalBehaviour";
+import { useReplaceURLParam } from "@/hooks/common/useReplaceParam";
 import { useMultisigContractPromise } from "@/hooks/contractPromise/useMultisigContractPromise";
 import { useListTxQueue } from "@/hooks/transactions/useListTxQueue";
 
 import { ModalTxExecution } from "./ModalTxExecution";
-import { useRemovedTxIds } from "./ModalTxExecution/useRemovedTxIds";
+import { usePendingTxRemoval } from "./ModalTxExecution/useRemovedTxIds";
 import { TxDetailItem } from "./TxDetailItem";
 
 interface Props {
@@ -27,10 +27,11 @@ export const TransactionQueueDetail: React.FC<Props> = ({
     xsignerAccount.address
   );
   const { isOpen, closeModal, openModal } = useModalBehaviour();
-  const { transactionToProcess } = useRemovedTxIds({
+  const { pendingTransaction } = usePendingTxRemoval({
     data,
     callback: () => openModal(),
   });
+  const { replaceUrlParam } = useReplaceURLParam();
 
   if (data === undefined || multisigContractPromise?.contract === undefined) {
     return (
@@ -39,21 +40,6 @@ export const TransactionQueueDetail: React.FC<Props> = ({
       </Box>
     );
   }
-
-  const replaceURLParam = (paramValue: string) => {
-    const newQueryParams = { ...router.query };
-
-    newQueryParams["tab"] = paramValue;
-
-    router.replace(
-      {
-        pathname: router.pathname,
-        query: newQueryParams,
-      },
-      undefined,
-      { shallow: true }
-    );
-  };
 
   return (
     <>
@@ -71,9 +57,9 @@ export const TransactionQueueDetail: React.FC<Props> = ({
       <ModalTxExecution
         open={isOpen}
         onClose={closeModal}
-        transactionToProcess={transactionToProcess}
+        transactionToProcess={pendingTransaction}
         onConfirmText="Go to history"
-        onConfirm={() => replaceURLParam("history")}
+        onConfirm={() => replaceUrlParam({ name: "tab", value: "history" })}
       />
     </>
   );
