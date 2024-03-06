@@ -5,3 +5,6 @@ export const IS_DEVELOPMENT =
 
 export const DOCS_URL =
   process.env.NEXT_PUBLIC_DOCS_URL || "https://docs.xsigners.io/";
+
+export const ANALYTICS_ID = (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ||
+  "") as string;
