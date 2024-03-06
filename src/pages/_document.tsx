@@ -1,4 +1,7 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { DocumentProps, Head, Html, Main, NextScript } from "next/document";
+
+import { ANALYTICS_ID } from "@/config/app";
 
 interface MyDocumentProps extends DocumentProps {
   emotionStyleTags: JSX.Element[];
@@ -21,6 +24,7 @@ export default function Document({ emotionStyleTags }: MyDocumentProps) {
         <Main />
         <NextScript />
       </body>
+      {ANALYTICS_ID && <GoogleAnalytics gaId={ANALYTICS_ID} />}
     </Html>
   );
 }
