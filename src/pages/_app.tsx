@@ -3,6 +3,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import { CacheProvider, EmotionCache } from "@emotion/react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
@@ -15,6 +16,7 @@ import { AppNotificationsContextProvider } from "@/components/AppToastNotificati
 import { Guard } from "@/components/guards";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { MultisigEventListener } from "@/components/MultisigEventListener";
+import { ANALYTICS_ID } from "@/config/app";
 import { CHAINS } from "@/config/chain";
 import { CallerXsignersAccountProvider } from "@/context/CallerXsigerAccounts";
 import { NameInAddressBookProvider } from "@/context/NameInAddressBookContext";
@@ -96,6 +98,7 @@ export default function App(props: ExtendedProps) {
           </LocalDbProvider>
         </PolkadotContextProvider>
       </UseInkProvider>
+      {ANALYTICS_ID && <GoogleAnalytics gaId={ANALYTICS_ID} />}
     </CacheProvider>
   );
 }
